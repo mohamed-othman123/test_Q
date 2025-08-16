@@ -1,0 +1,89 @@
+@use 'mixins';
+@use 'variables';
+
+:host {
+  .container {
+    padding: 1.5rem;
+
+    .page-header {
+      margin-bottom: 40px;
+      h2 {
+        font-size: 25px;
+        font-weight: 500;
+      }
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .info-item-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .info-item {
+      display: flex;
+      gap: 0.5rem;
+
+      .label {
+        color: #00b391;
+        font-weight: 600;
+      }
+    }
+
+    .section-header {
+      h3 {
+        font-size: 20px;
+        font-weight: 500;
+      }
+    }
+
+    .wrapper {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    .summery {
+      grid-column-end: span 2;
+      border-radius: variables.$rounded-md;
+      overflow: hidden;
+
+      table {
+        width: 100%;
+
+        .total-price {
+          border-top: 1px solid variables.$border-color;
+
+          .value {
+            font-weight: bold;
+          }
+        }
+
+        .label {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.5rem;
+          padding: 1rem;
+          background-color: variables.$light-gray;
+
+          i {
+            color: variables.$primary-color;
+          }
+        }
+
+        .value {
+          background-color: variables.$primary-color;
+          color: white;
+          padding: 1rem;
+          text-align: center;
+          width: 13rem;
+        }
+      }
+    }
+  }
+}

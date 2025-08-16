@@ -1,0 +1,227 @@
+@use 'variables';
+@use 'mixins';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+
+  h5 {
+    background-color: white;
+    padding: 1rem;
+  }
+
+  label span {
+    color: red;
+    font-weight: bold;
+  }
+
+  .wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    background-color: white;
+    padding: 1rem 2rem;
+    align-items: center;
+    justify-content: center;
+
+    @include mixins.lg(variables.$min) {
+      grid-template-columns: repeat(2, minmax(5rem, 1fr));
+    }
+
+    > * {
+      grid-column: 1 / -1;
+      @include mixins.lg(variables.$min) {
+        grid-column: auto;
+      }
+    }
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+    }
+
+    .client {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-direction: row;
+
+      app-dropdown {
+        flex: 1;
+      }
+
+      span {
+        border-radius: 12px;
+        padding: 1rem;
+        color: variables.$primary-color;
+        background-color: variables.$light-gray;
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin-top: 0.5rem;
+      }
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      flex-direction: row;
+      grid-column-end: span 2;
+      justify-content: space-between;
+
+      p-button,
+      span {
+        margin-block: 1rem 0;
+        flex: 1 0;
+        max-width: 275px;
+      }
+
+      .cancel {
+        padding: 12px;
+        border-radius: 12px;
+        text-align: center;
+        background: #fafafa;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+    }
+  }
+  .text-error {
+    color: rgb(238, 0, 0) !important;
+  }
+  .text-xs {
+    font-size: 12px;
+  }
+  .food-time-container {
+    display: flex;
+    align-items: center;
+    height: 47px;
+  }
+
+  .shake {
+    animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    animation-fill-mode: forwards;
+  }
+  // booking availability
+  .availability-container {
+    flex-direction: row !important;
+    background: #f8fafb;
+    width: fit-content;
+    padding: 10px;
+    border-radius: 8px;
+    grid-column: span 2 !important;
+
+    .event-row {
+      display: flex;
+
+      position: relative;
+      gap: 40px;
+
+      > span {
+        font-size: 16px;
+        display: flex;
+        gap: 3px;
+
+        span.morning {
+          width: 2px;
+          height: 100%;
+          background-color: #fdbe45;
+          display: block;
+        }
+        span.evening {
+          width: 2px;
+          height: 100%;
+          background-color: #1a2523;
+          display: block;
+        }
+
+        span.full {
+          width: 2px;
+          height: 100%;
+          background-color: var(--primary-color);
+          display: block;
+        }
+      }
+
+      > div {
+        display: flex;
+        gap: 10px;
+
+        span {
+          position: relative;
+          cursor: pointer;
+          i.badge {
+            position: absolute;
+            top: -5px;
+            right: -4px;
+            background-color: rgb(6, 255, 2);
+            border-radius: 50%;
+            padding: 0px;
+            width: 15px;
+            height: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &.first {
+              background-color: #fdbe45;
+            }
+            &.second {
+              background-color: #1a2523;
+            }
+            &.third {
+              background-color: var(--primary-color);
+            }
+          }
+        }
+      }
+      img {
+        width: 18px;
+      }
+    }
+
+    .icon-check {
+      display: block;
+      width: 18px;
+      height: 20px;
+      background-color: red;
+      -webkit-mask: url(/assets/icons/check-circle.svg) no-repeat center;
+      mask: url(/assets/icons/check-circle.svg) no-repeat center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+    }
+
+    .icon-hourglass {
+      display: block;
+      width: 18px;
+      height: 20px;
+      -webkit-mask: url(/assets/icons/hourglass-bottom.svg) no-repeat center;
+      mask: url(/assets/icons/hourglass-bottom.svg) no-repeat center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+    }
+
+    .bg-morning {
+      background-color: #fdbe45;
+    }
+    .bg-evening {
+      background-color: #1a2523;
+    }
+    .bg-full {
+      background-color: var(--primary-color);
+    }
+  }
+}

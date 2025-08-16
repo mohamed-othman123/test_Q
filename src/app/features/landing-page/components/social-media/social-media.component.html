@@ -1,0 +1,97 @@
+@if (landingPageData?.id) {
+  <div class="social-media-section">
+    <div class="section-header">
+      <h4>{{ 'landing.socialMedia' | translate }}</h4>
+      <div class="header-actions">
+        @if (!isEditMode && hasAnySocialLinks()) {
+          <button
+            type="button"
+            class="edit-button"
+            (click)="toggleEditMode()">
+            <i class="pi pi-pencil"></i>
+            {{ 'common.edit' | translate }}
+          </button>
+        }
+        @if (!isEditMode && !hasAnySocialLinks()) {
+          <button
+            type="button"
+            class="add-button"
+            (click)="toggleEditMode()">
+            <i class="pi pi-plus"></i>
+            {{ 'landing.addSocialLinks' | translate }}
+          </button>
+        }
+      </div>
+    </div>
+    @if (!hasAnySocialLinks() && !isEditMode) {
+      <app-empty-data
+        icon="pi pi-share-alt"
+        [title]="'landing.noSocialLinks'"
+        [description]="'landing.addFirstSocialLink'"
+      ></app-empty-data>
+    }
+    @if (hasAnySocialLinks() || isEditMode) {
+      <div class="social-media-grid" [formGroup]="socialLinks">
+        @for (platform of socialMediaPlatforms; track platform) {
+          <div class="social-media-item">
+            <div class="platform-info">
+              <i [class]="platform.icon || platform.iconClass"></i>
+              <span>{{ platform.label }}</span>
+            </div>
+            @if (!isEditMode) {
+              @if (socialLinks.get(platform.key)?.value) {
+                <a
+                  [href]="socialLinks.get(platform.key)?.value"
+                  target="_blank"
+                  class="social-link"
+                  >
+                  <i class="pi pi-external-link"></i>
+                  {{ 'landing.visitPage' | translate }}
+                </a>
+              }
+              @if (!socialLinks.get(platform.key)?.value) {
+                <span class="not-set">
+                  {{ 'landing.notSet' | translate }}
+                </span>
+              }
+            }
+            @if (isEditMode) {
+              <app-input
+                [control]="socialLinks.get(platform.key)!"
+                [controlName]="platform.key"
+                [placeholder]="'landing.enterUrl' | translate">
+                @if (socialLinks.get(platform.key)?.errors?.['pattern']) {
+                  <ng-container error>
+                    {{ getErrorMessage(socialLinks.get(platform.key)!) | translate }}
+                  </ng-container>
+                }
+              </app-input>
+            }
+          </div>
+        }
+      </div>
+    }
+    <!-- Action Buttons -->
+    @if (isEditMode) {
+      <div class="form-actions">
+        <button
+          type="button"
+          pButton
+          class="p-button-secondary"
+          [label]="'common.cancel' | translate"
+          icon="pi pi-times"
+          (click)="cancelEdit()">
+        </button>
+        <button
+          type="button"
+          pButton
+          icon="pi pi-save"
+          [label]="'common.save' | translate"
+          [loading]="isSaving"
+          (click)="saveSocialLinks()"
+          [disabled]="socialLinks.invalid || isSaving">
+        </button>
+      </div>
+    }
+  </div>
+}

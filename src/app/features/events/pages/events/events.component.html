@@ -1,0 +1,112 @@
+<app-list-header
+  [btnAddText]="'events.addNewEvent' | translate"
+  [disableAddBtn]="!permissionsService.hasPermission('create:events')"
+  [title]="'sideNav.events' | translate"
+(sideDrawerToggler)="addNewEvent()"></app-list-header>
+
+<p-table
+  #dt2
+  [value]="events"
+  dataKey="id"
+  [rows]="rows"
+  selectionMode="multiple"
+  [(selection)]="selectedItems"
+  [totalRecords]="totalRecords"
+  [lazy]="true"
+  [first]="first"
+  (onLazyLoad)="onLazyLoad($event)"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [paginator]="true">
+  <ng-template pTemplate="header">
+    <tr>
+      <th class="checkbox-cell"></th>
+      <th pSortableColumn="name">
+        {{ 'events.name' | translate }}
+        <p-sortIcon field="name" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="created_at">
+        {{ 'events.creationDate' | translate }}
+        <p-sortIcon field="created_at" class="mr-12px"></p-sortIcon>
+      </th>
+      <th style="width: fit-content"></th>
+    </tr>
+    <tr>
+      <th style="width: 20px !important"></th>
+      <th>
+        <app-input
+          [control]="filterForm.get('name')!"
+          [controlName]="'name'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-gregorian-date-picker
+          [control]="$any(filterForm.get('creationDate'))"
+          controlName="creationDate"
+          [showClear]="true"
+          [placeholder]="'common.search' | translate">
+        </app-gregorian-date-picker>
+      </th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-event>
+    <tr>
+      <td>
+        <div style="width: fit-content"></div>
+      </td>
+      <td>
+        {{
+        this.translateService.currentLang === 'ar' && event?.name_ar
+        ? event?.name_ar
+        : event?.name
+        }}
+      </td>
+      <td>
+        {{ event.created_at | date: 'dd/MM/yyyy' }}
+      </td>
+      <td>
+        <div class="actions">
+          @if (hasPermissionTo('view', event)) {
+            <div
+              (click)="viewEvent(event)"
+              class="action-button">
+              <i class="pi pi-eye"></i>
+              <span>{{ 'common.view' | translate }}</span>
+            </div>
+          }
+          @if (hasPermissionTo('update', event)) {
+            <div
+              (click)="updateEvent($event, event)"
+              class="action-button">
+              <i class="pi pi-file-edit"></i>
+              <span>{{ 'common.edit' | translate }}</span>
+            </div>
+          }
+          @if (hasPermissionTo('delete', event)) {
+            <div
+              appConfirmDeleteDialog
+              [deletedItem]="'events.event' | translate"
+              (acceptDelete)="deleteEvent(event)"
+              class="action-button delete">
+              <i class="pi pi-trash"></i>
+              <span>{{ 'common.delete' | translate }}</span>
+            </div>
+          }
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="5">
+        <app-empty-state></app-empty-state>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<app-add-new-event (refreshDataTable)="refreshDataTable()"></app-add-new-event>

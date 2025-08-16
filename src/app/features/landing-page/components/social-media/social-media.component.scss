@@ -1,0 +1,173 @@
+@use 'variables';
+@use 'mixins';
+
+:host {
+  .social-media-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: variables.$rounded-md;
+    margin-bottom: 1.5rem;
+    border: 1px solid variables.$primary-color;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid variables.$border-color;
+
+      h4 {
+        font-size: 1.125rem;
+        font-weight: 500;
+        color: #1F2937;
+        margin: 0;
+      }
+
+      .header-actions {
+        button {
+          background: transparent;
+          border: 1px solid variables.$border-color;
+          color: #374151;
+          padding: 0.5rem 1rem;
+          border-radius: 4px;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          cursor: pointer;
+          font-size: 0.875rem;
+
+          &:hover {
+            border-color: variables.$primary-color;
+            color: variables.$primary-color;
+          }
+
+          i {
+            font-size: 0.875rem;
+          }
+        }
+      }
+    }
+  }
+
+  .social-media-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+
+    @include mixins.sm(max) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .social-media-item {
+    border: 1px solid variables.$border-color;
+    border-radius: variables.$rounded-sm;
+    padding: 1rem;
+    background: #fff;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .platform-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+
+      i {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.125rem;
+        color: #4B5563;
+      }
+
+      span {
+        font-weight: 500;
+        color: #374151;
+      }
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: variables.$primary-color;
+      text-decoration: none;
+      font-size: 0.875rem;
+      padding: 0.25rem 0;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      i {
+        font-size: 0.75rem;
+      }
+    }
+
+    .not-set {
+      color: #9CA3AF;
+      font-size: 0.875rem;
+      font-style: italic;
+    }
+
+    app-input {
+      width: 100%;
+
+      ::ng-deep input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid variables.$border-color;
+        border-radius: 4px;
+        font-size: 0.875rem;
+
+        &:focus {
+          border-color: variables.$primary-color;
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(variables.$primary-color, 0.1);
+        }
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid variables.$border-color;
+
+    button {
+      min-width: 80px;
+      font-size: 0.875rem;
+      max-width: fit-content;
+    }
+  }
+
+  .snap-icon {
+    background-image: url('/assets/icons/snapchat-icon.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: inline-block;
+  }
+
+
+  @include mixins.rtl() {
+    .social-media-item {
+      .platform-info {
+        i {
+          margin-right: 0;
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,101 @@
+@use 'variables';
+@use 'mixins';
+
+:host {
+  .location-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: variables.$rounded-md;
+    border: 1px solid variables.$primary-color;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid variables.$border-color;
+
+      h4 {
+        font-size: 1.125rem;
+        font-weight: 500;
+        color: #1f2937;
+        margin: 0;
+      }
+    }
+  }
+
+  .location-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .location-field {
+      label {
+        display: block;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+      }
+
+      .address-text {
+        color: #4b5563;
+        margin: 0;
+        line-height: 1.5;
+        padding: 0.5rem;
+        background: #f9fafb;
+        border-radius: variables.$rounded-sm;
+      }
+
+      app-textarea {
+        ::ng-deep textarea {
+          width: 100%;
+          padding: 0.75rem;
+          border: 1px solid variables.$border-color;
+          border-radius: 4px;
+          font-size: 0.875rem;
+          resize: vertical;
+          min-height: 80px;
+
+          &:focus {
+            border-color: variables.$primary-color;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(variables.$primary-color, 0.1);
+          }
+        }
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid variables.$border-color;
+
+    button {
+      min-width: 80px;
+      font-size: 0.875rem;
+      max-width: fit-content;
+    }
+  }
+
+  @include mixins.rtl() {
+    .location-field {
+      label {
+        text-align: right;
+      }
+    }
+
+    .form-actions {
+      button {
+        i {
+          margin-right: 0;
+          margin-left: 0.5rem;
+        }
+      }
+    }
+  }
+}

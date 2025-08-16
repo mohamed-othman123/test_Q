@@ -1,0 +1,24 @@
+<div class="empty-message">
+  <img src="assets/icons/no-data.icon.png" loading="eager" alt="empty-msg" />
+  <p class="empty-message__text">
+    {{ customMessage || 'common.emptyMsg' | translate }}
+  </p>
+  <div class="d-flex align-items-center">
+    @if (showBtn) {
+      <p-button
+        (onClick)="toggleSideDrawer()"
+        class="add"
+        label="{{ btnLabel }}"
+        icon="pi pi-plus-circle">
+      </p-button>
+    }
+    @if (logOutBtn) {
+      <p-button
+        (onClick)="logoutFun()"
+        class="sign-out"
+        label="{{ 'auth.signOut' | translate }}"
+        icon="pi pi-sign-out">
+      </p-button>
+    }
+  </div>
+</div>

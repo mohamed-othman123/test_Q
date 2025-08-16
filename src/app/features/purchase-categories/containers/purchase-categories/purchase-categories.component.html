@@ -1,0 +1,137 @@
+<app-list-header
+  [btnAddText]="'categories.addNewCategory' | translate"
+  [disableAddBtn]="!permissionsService.hasPermission('create:expense category')"
+  [title]="'sideNav.expensesCategory' | translate"
+(sideDrawerToggler)="openPurchaseCategoryForm('add')"></app-list-header>
+
+<p-table
+  #dt2
+  [value]="categories"
+  dataKey="id"
+  [rows]="rows"
+  [lazy]="true"
+  selectionMode="multiple"
+  [totalRecords]="totalRecords"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [first]="first"
+  [paginator]="true"
+  (onLazyLoad)="onLazyLoad($event)">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>
+        {{ 'purchases.expenseType' | translate }}
+      </th>
+
+      <th pSortableColumn="name">
+        {{ 'categories.expenseCategory' | translate }}
+        <p-sortIcon field="name" class="mr-12px" />
+      </th>
+      <th pSortableColumn="description">
+        {{ 'categories.expenseDescription' | translate }}
+        <p-sortIcon field="description" class="mr-12px" />
+      </th>
+
+      <th></th>
+      <th style="width: fit-content"></th>
+    </tr>
+    <tr>
+      <th>
+        <app-dropdown
+          appendTo="body"
+          [control]="$any(filterForm.get('type'))"
+          [options]="expenseType"
+          [controlName]="'type'"
+          [optionLabel]="'label.' + translate.currentLang"
+          [optionValue]="'value'"
+          [placeholder]="'purchases.expenseType' | translate"
+          [showClear]="true">
+        </app-dropdown>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('name')!"
+          [controlName]="'name'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('description')!"
+          [controlName]="'description'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-category>
+    <tr>
+      <td>
+        {{
+        category.type === 'Purchases'
+        ? ('purchases.purchasesExpenses' | translate)
+        : ('purchases.generalExpenses' | translate)
+        }}
+      </td>
+
+      <td style="text-wrap: auto">
+        {{
+        translate.currentLang === 'ar' && category?.name_ar
+        ? category?.name_ar
+        : category?.name
+        }}
+      </td>
+
+      <td style="text-wrap: auto">
+        {{ category.description }}
+      </td>
+
+      <td>
+        <div class="actions">
+          @if (hasPermissionTo('view', category)) {
+            <div
+              class="action-button"
+              (click)="view(category)">
+              <i class="pi pi-eye"></i>
+              <span>{{ 'common.view' | translate }}</span>
+            </div>
+          }
+          @if (hasPermissionTo('edit', category)) {
+            <div
+              class="action-button"
+              (click)="openPurchaseCategoryForm('edit', $event, category)">
+              <i class="pi pi-file-edit"></i>
+              <span>{{ 'common.edit' | translate }}</span>
+            </div>
+          }
+          @if (hasPermissionTo('delete', category)) {
+            <div
+              appConfirmDeleteDialog
+              (acceptDelete)="deletePurchaseCategory(category)"
+              [deletedItem]="'categories.purchaseCategory' | translate"
+              class="action-button delete">
+              <i class="pi pi-trash"></i>
+              <span>{{ 'common.delete' | translate }}</span>
+            </div>
+          }
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="5">
+        <app-empty-state></app-empty-state>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<purchase-categories-form
+(refreshDataTable)="refreshDataTable()"></purchase-categories-form>

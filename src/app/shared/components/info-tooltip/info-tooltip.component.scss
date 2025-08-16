@@ -1,0 +1,217 @@
+@use 'variables';
+@use 'mixins';
+
+:host {
+  display: inline-block;
+  position: absolute;
+  z-index: 100;
+}
+
+:host.top-right {
+  top: 10px;
+  right: 10px;
+}
+
+:host.top-left {
+  top: 10px;
+  left: 10px;
+}
+
+:host.top-center {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+:host.bottom-right {
+  bottom: 10px;
+  right: 10px;
+}
+
+:host.bottom-left {
+  bottom: 10px;
+  left: 10px;
+}
+
+:host.bottom-center {
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.icon {
+  cursor: pointer;
+  color: #000;
+  transition: color 0.2s;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.tooltip {
+  position: absolute;
+  width: 250px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+  z-index: 1000;
+}
+
+:host.top-right .tooltip,
+:host.top-left .tooltip,
+:host.top-center .tooltip {
+  top: 100%;
+  margin-top: 8px;
+}
+
+:host.bottom-right .tooltip,
+:host.bottom-left .tooltip,
+:host.bottom-center .tooltip {
+  bottom: 100%;
+  margin-bottom: 8px;
+}
+
+:host.top-right .tooltip,
+:host.bottom-right .tooltip {
+  right: 0;
+}
+
+:host.top-left .tooltip,
+:host.bottom-left .tooltip {
+  left: 0;
+}
+
+:host.top-center .tooltip,
+:host.bottom-center .tooltip {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tooltip::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: white;
+  transform: rotate(45deg);
+}
+
+:host.top-right .tooltip::before,
+:host.top-left .tooltip::before,
+:host.top-center .tooltip::before {
+  top: -6px;
+}
+
+:host.bottom-right .tooltip::before,
+:host.bottom-left .tooltip::before,
+:host.bottom-center .tooltip::before {
+  bottom: -6px;
+}
+
+:host.top-right .tooltip::before,
+:host.bottom-right .tooltip::before {
+  right: 9px;
+}
+
+:host.top-left .tooltip::before,
+:host.bottom-left .tooltip::before {
+  left: 9px;
+}
+
+:host.top-center .tooltip::before,
+:host.bottom-center .tooltip::before {
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.timeline {
+  width: 100%;
+}
+
+.timeline-container {
+  position: relative;
+  padding-left: 20px;
+}
+
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 0;
+  left: 5px;
+  width: 2px;
+  background-color: #ddd;
+}
+
+.event {
+  position: relative;
+  margin-bottom: 16px;
+  padding-bottom: 4px;
+}
+
+.event:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -20px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: variables.$primary-color;
+  z-index: 2;
+}
+
+.event-content {
+  text-align: left;
+}
+
+.event-title {
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.event-details {
+  font-size: 0.85em;
+  color: #666;
+}
+
+.timeline.rtl .timeline-container {
+  padding-left: 0;
+  padding-right: 20px;
+  direction: rtl;
+}
+
+.timeline.rtl .timeline-container::before {
+  left: auto;
+  right: 5px;
+}
+
+.timeline.rtl .timeline-dot {
+  left: auto;
+  right: -20px;
+}
+
+.timeline.rtl .event-content {
+  text-align: right;
+}

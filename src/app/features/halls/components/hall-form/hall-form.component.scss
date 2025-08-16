@@ -1,0 +1,187 @@
+@use 'sass:color';
+@use 'variables';
+@use 'mixins';
+
+.nav-tabs {
+  border-bottom: 2px solid variables.$border-color;
+  margin-bottom: 1.5rem;
+
+  .nav-item {
+    margin-bottom: -2px;
+  }
+
+  .nav-link {
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    color: variables.$primary-color;
+
+    &:hover {
+      color: variables.$primary-color;
+      border-color: color.adjust(variables.$primary-color, $lightness: 25%);
+    }
+
+    &.active {
+      color: variables.$primary-color;
+      border-color: variables.$primary-color;
+      background-color: transparent;
+    }
+
+    i {
+      margin-right: 0.5rem;
+    }
+
+    .unsaved-indicator {
+      color: #dc3545;
+      font-size: 1.2rem;
+      font-weight: bold;
+      position: absolute;
+      animation: pulse 1.5s infinite;
+    }
+
+    .unsaved-indicator-rtl {
+      left: 10%;
+    }
+
+    .unsaved-indicator-ltr {
+      left: 85%;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 0.7;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.7;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .unsaved-indicator {
+        top: 5px;
+      }
+
+      :host-context([dir='rtl']) .unsaved-indicator {
+        right: 5%;
+      }
+
+      :host-context([dir='ltr']) .unsaved-indicator {
+        left: 5%;
+      }
+
+      .unsaved-indicator-rtl {
+        right: 5%;
+      }
+
+      .unsaved-indicator-ltr {
+        left: 5%;
+      }
+    }
+  }
+}
+
+.tab-content {
+  .tab-pane {
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
+}
+
+section {
+  transition: all 0.3s ease;
+  border: 0.5px dashed variables.$border-color;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+
+  &:hover {
+    border-color: color.adjust(variables.$primary-color, $lightness: 10%);
+  }
+
+  h5 {
+    font-weight: 600;
+    color: variables.$primary-color;
+    margin-bottom: 1rem;
+  }
+
+  h6 {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+}
+
+.table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+
+  th,
+  td {
+    vertical-align: middle;
+  }
+
+  th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+  }
+
+  tbody tr:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.form-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+:host ::ng-deep {
+  .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .p-dialog {
+    .p-dialog-header {
+      background-color: variables.$primary-color;
+      color: white;
+
+      .p-dialog-header-icon {
+        color: white;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-tabs {
+    .nav-link {
+      font-size: 0.85rem;
+      padding: 0.5rem;
+
+      i {
+        margin-right: 0.25rem;
+      }
+
+      .unsaved-indicator {
+        top: 5px;
+        right: 2px;
+      }
+    }
+  }
+}
+.sar-color {
+  background-color: var(--primary-color) !important;
+}

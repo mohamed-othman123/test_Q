@@ -1,0 +1,101 @@
+/*
+  Media Query Mixins
+*/
+@use './variables' as variables;
+
+// Small devices (Mobile Devices)
+@mixin sm($minmax) {
+  @if $minmax == variables.$min {
+    @media (min-width: #{variables.$screen-sm-min}) {
+      @content;
+    }
+  } @else {
+    @media (max-width: #{variables.$screen-sm-min}) {
+      @content;
+    }
+  }
+}
+
+// Medium devices (Tablets Portrait View)
+@mixin md($minmax) {
+  @if $minmax == variables.$min {
+    @media (min-width: #{variables.$screen-md-min}) {
+      @content;
+    }
+  } @else {
+    @media (max-width: #{variables.$screen-md-min}) {
+      @content;
+    }
+  }
+}
+
+// Large devices (Tablet Landscape and Medium monitors)
+@mixin lg($minmax) {
+  @if $minmax == variables.$min {
+    @media (min-width: #{variables.$screen-lg-min}) {
+      @content;
+    }
+  } @else {
+    @media (max-width: #{variables.$screen-lg-min}) {
+      @content;
+    }
+  }
+}
+
+// Extra large devices (Desktops)
+@mixin xl($minmax) {
+  @if $minmax == variables.$min {
+    @media (min-width: #{variables.$screen-xl-min}) {
+      @content;
+    }
+  } @else {
+    @media (max-width: #{variables.$screen-xl-min}) {
+      @content;
+    }
+  }
+}
+
+// HD Screen devices (Desktops)
+@mixin xxl($minmax) {
+  @if $minmax == variables.$min {
+    @media (min-width: #{variables.$screen-xxl-min}) {
+      @content;
+    }
+  } @else {
+    @media (max-width: #{variables.$screen-xxl-min}) {
+      @content;
+    }
+  }
+}
+
+// FHD Screen devices (Desktops)
+@mixin xxxl($minmax) {
+  @if $minmax == variables.$min {
+    @media (min-width: #{variables.$screen-xxxl-min}) {
+      @content;
+    }
+  } @else {
+    @media (max-width: #{variables.$screen-xxxl-min}) {
+      @content;
+    }
+  }
+}
+
+@mixin rtl() {
+  // :not(#\9) added to increase specificity
+  :host-context([dir='rtl']) :not(#\9) {
+    @content;
+  }
+}
+@mixin rtl-no-host() {
+  [dir='rtl'] {
+    @content;
+  }
+}
+
+@mixin ltr() {
+  // :not(#\9) added to increase specificity
+  :host-context([dir='ltr']) :not(#\9) {
+    @content;
+  }
+}

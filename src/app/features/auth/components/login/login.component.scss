@@ -1,0 +1,20 @@
+@use 'variables';
+:host {
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: variables.$space-xl;
+    .remember-forgot{
+      display: flex;
+      justify-content: space-between;
+      .remember-me{
+        display: flex;
+        gap: variables.$space-sm;
+      }
+
+      .forget{
+        cursor: pointer;
+      }
+    }
+  }
+}

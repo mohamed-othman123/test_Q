@@ -1,0 +1,64 @@
+@if (landingPageData?.id) {
+  <div class="location-section">
+    <div class="section-header">
+      <h4>{{ 'landing.location' | translate }}</h4>
+      <div class="header-actions">
+        @if (!isEditMode) {
+          <button
+            type="button"
+            class="lp-btn"
+            (click)="toggleEditMode()">
+            <i class="pi pi-pencil"></i>
+            {{ 'common.edit' | translate }}
+          </button>
+        }
+      </div>
+    </div>
+    <div class="location-content" [formGroup]="location">
+      <div class="location-field">
+        <label>{{ 'landing.address' | translate }}</label>
+        @if (!isEditMode) {
+          <p class="address-text">
+            {{ addressValue || ('landing.noAddress' | translate) }}
+          </p>
+        }
+        @if (isEditMode) {
+          <app-input
+            [control]="location.get('address')!"
+            [controlName]="'address'"
+            [disabled]="!isEditMode"
+            [placeholder]="'landing.addressPlaceholder' | translate">
+          </app-input>
+        }
+      </div>
+      <hr class="border border-bottom-1" />
+      <div class="location-field">
+        <label>{{ 'landing.mapLocation' | translate }}</label>
+        <app-map-picker
+          [isEditMode]="isEditMode"
+          [initialLocation]="mapLocationValue"
+          (locationSelected)="onMapLocationSelected($event)">
+        </app-map-picker>
+      </div>
+    </div>
+    @if (isEditMode) {
+      <div class="form-actions">
+        <button
+          type="button"
+          pButton
+          class="p-button-secondary"
+          [label]="'common.cancel' | translate"
+          icon="pi pi-times"
+        (click)="cancelEdit()"></button>
+        <button
+          type="button"
+          pButton
+          icon="pi pi-save"
+          [label]="'common.save' | translate"
+          [loading]="isSaving"
+          (click)="saveLocation()"
+        [disabled]="location.invalid || isSaving"></button>
+      </div>
+    }
+  </div>
+}

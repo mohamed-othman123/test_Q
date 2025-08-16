@@ -1,0 +1,277 @@
+@use 'variables';
+@use 'mixins';
+
+.hero {
+  padding-top: 20px;
+  position: relative;
+  margin-bottom: 70px;
+
+  .hall-logo {
+    width: 170px;
+    height: 130px;
+    object-fit: contain;
+  }
+
+  span {
+    display: inline-block;
+    direction: ltr;
+  }
+
+  .top_shap {
+    position: absolute;
+    top: 0;
+    inset-inline-end: 0;
+
+    @include mixins.sm(max) {
+      width: 74px;
+      height: 60px;
+    }
+  }
+
+  .shap {
+    display: flex;
+    max-width: 1024px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 540px;
+    z-index: 0;
+    margin: auto;
+
+    .shap1 path {
+      fill: variables.$hall_main_color;
+      width: 79px;
+      height: 83px;
+    }
+
+    .shap2 {
+      transform: translateY(140px);
+      width: 43px;
+      height: 46px;
+
+      path {
+        fill: variables.$hall_dark_color;
+      }
+    }
+
+    @include mixins.sm(max) {
+      display: none;
+    }
+  }
+
+  .hero_content {
+    max-width: 991px;
+    margin: auto auto 32px;
+    position: relative;
+    z-index: 99;
+  }
+
+  img {
+    margin-bottom: 54px;
+
+    @include mixins.sm(max) {
+      margin-bottom: 24px;
+    }
+  }
+
+  h3 {
+    font-size: 36px;
+    font-weight: bold;
+    color: variables.$hall_main_color;
+    margin: 0 0 32px;
+
+    @include mixins.sm(max) {
+      font-size: 22px;
+      margin: 0 0 18px;
+    }
+  }
+
+  p {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 34px;
+    color: variables.$hall_dark_color;
+    margin: 0 0 54px;
+
+    @include mixins.md(max) {
+      font-size: 16px;
+      line-height: 28px;
+    }
+
+    @include mixins.sm(max) {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 22px;
+      margin: 0 0 24px;
+    }
+  }
+
+  .menu {
+    position: relative;
+    display: flex;
+    border: 1px solid variables.$hall_dark_color;
+    border-radius: 50px;
+    padding: 12px 0;
+    max-width: 640px;
+    margin: auto auto 55px;
+    background-color: #fff;
+    gap: 10px;
+    width: fit-content;
+
+    li {
+      a {
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 20px;
+        border-radius: 50px;
+        color: variables.$hall_dark_color;
+        transition: all 0.3s ease;
+
+        @media all and (max-width: 767px) {
+          padding: 12px 10px;
+          font-size: 13px;
+        }
+
+        &.active,
+        &:hover {
+          color: variables.$hall_main_color;
+          background-color: variables.$hall_secondary_color;
+        }
+      }
+    }
+
+    @include mixins.sm(max) {
+      display: none !important;
+    }
+  }
+
+  .action_btns {
+    li {
+      a,
+      button {
+        padding: 18px 33px;
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 20px;
+        background-color: variables.$hall_main_color;
+        color: #fff;
+        border-radius: 50px;
+        height: 56px;
+
+        svg {
+          margin-inline-start: 12px;
+        }
+      }
+
+      &:first-child {
+        margin-inline-end: 16px;
+
+        a {
+          background-color: transparent;
+          border: 1px solid variables.$hall_dark_color;
+          color: variables.$hall_dark_color;
+
+          svg {
+            margin-inline-start: 0;
+            margin-inline-end: 8px;
+          }
+        }
+      }
+    }
+
+    @include mixins.sm(max) {
+      flex-direction: column;
+
+      li {
+        min-width: 260px;
+        margin: 5px auto !important;
+
+        a {
+          width: 100%;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+      }
+    }
+  }
+
+  .hero_img {
+    height: 350px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 20px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+
+  .hint {
+    max-width: 860px;
+    margin: 30px auto;
+    background-color: variables.$hall_secondary_color;
+    border-radius: 50px;
+    padding: 15px 60px;
+    font-weight: bold;
+
+    p {
+      font-size: 16px;
+      margin: 0;
+      margin-inline-end: 16px;
+      line-height: 34px;
+      color: variables.$hall_main_color;
+    }
+
+    li {
+      &:first-child {
+        border-inline-end: 1px solid variables.$hall_dark_color;
+        padding-inline-end: 8px;
+        margin-inline-end: 8px;
+      }
+    }
+
+    a {
+      color: variables.$hall_dark_color;
+      font-size: 12px;
+
+      svg {
+        margin-inline-end: 8px;
+      }
+    }
+
+    @include mixins.lg(max) {
+      padding: 15px 20px;
+    }
+
+    @include mixins.md(max) {
+      margin-bottom: 30px;
+      flex-direction: column;
+      align-items: center !important;
+      justify-content: center !important;
+
+      p {
+        margin: 0 0 8px;
+      }
+    }
+
+    @include mixins.sm(max) {
+      border-radius: 16px;
+      ul {
+        flex-direction: column;
+
+        li {
+          border: 0;
+          margin: 5px auto !important;
+        }
+      }
+    }
+  }
+}

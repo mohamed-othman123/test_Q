@@ -1,0 +1,13 @@
+@if (currentLang) {
+  <app-gregorian-date-viewer
+    [ngStyle]="{display: calendarView === 'gregorian' ? 'block' : 'none'}"
+    (navigate)="onNavigate($event)"
+  [reservedBookings]="reservedBookings"></app-gregorian-date-viewer>
+
+  @if (!!currentLang) {
+    <app-islamic-date-viewer
+      [ngStyle]="{display: calendarView === 'islamic' ? 'block' : 'none'}"
+      (navigate)="onNavigate($event)"
+    [reservedBookings]="reservedBookings"></app-islamic-date-viewer>
+  }
+}

@@ -1,0 +1,10 @@
+<div class="content overly">
+  @if (showCloseBtn) {
+    <div class="close">
+      <i class="pi pi-times" (click)="closeOpenModal()"></i>
+    </div>
+  }
+
+  <ng-content></ng-content>
+</div>
+<div (click)="closeOpenModal()" id="body-overlay"></div>

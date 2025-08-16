@@ -1,0 +1,49 @@
+/* You can add global styles to this file, and also import other style files */
+@use 'sass:meta';
+
+@use './variables';
+@use './mixins';
+// @use './suisse.font';
+@use './zain.font';
+/*import animations*/
+@use './animations';
+
+@use './generic.scss';
+@use './components/data-table';
+
+/* Import layers Files */
+@layer reset, thirdparty, overrides;
+
+@layer reset {
+  @include meta.load-css('layers/reset.scss');
+}
+
+@layer thirdparty {
+  @include meta.load-css('node_modules/primeng/resources/primeng.min.css');
+  @include meta.load-css(
+    'node_modules/primeng/resources/themes/aura-light-teal/theme.css'
+  );
+  @include meta.load-css('node_modules/primeicons/primeicons.css');
+  @include meta.load-css(
+    'node_modules/angular-calendar/css/angular-calendar.css'
+  );
+  @include meta.load-css('./custom-bootstrap.scss');
+  @include meta.load-css(
+    './node_modules/intl-tel-input/build/css/intlTelInput.css'
+  );
+  @include meta.load-css('node_modules/quill/dist/quill.snow.css');
+  @include meta.load-css('node_modules/quill/dist/quill.bubble.css');
+  @include meta.load-css(
+    'node_modules/vanilla-icon-picker/dist/themes/bootstrap-5.min.css'
+  );
+  @include meta.load-css(
+    'node_modules/@fortawesome/fontawesome-free/css/all.min.css'
+  );
+}
+
+@layer overrides {
+  @include meta.load-css('layers/overrides/prime-ng.scss');
+  @include meta.load-css('layers/overrides/ng-bootstrap.scss');
+  @include meta.load-css('layers/overrides/calender.scss');
+  @include meta.load-css('layers/overrides/material-timepicker.scss');
+}

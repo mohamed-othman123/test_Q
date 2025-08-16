@@ -1,0 +1,156 @@
+@if (landingPageData?.id) {
+  <div class="features-section">
+    <div class="section-header">
+      <h4>{{ 'landing.hallFeatures' | translate }}</h4>
+      <div class="header-actions">
+        @if (!isEditMode && hallFeatures.length > 0) {
+          <button
+            type="button"
+            class="edit-button"
+            (click)="toggleEditMode()">
+            <i class="pi pi-pencil"></i>
+            {{ 'common.edit' | translate }}
+          </button>
+        }
+        @if (!isEditMode && hallFeatures.length === 0) {
+          <button
+            type="button"
+            class="add-button"
+            (click)="addFeature()">
+            <i class="pi pi-plus"></i>
+            {{ 'landing.addFeature' | translate }}
+          </button>
+        }
+        @if (isEditMode) {
+          <button
+            type="button"
+            class="add-button"
+            (click)="addFeature()"
+        [disabled]="
+          hallFeatures.length >= maxFeatures ||
+          hasInvalidFeature() ||
+          !!activeFeature
+        ">
+            <i class="pi pi-plus"></i>
+            {{ 'landing.addFeature' | translate }}
+          </button>
+        }
+      </div>
+    </div>
+    @if (hallFeatures.length < 1 && !isEditMode) {
+      <div>
+        <app-empty-data
+          icon="pi pi-list"
+          [title]="'landing.noFeatures'"
+          [description]="'landing.addFirstFeature'"
+        [disabled]="hallFeatures.length >= maxFeatures"></app-empty-data>
+      </div>
+    }
+    <div
+      class="features-list"
+      cdkDropList
+      (cdkDropListDropped)="onDrop($event)"
+      [cdkDropListDisabled]="!isEditMode || !!activeFeature">
+      @for (feature of hallFeatures.controls; track feature; let i = $index) {
+        <div
+          class="feature-item"
+          cdkDrag
+          [cdkDragDisabled]="!isEditMode || !!activeFeature">
+          <!-- View Mode -->
+          @if (!isEditMode || feature !== activeFeature) {
+            <div
+              class="feature-content">
+              <div class="feature-icon">
+                <fa-icon [icon]="feature.get('icon')?.value | faIcon"></fa-icon>
+              </div>
+              <div class="feature-info">
+                <h5>{{ feature.get('title')?.value }}</h5>
+                <p>{{ feature.get('description')?.value }}</p>
+              </div>
+              @if (isEditMode) {
+                <div class="feature-actions">
+                  <button
+                    type="button"
+                    class="edit-button"
+                    (click)="editFeature(feature)">
+                    <i class="pi pi-pencil"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="delete-button"
+                    (click)="removeFeature(i)">
+                    <i class="pi pi-trash"></i>
+                  </button>
+                  <div class="drag-handle" cdkDragHandle>
+                    <i class="pi pi-bars"></i>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+          <!-- Edit Form - Inline -->
+          @if (isEditMode && feature === activeFeature) {
+            <form
+              [formGroup]="$any(feature)"
+              class="feature-form"
+              (ngSubmit)="saveFeature()">
+              <div class="form-grid">
+                <div class="icon-field">
+                  <app-input
+                    [control]="feature.get('icon')!"
+                    [controlName]="'icon'"
+                    [placeholder]="'landing.iconPlaceholder' | translate"
+                    appIconPicker
+                    label="{{ 'landing.featureIcon' | translate }}"
+                    (iconSelected)="handleIconChange($event)">
+                  </app-input>
+                </div>
+                <div class="title-field">
+                  <app-input
+                    [control]="feature.get('title')!"
+                    [controlName]="'title'"
+                    label="{{ 'landing.featureTitle' | translate }}"
+                    [placeholder]="'landing.titlePlaceholder' | translate">
+                  </app-input>
+                </div>
+                <div class="description-field">
+                  <app-input
+                    [control]="feature.get('description')!"
+                    [controlName]="'description'"
+                    label="{{ 'landing.featureDescription' | translate }}"
+                    [placeholder]="'landing.descriptionPlaceholder' | translate"
+                    [inputType]="'text'">
+                  </app-input>
+                </div>
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    pButton
+                    icon="pi pi-times"
+                    label="{{ 'common.cancel' | translate }}"
+                  (click)="cancelEdit()"></button>
+                  <button
+                    type="submit"
+                    pButton
+                    icon="pi pi-check"
+                    label="{{ 'common.save' | translate }}"
+                  [disabled]="feature.invalid"></button>
+                </div>
+              </div>
+            </form>
+          }
+        </div>
+      }
+    </div>
+    @if (isEditMode && !activeFeature) {
+      <div class="form-actions">
+        <button
+          type="button"
+          pButton
+          class="p-button-secondary"
+          [label]="'common.done' | translate"
+        (click)="toggleEditMode()"></button>
+      </div>
+    }
+  </div>
+}

@@ -1,0 +1,48 @@
+$primary-color: #1eaa8f;
+$orange: orange;
+$red: red;
+$light-gray: #f0f4f3;
+$border-color: #ececec;
+// border radius
+$rounded-sm: 12px;
+$rounded-md: 16px;
+$rounded-l: 20px;
+$rounded-xl: 24px;
+$rounded-full: 50%;
+
+// spacing
+$space-sm: 6px;
+$space-md: 12px;
+$space-l: 12px;
+$space-xl: 16px;
+$space-2xl: 20px;
+$space-3xl: 24px;
+$space-4xl: 32px;
+
+//Media query variables
+$min: 'min';
+$max: 'max';
+
+// Media Query Breakpoints
+// Small tablets and large smartphones (landscape view)
+$screen-sm-min: 576px;
+
+// Small tablets (portrait view)
+$screen-md-min: 768px;
+
+// Tablets and small desktops
+$screen-lg-min: 992px;
+
+// Large tablets and desktops
+$screen-xl-min: 1200px;
+
+// HD screen
+$screen-xxl-min: 1600px;
+
+// FHD screen
+$screen-xxxl-min: 1921px;
+
+$hall_main_color: var(--hall-main-color);
+$hall_secondary_color: var(--hall-secondary-color);
+
+$hall_dark_color: #1a2523;

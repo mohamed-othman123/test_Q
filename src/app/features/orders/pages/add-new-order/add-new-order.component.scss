@@ -1,0 +1,72 @@
+@use 'variables';
+@use 'mixins';
+@use 'animations';
+
+:host {
+  .stepper {
+    display: flex;
+    width: 100%;
+    background-color: white;
+    justify-content: space-around;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1.5rem 1rem 2rem;
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+      justify-content: center;
+      cursor: pointer;
+      &.active {
+        &::after {
+          content: '';
+          width: 55px;
+          top: 0;
+          transform: translate(0%, -8px);
+          height: 55px;
+          position: absolute;
+          border-radius: 50%;
+          animation: pulse-animation 2s infinite;
+          background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%231EAB8FFF' stroke-width='7' stroke-dasharray='50%25%2c 13%25' stroke-dashoffset='86' stroke-linecap='butt'/%3e%3c/svg%3e");
+          border-radius: 100px;
+        }
+      }
+      span {
+        border-radius: 50%;
+        padding: 10px;
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        font-weight: bold;
+        color: white;
+        background: #1eab8f;
+      }
+      h6{
+        text-align: center;
+      }
+    }
+  }
+
+  .dialog-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    img {
+      width: 260px;
+    }
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+      @include mixins.sm(variables.$max) {
+        flex-wrap: wrap;
+        justify-content: center;
+        p-button:nth-child(3) {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

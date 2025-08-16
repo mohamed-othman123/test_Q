@@ -1,0 +1,37 @@
+<!--clint name-->
+<div class="d-flex gap-1 align-items-center flex-fill">
+  <div class="d-flex align-items-center justify-content-between flex-fill">
+    <div class="d-flex align-items-center gap-1">
+      <i class="pi pi-user"></i> {{ item.user.name }}
+    </div>
+
+    @if (item.user.isVIB) {
+      <img width="30px" src="/assets/icons/vip-icon.svg" alt="Vip" />
+    }
+  </div>
+</div>
+
+<!--refund amount-->
+<div class="refund-amount">
+  <div>{{ 'refunds.refundedAmount' | translate }}</div>
+  <span class="price-with-symbol">
+    <sar-symbol />
+    <span>
+      {{ item.amount | number: '1.2-2' }}
+    </span>
+  </span>
+</div>
+
+<!-- Display booking reference and request date -->
+<div class="">
+  <div class="more-info">
+    <i class="pi pi-receipt"></i>
+    <div>{{ 'orders.orderNumber' | translate }}</div>
+    <div>{{ item.booking.bookingReference }}</div>
+  </div>
+  <div class="more-info">
+    <i class="pi pi-calendar"></i>
+    <div>{{ 'refunds.requestDate' | translate }}</div>
+    <div>{{ item.request_date }}</div>
+  </div>
+</div>

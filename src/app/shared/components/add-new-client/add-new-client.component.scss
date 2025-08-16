@@ -1,0 +1,71 @@
+@use "sass:color";
+@use 'variables';
+
+:host {
+  .contact-head {
+    margin-bottom: 10px;
+  }
+
+  .contact-body {
+    border: 1px solid #1eaa8f;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 10px;
+  }
+
+  .add-another-contact {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: variables.$primary-color;
+    cursor: pointer;
+    font-weight: 700;
+
+    &:hover {
+      color: color.adjust(variables.$primary-color, $lightness: 10%);
+    }
+  }
+  .gov-icon {
+    -webkit-mask-image: url(/assets/icons/bank2.svg);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    mask-image: url(/assets/icons/bank2.svg);
+    width: 20px;
+    height: 20px;
+    mask-size: 100%;
+    background-color: var(--primary-color);
+  }
+  .fac-icon {
+    -webkit-mask-image: url(/assets/icons/buildings-fill.svg);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    mask-image: url(/assets/icons/buildings-fill.svg);
+    width: 20px;
+    height: 20px;
+    mask-size: 100%;
+    background-color: var(--primary-color);
+  }
+  .vip {
+    padding-top: 5px;
+  }
+
+  ::ng-deep {
+    .p-inputswitch .p-inputswitch-slider::before {
+      background-image: url(/assets/icons/star.svg);
+      background-size: 12px;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
+  .gov-title {
+    min-width: 120px;
+    text-align: center;
+  }
+  .gender-container {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    margin-top: -15px;
+  }
+}

@@ -1,0 +1,184 @@
+@use 'variables';
+@use 'mixins';
+
+:host {
+  .services-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: variables.$rounded-md;
+    margin-bottom: 1rem;
+    border: 1px solid variables.$primary-color;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    h4 {
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: #1f2937;
+      margin: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+
+      button {
+        background: transparent;
+        border: 1px solid variables.$border-color;
+        color: #374151;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-size: 0.875rem;
+
+        &:hover {
+          border-color: variables.$primary-color;
+          color: variables.$primary-color;
+        }
+
+        &.add-button {
+          border: 1px solid variables.$border-color;
+          background: transparent;
+          color: #374151;
+
+          &:hover {
+            border-color: variables.$primary-color;
+            color: variables.$primary-color;
+          }
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+
+        i {
+          font-size: 0.875rem;
+        }
+      }
+    }
+  }
+
+  .services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .service-item {
+      background: white;
+      border: 1px solid variables.$border-color;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+
+      .service-content {
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+
+        &:not(.edit) {
+          i {
+            color: variables.$primary-color;
+            font-size: 1rem;
+          }
+
+          .service-text {
+            color: #374151;
+            font-size: 0.875rem;
+          }
+        }
+
+        &.edit {
+          padding: 0.5rem;
+          justify-content: space-between;
+
+          app-input {
+            flex: 1;
+            margin-right: 0.5rem;
+
+            ::ng-deep input {
+              border: 1px solid variables.$border-color;
+              border-radius: 4px;
+              padding: 0.5rem;
+              font-size: 0.875rem;
+              width: 100%;
+
+              &::placeholder {
+                color: #9ca3af;
+              }
+            }
+          }
+
+          .service-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+
+            .remove-button {
+              background: none;
+              border: none;
+              padding: 0.25rem;
+              cursor: pointer;
+              color: #6b7280;
+              font-size: 0.875rem;
+
+              &:hover {
+                color: variables.$red;
+              }
+            }
+
+            .drag-handle {
+              cursor: move;
+              color: #9ca3af;
+              padding: 0.25rem;
+              font-size: 0.875rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid variables.$border-color;
+
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      min-width: 80px;
+      max-width: fit-content;
+    }
+  }
+
+  ::ng-deep {
+    .errors {
+      top: 60px !important;
+    }
+
+    app-input .input-container {
+      margin-bottom: 1px !important;
+    }
+  }
+
+  @include mixins.rtl() {
+    .service-content {
+      .service-actions {
+        margin-left: 0;
+        margin-right: auto;
+      }
+    }
+  }
+}

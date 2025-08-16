@@ -1,0 +1,53 @@
+<app-drawer-form-wrapper
+  [form]="form"
+  (onSubmit)="submit()"
+  [hideSubmitBtn]="!confirmAddNewHall">
+  <!--confirmation for add hall -->
+  @if (!confirmAddNewHall) {
+    <div>
+      <div class="d-flex flex-column align-items-center gap-2 mb-3 font-medium">
+        <div class="d-flex align-items-center gap-2">
+          <i class="pi pi-exclamation-circle"></i>
+          <div>{{ 'halls.confirmAddNewHall' | translate }}</div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center gap-2">
+        <button
+          class="btn cancel"
+          (click)="confirmAddNewHall = !confirmAddNewHall">
+          {{ 'common.yes' | translate }}
+        </button>
+        <button class="btn save" (click)="rejected()">
+          {{ 'common.no' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (confirmAddNewHall) {
+    <app-input
+      [control]="formControls.name_ar"
+      [controlName]="'name_ar'"
+      inputType="text"
+      [placeholder]="'halls.hallNameArPlaceholder' | translate"
+      [label]="'halls.hallNameAr' | translate">
+      <i class="pi pi-home" style="color: gray"></i>
+    </app-input>
+    <app-input
+      [control]="formControls.name"
+      [controlName]="'name'"
+      inputType="text"
+      [placeholder]="'halls.hallName' | translate"
+      [label]="'halls.hallName' | translate">
+      <i class="pi pi-home" style="color: gray"></i>
+    </app-input>
+    <app-input
+      [control]="formControls.description"
+      [controlName]="'description'"
+      inputType="textarea"
+      [label]="'halls.hallDescription' | translate"
+      [placeholder]="'halls.hallDescription' | translate">
+      <i class="pi pi-align-left" style="color: gray"></i>
+    </app-input>
+  }
+</app-drawer-form-wrapper>

@@ -1,0 +1,66 @@
+@use 'variables';
+@use 'mixins';
+
+.footer {
+  border-top: 1px solid #dce3e2;
+  padding-top: 48px;
+  padding-bottom: 16px;
+
+  h3 {
+    font-size: 12px;
+    line-height: 20px;
+    margin: 0 0 20px;
+    font-weight: bold;
+
+    &.hall_color {
+      font-size: 18px;
+    }
+  }
+
+  span {
+    padding: 0 4px;
+  }
+
+  p {
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 20px;
+    margin: 0;
+  }
+
+  img {
+    margin-bottom: 10px;
+  }
+
+  li {
+    margin-inline-end: 24px;
+
+    &:last-child {
+      margin-inline-end: 0;
+    }
+
+    a {
+      padding: 0;
+    }
+  }
+
+  @include mixins.md(max) {
+    .social ul {
+      align-items: center !important;
+      text-align: center !important;
+      justify-content: center !important;
+    }
+    .col-12.d-flex {
+      flex-direction: column;
+      align-items: center !important;
+      text-align: center;
+    }
+    .system_log {
+      margin: 24px auto;
+    }
+  }
+}
+
+.hall_color {
+  color: variables.$hall_main_color;
+}

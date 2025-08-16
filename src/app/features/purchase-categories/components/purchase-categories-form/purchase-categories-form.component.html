@@ -1,0 +1,38 @@
+<app-drawer-form-wrapper [form]="form" (onSubmit)="submit()">
+  <app-input
+    [control]="f['name_ar']"
+    [controlName]="'name_ar'"
+    inputType="text"
+    [placeholder]="'categories.expenseCategoryNamePlaceholderAr' | translate"
+    [label]="'categories.expenseCategoryNameAr' | translate">
+    <i class="pi pi-wallet" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="f['name']"
+    [controlName]="'name'"
+    inputType="text"
+    [placeholder]="'categories.expenseCategoryNamePlaceholderEn' | translate"
+    [label]="'categories.expenseCategoryNameEn' | translate">
+    <i class="pi pi-wallet" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="f['description']"
+    [controlName]="'description'"
+    inputType="textarea"
+    [label]="'categories.expenseDescription' | translate"
+    [placeholder]="'categories.expenseDescriptionPlaceholder' | translate">
+  </app-input>
+
+  <app-dropdown
+    [control]="f['type']"
+    [options]="expenseTypes"
+    [optionLabel]="translate.currentLang === 'ar' ? 'label.ar' : 'label.en'"
+    [optionValue]="'value'"
+    [controlName]="'type'"
+    [placeholder]="'categories.expensesTypePlaceholder' | translate"
+    [label]="'purchases.expenseType' | translate">
+    <i class="pi pi-wallet" style="color: gray"></i>
+  </app-dropdown>
+</app-drawer-form-wrapper>

@@ -1,0 +1,27 @@
+@if (bookingDetails) {
+  <div class="mb-4">
+    <info-tooltip
+      [createdBy]="bookingDetails.created_by"
+      [createdAt]="bookingDetails.created_at"
+      [updatedBy]="bookingDetails.updated_by"
+      [updatedAt]="bookingDetails.updated_at">
+    </info-tooltip>
+  </div>
+}
+
+@if (bookingDetails) {
+  <app-booking-details
+    [showPrintBtn]="true"
+    [showUpdateBtn]="true"
+    [bookingDetails]="bookingDetails"></app-booking-details>
+}
+
+@if (bookingDetails.isConfirmed) {
+  <app-payments-list></app-payments-list>
+
+  <app-refund-list></app-refund-list>
+}
+
+<comments
+  [entityId]="bookingDetails.id!"
+  [type]="commentType.BOOKING"></comments>

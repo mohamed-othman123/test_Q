@@ -1,0 +1,47 @@
+<div class="signature-pad-container">
+  <div class="signature-pad-header">
+    <div class="signature-pad-label">
+      {{ label }}
+      @if (!isSigned) {
+        <div class="signature-instructions">{{ instructions }}</div>
+      }
+      @if (isSigned) {
+        <div class="signature-status">
+          <i class="pi pi-check signature-icon"></i>
+          <span>{{ 'halls.signatureAdded' | translate }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="signature-pad-wrapper">
+    <canvas #signatureCanvas class="signature-canvas"></canvas>
+
+    @if (disabled) {
+      <div class="signature-overlay">
+        <div class="signature-disabled-message">
+          <i class="pi pi-lock"></i>
+          Signature is locked
+        </div>
+      </div>
+    }
+
+    @if (isDrawing) {
+      <div class="signature-drawing-indicator">
+        <div class="drawing-dot"></div>
+        Drawing...
+      </div>
+    }
+  </div>
+
+  <div class="signature-pad-actions">
+    <button
+      type="button"
+      class="btn btn-secondary signature-clear-btn"
+      (click)="clear()"
+      [disabled]="disabled || isEmpty()">
+      <i class="pi pi-trash"></i>
+      {{ 'halls.clearSignature' | translate }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,152 @@
+@use 'variables';
+@use 'mixins';
+
+.client-card {
+  background: #fff;
+
+  overflow: hidden;
+  margin: variables.$space-4xl;
+  display: flex;
+  flex-direction: column;
+
+  .card-header {
+    background: variables.$primary-color;
+    color: #fff;
+    padding: variables.$space-xl variables.$space-l;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .hall-name {
+      font-weight: 500;
+      font-size: 1rem;
+    }
+  }
+
+  .card-content {
+    @include mixins.md(max) {
+      grid-template-columns: 1fr;
+    }
+
+    .info-block {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(5rem, 1fr));
+      gap: 1rem;
+
+      .span-2 {
+        grid-column: span 2;
+      }
+
+      h3 {
+        margin-bottom: variables.$space-md;
+        font-size: 1.25rem;
+        color: variables.$hall_dark_color;
+      }
+
+      .field {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+
+        label {
+          color: variables.$primary-color;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .contacts-section {
+    margin-top: 30px;
+
+    h3 {
+      margin-bottom: variables.$space-md;
+      font-size: 1.25rem;
+      color: variables.$hall_dark_color;
+    }
+
+    .contacts-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: variables.$space-xl;
+
+      .contact-card {
+        background: variables.$light-gray;
+        border: 1px solid variables.$border-color;
+        border-radius: variables.$rounded-sm;
+        padding: variables.$space-md;
+        flex: 1 1 calc(33% - #{variables.$space-xl});
+
+        @include mixins.sm(max) {
+          flex: 1 1 100%;
+        }
+
+        .contact-name {
+          margin: 0 0 variables.$space-sm;
+          font-weight: 600;
+          color: variables.$hall_dark_color;
+        }
+        p {
+          margin: 4px 0;
+          display: flex;
+          align-items: center;
+          gap: variables.$space-sm;
+          color: variables.$hall_dark_color;
+
+          i {
+            color: variables.$primary-color;
+          }
+        }
+      }
+    }
+  }
+}
+
+.bookings-section {
+  background: #fff;
+  border: 1px solid variables.$primary-color;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 32px;
+  padding: 1rem;
+
+  h4 {
+    color: variables.$primary-color;
+    border-bottom: 2px solid variables.$primary-color;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 1.5rem 0;
+  }
+}
+
+@include mixins.rtl() {
+  .client-card {
+    .card-header {
+      flex-direction: row-reverse;
+    }
+    .card-content .field {
+      flex-direction: row-reverse;
+    }
+  }
+
+  .bookings-section {
+    ::ng-deep {
+      .status-tooltip {
+        &__content .item {
+          flex-direction: row-reverse;
+        }
+      }
+
+      .whatsapp-link {
+        flex-direction: row-reverse;
+      }
+    }
+  }
+}

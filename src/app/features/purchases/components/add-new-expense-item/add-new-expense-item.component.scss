@@ -1,0 +1,37 @@
+:host {
+  .page-header {
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0;
+    }
+  }
+
+  .form-grid {
+    border: 1px solid #e1e1e1;
+    padding: 30px 20px;
+    border-radius: 10px;
+  }
+  .delete {
+    color: red;
+    display: flex;
+    align-items: center;
+    border: 1px solid #c2c2c2;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 18px;
+    width: fit-content;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  .add-another-account {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #1eaa8f;
+    cursor: pointer;
+    font-weight: 700;
+  }
+}

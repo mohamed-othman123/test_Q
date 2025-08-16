@@ -1,0 +1,167 @@
+@use 'variables';
+@use 'mixins';
+
+:host ::ng-deep {
+  .phone-input-container {
+    position: relative;
+    z-index: 1;
+
+    // &.rtl {
+    //   .iti {
+    //     input {
+    //       text-align: right;
+    //       padding-left: 0;
+    //       padding-right: 105px;
+    //     }
+    //   }
+
+    //   .iti__flag-container {
+    //     position: absolute;
+    //     right: 0;
+    //     z-index: 1;
+    //     width: 80px;
+    //   }
+
+    //   .dropdown-menu {
+    //     left: auto !important;
+    //     right: 0 !important;
+    //   }
+    // }
+
+    .iti {
+      input {
+        text-align: left;
+        padding-right: 0;
+        padding-left: 105px;
+      }
+    }
+
+    .iti__flag-container {
+      position: absolute;
+      left: -1px;
+      z-index: 1;
+      background-color: #eeeeee;
+      width: 94px;
+      height: 100%;
+      border-radius: 16px 0 0 16px;
+      transform: scale(0.96);
+    }
+
+    .dropdown-menu {
+      right: auto !important;
+      left: 0 !important;
+    }
+
+    .dropdown-menu {
+      left: 0;
+    }
+  }
+
+  .shake {
+    animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+
+  ngx-intl-tel-input {
+    width: 100%;
+
+    .iti {
+      width: 100%;
+
+      .dropdown-menu {
+        width: 24rem !important;
+        border-radius: 16px;
+        padding: variables.$space-sm;
+
+        ul {
+          direction: ltr !important;
+          overflow-x: hidden !important;
+          box-shadow: unset !important;
+          overflow-y: scroll;
+          max-height: 199px;
+        }
+      }
+
+      #country-search-box {
+        padding: variables.$space-sm;
+        border-bottom: 1px solid #f6f6f6;
+        font-size: 14px;
+        color: black;
+        background: #f8fafb;
+        border-radius: 16px;
+        outline: none;
+        width: 100%;
+        margin-bottom: variables.$space-sm;
+      }
+
+      input.custom {
+        width: 100%;
+        padding: variables.$space-l;
+        height: inherit;
+        border-radius: 16px;
+        border: 1px solid #f6f6f6;
+        outline: none;
+        font-size: 14px;
+        color: black;
+        background: #f8fafb;
+        text-align: start;
+
+        &:hover {
+          border-color: #b4e4d6 !important;
+        }
+
+        &:focus {
+          border-color: #51a79a !important;
+        }
+
+        &.error {
+          border-color: red !important;
+        }
+      }
+
+      .selected-dial-code {
+        direction: ltr !important;
+        margin-inline: 5px !important;
+      }
+      .iti__arrow {
+        margin: 0;
+      }
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      cursor: pointer;
+      margin-inline-start: 12px;
+
+      .iti__arrow {
+        border-left: 5px solid transparent !important;
+        border-right: 5px solid transparent !important;
+        border-top: 6px solid #555 !important;
+      }
+
+      &.hover {
+        border-color: #b4e4d6 !important;
+      }
+    }
+  }
+
+  .iti__selected-flag:hover {
+    background-color: unset !important;
+  }
+
+  .phone-error {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2px;
+    font-size: 12px;
+    color: red;
+
+    img {
+      width: variables.$space-xl;
+      filter: invert(11%) sepia(41%) saturate(10000%) hue-rotate(-30deg);
+    }
+  }
+}

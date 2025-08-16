@@ -1,0 +1,217 @@
+<form appShakeable [formGroup]="form" (ngSubmit)="submit()">
+  <div class="wrapper">
+    <div class="span-2 d-flex flex-row mb-4">
+      <strong> {{ 'orders.orderNumber' | translate }}</strong> :
+      {{ refundRequest.booking.bookingReference }}
+    </div>
+
+    <app-dropdown
+      [control]="form.controls['paymentMethod']"
+      [options]="paymentMethods"
+      [optionValue]="'id'"
+      [optionLabel]="lang === 'en' ? 'name' : 'name_ar'"
+      [controlName]="'paymentMethod'"
+      [placeholder]="'payment.paymentMethod' | translate"
+      [label]="'payment.paymentMethod' | translate">
+      <i class="pi pi-money-bill" style="color: gray"></i>
+    </app-dropdown>
+
+    <div class="d-flex flex-row w-100">
+      <div class="flex-fill">
+        <app-input
+          [control]="form.controls['amount']"
+          [controlName]="'amount'"
+          inputType="number"
+          [placeholder]="'refunds.refundedAmount' | translate"
+          [label]="'refunds.refundedAmount' | translate">
+        </app-input>
+      </div>
+    </div>
+
+    <div class="date">
+      <app-date-picker
+        [inputFieldStyle]="lang === 'en' ? {'text-indent': '25px'} : null"
+        placement="top-end"
+        [controlName]="'requestDate'"
+        [label]="'refunds.requestDate' | translate"
+        [control]="$any(form.controls['requestDate'])"></app-date-picker>
+    </div>
+
+    <div class="d-flex flex-row w-100">
+      <div class="flex-fill">
+        <app-dropdown
+          [control]="form.controls['status']"
+          [options]="statusOptions"
+          [optionValue]="'value'"
+          [optionLabel]="lang === 'en' ? 'label.en' : 'label.ar'"
+          [controlName]="'status'"
+          [placeholder]="'refunds.requestStatus' | translate"
+          [label]="'refunds.requestStatus' | translate">
+          <i class="pi pi-check-circle" style="color: gray"></i>
+        </app-dropdown>
+      </div>
+    </div>
+
+    <br />
+    <div></div>
+
+    <!-- Beneficiary Section -->
+    <div class="beneficiary-section">
+      <h3>{{ 'payment.receiverInfo' | translate }}</h3>
+
+      <!-- Beneficiary Type Selection -->
+      <div class="beneficiary-type-selection">
+        <div class="d-flex gap-3">
+          <div class="p-field-radiobutton">
+            <p-radioButton
+              formControlName="beneficiary_type"
+              value="customer"
+              inputId="type-customer">
+            </p-radioButton>
+            <label for="type-customer" class="mx-3">{{
+              'payment.customerHimself' | translate
+            }}</label>
+          </div>
+          <div class="p-field-radiobutton">
+            <p-radioButton
+              formControlName="beneficiary_type"
+              value="other"
+              inputId="type-other">
+            </p-radioButton>
+            <label for="type-other" class="mx-3">{{
+              'payment.anotherPerson' | translate
+            }}</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Beneficiary Details -->
+      <div class="beneficiary-details mt-3">
+        <app-input
+          [control]="form.controls['beneficiary_name']"
+          [controlName]="'beneficiary_name'"
+          inputType="text"
+          [placeholder]="'payment.receiverName' | translate"
+          [label]="'payment.receiverName' | translate">
+        </app-input>
+
+        <app-phone-input
+          [control]="$any(form.controls['beneficiary_mobile'])"
+          [label]="'payment.receiverMobile' | translate"
+          [placeholder]="'payment.receiverMobile' | translate"
+          [phoneNumber]="this.refundRequest.beneficiaryMobile">
+        </app-phone-input>
+      </div>
+    </div>
+
+    <!-- Client Payment Method Section -->
+    <div class="client-payment-section">
+      <h3>{{ 'refunds.clientPaymentMethod' | translate }}</h3>
+
+      <!-- Payment Method Type Selection -->
+      <app-dropdown
+        [control]="form.controls['clientPaymentType']"
+        [options]="clientPaymentMethodTypes"
+        [optionValue]="'value'"
+        [optionLabel]="lang === 'en' ? 'label' : 'label_ar'"
+        [controlName]="'clientPaymentType'"
+        [placeholder]="'refunds.selectPaymentMethodType' | translate"
+        [label]="'refunds.paymentMethodType' | translate">
+        <i class="pi pi-credit-card" style="color: gray"></i>
+      </app-dropdown>
+
+      <!-- Bank Account Fields -->
+      @if (isBankAccountSelected()) {
+        <div class="payment-details-section">
+          <app-dropdown
+            [control]="form.controls['bank_name']"
+            [options]="banks"
+            [controlName]="'bank_name'"
+            [optionLabel]="lang === 'ar' ? 'label.ar' : 'label.en'"
+            [optionValue]="'value'"
+            [placeholder]="'refunds.bankName' | translate"
+            [label]="'refunds.bankName' | translate">
+            <i class="pi pi-list" style="color: gray"></i>
+          </app-dropdown>
+
+          <app-input
+            [control]="form.controls['account_number']"
+            [controlName]="'account_number'"
+            inputType="text"
+            [placeholder]="'refunds.accountNumber' | translate"
+            [label]="'refunds.accountNumber' | translate">
+          </app-input>
+          <app-input
+            [control]="form.controls['iban']"
+            [controlName]="'iban'"
+            inputType="text"
+            [placeholder]="'refunds.iban' | translate"
+            [label]="'refunds.iban' | translate">
+          </app-input>
+        </div>
+      }
+
+      <!-- E-Wallet Fields -->
+      @if (isEWalletSelected()) {
+        <div class="payment-details-section">
+          <app-dropdown
+            [control]="form.controls['ewallet_name']"
+            [options]="eWallets"
+            [controlName]="'ewallet_name'"
+            [optionLabel]="lang === 'ar' ? 'label.ar' : 'label.en'"
+            [optionValue]="'value'"
+            [placeholder]="'refunds.ewalletName' | translate"
+            [label]="'refunds.ewalletName' | translate">
+            <i class="pi pi-list" style="color: gray"></i>
+          </app-dropdown>
+
+          <!--E Wallet Number-->
+
+          <app-phone-input
+            [control]="$any(form.controls['ewallet_mobile'])"
+            [label]="'refunds.mobile' | translate"
+            [placeholder]="'refunds.mobile' | translate"
+            [phoneNumber]="
+              this.refundRequest.clientPaymentMethod.ewallet_mobile
+            ">
+          </app-phone-input>
+        </div>
+      }
+    </div>
+
+    <app-input
+      [control]="form.controls['notes']"
+      [controlName]="'notes'"
+      inputType="textarea"
+      [label]="'payment.notes' | translate"
+      [placeholder]="'payment.notes' | translate">
+    </app-input>
+  </div>
+
+  <div class="form-actions">
+    <button
+      [routerLink]="['../..']"
+      type="button"
+      pButton
+      class="p-button-secondary"
+      [label]="'common.cancel' | translate"
+      icon="pi pi-times"
+      (click)="cancel()"></button>
+
+    <button
+      type="submit"
+      pButton
+      icon="pi pi-save"
+      [label]="'common.edit' | translate"></button>
+
+    <ng-template #viewButtons>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-pencil"
+        [label]="'common.edit' | translate"
+        [disabled]="form.invalid || refundRequest.status === 'completed'"
+        (click)="navigateToUpdate()"></button>
+    </ng-template>
+  </div>
+</form>

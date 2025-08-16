@@ -1,0 +1,100 @@
+<app-list-header
+  [title]="'sideNav.refundRequests' | translate"></app-list-header>
+
+<div class="kanban-container">
+  <!--filters-->
+  <div class="filters">
+    <app-input
+      [showClear]="true"
+      [control]="filterForm.get('bookingReference')!"
+      [controlName]="'bookingReference'"
+      inputType="text"
+      [label]="'orders.orderNumber' | translate"
+      [placeholder]="'common.search' | translate">
+      <i class="pi pi-search" style="color: #667085"></i>
+    </app-input>
+
+    <app-input
+      [showClear]="true"
+      [control]="filterForm.get('clientName')!"
+      [controlName]="'clientName'"
+      inputType="text"
+      [label]="'refunds.clientName' | translate"
+      [placeholder]="'common.search' | translate">
+      <i class="pi pi-search" style="color: #667085"></i>
+    </app-input>
+
+    <app-input
+      [control]="filterForm.get('amount')!"
+      [controlName]="'amount'"
+      inputType="number"
+      [label]="'refunds.refundedAmount' | translate"
+      [placeholder]="'common.search' | translate">
+      <i class="pi pi-search" style="color: #667085"></i>
+    </app-input>
+
+    <app-gregorian-date-picker
+      #startDate
+      [control]="$any(filterForm.get('request_date'))"
+      controlName="request_date"
+      [showClear]="true"
+      [label]="'refunds.requestDate' | translate"
+      [placeholder]="'common.search' | translate">
+    </app-gregorian-date-picker>
+  </div>
+
+  <!--kanban cols-->
+  <div class="kanban-board d-flex" cdkDropListGroup>
+    @for (col of columns; track $index; let index = $index) {
+      <app-kanban-column
+        class="kanban-column"
+        [title]="col"
+        [items]="data[col]"
+        [totalItems]="totalItems[col]"
+        [canDragFrom]="['new', 'in_progress'].includes(col)"
+        [filters]="filters"
+        (itemDropped)="onItemDropped($event)">
+      </app-kanban-column>
+    }
+  </div>
+</div>
+
+<!--add notes when reject-->
+<p-dialog
+  [header]="'refunds.rejectReason' | translate"
+  [modal]="true"
+  [dismissableMask]="true"
+  [(visible)]="showRejectionNotePopup"
+  [style]="{'max-width': '90%'}"
+  [draggable]="false"
+  [resizable]="true">
+  <div class="rejection-note-dialog">
+    <div style="min-width: 350px">
+      <app-input
+        [control]="rejectionNote"
+        [controlName]="'rejectionNote'"
+        inputType="textarea"
+        [rowsNo]="5"
+        [label]="'refunds.rejectReason' | translate"
+        [placeholder]="'refunds.rejectReasonPlaceholder' | translate">
+        <i class="pi pi-comment" style="color: #667085"></i>
+      </app-input>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3 gap-5">
+      <button
+        pButton
+        severity="secondary"
+        type="button"
+        label="{{ 'common.cancel' | translate }}"
+        (click)="showRejectionNotePopup = false"
+        class="p-button-text"></button>
+      <button
+        pButton
+        type="button"
+        label="{{ 'common.save' | translate }}"
+        (click)="saveRejectionNote()"
+        class="p-button-primary"></button>
+    </div>
+  </div>
+</p-dialog>

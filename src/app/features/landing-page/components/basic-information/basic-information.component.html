@@ -1,0 +1,104 @@
+<div class="basic-section">
+  <div class="header-container">
+    <h4>{{ 'landing.basicInfo' | translate }}</h4>
+    <div class="header-actions">
+      @if (!isEditMode) {
+        <button
+          type="button"
+          pButton
+          class="lp-btn"
+          icon="pi pi-pencil"
+          [label]="'common.edit' | translate"
+        (click)="toggleEditMode()"></button>
+      }
+      @if (isEditMode) {
+        <button
+          type="button"
+          pButton
+          class="lp-btn"
+          [label]="'common.cancel' | translate"
+          icon="pi pi-times"
+        (click)="cancelEdit()"></button>
+      }
+    </div>
+  </div>
+  <form
+    appShakeable
+    class="form-grid"
+    (ngSubmit)="onSaveBasicInformation()"
+    [formGroup]="form">
+    <!-- View Mode -->
+    @if (!isEditMode) {
+      <div class="view-field">
+        <label>{{ 'landing.hallDomainName' | translate }}</label>
+        <p>{{ hallNameControl.value }}</p>
+      </div>
+      <div class="view-field">
+        <label>{{ 'landing.email' | translate }}</label>
+        <p>{{ emailControl.value }}</p>
+      </div>
+      <div class="view-field">
+        <label>{{ 'landing.phoneNumber' | translate }}</label>
+        <p dir="ltr" [style.text-align]="getPhoneAlignment()">
+          <a
+            href="https://wa.me/{{ formattedPhoneNumber }}"
+            target="_blank"
+            (click)="$event.stopPropagation()"
+            class="whatsapp-link">
+            <span>{{ formattedPhoneNumber }}</span>
+            <i class="pi pi-whatsapp text-green-500"></i>
+          </a>
+        </p>
+      </div>
+      <div class="view-field">
+        <label>{{ 'landing.aboutHall' | translate }}</label>
+        <p [innerHTML]="aboutHallControl.value"></p>
+      </div>
+    }
+
+    <!-- Edit Mode -->
+    @if (isEditMode) {
+      <app-input
+        [control]="hallNameControl"
+        [controlName]="'hallName'"
+        [inputType]="'text'"
+        [placeholder]="'landing.hallDomainNamePlaceholder' | translate"
+        [label]="'landing.hallDomainName' | translate"
+        [disabled]="!isEditMode">
+      </app-input>
+      <app-input
+        [control]="emailControl"
+        [controlName]="'email'"
+        [inputType]="'email'"
+        [placeholder]="'landing.emailPlaceholder' | translate"
+        [label]="'landing.email' | translate"
+        [disabled]="!isEditMode">
+      </app-input>
+      <app-phone-input
+        [control]="phoneNumberControl"
+        [label]="'landing.phoneNumber' | translate"
+        [placeholder]="'landing.phoneNumberPlaceholder' | translate"
+        [phoneNumber]="formattedPhoneNumber"
+        [isViewOnly]="!isEditMode">
+      </app-phone-input>
+      <app-rich-text-editor
+        [formControl]="aboutHallControl"
+        [placeholder]="'landing.aboutHallPlaceholder' | translate"
+        [label]="'landing.aboutHall' | translate"
+        [required]="false"
+        [maxLength]="500"
+        [disabled]="!isEditMode">
+      </app-rich-text-editor>
+    }
+
+    <div class="form-actions">
+      @if (isEditMode) {
+        <button
+          type="submit"
+          pButton
+          icon="pi pi-save"
+        [label]="'common.save' | translate"></button>
+      }
+    </div>
+  </form>
+</div>

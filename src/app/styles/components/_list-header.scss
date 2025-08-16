@@ -1,0 +1,33 @@
+@use './../mixins' as mixins;
+@use './../variables';
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background: white;
+  gap: 8px;
+  padding: 12px 8px;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  @include mixins.sm(variables.$max) {
+    margin-inline: 0.5rem;
+  }
+  > i {
+    background-color: #f8fafb;
+    text-align: center;
+    padding: 16px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 12px;
+    border: solid 1px #fafafa;
+  }
+  .add {
+    ::ng-deep {
+      .p-button {
+        display: flex;
+        gap: 8px;
+        font-weight: 500;
+      }
+    }
+  }
+}

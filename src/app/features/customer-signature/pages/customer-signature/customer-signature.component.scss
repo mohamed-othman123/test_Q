@@ -1,0 +1,107 @@
+@use 'variables';
+@use 'mixins';
+
+:host {
+  .sig-wrapper {
+    background: linear-gradient(32deg, #29e9c4, #015a5e 82%, #002037);
+    display: block;
+    height: 100%;
+    padding: 20px;
+
+    .content {
+      margin: 24px;
+      border-radius: 12px;
+      margin-inline: auto;
+      background-color: white;
+      box-shadow: #0000001a 0 10px 50px;
+      min-height: 95vh;
+      z-index: 1;
+      position: relative;
+
+      .stepper-container {
+        border-radius: 12px;
+        background-color: white;
+        overflow: scroll;
+        scrollbar-width: none;
+
+        .step-header {
+          border: none;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 45px;
+          height: 45px;
+          background-color: #1eaa8f;
+          color: white;
+        }
+        .done-head {
+          color: var(--primary-color);
+        }
+
+        .sig-pad-container {
+          width: 300px;
+        }
+      }
+
+      .lang {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50% 50%;
+        text-align: center;
+        width: 38px;
+        height: 38px;
+        background-image: url(/assets/icons/lang.icon.svg);
+        background-position: center;
+        background-size: 38px;
+        background-repeat: no-repeat;
+        color: white;
+        cursor: pointer;
+        box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px;
+        span {
+          display: none;
+          width: 25px;
+          background: white;
+          height: 25px;
+          color: variables.$primary-color;
+          border-radius: 15px;
+          align-items: center;
+          justify-content: center;
+          padding-top: 5px;
+          @include mixins.ltr() {
+            .ar {
+              display: flex;
+            }
+          }
+          @include mixins.rtl() {
+            .en {
+              display: flex;
+            }
+          }
+        }
+      }
+    }
+
+    .background-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: auto;
+      height: auto;
+    }
+
+    .refresh-button {
+      border: none;
+      background: transparent;
+      padding: 8px;
+      color: variables.$hall_main_color;
+    }
+  }
+
+  ::ng-deep {
+    ul {
+      padding-left: 0 !important;
+    }
+  }
+}

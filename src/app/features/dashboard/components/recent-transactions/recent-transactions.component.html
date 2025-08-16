@@ -1,0 +1,82 @@
+<div class="recent-transactions">
+  <div class="header">
+    <h3>{{ 'dashboard.recentTransactions' | translate }}</h3>
+    <div class="filters">
+      <span
+        [ngClass]="{'active': transactionFilterType$.value === 'All'}"
+        (click)="transactionFilterType$.next('All')"
+        >{{ 'dashboard.all' | translate }}</span
+      >
+      <span
+        [ngClass]="{'active': transactionFilterType$.value === 'Income'}"
+        (click)="transactionFilterType$.next('Income')"
+        >{{ 'dashboard.income' | translate }}</span
+      >
+      <span
+        [ngClass]="{'active': transactionFilterType$.value === 'Expense'}"
+        (click)="transactionFilterType$.next('Expense')"
+        >{{ 'dashboard.expenses' | translate }}</span
+      >
+      <!-- <app-dropdown
+          [control]="transactionFilterBy"
+          [options]="transactionFilterByOptions"
+          [controlName]="'transactionFilterBy'"
+          [optionLabel]="'label.' + translateService.currentLang"
+          [iconPath]="'/assets/svg/calendar.green.svg'"
+          [showLabel]="false">
+        </app-dropdown> -->
+    </div>
+  </div>
+  <p-table
+    [value]="payments"
+    [scrollable]="true"
+    scrollHeight="320px"
+    #dt2
+    dataKey="id"
+    [rows]="rows"
+    selectionMode="multiple"
+    [rowsPerPageOptions]="rowsPerPageOptions"
+    [totalRecords]="totalRecords"
+    [first]="first"
+    [paginator]="true"
+    [lazy]="true"
+    (onLazyLoad)="onLazyLoad($event)">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>{{ 'dashboard.operationName' | translate }}</th>
+        <th>{{ 'dashboard.operationDate' | translate }}</th>
+        <th>{{ 'dashboard.operationType' | translate }}</th>
+        <th>{{ 'dashboard.amount' | translate }}</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-payment>
+      <tr>
+        <td>
+          {{ payment.paymentName }}
+          @if (payment.isVIB) {
+            <img width="30px" src="/assets/icons/vip-icon.svg" alt="Vip" />
+          }
+        </td>
+        <td>{{ payment.paymentDate | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ operationType(payment) }}</td>
+        <td>
+          <span class="price-with-symbol">
+            <sar-symbol />
+            <span>
+              {{ payment.paymentAmount | number: '1.2-2' }}
+            </span>
+          </span>
+        </td>
+        <td><i class="pi pi-eye"></i></td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5">
+          <app-empty-state></app-empty-state>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

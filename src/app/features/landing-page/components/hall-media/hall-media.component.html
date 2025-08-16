@@ -1,0 +1,195 @@
+@if (landingPageData?.id) {
+  <div class="media-section">
+    <div class="header-container">
+      <h4>{{ 'landing.hallMedia' | translate }}</h4>
+      @if (hasUnsavedChanges()) {
+        <button
+          type="button"
+          pButton
+          icon="pi pi-save"
+          [label]="'common.save' | translate"
+          [loading]="loading"
+          [disabled]="loading"
+        (click)="saveMedia()"></button>
+      }
+      @if (!hasUnsavedChanges()) {
+        <button
+          type="button"
+          pButton
+          icon="pi pi-check"
+          [label]="'common.update' | translate"
+          [loading]="loading"
+          [disabled]="loading"
+        (click)="finishEditing()"></button>
+      }
+    </div>
+    <!-- Banners Section -->
+    @if (section?.type === 'banners') {
+      <div class="media-container">
+        <h5>{{ 'landing.hallBanners' | translate }}</h5>
+        <p class="helper-text">{{ 'landing.bannersHelperText' | translate }}</p>
+        @if (banners.length < 1) {
+          <div>
+            <app-empty-data
+              icon="pi pi-images"
+              [title]="'landing.noBanners'"
+              [description]="'landing.addFirstBanner'"
+            [disabled]="banners.length >= maxBanners"></app-empty-data>
+          </div>
+        }
+        <div class="media-grid banners-grid">
+          @for (banner of banners; track banner; let i = $index) {
+            <div class="media-item">
+              <div class="upload-box" [class.has-file]="banner.file || banner.url">
+                <input
+                  type="file"
+                  accept="image/*"
+                  [id]="'banner-' + i"
+                  (change)="onFileSelected($event, 'banners', i)"
+                  [disabled]="banner.isUploading" />
+                <label [for]="'banner-' + i" class="upload-label">
+                  @if (!banner.file && !banner.url) {
+                    <i class="pi pi-upload"></i>
+                    <span>{{ 'landing.clickToUpload' | translate }}</span>
+                  }
+                  @if (banner.file || banner.url) {
+                    <img
+                      [src]="banner.file ? (banner.file | filePreview) : banner.url"
+                      alt="Banner Preview"
+                      class="preview-image" />
+                  }
+                </label>
+                <!-- Order Dropdown -->
+                <div class="order-select">
+                  <p-dropdown
+                    [options]="getOrderOptions(banners.length)"
+                    [(ngModel)]="banner.order"
+                    [ngModelOptions]="{standalone: true}"
+                    (onChange)="onOrderChange($event, 'banners', i)"
+                    [disabled]="$any(banner.isUploading)"
+                    styleClass="order-dropdown"
+                    appendTo="body">
+                  </p-dropdown>
+                </div>
+                <button
+                  type="button"
+                  class="remove-button"
+                  (click)="removeMediaItem('banners', i)"
+                  [disabled]="banner.isUploading">
+                  <i class="pi pi-times"></i>
+                </button>
+                @if (banner.isUploading) {
+                  <div class="upload-overlay">
+                    <p-progressSpinner [style]="{width: '50px', height: '50px'}">
+                    </p-progressSpinner>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          @if (canAddNewMedia('banners')) {
+            <div class="media-item">
+              <input
+                type="file"
+                accept="image/*"
+                #bannerFileInput
+                (change)="onDirectFileUpload($event, 'banners')"
+                style="display: none" />
+              <button
+                type="button"
+                class="add-media-button"
+                (click)="bannerFileInput.click()">
+                <i class="pi pi-plus"></i>
+                {{ 'landing.addBanner' | translate }}
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    }
+    <!-- Images Section -->
+    @if (section?.type === 'images') {
+      <div class="media-container">
+        <h5>{{ 'landing.hallImages' | translate }}</h5>
+        <p class="helper-text">{{ 'landing.imagesHelperText' | translate }}</p>
+        @if (images.length < 1) {
+          <div>
+            <app-empty-data
+              icon="pi pi-image"
+              [title]="'landing.noImages'"
+              [description]="'landing.addFirstImage'"
+            [disabled]="images.length >= maxImages"></app-empty-data>
+          </div>
+        }
+        <div class="media-grid images-grid">
+          @for (image of images; track image; let i = $index) {
+            <div class="media-item">
+              <div class="upload-box" [class.has-file]="image.file || image.url">
+                <input
+                  type="file"
+                  accept="image/*"
+                  [id]="'image-' + i"
+                  (change)="onFileSelected($event, 'images', i)"
+                  [disabled]="image.isUploading" />
+                <label [for]="'image-' + i" class="upload-label">
+                  @if (!image.file && !image.url) {
+                    <i class="pi pi-upload"></i>
+                    <span>{{ 'landing.clickToUpload' | translate }}</span>
+                  }
+                  @if (image.file || image.url) {
+                    <img
+                      [src]="image.file ? (image.file | filePreview) : image.url"
+                      alt="Image Preview"
+                      class="preview-image" />
+                  }
+                </label>
+                <!-- Order Dropdown -->
+                <div class="order-select">
+                  <p-dropdown
+                    [options]="getOrderOptions(images.length)"
+                    [(ngModel)]="image.order"
+                    [ngModelOptions]="{standalone: true}"
+                    (onChange)="onOrderChange($event, 'images', i)"
+                    [disabled]="$any(image.isUploading)"
+                    styleClass="order-dropdown"
+                    appendTo="body">
+                  </p-dropdown>
+                </div>
+                <button
+                  type="button"
+                  class="remove-button"
+                  (click)="removeMediaItem('images', i)"
+                  [disabled]="image.isUploading">
+                  <i class="pi pi-times"></i>
+                </button>
+                @if (image.isUploading) {
+                  <div class="upload-overlay">
+                    <p-progressSpinner [style]="{width: '50px', height: '50px'}">
+                    </p-progressSpinner>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          @if (canAddNewMedia('images')) {
+            <div class="media-item">
+              <input
+                type="file"
+                accept="image/*"
+                #imageFileInput
+                (change)="onDirectFileUpload($event, 'images')"
+                style="display: none" />
+              <button
+                type="button"
+                class="add-media-button"
+                (click)="imageFileInput.click()">
+                <i class="pi pi-plus"></i>
+                {{ 'landing.addImage' | translate }}
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

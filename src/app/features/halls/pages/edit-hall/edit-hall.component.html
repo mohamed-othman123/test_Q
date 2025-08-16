@@ -1,0 +1,34 @@
+@if (hall) {
+  <div>
+    <info-tooltip
+      [createdBy]="hall.created_by"
+      [createdAt]="hall.created_at"
+      [updatedBy]="hall.updated_by"
+      [updatedAt]="hall.updated_at">
+    </info-tooltip>
+  </div>
+}
+
+<div class="d-flex flex-column p-4">
+  <div class="d-flex align-items-center mb-2">
+    <a [routerLink]="['../..']" class="halls__link d-flex align-items-center">
+      <i
+        class="pi pi-arrow-left"
+      style="color: gray; font-size: 0.875rem; margin-bottom: 0"></i>
+      <span class="mx-3">{{ 'halls.backToHalls' | translate }}</span>
+    </a>
+  </div>
+  <h3 class="halls__title">{{ 'halls.editHall' | translate }}</h3>
+</div>
+
+<div class="p-4">
+  @if (hall) {
+    <hall-form
+      [hall]="hall"
+      [hallId]="hallId"
+      [showLeaveConfirmation]="showConfirmDialog"
+      (onHallUpdated)="handleHallUpdated($event)"
+      (confirmationResolved)="resolveConfirmation($event)">
+    </hall-form>
+  }
+</div>

@@ -1,0 +1,169 @@
+@use 'variables';
+@use 'mixins';
+
+:host {
+  display: block;
+  padding: 1.5rem;
+  background-color: white;
+
+  @include mixins.sm(variables.$max) {
+    padding: 0.75rem;
+  }
+
+  .content {
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      h6 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+
+        @include mixins.sm(variables.$max) {
+          font-size: 1.2rem;
+        }
+      }
+    }
+    .info-section {
+      padding: 20px;
+    }
+
+    .section {
+      background-color: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+
+      @include mixins.sm(variables.$max) {
+        padding: 1rem;
+        border-radius: 6px;
+      }
+
+      h4 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 1.5rem 0;
+        color: var(--text-color);
+
+        @include mixins.sm(variables.$max) {
+          font-size: 1.1rem;
+          margin-bottom: 1rem;
+        }
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        align-items: start;
+
+        @include mixins.sm(variables.$max) {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+
+        .full-width {
+          grid-column: 1 / -1;
+        }
+
+        > * {
+          min-height: 70px;
+          display: flex;
+          flex-direction: column;
+
+          @include mixins.sm(variables.$max) {
+            min-height: 60px;
+          }
+        }
+      }
+    }
+
+    ::ng-deep {
+      .p-dropdown {
+        width: 100%;
+      }
+
+      .p-inputtext {
+        width: 100%;
+        height: 44px;
+
+        @include mixins.sm(variables.$max) {
+          height: 40px;
+          font-size: 0.9rem;
+        }
+      }
+
+      .p-dropdown .p-dropdown-label {
+        height: 44px;
+        line-height: 44px;
+        padding-top: 0;
+        padding-bottom: 0;
+
+        @include mixins.sm(variables.$max) {
+          height: 40px;
+          line-height: 40px;
+          font-size: 0.9rem;
+        }
+      }
+
+      app-permission-matrix {
+        overflow-x: auto;
+        display: block;
+        width: 100%;
+
+        @include mixins.sm(variables.$max) {
+          margin: 0 -0.5rem;
+          width: calc(100% + 1rem);
+          padding: 0 0.5rem;
+        }
+      }
+
+      .actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: 2rem;
+
+        @include mixins.sm(variables.$max) {
+          flex-direction: column-reverse;
+          margin-top: 1.5rem;
+
+          .p-button {
+            width: 100%;
+            margin-bottom: 0.5rem;
+          }
+        }
+
+        .p-button {
+          min-width: 150px;
+
+          @include mixins.sm(variables.$max) {
+            min-width: unset;
+            height: 40px;
+
+            .p-button-label {
+              font-size: 0.9rem;
+            }
+          }
+        }
+      }
+      .p-accordion-content,
+      .p-accordion-header-link {
+        background-color: #f8f9fa !important;
+      }
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+
+    @include mixins.sm(variables.$max) {
+      height: 200px;
+    }
+  }
+}

@@ -1,0 +1,10 @@
+@use "direction-ltr";
+
+/*** RTL websites ***/
+direction-ltr.$direction: rtl;
+direction-ltr.$opposite-direction: ltr;
+
+direction-ltr.$start-direction: right;
+direction-ltr.$end-direction: left;
+
+direction-ltr.$transform-direction: -1;

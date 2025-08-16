@@ -1,0 +1,39 @@
+@if (events.length > 0) {
+  <div class="warp">
+    @for (item of events; track $index) {
+      <div
+        class="event d-flex align-items-center justify-content-between gap-1"
+        [ngClass]="time"
+        (click)="goToBooking(item['meta'])">
+        <div class="d-flex align-items-center gap-2">
+          <span class="lead" [ngClass]="time"></span>
+          @if (item['meta']['isConfirmed']) {
+            <span class="icon-check" [ngClass]="time"></span>
+          } @else {
+            <span class="icon-hourglass" [ngClass]="time"></span>
+          }
+        </div>
+
+        <p>{{ item['meta']['user']['name'] }}</p>
+        @if (item['meta']['user']['isVIB']) {
+          <img width="35px" src="/assets/icons/vip-icon.svg" alt="Vip" />
+        }
+
+        <p>{{ 'calender.sections' | translate }}:</p>
+        @for (item of item['meta']['sections']; track $index) {
+          @if (lang.lang === 'ar') {
+            <p-tag [value]="item.name_ar" />
+          } @else {
+            <p-tag [value]="item.name" />
+          }
+        }
+
+        <i
+          class="pi"
+          [ngClass]="
+            lang.lang === 'ar' ? 'pi-angle-left' : 'pi-angle-right'
+          "></i>
+      </div>
+    }
+  </div>
+}

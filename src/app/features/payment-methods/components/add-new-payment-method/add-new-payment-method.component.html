@@ -1,0 +1,27 @@
+<app-drawer-form-wrapper [form]="form" (onSubmit)="submit()">
+  <app-input
+    [control]="f['name_ar']"
+    [controlName]="'name_ar'"
+    inputType="text"
+    [placeholder]="'paymentMethods.nameArPlaceholder' | translate"
+    [label]="'paymentMethods.nameAr' | translate">
+    <i class="pi pi-wallet" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="f['name']"
+    [controlName]="'name'"
+    inputType="text"
+    [placeholder]="'paymentMethods.nameEn' | translate"
+    [label]="'paymentMethods.nameEn' | translate">
+    <i class="pi pi-wallet" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="f['description']"
+    [controlName]="'description'"
+    inputType="textarea"
+    [label]="'paymentMethods.description' | translate"
+    [placeholder]="'paymentMethods.description' | translate">
+  </app-input>
+</app-drawer-form-wrapper>

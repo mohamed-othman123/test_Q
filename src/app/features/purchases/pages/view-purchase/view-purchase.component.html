@@ -1,0 +1,473 @@
+@if (purchase) {
+  <div>
+    <info-tooltip
+      [createdBy]="purchase.created_by"
+      [createdAt]="purchase.created_at"
+      [updatedBy]="purchase.updated_by"
+      [updatedAt]="purchase.updated_at">
+    </info-tooltip>
+  </div>
+}
+
+@if (!isLoading) {
+  <div class="container">
+    <!--Title-->
+    <app-list-header
+      [btnAddText]="'common.edit' | translate"
+      icon="pi pi-pencil"
+      [title]="'purchases.viewPurchase' | translate"
+      *appHasPermission="['update:expense']"
+      (sideDrawerToggler)="goToUpdate()">
+    </app-list-header>
+    <div class="content">
+      <div class="readonly-invoice-type info-item">
+        <span class="label">{{ 'purchases.expenseType' | translate }} : </span>
+        <span class="value">
+          {{
+            purchase.category?.type === ExpensesType.purchasesExpenses
+              ? ('purchases.purchasesExpenses' | translate)
+              : ('purchases.generalExpenses' | translate)
+          }}
+        </span>
+      </div>
+      @if (purchase.category?.type === ExpensesType.purchasesExpenses) {
+        <div class="readonly-invoice-type info-item">
+          <span class="label"
+            >{{ 'purchases.invoiceType' | translate }} :
+          </span>
+          <span class="value">
+            {{
+              (purchase.invoiceType === 'Tax Invoice'
+                ? 'purchases.invoiceTypes.Tax Invoice'
+                : 'purchases.invoiceTypes.Simplified Invoice'
+              ) | translate
+            }}
+          </span>
+        </div>
+      }
+      <div class="info-item">
+        <span class="label"
+          >{{ 'purchases.invoiceReference' | translate }} :
+        </span>
+        <span class="value">
+          {{ purchase.invoiceReference || '-' }}
+        </span>
+      </div>
+      <!-- Dates -->
+      <div class="info-item-group">
+        <div class="info-item">
+          <span class="label"
+            >{{ 'purchases.purchaseDate' | translate }} :
+          </span>
+          <span class="value">
+            @if (lang.lang === 'ar') {
+              {{ purchase.purchaseDate | arabicMonthDate }}
+            } @else {
+              {{ purchase.purchaseDate | englishMonthDate }}
+            }
+          </span>
+        </div>
+        <div class="info-item">
+          <span class="label">{{ 'purchases.payingDate' | translate }} : </span>
+          <span class="value">
+            @if (lang.lang === 'ar') {
+              {{ purchase.dueDate | arabicMonthDate }}
+            } @else {
+              {{ purchase.dueDate | englishMonthDate }}
+            }
+          </span>
+        </div>
+        @if (purchase.deliveryDate) {
+          <div class="info-item">
+            <span class="label"
+              >{{ 'purchases.supplyDate' | translate }} :
+            </span>
+            <span class="value">
+              @if (lang.lang === 'ar') {
+                {{ purchase.deliveryDate | arabicMonthDate }}
+              } @else {
+                {{ purchase.deliveryDate | englishMonthDate }}
+              }
+            </span>
+          </div>
+        }
+      </div>
+      <div class="info-item-group">
+        <div class="info-item">
+          <span class="label"
+            >{{ 'purchases.expensesCategory' | translate }} :
+          </span>
+          <span class="value">
+            @if (lang.lang === 'ar') {
+              {{ purchase.category?.name_ar }}
+            } @else {
+              {{ purchase.category?.name }}
+            }
+          </span>
+        </div>
+        <div class="info-item">
+          <span class="label"
+            >{{ 'purchases.expensesDescription' | translate }} :
+          </span>
+          <span class="value">
+            {{ purchase.expensesDescription || '-' }}
+          </span>
+        </div>
+      </div>
+      <!--supplier or expense item-->
+      @if (purchase.invoiceType === 'Tax Invoice') {
+        <div class="info-item">
+          <span class="label">{{ 'purchases.supplier' | translate }} : </span>
+          <span class="value">
+            {{ purchase.supplier?.name }}
+          </span>
+        </div>
+      } @else if (purchase.category?.type === ExpensesType.generalExpenses) {
+        <div class="info-item">
+          <span class="label"
+            >{{ 'purchases.purchaseItemName' | translate }} :
+          </span>
+          <span class="value">
+            @if (lang.lang === 'ar') {
+              {{ purchase.expenseItem?.nameAr }}
+            } @else {
+              {{ purchase.expenseItem?.name }}
+            }
+          </span>
+        </div>
+      }
+      <div class="wrapper">
+        <div class="section-header">
+          <h3>
+            @if (purchase.invoiceType === 'Tax Invoice') {
+              {{ 'purchases.productsAndServices' | translate }}
+            } @else if (
+              purchase.category?.type === ExpensesType.generalExpenses
+            ) {
+              {{ 'purchases.expenseElements' | translate }}
+            } @else {
+              {{ 'purchases.expenseItems' | translate }}
+            }
+          </h3>
+        </div>
+        <p-table
+          [value]="purchase.items"
+          dataKey="id"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 25, 50]"
+          [paginator]="purchase.items.length > 0">
+          <ng-template pTemplate="header">
+            @if (purchase.items.length > 0) {
+              <tr>
+                @if (purchase.supplier) {
+                  <th>
+                    {{ 'purchases.supplierItemType' | translate }}
+                  </th>
+                }
+                <th>
+                  @if (purchase.invoiceType === 'Tax Invoice') {
+                    {{ 'purchases.theName' | translate }}
+                  } @else if (
+                    purchase.category?.type === ExpensesType.generalExpenses
+                  ) {
+                    {{ 'purchases.expenseElement' | translate }}
+                  } @else {
+                    {{ 'purchases.purchaseItemName' | translate }}
+                  }
+                </th>
+                <th>{{ 'purchases.thePrice' | translate }}</th>
+                <th>{{ 'purchases.quantity' | translate }}</th>
+                <th>{{ 'purchases.total' | translate }}</th>
+              </tr>
+            }
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              @if (purchase.supplier) {
+                <td>
+                  {{ 'purchases.' + item.type | translate }}
+                </td>
+              }
+              <td>{{ lang.lang === 'ar' ? item.nameAr : item.name }}</td>
+              <td>
+                <span class="price-with-symbol">
+                  <sar-symbol />
+                  <span>
+                    {{ item.value }}
+                  </span>
+                </span>
+              </td>
+              <td>{{ item.quantity }}</td>
+              <td>
+                <span class="price-with-symbol">
+                  <sar-symbol />
+                  <span>
+                    {{ item.value * item.quantity }}
+                  </span>
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <!--discount and payment details-->
+      <div class="info-item-group wrapper">
+        <div class="info-item">
+          <span class="label">{{ 'orders.discountType' | translate }} : </span>
+          <span class="value">
+            {{ 'orders.' + purchase.discountType | translate }}
+          </span>
+        </div>
+        <div class="info-item">
+          <span class="label">{{ 'orders.discountValue' | translate }} : </span>
+          <span class="value">
+            {{ purchase.discountValue }}
+          </span>
+        </div>
+        <!--calculation table-->
+        <div class="summery flex-fill">
+          <table>
+            <tr>
+              <td class="label">
+                <i class="pi pi-check-circle"></i>
+                {{ 'orders.totalValue' | translate }}
+              </td>
+              <td class="value">
+                <span class="price-with-symbol">
+                  <sar-symbol />
+                  <span> {{ purchase.subtotal || 0 | number: '1.2-2' }} </span>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td class="label">
+                <i class="pi pi-check-circle"></i>
+                {{ 'orders.vat' | translate }} ({{ '15' }}%)
+              </td>
+              <td class="value">
+                <span class="price-with-symbol">
+                  <sar-symbol />
+                  <span>
+                    {{ purchase.vat | number: '1.2-2' }}
+                  </span>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td class="label">
+                <i class="pi pi-check-circle"></i>
+                {{ 'orders.discountPercent' | translate }}
+                (
+                @if (purchase.discountType === 'percent') {
+                  {{ purchase.discountValue || 0 }}%
+                }
+                @if (purchase.discountType !== 'percent') {
+                  <span class="price-with-symbol">
+                    <sar-symbol class="currency-icon"></sar-symbol>
+                    <span>{{ purchase.discountValue || 0 }}</span>
+                  </span>
+                }
+                )
+              </td>
+              <td class="value">
+                @if (purchase.discountValue != 0) {
+                  <span class="sign"> - </span>
+                }
+                @if (purchase.discountType === 'percent') {
+                  <span class="price-with-symbol">
+                    <sar-symbol class="currency-icon"></sar-symbol>
+                    <span>{{
+                      ((purchase.discountValue || 0) *
+                        (purchase.subtotal || 0)) /
+                        100 || 0 | number: '1.2-2'
+                    }}</span>
+                  </span>
+                }
+                @if (purchase.discountType !== 'percent') {
+                  <span class="price-with-symbol">
+                    <sar-symbol class="currency-icon"></sar-symbol>
+                    <span>{{
+                      purchase.discountValue || 0 | number: '1.2-2'
+                    }}</span>
+                  </span>
+                }
+              </td>
+            </tr>
+            <tr>
+              <td class="label">
+                <i class="pi pi-check-circle"></i>
+                {{ 'orders.paidAmount' | translate }}
+              </td>
+              <td class="value">
+                <span class="price-with-symbol">
+                  <sar-symbol />
+                  <span>
+                    {{ purchase.paidAmount || 0 | number: '1.2-2' }} -</span
+                  >
+                </span>
+              </td>
+            </tr>
+            <tr class="total-price">
+              <td class="label">
+                <i
+                  [class]="
+                    lang.dir === 'rtl'
+                      ? 'pi pi-arrow-left'
+                      : 'pi pi-arrow-right'
+                  "></i>
+                {{ 'orders.remainingAmount' | translate }}
+              </td>
+              <td class="value">
+                <span class="price-with-symbol">
+                  <sar-symbol />
+                  <span>
+                    {{ purchase.remainingAmount | number: '1.2-2' }}
+                  </span>
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <!--payments list-->
+
+      <div class="wrapper">
+        <app-list-header
+          [btnAddText]="'purchases.addNewPayment' | translate"
+          [title]="'purchases.previousPayments' | translate"
+          [disableAddBtn]="
+            !permissionsServices.hasPermission('create:expense payments')
+          "
+          (sideDrawerToggler)="goToPayment()">
+        </app-list-header>
+        <p-table
+          #dt2
+          [value]="payments"
+          dataKey="id"
+          [rows]="5"
+          [rowsPerPageOptions]="[5, 10, 25]"
+          [paginator]="payments.length > 0">
+          <ng-template pTemplate="header">
+            @if (payments.length > 0) {
+              <tr>
+                <th>{{ 'purchases.paymentDate' | translate }}</th>
+                <th>{{ 'purchases.amount' | translate }}</th>
+                <th>{{ 'purchases.hallAccountFrom' | translate }}</th>
+                <th>
+                  @if (payments[0]?.itemTransferAccount) {
+                    {{ 'purchases.expenseItemTo' | translate }}
+                  } @else if (payments[0]?.supplierPaymentMethod) {
+                    {{ 'purchases.supplierAccountTo' | translate }}
+                  }
+                </th>
+                <th>{{ 'purchases.paymentType' | translate }}</th>
+                <th style="width: 100px"></th>
+              </tr>
+            }
+          </ng-template>
+          <ng-template pTemplate="body" let-payment>
+            <tr>
+              <td>
+                {{
+                  lang.lang === 'ar'
+                    ? (payment.paymentDate | arabicMonthDate)
+                    : (payment.paymentDate | englishMonthDate)
+                }}
+              </td>
+              <td>
+                <span class="price-with-symbol">
+                  <sar-symbol />
+                  <span>
+                    {{ payment.amount }}
+                  </span>
+                </span>
+              </td>
+              <td>
+                {{
+                  lang.lang === 'ar'
+                    ? payment?.hallPaymentMethod?.name_ar
+                    : payment?.hallPaymentMethod?.name
+                }}
+              </td>
+              <td>
+                @if (payment?.itemTransferAccount) {
+                  {{ payment?.itemTransferAccount?.accountName }}
+                } @else if (payment?.supplierPaymentMethod) {
+                  {{ payment?.supplierPaymentMethod?.name }}
+                }
+              </td>
+              <td>
+                {{
+                  'purchases.paymentTypes.' + payment.paymentType | translate
+                }}
+              </td>
+              <td></td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6">
+                <app-empty-state></app-empty-state>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <!--attachments-->
+      <div class="wrapper">
+        @if (purchase.attachments?.length) {
+          <h5>
+            {{ 'purchases.selectedAttachments' | translate }}
+          </h5>
+        }
+        <p-table
+          [paginator]="purchase.attachments?.length || 0 > 5"
+          [rows]="5"
+          [rowsPerPageOptions]="[5, 10, 25]"
+          [totalRecords]="purchase.attachments?.length!"
+          [value]="purchase.attachments!">
+          <ng-template pTemplate="header">
+            @if (purchase.attachments?.length || 0 > 0) {
+              <tr>
+                <th>{{ 'purchases.attachmentName' | translate }}</th>
+                <th style="width: fit-content"></th>
+              </tr>
+            }
+          </ng-template>
+          <ng-template pTemplate="body" let-attachment let-rowIndex="rowIndex">
+            <tr>
+              <td>{{ attachment.name }}</td>
+              <td>
+                <div class="actions">
+                  <div
+                    (click)="openAttachment(attachment)"
+                    class="action-button open">
+                    <i class="pi pi-external-link"></i>
+                    <span>{{ 'common.preview' | translate }}</span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr colspan="6">
+              <app-empty-state
+                [customMessage]="
+                  'purchases.noAttachments' | translate
+                "></app-empty-state>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <div class="info-item">
+        <span class="label">{{ 'purchases.notes' | translate }} : </span>
+        <span class="value">
+          {{ purchase.notes }}
+        </span>
+      </div>
+    </div>
+  </div>
+}
+
+<comments [entityId]="id" [type]="commentType.EXPENSE"></comments>

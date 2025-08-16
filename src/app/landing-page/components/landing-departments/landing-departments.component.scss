@@ -1,0 +1,58 @@
+@use 'variables';
+@use 'mixins';
+
+.hall {
+  position: relative;
+  margin-bottom: 70px;
+  @include mixins.sm(max) {
+    margin-bottom: 32px;
+  }
+
+  .row {
+    padding: 60px 0 0;
+    border-radius: 14px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #fefaf6 0%, #ffffff 87.64%);
+  }
+}
+
+.depart_item {
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid variables.$hall_dark_color;
+  transition: 0.4s linear transform;
+
+  &:hover {
+    transform: translateY(-10px);
+  }
+
+  .icon {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    padding: 24px;
+    background-color: variables.$hall_secondary_color;
+    margin: auto auto 20px;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      fill: variables.$hall_main_color;
+    }
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 34px;
+    margin: 0 auto;
+    color: variables.$hall_main_color;
+  }
+
+  @include mixins.lg(max) {
+    margin-bottom: 16px;
+  }
+  @include mixins.md(max) {
+    padding: 15px;
+  }
+}

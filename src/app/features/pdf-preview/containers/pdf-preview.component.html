@@ -1,0 +1,11 @@
+<div class="print-page">
+  <div class="content">
+    @if (pdfUrl) {
+      <iframe
+        [src]="pdfUrl"
+        style="width: 100%; height: 100vh; border: none"
+        [class.mobile-pdf]="isMobile">
+      </iframe>
+    }
+  </div>
+</div>

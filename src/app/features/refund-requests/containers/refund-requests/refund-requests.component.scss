@@ -1,0 +1,29 @@
+:host {
+  .dropdown-toggle {
+    background: var(--primary-color);
+    color: #fff;
+    font-weight: 500;
+    i {
+      margin-inline-end: 8px;
+    }
+    &::after {
+      display: none;
+    }
+  }
+  .dropdown-item {
+    color: rgb(51, 65, 85);
+  }
+  .dropdown-menu {
+    inset-inline-end: 0 !important;
+    inset-inline-start: unset !important;
+  }
+  .p-menu {
+    width: 130px !important;
+  }
+
+  .options-button:disabled {
+    background-color: #9e9e9e !important;
+    color: #fff;
+    cursor: not-allowed;
+  }
+}

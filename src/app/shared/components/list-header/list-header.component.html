@@ -1,0 +1,12 @@
+<div class="header">
+  <h3>{{ title }}</h3>
+  @if (btnAddText) {
+    <p-button
+      [disabled]="disableAddBtn"
+      (onClick)="toggleSideDrawer()"
+      class="add"
+      label="{{ btnAddText }}"
+      [icon]="icon || 'pi pi-plus-circle'">
+    </p-button>
+  }
+</div>

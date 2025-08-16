@@ -1,0 +1,277 @@
+<ng-container>
+  <h5>{{ 'orders.bookingInfo' | translate }}</h5>
+
+  <div class="col-sm-12 col-md-6 px-4 mx-1">
+    <app-dropdown
+      [iconPath]="
+        formControls.isConfirmed.value === true
+          ? 'assets/icons/check2.svg'
+          : 'assets/icons/hourglass-bottom.svg'
+      "
+      [control]="formControls.isConfirmed"
+      [options]="bookingTypeOptions"
+      [controlName]="'isConfirmed'"
+      [optionLabel]="'label.' + lang.lang"
+      [optionValue]="'value'"
+      [placeholder]="'orders.selectBookingType' | translate"
+      [label]="'orders.bookingType' | translate">
+    </app-dropdown>
+  </div>
+
+  <div class="wrapper">
+    <div class="date">
+      <app-date-picker
+        [minDate]="formControls.isConfirmed.value ? null : minDate"
+        [calendarType]="$any(formControls.dateType.value)"
+        [inert]="mode === 'view'"
+        [disabled]="mode === 'view'"
+        #startDate
+        [inputFieldStyle]="lang.lang === 'en' ? {'text-indent': '25px'} : null"
+        [controlName]="'startDate'"
+        [label]="'orders.appointmentFrom' | translate"
+        [control]="formControls.startDate"
+        (onCalenderType)="dateTypeListener($event)"></app-date-picker>
+    </div>
+
+    <div class="date">
+      <app-date-picker
+        [minDate]="formControls.isConfirmed.value ? null : minDate"
+        [calendarType]="$any(formControls.dateType.value)"
+        [inert]="mode === 'view'"
+        [disabled]="mode === 'view'"
+        #endDate
+        [inputFieldStyle]="lang.lang === 'en' ? {'text-indent': '25px'} : null"
+        [controlName]="'endDate'"
+        [label]="'orders.appointmentTo' | translate"
+        [control]="formControls.endDate"
+        (onCalenderType)="dateTypeListener($event)"></app-date-picker>
+      @if (formControls.endDate.errors?.['notGreatThan']) {
+        <span class="text-error">{{
+          'errors.dateLessThan'
+            | translate: {fieldName: endDate.label, targetDate: startDate.label}
+        }}</span>
+      }
+    </div>
+
+    <!--booking availability-->
+    @if (bookingAvailabilityData) {
+      <div class="availability-container">
+        <div
+          class="event-row morning"
+          [dir]="lang.lang === 'ar' ? 'rtl' : 'ltr'">
+          <span>
+            <span class="morning"></span
+            >{{ 'orders.Morning' | translate }}</span
+          >
+          <div>
+            <span
+              ><span class="icon-hourglass bg-morning"></span>
+              <i class="badge first">{{
+                bookingAvailabilityData.morning.temp
+              }}</i></span
+            >
+            <span
+              ><span class="icon-check bg-morning"></span>
+              <i class="badge first">{{
+                bookingAvailabilityData.morning.confirmed
+              }}</i></span
+            >
+          </div>
+        </div>
+        <!--Evening-->
+        <div
+          class="event-row evening"
+          [dir]="lang.lang === 'ar' ? 'rtl' : 'ltr'">
+          <span>
+            <span class="evening"></span
+            >{{ 'orders.Evening' | translate }}</span
+          >
+          <div>
+            <span
+              ><span class="icon-hourglass bg-evening"></span>
+              <i class="badge second">{{
+                bookingAvailabilityData.evening.temp
+              }}</i></span
+            >
+            <span
+              ><span class="icon-check bg-evening"></span>
+              <i class="badge second">{{
+                bookingAvailabilityData.evening.confirmed
+              }}</i></span
+            >
+          </div>
+        </div>
+        <!--Full Day-->
+        <div class="event-row full" [dir]="lang.lang === 'ar' ? 'rtl' : 'ltr'">
+          <span>
+            <span class="full"></span>{{ 'orders.Full Day' | translate }}</span
+          >
+          <div>
+            <span
+              ><span class="icon-hourglass bg-full"></span>
+              <i class="badge third">{{
+                bookingAvailabilityData.fullDay.temp
+              }}</i></span
+            >
+            <span
+              ><span class="icon-check bg-full"></span>
+              <i class="badge third">{{
+                bookingAvailabilityData.fullDay.confirmed
+              }}</i></span
+            >
+          </div>
+        </div>
+      </div>
+    }
+
+    <!--event time-->
+    <div class="d-flex flex-row">
+      <app-dropdown
+        [control]="formControls.eventTime"
+        [options]="eventTimeOptions"
+        [controlName]="'eventTime'"
+        [optionLabel]="'label.' + lang.lang"
+        [optionValue]="'value'"
+        [placeholder]="'orders.selectEventTime' | translate"
+        [label]="'orders.eventTime' | translate">
+        <i class="pi pi-clock" style="color: gray"></i>
+      </app-dropdown>
+      <!--food time-->
+      <div class="d-flex align-items-start gap-1 flex-column">
+        <label class="set-food-time-label">
+          {{ 'orders.setFoodTime' | translate }}
+        </label>
+        <div class="gap-4 food-time-container">
+          <p-inputSwitch
+            class="set-food-time"
+            styleClass="d-flex align-items-center pt-lg-2"
+            [formControl]="formControls.setFoodTime" />
+
+          @if (formControls.setFoodTime.value) {
+            <app-time-picker
+              iconClass="pi pi-clock"
+              [control]="formControls.foodTime"
+              controlName="foodTime"
+              [placeholder]="'orders.selectTime' | translate"
+              [label]="''">
+            </app-time-picker>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="client">
+      @if (formControls.client.value?.isVIB) {
+        <img width="45px" src="/assets/icons/vip-icon.svg" alt="Vip" />
+      }
+
+      <app-dropdown
+        [control]="formControls.client"
+        [options]="bookingFacadeService.clients"
+        [optionLabel]="'name'"
+        [controlName]="'client'"
+        [filter]="true"
+        filterBy="name"
+        [placeholder]="'orders.clientName' | translate"
+        [label]="'orders.clientName' | translate">
+        <i class="pi pi-user" style="color: gray"></i>
+      </app-dropdown>
+
+      @if (canAddClient()) {
+        <span (click)="openAddNewClientDrawer()">
+          <i class="pi pi-plus"></i>
+        </span>
+      }
+    </div>
+
+    <div class="event-type">
+      <app-dropdown
+        [control]="formControls.eventType"
+        [options]="bookingFacadeService.events"
+        [optionLabel]="'name'"
+        [controlName]="'eventType'"
+        [filter]="true"
+        [placeholder]="'orders.eventType' | translate"
+        [label]="'orders.eventType' | translate">
+        <i class="pi pi-calendar" style="color: gray"></i>
+        @if (formControls.eventType.hasError('required')) {
+          <span>&nbsp;* </span>
+        }
+      </app-dropdown>
+    </div>
+
+    <app-dropdown
+      [control]="formControls.attendeesType"
+      [options]="attendeesTypes"
+      [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+      [controlName]="'attendeesType'"
+      [placeholder]="'orders.attendeesType' | translate"
+      [label]="'orders.attendeesType' | translate">
+      <i class="pi pi-users" style="color: gray"></i>
+    </app-dropdown>
+
+    <!--hall sections-->
+    <div class="z-1">
+      <label for="hall-sections">
+        {{ 'orders.HallSections' | translate }}
+        @if (form.controls.sectionIds.hasError('required')) {
+          <span class="text-danger">&nbsp;*</span>
+        }
+      </label>
+      <div
+        [ngClass]="{
+          shake:
+            form.controls.sectionIds.hasError('required') &&
+            form.controls.sectionIds.touched,
+        }">
+        <p-multiSelect
+          [(ngModel)]="selectedHallSections"
+          (onChange)="onSelectHallSections($event)"
+          id="hall-sections"
+          [options]="hallSections"
+          [optionLabel]="lang.lang === 'ar' ? 'name_ar' : 'name'"
+          [showHeader]="true"
+          dataKey="id"
+          [placeholder]="'orders.selectSections' | translate"
+          [showToggleAll]="true">
+        </p-multiSelect>
+      </div>
+      @if (
+        form.controls.sectionIds.hasError('required') &&
+        form.controls.sectionIds.touched
+      ) {
+        <div class="d-flex gap-1 text-error align-items-center text-xs">
+          <i class="pi pi-exclamation-circle"></i>
+          <span>{{ 'orders.hallSectionRequired' | translate }}</span>
+        </div>
+      }
+    </div>
+    <div></div>
+
+    <app-input
+      [control]="formControls.notes"
+      [controlName]="'notes'"
+      inputType="textarea"
+      [label]="'orders.notes' | translate"
+      [placeholder]="'orders.notes' | translate">
+    </app-input>
+    <div class="actions">
+      <span (click)="navigateToOrders()" class="cancel">
+        <i class="pi pi-times"></i>
+        {{ 'common.close' | translate }}</span
+      >
+      <p-button
+        (click)="
+          formControls.isConfirmed.value
+            ? changeStep(currentStep + 1)
+            : changeStep(5)
+        "
+        type="button"
+        [icon]="lang.dir === 'rtl' ? 'pi pi-arrow-left' : 'pi pi-arrow-right'">
+        {{ 'common.next' | translate }}
+      </p-button>
+    </div>
+  </div>
+</ng-container>
+<app-add-new-client
+  (refreshDataTable)="refreshClientsList()"></app-add-new-client>

@@ -1,0 +1,411 @@
+@use 'mixins';
+@use 'variables';
+
+:host {
+  .hall {
+    width: 40%;
+    //TODO mixing for mobile view make it 100%
+  }
+
+  .footer {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 25px;
+
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 5rem;
+
+      @include mixins.sm(variables.$max) {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      button {
+        outline: none;
+        background: none;
+        border: none;
+        font-weight: 600;
+        font-size: 16px;
+
+        @include mixins.sm(variables.$max) {
+          font-weight: 500;
+        }
+      }
+
+      &__delete {
+        color: #f30000;
+      }
+    }
+  }
+
+  .input-status-container {
+    position: relative;
+    display: inline-block;
+    width: inherit;
+
+    input[type='text'] {
+      padding-right: 30px;
+      box-sizing: border-box;
+    }
+
+    .icon {
+      background-color: #009883;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 65px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      padding: 3px;
+      color: #fff;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &--en {
+        left: unset;
+        right: 10px;
+      }
+    }
+
+    .tooltipp {
+      position: absolute;
+      width: 285px;
+      left: -308px;
+      top: 35%;
+      transform: translateY(-50%);
+      background-color: #fff;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 4px;
+      display: none;
+      z-index: 1000;
+      box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 98%;
+        transform: translateY(-50%);
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-top: 15px solid #33a192;
+        transform: rotate(269deg);
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      }
+
+      .item-status {
+        display: flex;
+        gap: 60px;
+        font-weight: 400;
+        padding: 5px 35px;
+
+        &--en {
+          gap: 75px;
+          // justify-content: space-between;
+        }
+
+        &__new {
+          color: #7c4d11;
+          position: relative;
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 46%;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #e38200;
+            left: 48px;
+          }
+
+          &--en {
+            &::before {
+              left: unset;
+              right: 46px;
+            }
+          }
+        }
+
+        &__fullypaid {
+          color: #1e3a8a;
+          position: relative;
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 46%;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #457acd;
+            left: 85px;
+          }
+
+          &--en {
+            &::before {
+              left: unset;
+              right: 82px;
+            }
+          }
+        }
+
+        &__completed {
+          color: #065f46;
+          position: relative;
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 46%;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #009883;
+            left: 58px;
+          }
+
+          &--en {
+            &::before {
+              left: unset;
+              right: 94px;
+            }
+          }
+        }
+
+        &__partiallyPaid {
+          color: #111827;
+          position: relative;
+          left: 11px;
+          &::before {
+            content: '';
+            position: absolute;
+            top: 46%;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #002037;
+            left: 92px;
+          }
+
+          &--en {
+            left: unset;
+            &::before {
+              left: unset;
+              right: 110px;
+            }
+          }
+        }
+
+        &__canceled {
+          color: #991b1b;
+          position: relative;
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 46%;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #db2e2e;
+            left: 50px;
+          }
+
+          &--en {
+            &::before {
+              left: unset;
+              right: 88px;
+            }
+          }
+        }
+
+        &__late {
+          color: #854d0e;
+          position: relative;
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 46%;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ffd303;
+            left: 52px;
+          }
+
+          &--en {
+            &::before {
+              left: -20px;
+            }
+          }
+        }
+        &__temporary {
+          color: #6c757d;
+          position: relative;
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 46%;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #6c757d;
+            left: 50px;
+          }
+
+          &--en {
+            &::before {
+              left: unset;
+              right: 88px;
+            }
+          }
+        }
+
+        &--en {
+          &::before {
+            left: unset;
+            right: 52px;
+          }
+        }
+      }
+
+      .new-item--en {
+        gap: 116px;
+      }
+
+      &--en {
+        left: 250px;
+        width: 362px;
+
+        &::before {
+          left: unset;
+          right: 98%;
+          transform: rotate(90deg);
+        }
+      }
+    }
+
+    .tooltipp.visible {
+      display: block;
+    }
+  }
+
+  td.payment-cell {
+    cursor: pointer;
+    position: relative;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 2px;
+  }
+
+  .status-tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: 95%;
+    transform: translateX(-50%);
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    width: 200px;
+    z-index: 9999;
+    padding: 8px;
+    animation: tooltipFadeIn 0.2s ease-in-out;
+
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid white;
+    }
+
+    &__content {
+      .item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        &__label {
+          font-weight: 500;
+          font-size: 12px;
+        }
+
+        &__value {
+          color: #797979;
+          font-size: 11px;
+        }
+      }
+    }
+  }
+  .options-col {
+    button {
+      width: 100%;
+    }
+  }
+  :host ::ng-deep {
+    .p-button.options-button {
+      background: transparent;
+      border: none;
+      color: #4b5563;
+      padding: 8px;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.04);
+      }
+
+      .p-button-icon {
+        font-size: 16px;
+      }
+    }
+  }
+  .dropdown-toggle {
+    background: var(--primary-color);
+    color: #fff;
+    font-weight: 500;
+    i {
+      margin-inline-end: 8px;
+    }
+    &::after {
+      display: none;
+    }
+  }
+  .dropdown-item {
+    color: rgb(51, 65, 85);
+  }
+  .dropdown-menu {
+    inset-inline-end: 0 !important;
+    inset-inline-start: unset !important;
+  }
+  .p-menu {
+    width: 130px !important;
+  }
+}
+::ng-deep {
+  .input-container {
+    margin-bottom: 0 !important;
+  }
+  app-date-picker .value {
+    display: none !important;
+  }
+  app-date-picker .errors {
+    display: none !important;
+  }
+}

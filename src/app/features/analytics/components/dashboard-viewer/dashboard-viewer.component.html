@@ -1,0 +1,114 @@
+<div class="dashboard-viewer-container">
+  <div class="viewer-header">
+    <div class="header-content">
+      <div class="navigation-section">
+        <p-button
+          icon="pi pi-arrow-left"
+          [label]="'analytics.backToDashboards' | translate"
+          (click)="onBackToDashboards()"
+          class="p-button-secondary back-button">
+        </p-button>
+      </div>
+
+      <div class="dashboard-info" *ngIf="dashboard">
+        <div class="dashboard-details">
+          <h1 class="dashboard-title">
+            <i class="pi pi-chart-line"></i>
+            {{ dashboard.name }}
+          </h1>
+          <p class="dashboard-meta" *ngIf="dashboard.description">
+            {{ dashboard.description }}
+          </p>
+          <div class="meta-items">
+            <span class="meta-item">
+<!--              <i class="pi pi-calendar"></i>-->
+<!--              <span>{{ 'analytics.lastUpdated' | translate }}: {{ formatDate(dashboard.updated_at) }}</span>-->
+            </span>
+            <span class="meta-item">
+              <i class="pi pi-hashtag"></i>
+              <span>ID: {{ dashboard.id }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <p-button
+          icon="pi pi-refresh"
+          [label]="'common.refresh' | translate"
+          (click)="onRefresh()"
+          [loading]="loading"
+          class="p-button-secondary">
+        </p-button>
+        <p-button
+          icon="pi pi-window-maximize"
+          [label]="'analytics.fullscreen' | translate"
+          (click)="onFullscreen()"
+          [disabled]="!dashboardUrl || loading || !!error"
+          class="p-button-outlined">
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-content">
+      <div class="loading-spinner">
+        <i class="pi pi-spin pi-spinner"></i>
+      </div>
+      <h3>{{ 'analytics.loading.title' | translate }}</h3>
+      <p>{{ 'analytics.loading.message' | translate }}</p>
+    </div>
+  </div>
+
+  <div *ngIf="error && !loading" class="error-container">
+    <div class="error-content">
+      <i class="pi pi-exclamation-triangle error-icon"></i>
+      <h3>{{ 'analytics.error.title' | translate }}</h3>
+      <p>{{ error }}</p>
+      <div class="error-actions">
+        <p-button
+          icon="pi pi-refresh"
+          [label]="'common.retry' | translate"
+          (click)="onRefresh()">
+        </p-button>
+        <p-button
+          icon="pi pi-arrow-left"
+          [label]="'analytics.backToDashboards' | translate"
+          (click)="onBackToDashboards()"
+          class="p-button-secondary">
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && dashboardUrl" class="dashboard-content">
+    <div *ngIf="iframeLoading" class="iframe-loading-overlay">
+      <div class="iframe-loading-content">
+        <div class="loading-spinner">
+          <i class="pi pi-spin pi-spinner"></i>
+        </div>
+        <p>{{ 'analytics.dashboard.loadingContent' | translate }}</p>
+      </div>
+    </div>
+
+    <iframe
+      #dashboardIframe
+      [src]="dashboardUrl"
+      class="dashboard-iframe"
+      [class.loaded]="!iframeLoading"
+      (load)="onIframeLoad()"
+      (error)="onIframeError()"
+      frameborder="0"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <div *ngIf="!loading && !error && !dashboard && dashboardUrl" class="dashboard-placeholder-info">
+    <div class="placeholder-content">
+      <i class="pi pi-chart-line"></i>
+      <h2>{{ 'analytics.dashboard.title' | translate }} #{{ dashboardId }}</h2>
+      <p>{{ 'analytics.dashboard.loadingMetadata' | translate }}</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="comment-item" [class.deleted]="comment.deleted_at">
+  <div class="comment-header">
+    <div class="user-info">
+      <div class="avatar">{{ comment.created_by!.name.charAt(0) }}</div>
+      <div class="name-time">
+        <span class="username">{{ comment.created_by!.name }}</span>
+        <span class="timestamp" title="{{ formatDate(comment.created_at) }}">
+          {{ comment.created_at | date: 'medium' }}
+          @if (comment.is_edited) {
+            <span class="edited-label">
+              {{ 'comments.edited' | translate }}
+            </span>
+          }
+        </span>
+      </div>
+    </div>
+
+    @if (canEdit && !comment.deleted_at) {
+      <div class="comment-actions">
+        <div class="dropdown">
+          <button class="dd-toggle" type="button" (click)="toggleDropdown()">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </button>
+          <div
+            class="dropdown-menu"
+            [class.show]="showDropdown"
+          [ngClass]="{
+            'show': showDropdown,
+            'dropdown-menu--ltr': translateService.currentLang === 'en',
+            'dropdown-menu--rtl': translateService.currentLang === 'ar',
+          }">
+            <button class="dropdown-item" (click)="toggleEditMode()">
+              <span class="dropdown-icon">✏️</span>
+              <span class="mx-2">{{ 'comments.edit' | translate }}</span>
+            </button>
+            <button class="dropdown-item delete" (click)="confirmDelete()">
+              <span class="dropdown-icon">🗑️</span>
+              <span class="mx-2"> {{ 'comments.delete' | translate }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (!editMode) {
+    <div class="comment-content">
+      <p [class.deleted-text]="comment.deleted_at">
+        {{
+        comment.deleted_at ? 'This comment has been deleted' : comment.content
+        }}
+      </p>
+    </div>
+  }
+
+  @if (editMode) {
+    <div class="comment-edit">
+      <div class="form-group">
+        <textarea
+          #editTextarea
+          [(ngModel)]="editContent"
+          rows="3"
+          class="edit-textarea"
+        [class.invalid]="editError"></textarea>
+      </div>
+      <div class="edit-actions">
+        <button class="btn btn-cancel" (click)="cancelEdit()">
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="saveEdit()">
+          {{ 'common.save' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

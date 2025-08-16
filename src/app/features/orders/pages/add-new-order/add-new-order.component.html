@@ -1,0 +1,74 @@
+<div class="stepper">
+  <div
+    (click)="changeStep(1)"
+    [ngClass]="{active: currentStep === 1}"
+    class="step">
+    <span>1</span>
+    <h6>{{ 'orders.bookingInfo' | translate }}</h6>
+  </div>
+  @if (ordersService.isConfirmed$ | async) {
+    <div
+      (click)="changeStep(2)"
+      [ngClass]="{active: currentStep === 2}"
+      class="step">
+      <span>2</span>
+      <h6>{{ 'orders.services' | translate }}</h6>
+    </div>
+
+    <div
+      (click)="changeStep(3)"
+      [ngClass]="{active: currentStep === 3}"
+      class="step">
+      <span>3</span>
+      <h6>{{ 'orders.attachments' | translate }}</h6>
+    </div>
+    <div
+      (click)="changeStep(4)"
+      [ngClass]="{active: currentStep === 4}"
+      class="step">
+      <span>4</span>
+      <h6>{{ 'orders.paymentDetails' | translate }}</h6>
+    </div>
+  }
+  <div
+    (click)="changeStep(5)"
+    [ngClass]="{active: currentStep === 5}"
+    class="step">
+    <span>{{ (ordersService.isConfirmed$ | async) ? '5' : '2' }}</span>
+    <h6>{{ 'orders.bookingSummary' | translate }}</h6>
+  </div>
+</div>
+
+<form (ngSubmit)="submitBooking()">
+  @switch (currentStep) {
+    @case (1) {
+      <app-booking-info
+        [(currentStep)]="currentStep"
+        [bookingAvailabilityData]="bookingAvailabilityData"
+      ></app-booking-info>
+    }
+    @case (2) {
+      <app-additional-services
+        [(currentStep)]="currentStep"
+      ></app-additional-services>
+    }
+    @case (3) {
+      <app-attachments
+        [(currentStep)]="currentStep"
+      ></app-attachments>
+    }
+    @case (4) {
+      <app-payment-details
+        [editMode]="editMode"
+        [(currentStep)]="currentStep"
+        [bookingPrices]="bookingPrices"
+      ></app-payment-details>
+    }
+    @case (5) {
+      <app-booking-summary
+        [updatedBooking]="updatedBooking"
+        [(currentStep)]="currentStep"
+      ></app-booking-summary>
+    }
+  }
+</form>

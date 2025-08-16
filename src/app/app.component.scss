@@ -1,0 +1,51 @@
+@use './styles/variables';
+@use './styles//mixins';
+
+:host {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafa;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    &.authenticated {
+      @include mixins.md(variables.$min) {
+        border-radius: variables.$rounded-l;
+        background: #fff;
+        margin: 15px;
+      }
+      @include mixins.sm(variables.$max) {
+        padding-inline: 8px;
+      }
+    }
+  }
+
+  .spinner {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 1200;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+
+    ng-lottie {
+      width: 5rem;
+      backdrop-filter: blur(3px);
+    }
+  }
+  .hide-content {
+    opacity: 0;
+    transition: opacity 0.1s ease-out;
+  }
+}
+.new-design {
+  display: none;
+}

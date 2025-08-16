@@ -1,0 +1,52 @@
+@use 'variables';
+@use 'mixins';
+
+.section-form {
+  background-color: #fff;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  h6 {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+}
+
+.table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+
+  th,
+  td {
+    vertical-align: middle;
+  }
+
+  th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+  }
+
+  tbody tr:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: variables.$light-gray;
+
+  .empty-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  .empty-text {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,27 @@
+:host {
+  .form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .payment-methods-form {
+    border: 1px solid #e1e1e1;
+    padding: 30px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .delete {
+    color: red;
+    display: flex;
+    align-items: center;
+    border: 1px solid #c2c2c2;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 18px;
+    width: fit-content;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+}

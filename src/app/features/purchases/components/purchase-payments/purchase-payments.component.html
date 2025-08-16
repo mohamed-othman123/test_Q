@@ -1,0 +1,203 @@
+<div class="page-container">
+  <div class="page-header">
+    <h3>{{ 'purchases.payments' | translate }}</h3>
+  </div>
+
+  @if (purchase) {
+    <div class="details-section">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="detail-item">
+            <label>{{ 'purchases.purchaseId' | translate }}</label>
+            <p>#{{ purchase.id }}</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="detail-item">
+            <label>{{ 'purchases.invoiceId' | translate }}</label>
+            <p>{{ purchase.invoiceReference || '-' }}</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="detail-item">
+            <label>{{ 'suppliers.supplierName' | translate }}</label>
+            <p>{{ purchase.supplier?.name || '-' }}</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="detail-item">
+            <label>{{ 'purchases.purchaseDate' | translate }}</label>
+            <p>{{ purchase.purchaseDate | date: 'dd/MM/yyyy' }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <div class="detail-item">
+            <label>{{ 'purchases.totalAmount' | translate }}</label>
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                <p>{{ purchase.totalPayable }}</p>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="detail-item">
+            <label>{{ 'purchases.paidAmount' | translate }}</label>
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                <p>{{ purchase.paidAmount }}</p>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="detail-item">
+            <label>{{ 'purchases.status' | translate }}</label>
+            <p
+              [ngClass]="{
+                'status': true,
+                'fully-paid': purchase.status === 'Fully Paid',
+                'partially-paid': purchase.status === 'Partially Paid',
+                'completed': purchase.status === 'Completed',
+                'late': purchase.status === 'Late',
+                'canceled': purchase.status === 'Canceled',
+                'new': purchase.status === 'New',
+              }">
+              {{ 'purchases.statues.' + purchase.status | translate }}
+            </p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="detail-item">
+            <label>{{ 'purchases.invoiceType' | translate }}</label>
+            <p>
+              {{ 'purchases.invoiceTypes.' + purchase.invoiceType | translate }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <app-list-header
+    [btnAddText]="'purchases.addNewPayment' | translate"
+    [title]="'purchases.previousPayments' | translate"
+    *appHasPermission="['create:expense payments', 'read:expense payments']"
+    (sideDrawerToggler)="showPaymentForm()">
+  </app-list-header>
+
+  @if (isShowingForm) {
+    <app-purchase-payment-form
+      [isEditMode]="isEditMode"
+      [purchase]="purchase"
+      [supplier]="supplier"
+      [expenseItem]="expenseItem"
+      [paymentForm]="paymentForm"
+      [paymentMethods]="paymentMethods"
+      (onCancel)="cancel()"
+      (onSubmit)="submit()">
+    </app-purchase-payment-form>
+  }
+
+  <p-table
+    #dt2
+    [value]="payments"
+    dataKey="id"
+    [rows]="rows"
+    [lazy]="true"
+    [first]="first"
+    (onLazyLoad)="onLazyLoad($event)"
+    [rowsPerPageOptions]="rowsPerPageOptions"
+    [paginator]="payments.length > 0">
+    <ng-template pTemplate="header">
+      @if (payments.length > 0) {
+        <tr>
+          <th>{{ 'purchases.paymentDate' | translate }}</th>
+          <th>{{ 'purchases.amount' | translate }}</th>
+          <th>{{ 'purchases.hallAccountFrom' | translate }}</th>
+          <th>
+            @if (payments[0]?.itemTransferAccount) {
+              {{ 'purchases.expenseItemTo' | translate }}
+            } @else if (payments[0]?.supplierPaymentMethod) {
+              {{ 'purchases.supplierAccountTo' | translate }}
+            }
+          </th>
+          <th>{{ 'purchases.paymentType' | translate }}</th>
+          <th style="width: 100px"></th>
+        </tr>
+      }
+    </ng-template>
+
+    <ng-template pTemplate="body" let-payment>
+      <tr [ngStyle]="{opacity: isEditMode ? 0.3 : 1}">
+        <td>
+          {{
+            lang.lang === 'ar'
+              ? (payment.paymentDate | arabicMonthDate)
+              : (payment.paymentDate | englishMonthDate)
+          }}
+        </td>
+        <td>
+          <span class="price-with-symbol">
+            <sar-symbol />
+            <span>
+              {{ payment.amount }}
+            </span>
+          </span>
+        </td>
+        <td>
+          {{
+            lang.lang === 'ar'
+              ? payment?.hallPaymentMethod?.name_ar
+              : payment?.hallPaymentMethod?.name
+          }}
+        </td>
+        <td>
+          @if (payment?.itemTransferAccount) {
+            {{ payment?.itemTransferAccount?.accountName }}
+          } @else if (payment?.supplierPaymentMethod) {
+            {{ payment?.supplierPaymentMethod?.name }}
+          }
+        </td>
+        <td>
+          {{ 'purchases.paymentTypes.' + payment.paymentType | translate }}
+        </td>
+        <td>
+          <div
+            class="actions"
+            [ngStyle]="{display: isEditMode ? 'none' : 'flex'}">
+            <div
+              *appHasPermission="'update:expense payments'"
+              (click)="editPayment(payment)"
+              class="action-button">
+              <i class="pi pi-file-edit"></i>
+              <span>{{ 'common.edit' | translate }}</span>
+            </div>
+            <div
+              *appHasPermission="'delete:expense payments'"
+              appConfirmDeleteDialog
+              [deletedItem]="'purchases.payment' | translate"
+              (acceptDelete)="deletePayment(payment)"
+              [message]="'purchases.confirmDeletePayment' | translate"
+              class="action-button delete">
+              <i class="pi pi-trash"></i>
+              <span>{{ 'common.delete' | translate }}</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6">
+          <app-empty-state></app-empty-state>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

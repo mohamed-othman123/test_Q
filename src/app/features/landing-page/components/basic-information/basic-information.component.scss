@@ -1,0 +1,67 @@
+@use 'variables';
+@use 'mixins';
+
+:host {
+  .basic-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid variables.$primary-color;
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+
+      h4 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: #1f2937;
+      }
+
+      button {
+        max-width: fit-content;
+      }
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: variables.$space-2xl;
+
+      @include mixins.sm(max) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .view-field {
+      margin-bottom: 1rem;
+
+      label {
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.25rem;
+        display: block;
+      }
+
+      p {
+        margin: 0;
+        color: variables.$primary-color;
+      }
+    }
+  }
+
+  .form-actions {
+    grid-column: 2;
+    justify-self: end;
+
+    button {
+      max-width: fit-content;
+      margin-top: 2rem;
+    }
+  }
+}

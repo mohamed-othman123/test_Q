@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  padding: 1.5rem;
+  background-color: #fff;
+  min-height: calc(100vh - 64px);
+
+  .page-header {
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #374151;
+    }
+  }
+}

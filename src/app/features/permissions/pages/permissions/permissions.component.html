@@ -1,0 +1,194 @@
+<app-list-header
+  [btnAddText]="'permissions.addNewPermission' | translate"
+  [title]="'sideNav.permissions' | translate"
+  (sideDrawerToggler)="addNewRole()"></app-list-header>
+
+<p-table
+  #dt2
+  [value]="permissionsList"
+  dataKey="id"
+  [rows]="rows"
+  selectionMode="multiple"
+  [(selection)]="selectedItems"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [totalRecords]="totalRecords"
+  [first]="first"
+  [paginator]="true"
+  [lazy]="true"
+  (onLazyLoad)="onLazyLoad($event)">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th pSortableColumn="name">
+        {{ 'permissions.occupationName' | translate }}
+        <p-sortIcon field="name" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="userCount">
+        {{ 'permissions.NoOfEmployees' | translate }}
+        <p-sortIcon field="userCount" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="notes">
+        {{ 'permissions.notes' | translate }}
+        <p-sortIcon field="notes" class="mr-12px"></p-sortIcon>
+      </th>
+
+      <th style="width: fit-content"></th>
+    </tr>
+    <tr>
+      <th style="width: 20px"></th>
+      <th>
+        <app-input
+          [control]="filterForm.get('name')!"
+          [controlName]="'name'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('userCount')!"
+          [controlName]="'userCount'"
+          inputType="number"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+
+      <th>
+        <app-input
+          [control]="filterForm.get('notes')!"
+          [controlName]="'notes'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-role>
+    <tr>
+      <td>
+        <div style="width: fit-content"></div>
+      </td>
+      <td>
+        {{ (lang.lang === 'ar' ? role.name_ar : role.name) || role.name }}
+      </td>
+
+      <td>{{ role.userCount }}</td>
+      <td style="text-wrap: auto">{{ role.notes }}</td>
+      <td>
+        <div class="actions">
+          <div (click)="viewRole(role)" class="action-button">
+            <i class="pi pi-eye"></i>
+            <span>{{ 'common.view' | translate }}</span>
+          </div>
+          <div (click)="editRole(role)" class="action-button">
+            <i class="pi pi-file-edit"></i>
+            <span>{{ 'common.edit' | translate }}</span>
+          </div>
+          <div
+            appConfirmDeleteDialog
+            [deletedItem]="'permissions.permission' | translate"
+            [message]="getDeleteMessage(role)"
+            (acceptDelete)="confirmDeletePerm(role)"
+            class="action-button delete">
+            <i class="pi pi-trash"></i>
+            <span>{{ 'common.delete' | translate }}</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="6">
+        <app-empty-state></app-empty-state>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<!-- <p-table
+  #dt2
+  [value]="permissionsList"
+  dataKey="id"
+  [rows]="10"
+  selectionMode="multiple"
+  [(selection)]="selectedItems"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [paginator]="true"
+  [globalFilterFields]="['NoOfEmployees', 'permissionName']">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th>{{ 'permissions.permissionName' | translate }}</th>
+      <th>{{ 'permissions.NoOfEmployees' | translate }}</th>
+      <th style="width: fit-content"></th>
+    </tr>
+    <tr>
+      <th style="width: 20px"></th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="permissionName"
+          [placeholder]="'common.search' | translate"
+          ariaLabel="Filter Name" />
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="NoOfEmployees"
+          [placeholder]="'common.search' | translate"
+          ariaLabel="Filter email" />
+      </th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-role>
+    <tr>
+      <td>
+        <div style="width: fit-content"></div>
+      </td>
+      <td>
+        {{ role.name }}
+      </td>
+      <td>
+        {{ role.userCount }}
+      </td>
+      <td>
+        <div class="actions">
+          <div (click)="viewRole(role)" class="action-button">
+            <i class="pi pi-eye"></i>
+            <span>{{ 'common.view' | translate }}</span>
+          </div>
+          <div (click)="editRole(role)" class="action-button">
+            <i class="pi pi-file-edit"></i>
+            <span>{{ 'common.edit' | translate }}</span>
+          </div>
+          <div
+            appConfirmDeleteDialog
+            [deletedItem]="'permissions.permission' | translate"
+            [message]="getDeleteMessage(role)"
+            (acceptDelete)="confirmDeletePerm(role)"
+            class="action-button delete">
+            <i class="pi pi-trash"></i>
+            <span>{{ 'common.delete' | translate }}</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="5">
+        <app-empty-state></app-empty-state>
+      </td>
+    </tr>
+  </ng-template>
+</p-table> -->

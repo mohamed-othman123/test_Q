@@ -1,0 +1,335 @@
+<app-list-header
+  [btnAddText]="'orders.addNewOrder' | translate"
+  [disableAddBtn]="!permissionsService.hasPermission('create:bookings')"
+  [title]="'sideNav.orders' | translate"
+  (sideDrawerToggler)="navigateToNewOrder()"></app-list-header>
+
+<p-table
+  #dt2
+  [scrollable]="true"
+  [value]="bookings"
+  dataKey="id"
+  [rows]="rows"
+  [lazy]="true"
+  selectionMode="multiple"
+  [(selection)]="selectedItems"
+  [totalRecords]="totalRecords"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [first]="first"
+  [paginator]="true"
+  (onLazyLoad)="onLazyLoad($event)">
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="bookingReference">
+        {{ 'orders.orderNumber' | translate }}
+        <p-sortIcon field="bookingReference" class="mr-12px" />
+      </th>
+      <th pSortableColumn="clientName" style="min-width: 300px">
+        {{ 'orders.clientName' | translate }}
+        <p-sortIcon field="clientName" class="mr-12px" />
+      </th>
+      <th pSortableColumn="startDate">
+        {{ 'orders.appointmentFrom' | translate }}
+        <p-sortIcon field="startDate" class="mr-12px" />
+      </th>
+      <th pSortableColumn="endDate">
+        {{ 'orders.appointmentTo' | translate }}
+        <p-sortIcon field="endDate" class="mr-12px" />
+      </th>
+      <th>{{ 'orders.eventTime' | translate }}</th>
+
+      <th pSortableColumn="totalPayable">
+        {{ 'orders.orderPrice' | translate }}
+        <p-sortIcon field="totalPayable" class="mr-12px" />
+      </th>
+      <th>{{ 'orders.bookingStatus' | translate }}</th>
+      <!-- <th pFrozenColumn alignFrozen="left" [frozen]="true"></th> -->
+    </tr>
+    <tr>
+      <th style="min-width: 135px">
+        <app-input
+          [control]="filterForm.get('bookingReference')!"
+          [controlName]="'bookingReference'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('clientName')!"
+          [controlName]="'clientName'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th style="min-width: 220px">
+        <app-date-picker
+          #startDate
+          [inputFieldStyle]="
+            lang.lang === 'en' ? {'text-indent': '25px'} : null
+          "
+          [controlName]="'startDate'"
+          [placeholder]="'common.search' | translate"
+          [control]="$any(filterForm.get('startDate'))"></app-date-picker>
+      </th>
+      <th style="min-width: 220px">
+        <app-date-picker
+          #startDate
+          [inputFieldStyle]="
+            lang.lang === 'en' ? {'text-indent': '25px'} : null
+          "
+          [controlName]="'endDate'"
+          [placeholder]="'common.search' | translate"
+          [control]="$any(filterForm.get('endDate'))"></app-date-picker>
+      </th>
+      <th>
+        <p-dropdown
+          appendTo="body"
+          id="value"
+          [formControl]="$any(filterForm.get('eventTime'))"
+          [options]="eventTime"
+          [showClear]="true"
+          optionLabel="label.{{ lang.lang }}"
+          [optionValue]="'value'"
+          [placeholder]="'common.select' | translate" />
+      </th>
+
+      <th>
+        <app-input
+          [control]="filterForm.get('totalPayable')!"
+          [controlName]="'totalPayable'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+
+      <th [class]="currentLang">
+        <div
+          class="input-status-container"
+          [class]="'input-status-container--' + currentLang">
+          <p-dropdown
+            appendTo="body"
+            id="value"
+            [formControl]="$any(filterForm.get('bookingProcessStatus'))"
+            [options]="bookingStatus"
+            [showClear]="true"
+            optionLabel="label.{{ lang.lang }}"
+            [optionValue]="'value'"
+            [placeholder]="'orders.bookingStatus' | translate">
+            <ng-template let-status pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <app-status-badge [status]="status.label.en"></app-status-badge>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+      </th>
+
+      <!-- <th pFrozenColumn alignFrozen="left" [frozen]="true"></th> -->
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-order>
+    <tr>
+      <td>
+        {{ order.bookingReference }}
+      </td>
+      <td>
+        <div
+          class="d-flex align-items-center text-center justify-content-center">
+          {{ order.user.name }}
+          @if (order.user?.isVIB) {
+            <img width="30px" src="/assets/icons/vip-icon.svg" alt="Vip" />
+          }
+        </div>
+      </td>
+      <td style="min-width: 200px" [dir]="currentLang === 'ar' ? 'rtl' : 'ltr'">
+        @if (currentLang === 'en') {
+          {{ order.startDate | date: 'dd/MM/yyyy' : 'UTC' }} G &nbsp; - &nbsp;
+          {{ order.startDateHijri | date: 'dd/MM/yyyy' }} H
+        }
+        @if (currentLang === 'ar') {
+          {{ order.startDate | formatDateLang: 'ar' }}م -
+          {{ order.startDateHijri | formatDateLang: 'ar' }}هـ
+        }
+      </td>
+      <td style="min-width: 220px" [dir]="currentLang === 'ar' ? 'rtl' : 'ltr'">
+        @if (currentLang === 'en') {
+          {{ order.endDate | date: 'dd/MM/yyyy' : 'UTC' }} G &nbsp; - &nbsp;
+          {{ order.endDateHijri | date: 'dd/MM/yyyy' }} H
+        }
+        @if (currentLang === 'ar') {
+          {{ order.endDate | formatDateLang: 'ar' }}م -
+          {{ order.endDateHijri | formatDateLang: 'ar' }}هـ
+        }
+      </td>
+      <td>
+        {{ 'orders.' + order.eventTime | translate }}
+      </td>
+
+      <td class="payment-cell" (click)="onClickStatus(order, $event)">
+        <span class="price-with-symbol">
+          <sar-symbol />
+          <span>
+            {{ order.totalPayable | number: '1.2-2' }}
+          </span>
+        </span>
+        @if (statusTooltipVisible && selectedStatusItem?.id === order.id) {
+          <div class="status-tooltip">
+            <div class="status-tooltip__content">
+              <div class="item">
+                <div class="item__label">
+                  {{ 'orders.payableAmount' | translate }}
+                </div>
+                <div class="item__value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{ selectedStatusItem?.totalPayable | number: '1.2-2' }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="item">
+                <div class="item__label">
+                  {{ 'orders.paidAmount' | translate }}
+                </div>
+                <div class="item__value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{ selectedStatusItem?.paidAmount | number: '1.2-2' }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="item">
+                <div class="item__label">
+                  {{ 'orders.remainingAmount' | translate }}
+                </div>
+                <div class="item__value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{
+                        selectedStatusItem?.remainingAmount | number: '1.2-2'
+                      }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </td>
+
+      <td>
+        <app-status-badge
+          [status]="order.bookingProcessStatus"></app-status-badge>
+      </td>
+
+      <th></th>
+      <td
+        pFrozenColumn
+        [alignFrozen]="lang.lang === 'ar' ? 'left' : 'right'"
+        [frozen]="true"
+        class="d-flex gap-2 align-items-center justify-content-between options-col actions">
+        <div ngbDropdown container="body" class="d-inline-block">
+          <button
+            type="button"
+            class="options-button"
+            id="dropdownBasic1"
+            ngbDropdownToggle>
+            <span
+              class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
+            {{ 'common.options' | translate }}
+          </button>
+          <div
+            ngbDropdownMenu
+            aria-labelledby="dropdownBasic1"
+            class="p-menu p-menu-overlay">
+            <!-- Payment -->
+            @if (hasPermissionTo('payment', order)) {
+              <button
+                ngbDropdownItem
+                (click)="paymentAndRefund(order, 'Income')"
+                class="d-flex align-items-center gap-3">
+                <i class="pi pi-wallet"></i>
+                <span>{{ 'purchases.pay' | translate }}</span>
+              </button>
+            }
+
+            <!-- Refund -->
+            @if (hasPermissionTo('refund', order)) {
+              <button
+                ngbDropdownItem
+                (click)="paymentAndRefund(order, 'Refund')"
+                class="d-flex align-items-center gap-3">
+                <i class="pi pi-sync"></i>
+                <span>{{ 'purchases.paymentTypes.Refund' | translate }}</span>
+              </button>
+            }
+
+            @if (hasPermissionTo('update', order)) {
+              <button
+                ngbDropdownItem
+                (click)="editOrder(order)"
+                class="d-flex gap-3">
+                <i class="pi pi-pencil"></i>
+                <span>{{ 'common.edit' | translate }}</span>
+              </button>
+            }
+
+            @if (hasPermissionTo('view', order)) {
+              <button
+                ngbDropdownItem
+                (click)="viewOrder(order)"
+                class="d-flex gap-3">
+                <i class="pi pi-eye"></i>
+                <span>{{ 'common.view' | translate }}</span>
+              </button>
+            }
+
+            @if (order.bookingProcessStatus !== 'Canceled') {
+              <button
+                ngbDropdownItem
+                class="d-flex gap-3"
+                (click)="printPopup($event, order)">
+                <i class="pi pi-print"></i>
+                <span>{{ 'orders.print' | translate }}</span>
+              </button>
+            }
+
+            @if (hasPermissionTo('delete', order)) {
+              <button
+                (click)="openDeleteConfirmation(order.id)"
+                ngbDropdownItem
+                class="d-flex gap-3">
+                <i class="pi pi-times-circle"></i>
+                <span>{{ 'common.cancel' | translate }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="8">
+        <app-empty-state></app-empty-state>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<app-confirm-delete-popup
+  [visible]="showDeleteConfirmation"
+  [message]="'orders.cancelOrderMessage' | translate"
+  (confirm)="confirmDeleteOrder()"
+  (reject)="rejectDeleteOrder()"></app-confirm-delete-popup>

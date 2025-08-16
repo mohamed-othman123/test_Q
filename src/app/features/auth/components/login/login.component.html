@@ -1,0 +1,48 @@
+<form appShakeable [formGroup]="form" (ngSubmit)="login()">
+  <app-input
+    [placeholder]="'auth.emailPlaceHolder' | translate"
+    [controlName]="'email'"
+    inputType="email"
+    [label]="'auth.email' | translate"
+    [labelTranslationKey]="'auth.email'"
+    [control]="form.controls.email"
+    iconPath="/assets/icons/email.icon.svg"
+    formName="login_form"
+    [enableTracking]="true">
+  </app-input>
+
+  <app-input
+    [placeholder]="'auth.passwordPlaceHolder' | translate"
+    [controlName]="'password'"
+    inputType="password"
+    [autoComplete]="'current-password'"
+    [label]="'auth.password' | translate"
+    [labelTranslationKey]="'auth.password'"
+    [control]="form.controls.password"
+    iconPath="/assets/icons/lock.icon.svg"
+    formName="login_form"
+    [enableTracking]="true">
+  </app-input>
+
+  <div class="remember-forgot">
+    <div class="remember-me">
+      <p-checkbox
+        [binary]="true"
+        [formControl]="form.controls.rememberMe"
+        [value]="false"
+        inputId="rememberMe" />
+      <label for="rememberMe">{{ 'auth.rememberMe' | translate }}</label>
+    </div>
+    <span
+      routerLink="/auth/forget-password"
+      class="forget"
+      (click)="onForgotPasswordClick()">
+      {{ 'auth.forgotPassword' | translate }}
+    </span>
+  </div>
+
+  <p-button type="submit">
+    <i class="pi pi-sign-in"></i>
+    {{ 'auth.login' | translate }}
+  </p-button>
+</form>

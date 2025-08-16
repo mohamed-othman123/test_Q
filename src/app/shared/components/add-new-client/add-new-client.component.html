@@ -1,0 +1,426 @@
+<app-drawer-form-wrapper [form]="getActiveForm()" (onSubmit)="submit()">
+  @if (client) {
+    <comments
+      [entityId]="client.id"
+    [type]="commentType.CUSTOMER"></comments>
+  }
+  <p-tabView
+    [activeIndex]="activeIndex"
+    (activeIndexChange)="onTabChange($event)">
+    <p-tabPanel [disabled]="disableIndividualTab" id="individualTab">
+      <ng-template pTemplate="header">
+        <div class="d-flex align-items-center flex-column">
+          <i class="pi pi-user-plus text-green-500 mb-0"></i>
+          <span>{{ 'clients.individual' | translate }}</span>
+        </div>
+      </ng-template>
+
+      <div class="d-flex flex-column gap-lg-4">
+        <div class="d-flex gap-2">
+          <div class="flex-1 w-100">
+            <app-input
+              [control]="individualFormControls.name"
+              [controlName]="'name'"
+              inputType="text"
+              [placeholder]="'clients.clientNamePlaceholder' | translate"
+              [label]="'clients.clientName' | translate">
+              <i class="pi pi-user" style="color: gray"></i>
+            </app-input>
+          </div>
+          <div class="d-flex align-items-center">
+            <p-inputSwitch
+              inputId="vip"
+              class="vip"
+              styleClass="d-flex align-items-center pt-lg-2"
+              [formControl]="individualFormControls.isVIB" />
+            <span for="vip"
+              ><img width="40px" src="/assets/icons/vip-icon.svg" alt="vip"
+            /></span>
+          </div>
+        </div>
+
+        <app-input
+          [control]="individualFormControls.nationalOrResidencyId"
+          [controlName]="'nationalOrResidencyId'"
+          inputType="text"
+          [placeholder]="'clients.nationalOrResidencyIdPlaceholder' | translate"
+          [label]="'clients.nationalOrResidencyId' | translate">
+          <i class="pi pi-user" style="color: gray"></i>
+        </app-input>
+
+        <app-input
+          [control]="individualFormControls.email"
+          [controlName]="'email'"
+          inputType="email"
+          [placeholder]="'clients.clientEmailPlaceHolder' | translate"
+          iconPath="/assets/icons/email.icon.svg"
+        [label]="'clients.email' | translate"></app-input>
+
+        <div class="mb-3">
+          {{ 'clients.gender' | translate }}
+          @if (!individualFormControls.gender.value) {
+            <span class="text-danger"
+              >*</span
+              >
+            }
+          </div>
+          <div class="gender-container mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <p-radioButton
+                [inputId]="'male-gender'"
+                name="gender"
+                [formControl]="individualFormControls.gender"
+                [value]="'male'" />
+              <label
+                [for]="'male-gender'"
+                class="mb-0 d-flex align-items-center gap-1">
+                <i class="man-icon"></i>
+                {{ 'clients.male' | translate }}
+              </label>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <p-radioButton
+                [inputId]="'female-gender'"
+                name="gender"
+                [formControl]="individualFormControls.gender"
+                [value]="'female'" />
+              <label
+                [for]="'female-gender'"
+                class="mb-0 d-flex align-items-center gap-1">
+                <i class="women-icon"></i>
+                {{ 'clients.female' | translate }}
+              </label>
+            </div>
+          </div>
+
+          @if (
+            individualFormControls.gender.invalid &&
+            (individualFormControls.gender.dirty ||
+            individualFormControls.gender.touched)
+            ) {
+            <div
+              class="text-danger d-flex align-items-center gap-1 small">
+              <i class="pi pi-exclamation-circle"></i>
+              {{ 'errors.genderRequired' | translate }}
+            </div>
+          }
+
+          <app-phone-input
+            [control]="individualFormControls.phone"
+            [label]="'fields.mobileNo' | translate"
+            [placeholder]="'fields.mobileNoPlaceholder' | translate"
+            [phoneNumber]="client?.phone">
+          </app-phone-input>
+
+          <app-input
+            [control]="individualFormControls.notes"
+            [controlName]="'notes'"
+            inputType="textarea"
+            [label]="'clients.notes' | translate"
+            [placeholder]="'orders.notes' | translate">
+          </app-input>
+          @if (individualFormControls.contacts.length > 0) {
+            <div>
+              <div class="contact-head">
+                {{ 'clients.addContacts' | translate }}
+              </div>
+              @for (
+                contact of individualContactsArray.controls; track
+                contact; let i = $index) {
+                <div
+                  class="contact-body"
+                  >
+                  <div class="d-flex flex-column gap-lg-4">
+                    <app-input
+                      [control]="$any(contact).get('name')"
+                      [controlName]="'name'"
+                      inputType="text"
+                      [placeholder]="'clients.namePlaceholder' | translate"
+                      [label]="'clients.name' | translate">
+                      <i class="pi pi-user" style="color: gray"></i>
+                    </app-input>
+                    <app-input
+                      [control]="$any(contact).get('email')"
+                      [controlName]="'email'"
+                      inputType="email"
+                      [placeholder]="'clients.clientEmailPlaceHolder' | translate"
+                      iconPath="/assets/icons/email.icon.svg"
+                    [label]="'clients.email' | translate"></app-input>
+                    <app-phone-input
+                      [control]="$any(contact).get('phone')"
+                      [label]="'fields.mobileNo' | translate"
+                      [placeholder]="'fields.mobileNoPlaceholder' | translate"
+                      [phoneNumber]="$any(contact).get('originalPhone')?.value">
+                    </app-phone-input>
+                  </div>
+                  <button
+                    type="button"
+                    pButton
+                    class="p-button-secondary"
+                    [label]="'common.delete' | translate"
+                    icon="pi pi-times"
+                  (click)="removeContact(i, individualContactsArray)"></button>
+                </div>
+              }
+            </div>
+          }
+          @if (mode !== 'view') {
+            <span
+              (click)="addNewContact(individualContactsArray)"
+              class="add-another-contact">
+              <i class="pi pi-plus-circle"></i>
+              {{ 'clients.addOtherContacts' | translate }}
+            </span>
+          }
+        </div>
+      </p-tabPanel>
+
+      <p-tabPanel [disabled]="disableFacilityTab" id="facilityTab">
+        <ng-template pTemplate="header">
+          <div class="d-flex align-items-center flex-column">
+            <i class="fac-icon text-green-500 mb-0"></i>
+            <span>{{ 'clients.facility' | translate }}</span>
+          </div>
+        </ng-template>
+
+        <div class="d-flex flex-column gap-lg-4">
+          <div class="d-flex gap-2">
+            <div class="flex-1 w-100">
+              <app-input
+                [control]="facilityFormControls.name"
+                [controlName]="'name'"
+                inputType="text"
+                [placeholder]="'clients.clientNamePlaceholder' | translate"
+                [label]="'clients.clientName' | translate">
+                <i class="pi pi-building" style="color: gray"></i>
+              </app-input>
+            </div>
+            <div class="d-flex align-items-center">
+              <p-inputSwitch
+                inputId="vip"
+                class="vip"
+                styleClass="d-flex align-items-center pt-lg-2"
+                [formControl]="facilityFormControls.isVIB" />
+              <span for="vip"
+                ><img width="40px" src="/assets/icons/vip-icon.svg" alt="vip"
+              /></span>
+            </div>
+          </div>
+
+          <app-input
+            [controlName]="'taxRegistrationNumber'"
+            [control]="facilityFormControls.taxRegistrationNumber"
+            [label]="'clients.VATNumber' | translate"
+            [placeholder]="'clients.VATNumberPlaceholder' | translate"
+            inputType="number">
+            <i class="pi pi-file" style="color: gray"></i>
+          </app-input>
+          <app-input
+            [controlName]="'commercialRegistrationNumber'"
+            [control]="facilityFormControls.commercialRegistrationNumber"
+            [label]="'clients.crNumber' | translate"
+            [placeholder]="'clients.crNumberPlaceholder' | translate"
+            inputType="text">
+            <i class="pi pi-file" style="color: gray"></i>
+          </app-input>
+          <app-input
+            [control]="facilityFormControls.address"
+            [controlName]="'address'"
+            inputType="text"
+            [placeholder]="'clients.addressPlaceholder' | translate"
+            [label]="'clients.address' | translate">
+            <i class="pi pi-map-marker" style="color: gray"></i>
+          </app-input>
+          <app-phone-input
+            [control]="facilityFormControls.phone"
+            [label]="'fields.mobileNo' | translate"
+          [placeholder]="
+            'fields.mobileNoPlaceholder' | translate
+          "></app-phone-input>
+          <app-input
+            [controlName]="'email'"
+            [control]="facilityFormControls.email"
+            [label]="'clients.email' | translate"
+            [placeholder]="'clients.clientEmailPlaceHolder' | translate"
+            iconPath="/assets/icons/email.icon.svg"
+          inputType="email"></app-input>
+          <app-input
+            [control]="facilityFormControls.notes"
+            [controlName]="'notes'"
+            inputType="textarea"
+            [label]="'clients.notes' | translate"
+            [placeholder]="'clients.notes' | translate">
+          </app-input>
+          @if (facilityFormControls.contacts.length > 0) {
+            <div>
+              <div class="contact-head">
+                {{ 'clients.addContacts' | translate }}
+              </div>
+              @for (
+                contact of facilityContactsArray.controls; track
+                contact; let i = $index) {
+                <div
+                  class="contact-body"
+                  >
+                  <div class="d-flex flex-column gap-lg-4">
+                    <app-input
+                      [control]="$any(contact).get('name')"
+                      [controlName]="'name'"
+                      inputType="text"
+                      [placeholder]="'clients.namePlaceholder' | translate"
+                      [label]="'clients.name' | translate">
+                      <i class="pi pi-user" style="color: gray"></i>
+                    </app-input>
+                    <app-input
+                      [control]="$any(contact).get('email')"
+                      [controlName]="'email'"
+                      inputType="email"
+                      [placeholder]="'clients.clientEmailPlaceHolder' | translate"
+                      iconPath="/assets/icons/email.icon.svg"
+                    [label]="'clients.email' | translate"></app-input>
+                    <app-phone-input
+                      [control]="$any(contact).get('phone')"
+                      [label]="'fields.mobileNo' | translate"
+                      [placeholder]="'fields.mobileNoPlaceholder' | translate"
+                      [phoneNumber]="$any(contact).get('originalPhone')?.value">
+                    </app-phone-input>
+                  </div>
+                  <button
+                    type="button"
+                    pButton
+                    class="p-button-secondary"
+                    [label]="'common.delete' | translate"
+                    icon="pi pi-times"
+                  (click)="removeContact(i, facilityContactsArray)"></button>
+                </div>
+              }
+            </div>
+          }
+          @if (mode !== 'view') {
+            <span
+              (click)="addNewContact(facilityContactsArray)"
+              class="add-another-contact">
+              <i class="pi pi-plus-circle"></i>
+              {{ 'clients.addOtherContacts' | translate }}
+            </span>
+          }
+        </div>
+      </p-tabPanel>
+
+      <p-tabPanel
+        [disabled]="disableGovernmentFacilityTap"
+        id="governmentFacilityTap">
+        <ng-template pTemplate="header">
+          <div class="d-flex align-items-center flex-column">
+            <i class="gov-icon text-green-500 mb-0"></i>
+            <!-- <img src="assets/icons/hall.icon.svg" alt="government Facility" /> -->
+            <span class="gov-title">{{
+              'clients.governmentFacility' | translate
+            }}</span>
+          </div>
+        </ng-template>
+
+        <div class="d-flex flex-column gap-lg-4">
+          <div class="d-flex gap-2">
+            <div class="flex-1 w-100">
+              <app-input
+                [control]="governmentFormControls.name"
+                [controlName]="'name'"
+                inputType="text"
+                [placeholder]="'clients.clientNamePlaceholder' | translate"
+                [label]="'clients.clientName' | translate">
+                <i class="pi pi-building" style="color: gray"></i>
+              </app-input>
+            </div>
+            <div class="d-flex align-items-center">
+              <p-inputSwitch
+                inputId="vip"
+                class="vip"
+                styleClass="d-flex align-items-center"
+                [formControl]="governmentFormControls.isVIB" />
+              <span for="vip"
+                ><img width="40px" src="/assets/icons/vip-icon.svg" alt="vip"
+              /></span>
+            </div>
+          </div>
+
+          <app-phone-input
+            [control]="governmentFormControls.phone"
+            [label]="'fields.mobileNo' | translate"
+          [placeholder]="
+            'fields.mobileNoPlaceholder' | translate
+          "></app-phone-input>
+
+          <app-input
+            [controlName]="'email'"
+            [control]="governmentFormControls.email"
+            [label]="'clients.email' | translate"
+            [placeholder]="'clients.clientEmailPlaceHolder' | translate"
+            iconPath="/assets/icons/email.icon.svg"
+          inputType="email"></app-input>
+
+          <app-input
+            [control]="governmentFormControls.notes"
+            [controlName]="'notes'"
+            inputType="textarea"
+            [label]="'clients.notes' | translate"
+            [placeholder]="'orders.notes' | translate">
+          </app-input>
+          @if (governmentFormControls.contacts.length > 0) {
+            <div>
+              <div class="contact-head">
+                {{ 'clients.addContacts' | translate }}
+              </div>
+              @for (
+                contact of governmentContactsArray.controls; track
+                contact; let i = $index) {
+                <div
+                  class="contact-body"
+                  >
+                  <div class="d-flex flex-column gap-lg-4">
+                    <app-input
+                      [control]="$any(contact).get('name')"
+                      [controlName]="'name'"
+                      inputType="text"
+                      [placeholder]="'clients.namePlaceholder' | translate"
+                      [label]="'clients.name' | translate">
+                      <i class="pi pi-user" style="color: gray"></i>
+                    </app-input>
+                    <app-input
+                      [control]="$any(contact).get('email')"
+                      [controlName]="'email'"
+                      inputType="email"
+                      [placeholder]="'clients.clientEmailPlaceHolder' | translate"
+                      iconPath="/assets/icons/email.icon.svg"
+                    [label]="'clients.email' | translate"></app-input>
+                    <app-phone-input
+                      [control]="$any(contact).get('phone')"
+                      [label]="'fields.mobileNo' | translate"
+                      [placeholder]="'fields.mobileNoPlaceholder' | translate"
+                      [phoneNumber]="$any(contact).get('originalPhone')?.value">
+                    </app-phone-input>
+                  </div>
+                  <button
+                    type="button"
+                    pButton
+                    class="p-button-secondary"
+                    [label]="'common.delete' | translate"
+                    icon="pi pi-times"
+                  (click)="removeContact(i, governmentContactsArray)"></button>
+                </div>
+              }
+            </div>
+          }
+          @if (mode !== 'view') {
+            <span
+              (click)="addNewContact(governmentContactsArray)"
+              class="add-another-contact">
+              <i class="pi pi-plus-circle"></i>
+              {{ 'clients.addOtherContacts' | translate }}
+            </span>
+          }
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </app-drawer-form-wrapper>

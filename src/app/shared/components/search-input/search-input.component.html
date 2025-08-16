@@ -1,0 +1,53 @@
+<div class="search-container" (clickOutside)="onClickOutside()">
+  <div class="search-input-wrapper">
+    <input
+      type="text"
+      class="input"
+      [@searchAnimation]="searchState"
+      [(ngModel)]="searchQuery"
+      (input)="onSearchInput($event)"
+      [placeholder]="'orders.search' | translate" />
+
+    @if (!!searchQuery) {
+      <i class="pi pi-times clear-icon" (click)="clearSearch()"> </i>
+    }
+  </div>
+
+  <button class="search-btn" (click)="toggleSearch()">
+    <i class="pi pi-search"></i>
+  </button>
+
+  @if (showDropdown) {
+    <div class="search-dropdown" [@dropdownAnimation]>
+      @if (searchResults.length > 0) {
+        <div class="search-results">
+          <p-table
+            [value]="searchResults"
+            styleClass="search-table"
+            [scrollable]="true"
+            scrollHeight="400px">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>{{ 'orders.orderNumber' | translate }}</th>
+                <th>{{ 'orders.clientName' | translate }}</th>
+                <th>{{ 'orders.clientPhone' | translate }}</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-result>
+              <tr (click)="onResultClick(result)">
+                <td>{{ result.orderNo }}</td>
+                <td>{{ result.customerName }}</td>
+                <td dir="ltr">{{ result.customerPhone }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      }
+      @if (searchResults.length === 0) {
+        <div class="no-results">
+          {{ 'primeng.emptyMessage' | translate }}
+        </div>
+      }
+    </div>
+  }
+</div>

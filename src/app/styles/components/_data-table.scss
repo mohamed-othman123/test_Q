@@ -1,0 +1,50 @@
+@use './../variables';
+@use './../mixins' as mixins;
+
+p-table {
+  .caption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-inline: 1rem;
+    gap: 0.5rem;
+    background-color: #f8fafb;
+    padding: 12px 8px;
+    border-radius: 8px;
+    @include mixins.sm(variables.$max) {
+      margin-inline: 0;
+    }
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    .action-button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-radius: 11px;
+      padding: 8px;
+      border: solid 1px lightgray;
+      cursor: pointer;
+
+      &:hover {
+        scale: 1.05;
+      }
+
+      i {
+        width: 20px;
+        height: 20px;
+        font-size: 20px;
+      }
+
+      &.delete {
+        color: red;
+      }
+    }
+  }
+}

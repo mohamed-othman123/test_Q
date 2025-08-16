@@ -1,0 +1,30 @@
+@if (data) {
+  <div class="v-content" (click)="toggleContent()">
+    <div
+      class="d-flex align-items-center justify-content-between"
+      [class]="{'flex-row-reverse': data.index % 2 === 0}">
+      <div>
+        <p class="title">{{ data.feature }}</p>
+        <p class="version">
+          {{ 'dashboard.version' | translate }} : {{ data.versionNumber }}
+        </p>
+      </div>
+      <i
+        class="pi"
+      [class]="{'pi-plus': !showContent, 'pi-minus': showContent}"></i>
+    </div>
+    <div class="inner-content" [class.collapsed]="!showContent">
+      <div class="desc">
+        {{ lang.lang === 'ar' ? data.whatsNewAr : data.whatsNewEn }}
+      </div>
+      <p class="v-date">
+        {{ 'dashboard.releasedDate' | translate }} :
+        @if (lang.lang === 'ar') {
+          {{ data.releasedDate | arabicMonthDate }}
+        } @else {
+          {{ data.releasedDate | englishMonthDate }}
+        }
+      </p>
+    </div>
+  </div>
+}

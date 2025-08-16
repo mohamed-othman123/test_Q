@@ -1,0 +1,102 @@
+@if (Halls.length !== 0) {
+  <app-list-header
+    [btnAddText]="'halls.addNewHall' | translate"
+    [title]="'sideNav.halls' | translate"
+    (sideDrawerToggler)="addNewHall()">
+  </app-list-header>
+  <div class="halls-grid">
+    <div class="row g-4">
+      @for (hall of Halls; track hall) {
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+          <div class="hall-card">
+            <div
+              class="hall-image-container"
+              [style.backgroundColor]="hall.primary_color">
+              @if (hall.logo_url) {
+                <img
+                  [src]="hall.logo_url"
+                  crossorigin="anonymous"
+                  alt="Hall logo"
+                  class="hall-logo"
+                  (error)="handleImageError($event)" />
+              }
+              @if (!hall.logo_url) {
+                <div class="hall-initials">
+                  {{ getHallInitials(hall) }}
+                </div>
+              }
+            </div>
+            <div class="hall-content">
+              <h3 class="hall-name">
+                {{
+                  translate.currentLang === 'ar' && hall.name_ar
+                    ? hall.name_ar
+                    : hall.name
+                }}
+              </h3>
+              <p class="hall-description">
+                {{ hall.description || ('halls.noDescription' | translate) }}
+              </p>
+              @if (hall.sections && hall.sections.length > 0) {
+                <div class="hall-specs">
+                  <div class="spec-item">
+                    <i class="pi pi-users"></i>
+                    <span>{{ getTotalCapacity(hall) }}</span>
+                  </div>
+                  <div class="spec-item">
+                    <i class="pi pi-th-large"></i>
+                    <span>
+                      {{ hall.sections.length }}
+                      {{ 'halls.hallSections' | translate }}
+                    </span>
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="hall-actions">
+              <button
+                class="action-btn edit-btn"
+                (click)="editHall($event, hall)">
+                <i class="pi pi-pencil"></i>
+                <span>{{ 'common.settings' | translate }}</span>
+              </button>
+              <button
+                class="action-btn delete-btn"
+                appConfirmDeleteDialog
+                [deletedItem]="'halls.hall' | translate"
+                (acceptDelete)="deleteHall(hall)"
+                (click)="$event.stopPropagation()">
+                <i class="pi pi-trash"></i>
+                <span>{{ 'common.delete' | translate }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+  <div class="pagination-wrapper mt-4">
+    <p-paginator
+      [rows]="rows"
+      [totalRecords]="totalRecords"
+      [rowsPerPageOptions]="rowsPerPageOptions"
+      [first]="first"
+      (onPageChange)="onPageChange($event)">
+    </p-paginator>
+  </div>
+}
+
+@if (Halls.length === 0) {
+  <div class="d-flex align-items-center justify-content-center h-100">
+    <app-empty-state
+      [btnLabel]="'halls.addNewHall' | translate"
+      [showBtn]="true"
+      [logOutBtn]="showLogOutBtn"
+      [customMessage]="'halls.emptyHallState' | translate"
+      (onToggle)="addNewHall()"
+      (logoutFunction)="signOut()">
+    </app-empty-state>
+  </div>
+}
+
+<app-hall-drawer (refreshDataTable)="refreshDataTable()"></app-hall-drawer>

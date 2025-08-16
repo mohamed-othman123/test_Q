@@ -1,0 +1,89 @@
+@use 'variables';
+
+:host {
+  overflow: hidden;
+  .warp {
+    padding: 10px;
+    background: #ebebeb;
+  }
+  .event {
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    position: relative;
+    width: fit-content;
+    min-width: 260px;
+
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .lead {
+      display: block;
+      width: 2px;
+      height: 21px;
+    }
+  }
+
+  .icon-check {
+    display: block;
+    width: 18px;
+    height: 20px;
+    -webkit-mask: url(/assets/icons/check-circle.svg) no-repeat center;
+    mask: url(/assets/icons/check-circle.svg) no-repeat center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .icon-hourglass {
+    display: block;
+    width: 18px;
+    height: 20px;
+    -webkit-mask: url(/assets/icons/hourglass-bottom.svg) no-repeat center;
+    mask: url(/assets/icons/hourglass-bottom.svg) no-repeat center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .morning {
+    color: #fdbe45;
+    &.icon-check {
+      background-color: #fdbe45;
+    }
+    &.icon-hourglass {
+      background-color: #fdbe45;
+    }
+    &.lead {
+      background-color: #fdbe45;
+    }
+  }
+
+  .evening {
+    color: #1a2523;
+    &.icon-check {
+      background-color: #1a2523;
+    }
+    &.icon-hourglass {
+      background-color: #1a2523;
+    }
+    &.lead {
+      background-color: #1a2523;
+    }
+  }
+
+  .full {
+    color: var(--primary-color);
+    &.icon-check {
+      background-color: var(--primary-color);
+    }
+    &.icon-hourglass {
+      background-color: var(--primary-color);
+    }
+    &.lead {
+      background-color: var(--primary-color);
+    }
+  }
+}

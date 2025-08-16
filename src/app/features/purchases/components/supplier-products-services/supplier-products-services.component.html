@@ -1,0 +1,248 @@
+<div class="form-section">
+  <div class="row d-flex align-items-baseline position-relative mb-4">
+    <div class="col-md-6">
+      <app-dropdown
+        [control]="form.get('category')!"
+        [options]="purchaseCategoryList || []"
+        [controlName]="'thirdParty'"
+        [optionLabel]="lang.lang === 'ar' ? 'name_ar' : 'name'"
+        [optionValue]="'id'"
+        [placeholder]="'purchases.expensesCategoryPlaceholder' | translate"
+        [label]="'purchases.expensesCategory' | translate"
+        [disabled]="isViewMode">
+        <i class="pi pi-list" style="color: gray"></i>
+      </app-dropdown>
+    </div>
+    <div class="flex-grow-1 col-md-6">
+      <app-input
+        [control]="$any(form.get('expensesDescription'))"
+        controlName="expensesDescription"
+        [label]="'purchases.expensesDescription' | translate"
+        [placeholder]="'purchases.enterExpensesDescription' | translate"
+        [disabled]="isViewMode || isEditMode">
+      </app-input>
+    </div>
+  </div>
+
+  @if (form.get('invoiceType')?.value === 'tax') {
+    <div class="row supplier">
+      <div class="col-md-5">
+        <app-dropdown
+          [control]="$any(form.get('supplierId'))"
+          [options]="suppliers"
+          [controlName]="'supplierId'"
+          [optionLabel]="'name'"
+          [optionValue]="'id'"
+          [placeholder]="'purchases.selectSupplier' | translate"
+          [label]="'purchases.supplier' | translate"
+          [inert]="isEditMode">
+        </app-dropdown>
+      </div>
+      @if (!isEditMode && !isViewMode) {
+        <span
+          *appHasPermission="['create:suppliers']"
+          class="col-md-1"
+          (click)="openAddNewSupplierDrawer()">
+          <i class="pi pi-plus"></i>
+        </span>
+      }
+    </div>
+  }
+  <div class="section-header">
+    @if (form.get('invoiceType')?.value === 'tax') {
+      <h3>
+        {{ 'purchases.items' | translate }}
+      </h3>
+    }
+  </div>
+  @if (!form.get('supplierId')?.value) {
+    <!-- Empty state message -->
+    <div class="empty-products-message">
+      <ng-container>
+        <p class="text-muted text-center">
+          <strong>
+            {{ 'purchases.pleaseSelectSupplier' | translate }}
+          </strong>
+        </p>
+      </ng-container>
+    </div>
+  } @else {
+    <div class="row">
+      @for (item of itemsArray.controls; track item; let i = $index) {
+        <div class="d-flex flex-wrap gap-2 mb-4 align-items-end">
+          <!--type-->
+          <div class="col-md-2 col-12">
+            <app-dropdown
+              [label]="'purchases.supplierItemType' | translate"
+              [control]="$any(item.get('type'))"
+              [controlName]="'type'"
+              [optionValue]="'value'"
+              [options]="supplierItemsType"
+              [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+              [placeholder]="'purchases.selectSupplierItemType' | translate"
+              (onChange)="itemTypeChange($event, i)"
+              class="me-2">
+            </app-dropdown>
+          </div>
+          <!--name-->
+          <div class="col-md-3 col-12">
+            @if (!item.get('isNew')?.value && !item.get('saved')?.value) {
+              <app-dropdown
+                [filter]="true"
+                [filterBy]="
+                  item.get('type')?.value === 'product'
+                    ? 'name'
+                    : lang.lang === 'ar'
+                      ? 'name_ar'
+                      : 'name'
+                "
+                [label]="
+                  item.get('type')?.value === 'service'
+                    ? ('purchases.supplierService' | translate)
+                    : ('purchases.supplierProduct' | translate)
+                "
+                [control]="$any(item.get('name'))"
+                [controlName]="'name'"
+                [options]="
+                  item.get('type')?.value === 'service' ? services : products
+                "
+                [optionLabel]="lang.lang === 'ar' ? 'name' : 'name'"
+                [placeholder]="'common.select' | translate"
+                (onChange)="onItemSelected($event, i)"
+                [showClear]="!!item.get('name')?.value"
+                (onClear)="clearItemValues(i, false)"
+                [showAddNew]="canAddProduct()"
+                [addNewLabel]="'common.other' | translate"
+                (onAddNew)="addNewExpenseItem(i)"
+                class="me-2">
+              </app-dropdown>
+            }
+            <!--name free input-->
+            @if (lang.lang === 'ar') {
+              @if (item.get('isNew')?.value || item.get('saved')?.value) {
+                <app-input
+                  [control]="$any(item.get('nameAr'))"
+                  controlName="nameAr"
+                  [label]="
+                    item.get('type')?.value === 'service'
+                      ? ('purchases.supplierService' | translate)
+                      : ('purchases.supplierProduct' | translate)
+                  "
+                  [placeholder]="
+                    item.get('type')?.value === 'service'
+                      ? ('purchases.enterSupplierService' | translate)
+                      : ('purchases.enterSupplierProduct' | translate)
+                  "
+                  [disabled]="isViewMode"
+                  [showClear]="true"
+                  (onClear)="clearItemValues(i, false)">
+                </app-input>
+              }
+            } @else {
+              @if (item.get('isNew')?.value || item.get('saved')?.value) {
+                <app-input
+                  [control]="$any(item.get('name'))"
+                  controlName="name"
+                  [label]="
+                    item.get('type')?.value === 'service'
+                      ? ('purchases.supplierService' | translate)
+                      : ('purchases.supplierProduct' | translate)
+                  "
+                  [placeholder]="
+                    item.get('type')?.value === 'service'
+                      ? ('purchases.enterSupplierService' | translate)
+                      : ('purchases.enterSupplierProduct' | translate)
+                  "
+                  [disabled]="isViewMode"
+                  [showClear]="
+                    form.get('expensesType')?.value ===
+                    ExpensesType.generalExpenses
+                  "
+                  (onClear)="clearItemValues(i, false)">
+                </app-input>
+              }
+            }
+          </div>
+          <div class="col-md-2 col-12">
+            <app-input
+              (onChange)="onPriceChange()"
+              [control]="$any(item.get('value'))"
+              controlName="value"
+              inputType="number"
+              [label]="
+                form.get('invoiceType')?.value === 'tax'
+                  ? ('purchases.price' | translate)
+                  : ('purchases.cost' | translate)
+              "
+              [placeholder]="
+                form.get('invoiceType')?.value === 'tax'
+                  ? ('purchases.enterPrice' | translate)
+                  : ('purchases.cost' | translate)
+              "
+              [disabled]="isViewMode || item.get('id')?.value">
+            </app-input>
+          </div>
+          <div class="col-md-2 col-12">
+            <app-input
+              [control]="$any(item.get('quantity'))"
+              controlName="quantity"
+              type="number"
+              [label]="'purchases.quantity' | translate"
+              [placeholder]="'purchases.enterQuantity' | translate"
+              (onChange)="onQuantityChange()">
+            </app-input>
+          </div>
+          <div class="d-flex align-items-end col-md-2 col-5">
+            <app-input
+              [disabled]="true"
+              [control]="$any(item.get('total'))"
+              controlName="total"
+              type="number"
+              [label]="'purchases.total' | translate">
+            </app-input>
+            <span class="price-with-symbol">
+              <sar-symbol />
+            </span>
+          </div>
+          <div class="d-flex align-items-end gap-2">
+            @if (i !== 0) {
+              <div
+                appConfirmDeleteDialog
+                [deletedItem]="
+                  item.get('type')?.value === 'service'
+                    ? ('purchases.service' | translate)
+                    : ('purchases.product' | translate)
+                "
+                (acceptDelete)="removeItem(i)"
+                class="action-button delete">
+                <i
+                  style="color: red; font-size: 1.5rem"
+                  class="pi pi-trash"></i>
+              </div>
+            }
+          </div>
+          @if (item.hasError('duplicate')) {
+            <div class="col-md-3 error-text">
+              <img src="/assets/icons/exclamation.icon.svg" alt="error" />
+              <span> {{ 'purchases.duplicate' | translate }}</span>
+            </div>
+          }
+        </div>
+      }
+      @if (itemsArray.hasError('duplicateItems') && itemsArray.touched) {
+        <div class="error-text">
+          {{ 'purchases.duplicateItems' | translate }}
+        </div>
+      }
+      <!--add new item btn-->
+      <button
+        class="apply-btn mt-2"
+        type="button"
+        pButton
+        icon="pi pi-plus"
+        [label]="'purchases.addNewItem' | translate"
+        (click)="addNewItem()"
+        [disabled]="isViewMode"></button>
+    </div>
+  }
+</div>

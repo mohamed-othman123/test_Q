@@ -1,0 +1,11 @@
+@use '../direction-ltr';
+@use '../direction-rtl';
+
+.ql-editor {
+  font-family: var(--font-family) !important;
+}
+
+.ql-snow .ql-picker:not(.ql-color-picker):not(.ql-icon-picker) svg {
+  #{direction-ltr.$end-direction}: 0;
+  #{direction-ltr.$start-direction}: unset;
+}

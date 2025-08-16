@@ -1,0 +1,111 @@
+@use 'mixins';
+@use 'variables';
+
+:host {
+  display: block;
+  padding: 1.5rem;
+
+  .header-cell {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 6px;
+    cursor: default;
+
+    .sort-icon {
+      cursor: pointer;
+      padding: 4px;
+      color: var(--primary-color);
+      transition: color 0.2s;
+      margin-right: 4px;
+      margin-top: 6px;
+
+      &:hover {
+        color: var(--primary-color);
+        background-color: rgba(81, 167, 154, 0.1);
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .content {
+    .header {
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      h6 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+      }
+    }
+
+    .section {
+      background-color: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      h4 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 1.5rem 0;
+        color: var(--text-color);
+      }
+
+      .form-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+
+        > * {
+          flex: 1 1 calc(50% - 0.75rem);
+          min-width: 250px;
+        }
+
+        .full-width {
+          flex: 1 1 100%;
+        }
+
+        @include mixins.sm(variables.$max) {
+          > * {
+            flex: 1 1 100%;
+          }
+        }
+      }
+
+      .form-group {
+        &.checkbox-label {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+      }
+    }
+  }
+
+  .dropdown-toggle {
+    background: var(--primary-color);
+    color: #fff;
+    font-weight: 500;
+    i {
+      margin-inline-end: 8px;
+    }
+    &::after {
+      display: none;
+    }
+  }
+  .dropdown-item {
+    color: rgb(51, 65, 85);
+  }
+  .dropdown-menu {
+    inset-inline-end: 0 !important;
+    inset-inline-start: unset !important;
+  }
+  .p-menu {
+    width: 130px !important;
+  }
+}

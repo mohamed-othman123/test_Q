@@ -1,0 +1,122 @@
+<div class="contracts-table mb-4">
+  <p-table
+    [tableStyle]="{'min-height': '10rem'}"
+    [value]="contracts"
+    [lazy]="true"
+    (onLazyLoad)="onLazyLoad($event)"
+    [paginator]="true"
+    [rows]="rows"
+    [totalRecords]="totalContracts"
+    [rowsPerPageOptions]="rowsPerPageOptions">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>{{ 'halls.eventType' | translate }}</th>
+        <th>{{ 'halls.clientType' | translate }}</th>
+        <th>{{ 'halls.creationDate' | translate }}</th>
+        <th>{{ 'halls.signatures' | translate }}</th>
+        <th>{{ 'common.options' | translate }}</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-contract>
+      <ng-template #signatureBadge let-signed="signed" let-label="label">
+        <span
+          class="badge d-flex align-items-center gap-1"
+          [ngClass]="
+            signed ? 'signature-signed-badge' : 'signature-not-signed-badge'
+          ">
+          <i class="pi" [ngClass]="signed ? 'pi-check' : 'pi-times'"></i>
+          {{ label | translate }}
+        </span>
+      </ng-template>
+      <tr>
+        <td>
+          {{
+            lang.lang === 'ar' ? contract.event.name_ar : contract.event.name
+          }}
+        </td>
+        <td>{{ 'halls.' + contract.customerType | translate }}</td>
+        <td>
+          {{
+            lang.lang === 'ar'
+              ? (contract.created_at | arabicMonthDate)
+              : (contract.created_at | englishMonthDate)
+          }}
+        </td>
+        <td class="d-flex gap-2 justify-content-center">
+          @if (contract.firstPartySignature) {
+            <ng-container
+              *ngTemplateOutlet="
+                signatureBadge;
+                context: {
+                  signed: contract.firstPartySignature,
+                  label: 'halls.hall',
+                }
+              "></ng-container>
+          } @else if (contract.firstPartyStamp) {
+            <ng-container
+              *ngTemplateOutlet="
+                signatureBadge;
+                context: {
+                  signed: contract.firstPartyStamp,
+                  label: 'halls.hall',
+                }
+              "></ng-container>
+          } @else {
+            <ng-container
+              *ngTemplateOutlet="
+                signatureBadge;
+                context: {
+                  signed: contract.firstPartyStamp,
+                  label: 'halls.hall',
+                }
+              "></ng-container>
+          }
+
+          <ng-container
+            *ngTemplateOutlet="
+              signatureBadge;
+              context: {
+                signed: contract.secondPartySignature,
+                label: 'halls.client',
+              }
+            "></ng-container>
+        </td>
+        <td>
+          <div class="actions">
+            <div class="action-button" (click)="uploadAttachments(contract)">
+              <i class="pi pi-cloud-upload"></i>
+              {{ 'halls.attachments' | translate }}
+            </div>
+            <div class="action-button" (click)="edit(contract)">
+              <i class="pi pi-pencil"></i> {{ 'common.edit' | translate }}
+            </div>
+            <div
+              class="action-button delete"
+              appConfirmDeleteDialog
+              [deletedItem]="'halls.contract' | translate"
+              (acceptDelete)="deleteContract(contract)">
+              <i class="pi pi-trash"></i> {{ 'common.delete' | translate }}
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5" class="text-center p-4">
+          <div class="empty-state">
+            <app-empty-state />
+            <div class="secondary-btn justify-content-center">
+              <!-- <button type="button" class="add-button">
+                <i class="pi pi-plus"></i>
+                {{ 'halls.addContract' | translate }}
+              </button> -->
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

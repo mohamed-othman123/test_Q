@@ -1,0 +1,7 @@
+<div>
+  <p-timeline [value]="latestVersions" dir="ltr" align="alternate">
+    <ng-template pTemplate="content" let-event>
+      <app-collapse-card [data]="event"> </app-collapse-card>
+    </ng-template>
+  </p-timeline>
+</div>

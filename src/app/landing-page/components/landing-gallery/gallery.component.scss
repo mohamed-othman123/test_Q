@@ -1,0 +1,27 @@
+@use 'variables';
+@use 'mixins';
+
+.gallery {
+  position: relative;
+  margin-bottom: 70px;
+  @include mixins.sm(max) {
+    margin-bottom: 32px;
+  }
+
+  .section_shap {
+    position: absolute;
+    top: -30px;
+    z-index: 0;
+    inset-inline-end: 0;
+  }
+}
+
+.gallery_img {
+  height: 255px;
+  max-width: 400px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 60px;
+}

@@ -1,0 +1,14 @@
+@if (operationType === 'Income') {
+  <app-income
+    [paymentDetails]="paymentDetails"
+    [paymentMethods]="paymentMethods"
+    [bookingDetails]="bookingDetails"
+    [paymentId]="paymentId"
+    [form]="form"></app-income>
+} @else {
+  <app-refund
+    [paymentDetails]="paymentDetails"
+    [paymentMethods]="paymentMethods"
+    [bookingDetails]="bookingDetails"
+    [form]="form"></app-refund>
+}

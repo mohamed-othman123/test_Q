@@ -1,0 +1,116 @@
+@use 'variables';
+
+:host {
+  width: 100%;
+
+  .event-row {
+    display: flex;
+    gap: 20%;
+    margin-bottom: 15px;
+    position: relative;
+
+    &::after {
+      content: '';
+      width: 2px;
+      height: 100%;
+      background-color: red;
+      position: absolute;
+      right: -5px;
+    }
+
+    > span {
+      width: 40%;
+      font-size: 13px;
+    }
+
+    > div {
+      display: flex;
+      gap: 10px;
+
+      span {
+        position: relative;
+        cursor: pointer;
+        i.badge {
+          position: absolute;
+          top: -5px;
+          right: -4px;
+          background-color: rgb(6, 255, 2);
+          border-radius: 50%;
+          padding: 0px;
+          width: 15px;
+          height: 15px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          &.first {
+            background-color: #fdbe45;
+          }
+          &.second {
+            background-color: #1a2523;
+          }
+          &.third {
+            background-color: var(--primary-color);
+          }
+        }
+      }
+    }
+    img {
+      width: 18px;
+    }
+    &.morning {
+      &::after {
+        background-color: #fdbe45;
+      }
+    }
+
+    &.evening {
+      &::after {
+        background-color: #1a2523;
+      }
+    }
+
+    &.full {
+      &::after {
+        background-color: var(--primary-color);
+      }
+    }
+  }
+
+  .icon-check {
+    display: block;
+    width: 18px;
+    height: 20px;
+    background-color: red;
+    -webkit-mask: url(/assets/icons/check-circle.svg) no-repeat center;
+    mask: url(/assets/icons/check-circle.svg) no-repeat center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .icon-hourglass {
+    display: block;
+    width: 18px;
+    height: 20px;
+    -webkit-mask: url(/assets/icons/hourglass-bottom.svg) no-repeat center;
+    mask: url(/assets/icons/hourglass-bottom.svg) no-repeat center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .bg-morning {
+    background-color: #fdbe45;
+  }
+  .bg-evening {
+    background-color: #1a2523;
+  }
+  .bg-full {
+    background-color: var(--primary-color);
+  }
+}
+
+::ng-deep {
+  .p-overlaypanel .p-overlaypanel-content {
+    padding: 0;
+  }
+}

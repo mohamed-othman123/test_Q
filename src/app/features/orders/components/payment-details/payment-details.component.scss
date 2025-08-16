@@ -1,0 +1,271 @@
+@use 'mixins';
+@use 'variables';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+
+  h5 {
+    background-color: white;
+    padding: 1rem;
+  }
+
+  .wrapper {
+    padding: 1rem;
+    background-color: white;
+
+    .info-note {
+      padding: 10px;
+      background: #e7f5f2;
+      border-radius: 15px;
+      border: 1px solid #b2ded4;
+      margin-bottom: 20px;
+      p {
+        margin-bottom: 0;
+      }
+      .booking-plan {
+        border: 1px solid #e4dcdc;
+        border-radius: 8px;
+        width: fit-content;
+        overflow: hidden;
+        margin: 10px 0;
+
+        > p {
+          border-bottom: 1px solid #e5dcdc;
+          padding: 5px 10px;
+          &.current {
+            background-color: #d7ecd8;
+          }
+          &.next {
+            background-color: #ecd7d7;
+          }
+        }
+
+        .plan-content {
+          padding: 5px 10px;
+          background-color: white;
+          div {
+            display: flex;
+            gap: 30px;
+          }
+        }
+      }
+      button {
+        width: fit-content;
+        margin-bottom: 10px;
+      }
+    }
+
+    .fixed-price,
+    .radio-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-direction: row;
+      grid-column-end: span 2;
+      .custom-radio {
+        width: 140px;
+        height: 120px;
+        border: 1px solid #f0f0f0;
+        border-radius: 16px;
+        position: relative;
+        .el-radio {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+        }
+        label {
+          cursor: pointer;
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 8px;
+        }
+      }
+    }
+
+    app-input {
+      &.fixed-booking-price {
+        @include mixins.lg(variables.$min) {
+          grid-column: 1 / 2;
+        }
+      }
+
+      &.insurance {
+        @include mixins.lg(variables.$min) {
+          grid-column: auto;
+          &.with-fixed-price {
+            grid-column: 2 / 3;
+          }
+        }
+      }
+    }
+
+    .discount-wrapper {
+      position: relative;
+      margin-top: 2rem;
+
+      h6:first-of-type {
+        position: absolute;
+        top: -2rem;
+        margin: 0;
+      }
+
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      grid-column-end: span 2;
+      padding: 1rem;
+      border-radius: variables.$rounded-md;
+      border: 1px solid variables.$border-color;
+
+      .discount-value {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-direction: row;
+
+        app-input {
+          flex: 1;
+        }
+      }
+    }
+
+    .insurance {
+      grid-column-end: span 2;
+    }
+
+    .services {
+      grid-column-end: span 2;
+      border-radius: variables.$rounded-md;
+      overflow: hidden;
+
+      table {
+        width: 100%;
+      }
+
+      th,
+      td {
+        padding: 1rem;
+        text-align: center;
+      }
+
+      th {
+        background-color: variables.$primary-color;
+        color: white;
+      }
+
+      td {
+        background-color: variables.$light-gray;
+      }
+    }
+
+    .vat-field {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 20px;
+
+      .vat-value {
+        width: 100%;
+        padding: variables.$space-l;
+        text-align: start;
+        border-radius: variables.$space-xl;
+        border: 1px solid #f6f6f6;
+        background: #f8fafb;
+        color: variables.$primary-color;
+        font-weight: 600;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .summery {
+      grid-column-end: span 2;
+      border-radius: variables.$rounded-md;
+      overflow: hidden;
+
+      table {
+        width: 100%;
+
+        .total-price {
+          border-top: 1px solid variables.$border-color;
+
+          .value {
+            font-weight: bold;
+          }
+        }
+
+        .label {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.5rem;
+          padding: 1rem;
+          background-color: variables.$light-gray;
+
+          i {
+            color: variables.$primary-color;
+          }
+        }
+
+        .value {
+          background-color: variables.$primary-color;
+          color: white;
+          padding: 1rem;
+          text-align: center;
+          width: 13rem;
+        }
+      }
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      flex-direction: row;
+      grid-column-end: span 2;
+      justify-content: space-between;
+
+      p-button,
+      span {
+        margin-block: 1rem 0;
+        flex: 1 0;
+        max-width: 275px;
+      }
+
+      .previous {
+        padding: 12px;
+        border-radius: 12px;
+        text-align: center;
+        background: #fafafa;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+    }
+  }
+  .discount-error {
+    color: red;
+    font-size: 13px;
+    margin-bottom: 0;
+  }
+  .currency-label {
+    flex-basis: 20px;
+    height: 10px;
+  }
+}
+::ng-deep.p-button.p-button-sm {
+  padding: 0.5375rem 0.875rem !important;
+  position: relative;
+  top: 6px;
+}

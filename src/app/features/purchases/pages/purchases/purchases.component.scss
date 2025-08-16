@@ -1,0 +1,127 @@
+@use 'mixins';
+@use 'variables';
+
+:host {
+  .input-status-container {
+    position: relative;
+    width: 100%;
+
+    .p-dropdown {
+      width: 100%;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+
+      .p-dropdown-label {
+        padding-right: 35px;
+      }
+    }
+  }
+
+  :host ::ng-deep {
+    .p-button.options-button {
+      background: transparent;
+      border: none;
+      color: #4b5563;
+      padding: 8px;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.04);
+      }
+
+      .p-button-icon {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .status-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .status-tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    width: 200px;
+    z-index: 9999;
+    padding: 8px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid white;
+    }
+
+    &__content {
+      .item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        &__label {
+          font-weight: 500;
+          font-size: 12px;
+        }
+
+        &__value {
+          color: #797979;
+          font-size: 15px;
+        }
+      }
+    }
+  }
+
+  .p-menu {
+    width: 130px !important;
+  }
+
+  .icon-question {
+    background-color: var(--primary-color);
+    margin-right: 10px;
+    padding: 2px;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    margin-bottom: 0;
+  }
+}
+
+.dropdown-toggle {
+  background: var(--primary-color);
+  color: #fff;
+  font-weight: 500;
+
+  i {
+    margin-inline-end: 8px;
+  }
+
+  &::after {
+    display: none;
+  }
+}
+
+.dropdown-item {
+  color: rgb(51, 65, 85);
+}
+
+.dropdown-menu {
+  inset-inline-end: 0 !important;
+  inset-inline-start: unset !important;
+}

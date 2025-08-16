@@ -1,0 +1,75 @@
+@if (hallDetails.name) {
+  <div class="hall">
+    <div
+      class="sec_id"
+      id="hallDescription"
+      role="region"
+      aria-label="تفاصيل القاعة"></div>
+    <div class="container">
+      <div class="row pb-3">
+        <div class="col-12">
+          <div class="section_title text-center">
+            <h3>تفاصيل القاعة</h3>
+            <p>{{ hallDetails.description }}</p>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <div class="hall_info text-center">
+            <div class="icon d-flex align-items-center justify-content-center">
+              <img
+                src="assets/images/hall/hall-info-1.svg"
+                alt="رمز سعة صالة الطعام"
+                width="64"
+                height="64" />
+            </div>
+            <h3>سعة صالة الطعام</h3>
+            <p>{{ hallDetails.totalCapacity }} شخص</p>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <div class="hall_info text-center">
+            <div class="icon d-flex align-items-center justify-content-center">
+              <img
+                src="assets/images/hall/hall-info-2.svg"
+                alt="رمز سعة قسم الرجال"
+                width="64"
+                height="64" />
+            </div>
+            <h3>سعة قسم الرجال</h3>
+            <p>{{ hallDetails.mensCapacity }} شخص</p>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <div class="hall_info text-center">
+            <div class="icon d-flex align-items-center justify-content-center">
+              <img
+                src="assets/images/hall/hall-info-3.svg"
+                alt="رمز سعة قسم النساء"
+                width="64"
+                height="64" />
+            </div>
+            <h3>سعة قسم النساء</h3>
+            <p>{{ hallDetails.womensCapacity }} شخص</p>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <div class="hall_info text-center">
+            <div class="icon d-flex align-items-center justify-content-center">
+              <img
+                src="assets/images/hall/hall-info-4.svg"
+                alt="رمز تخصيص القاعة"
+                width="64"
+                height="64" />
+            </div>
+            <h3>القاعة مخصصة</h3>
+            <p>{{ hallType }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

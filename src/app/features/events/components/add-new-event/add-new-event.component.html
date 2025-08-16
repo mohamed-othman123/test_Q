@@ -1,0 +1,27 @@
+<app-drawer-form-wrapper [form]="form" (onSubmit)="submit()">
+  <app-input
+    [control]="formControls.name_ar"
+    [controlName]="'name_ar'"
+    inputType="text"
+    [placeholder]="'events.nameArPlaceholder' | translate"
+    [label]="'events.nameAr' | translate">
+    <i class="pi pi-calendar-plus" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="formControls.name"
+    [controlName]="'name'"
+    inputType="text"
+    [label]="'events.nameEn' | translate"
+    [placeholder]="'events.nameEnPlaceholder' | translate">
+    <i class="pi pi-calendar-plus" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="formControls.description"
+    [controlName]="'description'"
+    inputType="textarea"
+    [label]="'events.description' | translate"
+    [placeholder]="'events.description' | translate">
+  </app-input>
+</app-drawer-form-wrapper>

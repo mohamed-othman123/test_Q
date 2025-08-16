@@ -1,0 +1,127 @@
+<h5>{{ 'orders.attachments' | translate }}</h5>
+<div class="wrapper">
+  @if (mode !== 'view') {
+    <form (ngSubmit)="submit()" appShakeable [formGroup]="attachmentForm">
+      <app-input
+        class="attachment-name"
+        [control]="attachmentForm.controls.name"
+        [controlName]="'name'"
+        [label]="'orders.attachmentName' | translate"
+        [placeholder]="'orders.attachmentName' | translate">
+        <i class="pi pi-file" style="color: gray"></i>
+      </app-input>
+      @if (!editAttachmentMode) {
+        <app-file-upload
+          [accept]="acceptedFileTypes"
+          [control]="attachmentForm.controls.file"
+          [hint]="'orders.attachmentHint' | translate"
+          [title]="'orders.addAttachment' | translate">
+        </app-file-upload>
+      }
+      @if (editedAttachmentIndex === null) {
+        <p-button
+          label="{{ 'orders.addAttachment' | translate }}"
+          type="submit"
+        [icon]="'pi pi-plus'"></p-button>
+      }
+      @if (editedAttachmentIndex !== null) {
+        <div class="edit-actions">
+          <p-button
+            label="{{ 'common.update' | translate }}"
+            type="submit"
+          [icon]="'pi pi-pencil'"></p-button>
+          <p-button
+            severity="secondary"
+            (onClick)="cancelEdit()"
+            label="{{ 'common.cancel' | translate }}"
+            type="button"
+          [icon]="'pi pi-times'"></p-button>
+        </div>
+      }
+    </form>
+  }
+
+  <!-- added attachments table -->
+  @if (selectedAttachments.length > 0) {
+    <h5>
+      {{ 'orders.selectedAttachments' | translate }}
+    </h5>
+  }
+  <p-table
+    [paginator]="selectedAttachments.length > 5"
+    [rows]="5"
+    [rowsPerPageOptions]="[5, 10, 25]"
+    [totalRecords]="selectedAttachments.length"
+    [value]="selectedAttachments"
+    [tableStyle]="{'min-width': '50rem'}">
+    <ng-template pTemplate="header">
+      @if (selectedAttachments.length > 0) {
+        <tr>
+          <th>{{ 'orders.attachmentName' | translate }}</th>
+          <th style="width: fit-content"></th>
+        </tr>
+      }
+    </ng-template>
+    <ng-template pTemplate="body" let-attachment let-rowIndex="rowIndex">
+      <tr>
+        <td>{{ attachment.name }}</td>
+        <td>
+          <div
+            class="actions"
+            [inert]="editAttachmentMode"
+            [ngClass]="{'inEdit': editAttachmentMode}">
+            @if (mode !== 'view') {
+              <div
+                appConfirmDeleteDialog
+                [deletedItem]="'orders.attachment' | translate"
+                (acceptDelete)="deleteAttachment(rowIndex)"
+                class="action-button delete">
+                <i class="pi pi-trash"></i>
+                <span>{{ 'common.delete' | translate }}</span>
+              </div>
+            }
+            <div
+              (click)="openAttachment(attachment)"
+              class="action-button open">
+              <i class="pi pi-external-link"></i>
+              <span>{{ 'common.preview' | translate }}</span>
+            </div>
+            @if (mode !== 'view') {
+              <div
+                (click)="editAttachment(attachment, rowIndex)"
+                class="action-button edit">
+                <i class="pi pi-pencil"></i>
+                <span>{{ 'common.edit' | translate }}</span>
+              </div>
+            }
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <app-empty-state
+          [customMessage]="
+            'orders.noAttachments' | translate
+          "></app-empty-state>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- actions -->
+  <div class="actions">
+    <span (click)="changeStep(currentStep - 1)" class="previous">
+      <i
+        [ngClass]="
+          lang.dir === 'rtl' ? 'pi pi-arrow-right' : 'pi pi-arrow-left'
+        "></i>
+      {{ 'common.previous' | translate }}</span
+      >
+      <p-button
+        (click)="changeStep(currentStep + 1)"
+        type="button"
+        [icon]="lang.dir === 'rtl' ? 'pi pi-arrow-left' : 'pi pi-arrow-right'">
+        {{ 'common.next' | translate }}
+      </p-button>
+    </div>
+  </div>

@@ -1,0 +1,81 @@
+@use 'variables';
+@use 'mixins';
+
+:host {
+  position: absolute;
+  top: 0;
+  width: 100%;
+
+  .content {
+    height: 100%;
+    width: 30rem;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+
+    @include mixins.sm(variables.$max) {
+      width: 100%;
+    }
+
+    &.overly {
+      position: fixed;
+      z-index: 4;
+    }
+
+    @include mixins.rtl() {
+      left: 0;
+      right: unset;
+    }
+    @include mixins.ltr() {
+      right: 0;
+      left: unset;
+    }
+
+    > * {
+      width: 100%;
+      padding-inline: 1rem;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fafafa;
+      padding: 1rem;
+      width: 100%;
+
+      h6 {
+        font-weight: bold;
+        margin: 0;
+      }
+
+      > i {
+        border-radius: 50%;
+        background-color: white;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: medium;
+      }
+    }
+  }
+
+  &.hidden {
+    display: none;
+  }
+}
+
+#body-overlay {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  position: fixed;
+  top: 0;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.5);
+}

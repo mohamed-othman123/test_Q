@@ -1,0 +1,74 @@
+<i pRipple (click)="toggleSideNav()" class="pi pi-bars icon-wrapper"></i>
+<app-dropdown
+  class="hall-selector"
+  [control]="currentHall"
+  [options]="(hallsService.halls$ | async) || []"
+  [controlName]="'halls'"
+  [optionLabel]="'name'"
+  (onChange)="change($event)"
+  [placeholder]="'halls.hall' | translate"
+  [label]="'halls.hall' | translate"
+  [iconPath]="currentHall.value?.logo_url || '/assets/icons/landmark.svg'"
+  [addingNewHall]="auth.userData?.user?.type !== 'employee'"
+  [showLabel]="false">
+</app-dropdown>
+<app-search-input #searchInput></app-search-input>
+<div class="lang">
+  <span (click)="changeLang()" class="ar">ع</span>
+  <span (click)="changeLang()" class="en">EN</span>
+</div>
+<!-- <div class="notifications icon-wrapper">
+  <i class="pi pi-bell"></i>
+  <span>{{ 4 }}</span>
+</div> -->
+<div class="user">
+  <div pRipple class="wrapper" (click)="toggleUserOptions($event)">
+    <img
+      class="icon-wrapper"
+      src="assets/images/default-avatar.svg"
+      alt="default-avatar" />
+    <div class="wrapper__info">
+      <span>{{ auth.userData?.user?.name }}</span>
+      <p>
+        {{
+          langService.lang === 'ar'
+            ? auth.userData?.user?.role?.name_ar
+            : auth.userData?.user?.role?.name
+        }}
+      </p>
+    </div>
+  </div>
+  <div
+    [ngStyle]="{display: showUserOptions ? 'flex' : 'none'}"
+    class="drop-down">
+    <li (click)="navigateToUserProfile()">
+      <i class="pi pi-user"></i>
+      <span>{{ 'auth.personalAccount' | translate }}</span>
+    </li>
+    <li class="notifications-wrapper">
+      <div class="notifications">
+        <i class="pi pi-bell"></i>
+        <span>{{ 4 }}</span>
+      </div>
+      <span>{{ 'auth.notifications' | translate }}</span>
+    </li>
+    <li class="lang-wrapper" (click)="changeLang()">
+      <i class="pi pi-language"></i>
+      <span> {{ langService.lang === 'ar' ? 'English' : 'عربي' }} </span>
+    </li>
+    <li class="search-wrapper" (click)="searchInput.search()">
+      <i class="pi pi-search"></i>
+      <span> {{ 'common.search' | translate }} </span>
+    </li>
+    <li
+      *appHasPermission="['read:organization']"
+      (click)="navigateToOrganization()">
+      <i class="pi pi-building"></i>
+      <span>{{ 'organizationInfo.title' | translate }}</span>
+    </li>
+    <li (click)="signOut()">
+      <i class="pi pi-sign-out"></i>
+      <span>{{ 'auth.signOut' | translate }}</span>
+    </li>
+  </div>
+</div>

@@ -1,0 +1,523 @@
+@if (supplier) {
+  <div class="mb-4">
+    <info-tooltip
+      [createdBy]="supplier.created_by"
+      [createdAt]="supplier.created_at"
+      [updatedBy]="supplier.updated_by"
+      [updatedAt]="supplier.updated_at">
+    </info-tooltip>
+  </div>
+}
+
+<form [formGroup]="form" appShakeable (ngSubmit)="submit()" class="content">
+  <div class="header">
+    <h6>{{ 'suppliers.supplier' | translate }}</h6>
+  </div>
+
+  <div class="section">
+    <h4>{{ 'suppliers.supplierDetails' | translate }}</h4>
+    <div class="form-grid">
+      <app-input
+        [control]="getControl('name')"
+        [controlName]="'name'"
+        inputType="text"
+        [placeholder]="'suppliers.namePlaceholder' | translate"
+        [label]="'suppliers.supplierName' | translate"
+        [disabled]="isViewMode">
+        <i class="pi pi-user" style="color: gray"></i>
+      </app-input>
+
+      @if (!isViewMode) {
+        <app-phone-input
+          [control]="getControl('phone')"
+          [label]="'fields.mobileNo' | translate"
+          [placeholder]="'fields.mobileNoPlaceholder' | translate"
+          [phoneNumber]="supplier?.phone">
+          <i class="pi pi-phone" style="color: gray"></i>
+        </app-phone-input>
+      } @else {
+        <app-input
+          [control]="getControl('phone')"
+          [controlName]="'phone'"
+          [label]="'fields.mobileNo' | translate"
+          [disabled]="true">
+          <i class="pi pi-phone" style="color: gray"></i>
+        </app-input>
+      }
+
+      <app-input
+        [control]="getControl('commercialRegistrationNumber')"
+        [controlName]="'commercialRegistrationNumber'"
+        inputType="text"
+        [placeholder]="
+          'suppliers.commercialRegistrationNumberPlaceholder' | translate
+        "
+        [label]="'suppliers.commercialRegistrationNumber' | translate"
+        [disabled]="isViewMode">
+        <i class="pi pi-id-card" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getControl('taxRegistrationNumber')"
+        [controlName]="'taxRegistrationNumber'"
+        inputType="text"
+        [placeholder]="'suppliers.taxRegistrationNumberPlaceholder' | translate"
+        [label]="'suppliers.taxRegistrationNumber' | translate"
+        [disabled]="isViewMode">
+        <i class="pi pi-id-card" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getControl('email')"
+        [controlName]="'email'"
+        inputType="email"
+        [placeholder]="'suppliers.emailPlaceholder' | translate"
+        [label]="'suppliers.email' | translate"
+        [disabled]="isViewMode">
+        <i class="pi pi-envelope" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getControl('address')"
+        [controlName]="'address'"
+        inputType="text"
+        [placeholder]="'suppliers.addressPlaceholder' | translate"
+        [label]="'suppliers.address' | translate"
+        [disabled]="isViewMode">
+        <i class="pi pi-map-marker" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getControl('activity')"
+        [controlName]="'activity'"
+        inputType="text"
+        [placeholder]="'suppliers.activityPlaceholder' | translate"
+        [label]="'suppliers.activity' | translate"
+        [disabled]="isViewMode">
+        <i class="pi pi-briefcase" style="color: gray"></i>
+      </app-input>
+
+      @if (isEditMode) {
+        <app-dropdown
+          [control]="getControl('active')"
+          [options]="statusOptions"
+          [controlName]="'active'"
+          [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+          [optionValue]="'value'"
+          [placeholder]="'suppliers.selectStatus' | translate"
+          [label]="'suppliers.supplierStatus' | translate"
+          [disabled]="isViewMode">
+          <i class="pi pi-check" style="color: gray"></i>
+        </app-dropdown>
+      }
+
+      <app-input
+        class="full-width"
+        [control]="getControl('note')"
+        [controlName]="'note'"
+        inputType="textarea"
+        [placeholder]="'suppliers.notePlaceholder' | translate"
+        [label]="'suppliers.note' | translate"
+        [disabled]="isViewMode">
+        <i class="pi pi-sticky" style="color: gray"></i>
+      </app-input>
+    </div>
+  </div>
+
+  <!--payment methods-->
+  <app-supplier-payment-methods
+    [paymentMethods]="paymentMethods"
+    [supplier]="supplier">
+  </app-supplier-payment-methods>
+
+  <div class="section">
+    <h4>{{ 'suppliers.products' | translate }}</h4>
+    <form
+      (ngSubmit)="addProduct()"
+      appShakeable
+      [formGroup]="productsForm"
+      class="products-form">
+      @if (!isViewMode) {
+        <div class="form-grid">
+          <div class="row product-form-container">
+            <div class="col-md-3">
+              <app-input
+                [control]="getProductControl('name_ar')"
+                [controlName]="'name_ar'"
+                inputType="text"
+                [placeholder]="'suppliers.productNameArPlaceholder' | translate"
+                [label]="'suppliers.productNameAr' | translate"
+                [disabled]="isViewMode">
+                <i class="pi pi-shopping-cart" style="color: gray"></i>
+              </app-input>
+            </div>
+            <div class="col-md-3">
+              <app-input
+                [control]="getProductControl('name')"
+                [controlName]="'name'"
+                inputType="text"
+                [placeholder]="'suppliers.productNameEnPlaceholder' | translate"
+                [label]="'suppliers.productNameEn' | translate"
+                [disabled]="isViewMode">
+                <i class="pi pi-shopping-cart" style="color: gray"></i>
+              </app-input>
+            </div>
+            <div class="col-md-3">
+              <app-input
+                [control]="getProductControl('price')"
+                [controlName]="'price'"
+                inputType="number"
+                [placeholder]="'suppliers.productPricePlaceholder' | translate"
+                [label]="'suppliers.productPrice' | translate"
+                [disabled]="isViewMode">
+                <i class="pi pi-money-bill" style="color: gray"></i>
+              </app-input>
+            </div>
+            <div class="col-md-3 d-flex align-items-center">
+              <div class="button-group">
+                @if (!isEditingProduct) {
+                  <p-button
+                    type="submit"
+                    [icon]="'pi pi-plus'"
+                    label="{{ 'suppliers.addNewProduct' | translate }}">
+                  </p-button>
+                }
+                @if (isEditingProduct) {
+                  <p-button
+                    type="submit"
+                    [icon]="'pi pi-check'"
+                    label="{{ 'common.update' | translate }}"
+                    styleClass="p-button-success">
+                  </p-button>
+                  <p-button
+                    type="button"
+                    [icon]="'pi pi-times'"
+                    (onClick)="cancelEdit()"
+                    label="{{ 'common.cancel' | translate }}"
+                    styleClass="p-button-secondary">
+                  </p-button>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </form>
+
+    <div [class.editing-overlay]="isEditingProduct">
+      @if (selectedProducts.length > 0 && !isViewMode) {
+        <h5>
+          {{ 'suppliers.selectedProducts' | translate }}
+        </h5>
+      }
+
+      <p-table
+        [paginator]="selectedProducts.length > 5"
+        [rows]="5"
+        [rowsPerPageOptions]="[5, 10, 25]"
+        [value]="selectedProducts"
+        [tableStyle]="{'min-width': '50rem'}">
+        <ng-template pTemplate="header">
+          @if (selectedProducts.length > 0) {
+            <tr>
+              <th>{{ 'suppliers.productName' | translate }}</th>
+              <th>{{ 'suppliers.productPrice' | translate }}</th>
+              <th style="width: fit-content"></th>
+            </tr>
+          }
+        </ng-template>
+        <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+          <tr [class.editing-row]="editingProductIndex === rowIndex">
+            <td>{{ lang.lang === 'ar' ? product.name_ar : product.name }}</td>
+            <td>
+              <span class="price-with-symbol">
+                <sar-symbol />
+                <span>
+                  {{ product.price }}
+                </span>
+              </span>
+            </td>
+            <td>
+              @if (!isViewMode) {
+                <div
+                  style="margin-top: 0; justify-content: unset"
+                  class="actions">
+                  <div
+                    (click)="editProduct(rowIndex)"
+                    class="action-button edit"
+                    [class.disabled]="
+                      isEditingProduct && editingProductIndex !== rowIndex
+                    ">
+                    <i class="pi pi-pencil"></i>
+                    <span>{{ 'common.edit' | translate }}</span>
+                  </div>
+                  <div
+                    appConfirmDeleteDialog
+                    [deletedItem]="'suppliers.product' | translate"
+                    (acceptDelete)="deleteProduct(rowIndex)"
+                    class="action-button delete">
+                    <i class="pi pi-trash"></i>
+                    <span>{{ 'common.delete' | translate }}</span>
+                  </div>
+                </div>
+              }
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <app-empty-state
+              [customMessage]="'suppliers.noProducts' | translate">
+            </app-empty-state>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <!--supplier services-->
+  @if (supplierServices.length) {
+    <div class="supplier-services">
+      <h5>
+        {{ 'suppliers.services' | translate }}
+      </h5>
+      <p-table
+        [paginator]="(supplierServices.length || 0) > 5"
+        [rows]="5"
+        [rowsPerPageOptions]="[5, 10, 25]"
+        [value]="supplierServices || []"
+        [tableStyle]="{'min-width': '50rem'}">
+        <ng-template pTemplate="header">
+          @if (supplierServices.length > 0) {
+            <tr>
+              <th>{{ 'suppliers.serviceName' | translate }}</th>
+              <th>{{ 'suppliers.servicePrice' | translate }}</th>
+              <th>{{ 'suppliers.serviceCost' | translate }}</th>
+            </tr>
+          }
+        </ng-template>
+        <ng-template pTemplate="body" let-service let-rowIndex="rowIndex">
+          <tr>
+            <td>{{ lang.lang === 'ar' ? service.name_ar : service.name }}</td>
+            <td>
+              <span class="price-with-symbol">
+                <sar-symbol />
+                <span>
+                  {{ service.price }}
+                </span>
+              </span>
+            </td>
+            <td>
+              <span class="price-with-symbol">
+                <sar-symbol />
+                <span>
+                  {{ service.cost }}
+                </span>
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  }
+
+  @if (isViewMode && supplier) {
+    <div class="section supplier-expenses">
+      <h4>{{ 'suppliers.expenses' | translate }}</h4>
+      <p-table
+        #expensesTable
+        [value]="supplierExpenses"
+        dataKey="id"
+        [rows]="expensesRows"
+        [lazy]="true"
+        [totalRecords]="expensesTotalRecords"
+        [rowsPerPageOptions]="expensesRowsPerPageOptions"
+        [first]="expensesFirst"
+        [paginator]="true"
+        [loading]="expensesLoading"
+        (onLazyLoad)="onExpensesLazyLoad($event)"
+        [tableStyle]="{'min-width': '50rem'}">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>{{ 'purchases.expenseType' | translate }}</th>
+            <th pSortableColumn="invoiceReference">
+              {{ 'purchases.invoiceReference' | translate }}
+              <p-sortIcon field="invoiceReference" class="mr-12px"></p-sortIcon>
+            </th>
+            <th pSortableColumn="purchaseDate">
+              {{ 'purchases.purchaseDate' | translate }}
+              <p-sortIcon field="purchaseDate" class="mr-12px"></p-sortIcon>
+            </th>
+            <th pSortableColumn="dueDate">
+              {{ 'purchases.payingDate' | translate }}
+              <p-sortIcon field="dueDate" class="mr-12px"></p-sortIcon>
+            </th>
+            <th pSortableColumn="totalPayable">
+              {{ 'purchases.totalAmount' | translate }}
+              <p-sortIcon field="totalPayable" class="mr-12px"></p-sortIcon>
+            </th>
+            <th>{{ 'purchases.purchaseStatus' | translate }}</th>
+            <!--          <th style="width: fit-content"></th>-->
+          </tr>
+          <tr>
+            <th>
+              <app-dropdown
+                appendTo="body"
+                [control]="$any(filterForm.get('type'))"
+                [options]="expenseTypes"
+                [controlName]="'type'"
+                [optionLabel]="'label.' + lang.lang"
+                [optionValue]="'value'"
+                [placeholder]="'purchases.expenseType' | translate"
+                [showClear]="true">
+              </app-dropdown>
+            </th>
+            <th>
+              <app-input
+                [control]="filterForm.get('invoiceReference')!"
+                [controlName]="'invoiceReference'"
+                inputType="text"
+                [showLabel]="false"
+                [placeholder]="'common.search' | translate">
+                <i class="pi pi-search" style="color: #667085"></i>
+              </app-input>
+            </th>
+            <th style="min-width: 200px">
+              <app-gregorian-date-picker
+                [control]="$any(filterForm.get('purchaseDate'))"
+                controlName="purchaseDate"
+                [showClear]="true"
+                [placeholder]="'purchases.selectDate' | translate">
+              </app-gregorian-date-picker>
+            </th>
+            <th style="min-width: 200px">
+              <app-gregorian-date-picker
+                [control]="$any(filterForm.get('dueDate'))"
+                controlName="dueDate"
+                [showClear]="true"
+                [placeholder]="'purchases.selectDate' | translate">
+              </app-gregorian-date-picker>
+            </th>
+            <th>
+              <app-input
+                [control]="filterForm.get('totalAmount')!"
+                [controlName]="'totalAmount'"
+                inputType="text"
+                [showLabel]="false"
+                [placeholder]="'common.search' | translate">
+                <i class="pi pi-search" style="color: #667085"></i>
+              </app-input>
+            </th>
+            <th style="min-width: 200px">
+              <app-dropdown
+                appendTo="body"
+                [control]="filterForm.get('status')!"
+                [options]="purchaseStatuses"
+                [controlName]="'status'"
+                [optionLabel]="'label.' + lang.lang"
+                [optionValue]="'value'"
+                [placeholder]="'purchases.purchaseStatus' | translate"
+                [showClear]="true">
+              </app-dropdown>
+            </th>
+            <!--          <th></th>-->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-expense>
+          <tr>
+            <td>
+              {{
+                expense.category?.type === 'Purchases'
+                  ? ('purchases.purchasesExpenses' | translate)
+                  : ('purchases.generalExpenses' | translate)
+              }}
+            </td>
+            <td>{{ expense.invoiceReference }}</td>
+            <td style="min-width: 200px">
+              {{ expense.purchaseDate | date: 'dd/MM/yyyy' : 'UTC' }}
+            </td>
+            <td style="min-width: 200px">
+              {{ expense.dueDate | date: 'dd/MM/yyyy' : 'UTC' }}
+            </td>
+            <td>
+              <span class="price-with-symbol">
+                <sar-symbol />
+                <span>{{ expense.totalPayable || 0 | number: '1.2-2' }}</span>
+              </span>
+            </td>
+            <td>
+              <app-status-badge [status]="expense.status"></app-status-badge>
+            </td>
+            <!--          <td>-->
+            <!--            <div ngbDropdown container="body" class="d-inline-block">-->
+            <!--              <button-->
+            <!--                type="button"-->
+            <!--                class="options-button"-->
+            <!--                id="expenseDropdown"-->
+            <!--                ngbDropdownToggle>-->
+            <!--                <span class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>-->
+            <!--                {{ 'common.options' | translate }}-->
+            <!--              </button>-->
+            <!--              <div-->
+            <!--                ngbDropdownMenu-->
+            <!--                aria-labelledby="expenseDropdown"-->
+            <!--                class="p-menu p-menu-overlay">-->
+            <!--                <button-->
+            <!--                  ngbDropdownItem-->
+            <!--                  (click)="viewExpense(expense)"-->
+            <!--                  class="d-flex gap-3">-->
+            <!--                  <i class="pi pi-eye"></i>-->
+            <!--                  <span>{{ 'common.view' | translate }}</span>-->
+            <!--                </button>-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--          </td>-->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7">
+              <app-empty-state
+                [customMessage]="'suppliers.noExpenses' | translate">
+              </app-empty-state>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  }
+
+  <div class="actions">
+    <p-button
+      (onClick)="cancel()"
+      type="button"
+      [icon]="'pi pi-times'"
+      label="{{ 'common.cancel' | translate }}"
+      styleClass="p-button-secondary">
+    </p-button>
+
+    @if (!isViewMode) {
+      <p-button
+        type="submit"
+        label="{{
+          isEditMode
+            ? ('common.update' | translate)
+            : ('common.save' | translate)
+        }}"
+        [icon]="'pi pi-save'">
+      </p-button>
+    } @else {
+      <p-button
+        *appHasPermission="['update:service']"
+        (onClick)="editSupplier()"
+        type="button"
+        label="{{ 'common.edit' | translate }}"
+        [icon]="'pi pi-pencil'">
+      </p-button>
+    }
+  </div>
+</form>
+
+@if (supplier) {
+  <comments [entityId]="supplier.id!" [type]="commentType.SUPPLIER"></comments>
+}

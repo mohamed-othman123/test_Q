@@ -1,0 +1,144 @@
+@if (showAddNew) {
+  @if (showLabel && label) {
+    <label [for]="controlName">
+      {{ label }}@if (control.hasError('required')) {
+      <span>*</span>
+    }
+  </label>
+}
+<div
+  class="input-container"
+  #shakeableContent
+  [ngClass]="{shake: shake && !dropdown.overlayVisible}">
+  @if (iconPath) {
+    <div class="icon">
+      <img [src]="iconPath" alt="" />
+    </div>
+  } @else {
+    <div class="icon">
+      <ng-content select="i"></ng-content>
+    </div>
+  }
+  <p-dropdown
+    [dataKey]="dataKey"
+    [appendTo]="appendTo"
+    [emptyMessage]="emptyMessage"
+    #dropdown
+    class="input-field"
+    [options]="options"
+    [formControl]="$any(control)"
+    [optionLabel]="optionLabel"
+    [optionValue]="optionValue"
+    [filter]="filter"
+    [showClear]="showClear"
+    (onClear)="valueCleared()"
+    [filterBy]="filterBy"
+    [id]="controlName"
+    [pattern]="pattern"
+    (onBlur)="blurred()"
+    (onFocus)="focused()"
+    (onChange)="handleChange()"
+    [placeholder]="placeholder">
+    <ng-template let-option pTemplate="item">
+      <div class="flex align-items-center gap-2">
+        <div>{{ option | optionLabel: optionLabel }}</div>
+      </div>
+    </ng-template>
+    <ng-template let-option pTemplate="selectedItem">
+      <div>{{ option | optionLabel: optionLabel }}</div>
+    </ng-template>
+    @if (addingNewHall) {
+      <ng-template pTemplate="footer">
+        <div class="dropdown-divider"></div>
+        <div class="add-new-item" (click)="addNewHall($event)">
+          <i class="pi pi-plus"></i>
+          <span>{{ 'halls.addNewHall' | translate }}</span>
+        </div>
+      </ng-template>
+    }
+    @if (showAddNew) {
+      <ng-template pTemplate="footer">
+        <div class="dropdown-divider"></div>
+        <div class="add-new-item" (click)="addNewItem()">
+          <i class="pi pi-plus"></i>
+          <span>{{ addNewLabel }}</span>
+        </div>
+      </ng-template>
+    }
+  </p-dropdown>
+</div>
+@if (control.touched && control.invalid && translatedError) {
+  <span class="errors">
+    <img src="/assets/icons/exclamation.icon.svg" alt="" />
+    <span>{{ translatedError }}</span>
+  </span>
+}
+}
+
+@if (!showAddNew) {
+  @if (showLabel && label) {
+    <label [for]="controlName">
+      {{ label }}@if (control.hasError('required')) {
+      <span>*</span>
+    }
+  </label>
+}
+<div
+  class="input-container"
+  #shakeableContent
+  [ngClass]="{shake: shake && !dropdown.overlayVisible}">
+  @if (iconPath) {
+    <div class="icon">
+      <img [src]="iconPath" alt="" />
+    </div>
+  } @else {
+    <div class="icon">
+      <ng-content select="i"></ng-content>
+    </div>
+  }
+  <p-dropdown
+    [dataKey]="dataKey"
+    [appendTo]="appendTo"
+    [emptyMessage]="emptyMessage"
+    #dropdown
+    class="input-field"
+    [options]="options"
+    [formControl]="$any(control)"
+    [optionLabel]="optionLabel"
+    [optionValue]="optionValue"
+    [filter]="filter"
+    [showClear]="showClear"
+    (onClear)="valueCleared()"
+    [filterBy]="filterBy"
+    [id]="controlName"
+    [pattern]="pattern"
+    (onBlur)="blurred()"
+    (onFocus)="focused()"
+    (onChange)="handleChange()"
+    [placeholder]="placeholder">
+    <ng-template let-option pTemplate="item">
+      <div class="flex align-items-center gap-2">
+        <div>{{ option | optionLabel: optionLabel }}</div>
+      </div>
+    </ng-template>
+    <ng-template let-option pTemplate="selectedItem">
+      <div>{{ option | optionLabel: optionLabel }}</div>
+    </ng-template>
+    @if (addingNewHall) {
+      <ng-template pTemplate="footer">
+        <div class="dropdown-divider"></div>
+        <div class="add-new-item" (click)="addNewHall($event)">
+          <i class="pi pi-plus"></i>
+          <span>{{ 'halls.addNewHall' | translate }}</span>
+        </div>
+      </ng-template>
+    }
+  </p-dropdown>
+</div>
+@if (control.touched && control.invalid && translatedError) {
+  <span class="errors">
+    <img src="/assets/icons/exclamation.icon.svg" alt="" />
+    <span>{{ translatedError }}</span>
+  </span>
+}
+}

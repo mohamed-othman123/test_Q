@@ -1,0 +1,49 @@
+<app-header></app-header>
+@if (landingPageData) {
+  <div class="page_content" id="home">
+    <app-hero
+      (orderPricingRequested)="openOrderPricing()"
+      [heroData]="landingPageData"
+      [lang]="lang"></app-hero>
+
+    @for (section of landingPageData.sections; track section) {
+      @if (section?.type === 'features') {
+        <app-about [lang]="lang" [section]="section"></app-about>
+      }
+      @if (section?.type === 'services') {
+        <app-features
+          [lang]="lang"
+          (orderPricingRequested)="openOrderPricing()"
+          [section]="section"></app-features>
+      }
+    }
+
+    <app-landing-departments
+      [hallDepartmentsData]="
+        landingPageData.hall?.hallSections
+      "></app-landing-departments>
+
+    @for (section of landingPageData.sections; track section) {
+      @if (section?.type === 'images') {
+        <app-gallery [lang]="lang" [section]="section"></app-gallery>
+      }
+      @if (section?.type === 'popularQuestions') {
+        <app-faqs [lang]="lang" [section]="section"></app-faqs>
+      }
+      @if (section?.type === 'customers') {
+        <app-clients [lang]="lang" [section]="section"></app-clients>
+      }
+    }
+
+    <app-contacts [contactDetails]="landingPageData"></app-contacts>
+  </div>
+}
+@if (landingPageData) {
+  <app-footer [data]="landingPageData"></app-footer>
+}
+
+@if (isOrderPricingVisible) {
+  <app-order-pricing
+    [hallData]="landingPageData.hall"
+    (close)="closeOrderPricing()"></app-order-pricing>
+}

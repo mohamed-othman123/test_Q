@@ -1,0 +1,283 @@
+@use 'variables';
+
+:host {
+  background: white;
+  border-radius: 8px;
+  margin-inline: 1.5rem;
+  display: block;
+  overflow: scroll;
+
+  @media (max-width: variables.$screen-md-min) {
+    margin-inline: 0.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.calendar-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  min-width: 1024px;
+
+  @media (max-width: variables.$screen-md-min) {
+    width: fit-content;
+    min-width: 768px;
+  }
+
+  @media (max-width: variables.$screen-sm-min) {
+    width: fit-content;
+    min-width: 600px;
+  }
+
+  .dimmed-days {
+    opacity: 0.2;
+    pointer-events: none;
+  }
+
+  .weekend-bg {
+    background-color: #f8fafb;
+  }
+
+  .today {
+    background-color: #d2eee8 !important;
+  }
+
+  .hijri-day-color {
+    color: #1eaa8f;
+  }
+
+  .weekend-bg:hover {
+    background-color: #e0e0e0;
+  }
+
+  ::ng-deep {
+    .cal-header {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: variables.$light-gray;
+      border: 1px solid variables.$light-gray;
+      border-top-left-radius: variables.$rounded-sm;
+      border-top-right-radius: variables.$rounded-sm;
+      min-width: 700px;
+
+      .cal-cell {
+        padding: 0.5rem;
+        font-size: 1rem;
+        font-weight: bold;
+        color: black;
+        text-align: center;
+        min-width: 100px;
+        border-right: 1px solid variables.$light-gray;
+
+        &:first-child {
+          border-right: none;
+        }
+
+        &:hover {
+          background: transparent;
+        }
+
+        @media (max-width: variables.$screen-md-min) {
+          padding: 0.25rem;
+          font-size: 0.875rem;
+        }
+      }
+    }
+
+    .cal-event {
+      background-color: #1e90ff;
+      border-color: #d1e8ff;
+      color: #fff;
+    }
+
+    .cal-days {
+      border: 1px solid variables.$light-gray;
+      border-bottom-left-radius: variables.$rounded-sm;
+      border-bottom-right-radius: variables.$rounded-sm;
+    }
+
+    .cal-month-view .cal-day-cell.cal-in-month.cal-has-events {
+      cursor: inherit;
+    }
+  }
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px;
+  background: white;
+
+  @media (max-width: variables.$screen-md-min) {
+    min-width: 768px;
+  }
+
+  @media (max-width: variables.$screen-sm-min) {
+    min-width: 600px;
+  }
+
+  &__date {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    svg {
+      @media (max-width: variables.$screen-md-min) {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  }
+
+  &__action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 400;
+    text-align: center;
+    padding: variables.$space-l;
+    border-radius: 16px;
+    border: 1px solid #f6f6f6;
+    outline: none;
+    color: black;
+    background: #f8fafb;
+    min-width: 280px;
+    justify-content: center;
+
+    svg {
+      cursor: pointer;
+    }
+
+    div {
+      min-width: 150px;
+    }
+
+    &:hover {
+      border-color: #b4e4d6 !important;
+    }
+  }
+}
+
+.calendar-day {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  padding: 12px;
+  font-size: 16px;
+  position: relative;
+  font-weight: 700;
+  border-radius: 4px;
+  color: #303134;
+  width: 100%;
+  height: 100%;
+  gap: 10px;
+  min-height: 130px;
+  min-width: 100px;
+
+  .cal-day-dates {
+    display: flex;
+    justify-content: space-between;
+    min-height: unset;
+
+    .date-type {
+      font-size: 0.7em;
+      margin-right: 2px;
+      font-weight: 700;
+    }
+  }
+
+  .day-events {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    position: relative;
+    height: 100%;
+
+    .events-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+
+      .add-event-icon {
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+
+        &:hover {
+          transform: scale(1.1);
+          transition: transform 0.2s ease;
+        }
+      }
+    }
+
+    .first-event {
+      width: 100%;
+      height: 100%;
+      min-height: 37px;
+      border-radius: 6px;
+      padding: 10px 8px;
+      background-color: #e6feee;
+      color: #006d58;
+      font-weight: 400;
+      text-align: right;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+
+      .event__title {
+        white-space: pre-line;
+        line-height: 1.4;
+        text-align: right;
+        font-size: 12px;
+
+        .event-name {
+          color: #006d58;
+          font-weight: 500;
+          margin-bottom: 4px;
+        }
+
+        .event-type {
+          color: #1eaa8f;
+          font-size: 10px;
+          font-weight: 400;
+        }
+
+        .event-count {
+          position: absolute;
+          top: 4px;
+          left: 4px;
+          background-color: #1eaa8f;
+          color: white;
+          border-radius: 50%;
+          width: 18px;
+          height: 18px;
+          font-size: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 500;
+        }
+
+        ::ng-deep span {
+          display: inline-block;
+          margin-left: 4px;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}

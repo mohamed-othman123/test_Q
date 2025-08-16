@@ -1,0 +1,25 @@
+@use 'variables';
+:host ::ng-deep {
+  .otp-input {
+    margin-right: 0 !important;
+    caret-color: transparent !important;
+    padding-top: 7px;
+  }
+
+  .wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    direction: ltr;
+  }
+  .form-group {
+    text-align: center;
+  }
+  .form {
+    display: flex;
+    flex-direction: column;
+    .p-button {
+      justify-content: center;
+    }
+  }
+}

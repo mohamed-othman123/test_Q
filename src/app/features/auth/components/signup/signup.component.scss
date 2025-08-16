@@ -1,0 +1,11 @@
+@use 'variables';
+:host {
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: variables.$space-xl;
+    p-button{
+      margin-top: 8px;
+    }
+  }
+}

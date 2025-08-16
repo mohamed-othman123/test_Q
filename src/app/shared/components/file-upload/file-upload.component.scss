@@ -1,0 +1,99 @@
+@use 'variables';
+@use 'mixins';
+
+$file-upload-size: 120px;
+:host {
+  padding: 1rem;
+
+  h6 {
+    span {
+      color: red;
+      font-weight: bold;
+    }
+  }
+
+  .file-upload {
+    background-color: #f8fafb;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    min-height: $file-upload-size;
+    justify-content: center;
+    align-items: center;
+    padding-block: 1rem;
+    border-radius: 1rem;
+    cursor: pointer;
+
+    @include mixins.sm(variables.$max) {
+      width: auto;
+    }
+
+    img {
+      height: $file-upload-size;
+      border-radius: 1rem;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .pi-upload {
+      font-size: 2rem;
+      color: #1eaa8f;
+      height: 100px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease-in-out;
+
+      &:hover {
+        transform: translateY(-10px);
+      }
+    }
+
+    .trash {
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      .pi-trash {
+        font-size: 1.5rem;
+        color: variables.$red;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease-in-out;
+
+        &:hover {
+          transform: scale(1.2);
+        }
+      }
+    }
+
+    &:hover {
+      .trash {
+        display: flex;
+      }
+    }
+
+    .opacity {
+      opacity: 0.5;
+    }
+  }
+  .errors {
+    position: relative;
+    top: 0px;
+  }
+}

@@ -1,0 +1,370 @@
+@use 'variables';
+@use 'mixins';
+
+.color-extractor-container {
+  padding: variables.$space-l;
+
+  h5,
+  h6 {
+    font-weight: 600;
+    margin-bottom: variables.$space-l;
+  }
+}
+
+.image-preview-panel {
+  background-color: #fff;
+  border-radius: variables.$rounded-sm;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .image-container {
+    position: relative;
+    height: 260px;
+    overflow: hidden;
+
+    .image-wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: repeating-conic-gradient(variables.$light-gray 0% 25%, #f1f3f5 0% 50%) 50% / 20px 20px;
+      overflow: hidden;
+    }
+
+    .preview-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+
+      .spinner-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+
+        i {
+          font-size: 2rem;
+          color: variables.$primary-color;
+        }
+
+        span {
+          font-size: 0.9rem;
+          color: variables.$hall_dark_color;
+        }
+      }
+    }
+  }
+
+  .color-actions {
+    padding: variables.$space-l;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .color-tabs {
+      display: flex;
+      gap: variables.$space-sm;
+      flex: 1;
+
+      .color-tab {
+        padding: variables.$space-sm variables.$space-l;
+        border-radius: variables.$rounded-l;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: variables.$space-sm;
+        transition: transform 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        i {
+          font-size: 0.8rem;
+        }
+
+        &:hover {
+          transform: translateY(-2px);
+        }
+
+        &.active {
+          outline: 2px solid variables.$hall_dark_color;
+          outline-offset: 2px;
+        }
+      }
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: variables.$space-sm;
+
+      .swap-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: variables.$rounded-full;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: variables.$light-gray;
+        border: 1px solid variables.$border-color;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: #e9ecef;
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+}
+
+.color-selection-panel {
+  background-color: #fff;
+  border-radius: variables.$rounded-sm;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: variables.$space-3xl;
+  height: 100%;
+
+  .header-section {
+    margin-bottom: variables.$space-3xl;
+
+    h5 {
+      margin-bottom: variables.$space-sm;
+      color: variables.$hall_dark_color;
+    }
+
+    .selection-hint {
+      display: flex;
+      align-items: center;
+      gap: variables.$space-sm;
+      font-size: 0.9rem;
+      color: variables.$hall_dark_color;
+
+      i {
+        color: variables.$primary-color;
+      }
+    }
+  }
+
+  .error-message {
+    background-color: rgba(255, 193, 7, 0.2);
+    border-left: 4px solid variables.$orange;
+    padding: variables.$space-l;
+    margin-bottom: variables.$space-3xl;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    i {
+      color: variables.$orange;
+      font-size: 1.2rem;
+    }
+
+    span {
+      color: variables.$hall_dark_color;
+      font-size: 0.9rem;
+    }
+  }
+
+  .color-grid-container {
+    margin-bottom: variables.$space-3xl;
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: variables.$space-l;
+
+      .color-swatch {
+        height: 100px;
+        border-radius: variables.$rounded-sm;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s ease,
+        box-shadow 0.2s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        &.selected-primary {
+          outline: 3px solid variables.$hall_dark_color;
+          outline-offset: 2px;
+          transform: scale(1.05);
+          z-index: 2;
+        }
+
+        &.selected-secondary {
+          outline: 3px solid variables.$hall_dark_color;
+          outline-offset: 2px;
+          transform: scale(1.05);
+          z-index: 2;
+        }
+
+        .hex-value {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          padding: variables.$space-sm;
+          font-size: 0.75rem;
+          font-family: monospace;
+          text-align: center;
+          background-color: rgba(0, 0, 0, 0.3);
+          backdrop-filter: blur(2px);
+        }
+
+        .selection-indicator {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 4px 8px;
+          background-color: rgba(0, 0, 0, 0.6);
+          border-radius: variables.$rounded-l;
+          backdrop-filter: blur(2px);
+
+          i {
+            font-size: 0.75rem;
+            color: #fff;
+          }
+
+          span {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+
+  .no-colors-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: variables.$space-l;
+    padding: variables.$space-4xl;
+    background-color: variables.$light-gray;
+    border-radius: variables.$rounded-sm;
+    margin-bottom: variables.$space-3xl;
+
+    i {
+      font-size: 2.5rem;
+      color: variables.$border-color;
+    }
+
+    span {
+      color: variables.$hall_dark_color;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+  }
+
+  .color-info-section {
+    .current-color-info {
+      h6 {
+        font-size: 0.9rem;
+        color: variables.$hall_dark_color;
+        margin-bottom: 0.75rem;
+      }
+
+      .color-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: variables.$space-l;
+
+        .color-info-card {
+          background-color: variables.$light-gray;
+          border-radius: variables.$rounded-sm;
+          padding: variables.$space-l;
+
+          .color-info-header {
+            display: flex;
+            align-items: center;
+            gap: variables.$space-l;
+
+            .color-preview {
+              width: 40px;
+              height: 40px;
+              border-radius: variables.$rounded-sm;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .color-detail {
+              .color-label {
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: variables.$hall_dark_color;
+                margin-bottom: 0.25rem;
+              }
+
+              .color-value {
+                font-family: monospace;
+                font-size: 0.85rem;
+                color: variables.$hall_dark_color;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: variables.$screen-lg-min) {
+  .color-selection-panel {
+    margin-top: variables.$space-3xl;
+  }
+
+  .image-preview-panel .image-container {
+    height: 200px;
+  }
+
+  .color-selection-panel .color-grid-container .color-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+}
+
+@keyframes colorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.color-swatch {
+  animation: colorFadeIn 0.3s ease-out forwards;
+}
+
+@for $i from 1 through 12 {
+  .color-swatch:nth-child(#{$i}) {
+    animation-delay: #{$i * 0.05}s;
+  }
+}

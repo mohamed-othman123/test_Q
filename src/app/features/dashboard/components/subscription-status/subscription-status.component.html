@@ -1,0 +1,61 @@
+@if (superscribed) {
+  <div class="subscription-panel" [ngClass]="severity">
+    <div class="s-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <i [ngClass]="iconClass"></i>
+          <span class="text">{{ messageKey | translate }}</span>
+        </div>
+      </div>
+      @if (severity === 'danger') {
+        <p class="mb-0">
+          {{ 'dashboard.supportNumber' | translate }} :
+          <bdi
+            ><strong>{{ supportPhone }}</strong></bdi
+          >
+        </p>
+      }
+    </div>
+    <div>
+      <div class="d-flex flex-row-reverse">
+        @if (severity !== 'danger') {
+          <div>
+            {{ 'dashboard.daysRemaining' | translate: {days: daysRemaining} }}
+          </div>
+        }
+        @if (severity === 'danger') {
+          <div>
+            {{ 'dashboard.expiredSince' | translate: {days: expiredSince} }}
+          </div>
+        }
+      </div>
+      <p-progressBar
+        [value]="percent"
+        [color]="
+          severity === 'success'
+            ? '#16a34a'
+            : severity === 'warning'
+              ? '#ca8a04'
+              : '#dc2626'
+        "
+        [style]="{height: '15px'}">
+        <ng-template pTemplate="content" let-value>
+          <span
+            >{{ daysConsumed }}
+            @if (daysConsumed < 3) {
+              {{ 'dashboard.dayUnit' | translate }}
+            } @else if (daysConsumed <= 10) {
+              {{ 'dashboard.daysUnit' | translate }}
+            } @else {
+              @if (lang.lang === 'ar') {
+                {{ 'dashboard.dayUnit' | translate }}
+              } @else {
+                {{ 'dashboard.daysUnit' | translate }}
+              }
+            }
+          </span>
+        </ng-template>
+      </p-progressBar>
+    </div>
+  </div>
+}

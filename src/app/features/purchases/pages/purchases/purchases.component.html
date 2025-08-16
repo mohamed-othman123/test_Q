@@ -1,0 +1,272 @@
+<app-list-header
+  [title]="'purchases.title' | translate"
+  [disableAddBtn]="!permissionsService.hasPermission('create:expense')"
+  [btnAddText]="'purchases.addNewPurchase' | translate"
+  (sideDrawerToggler)="addNewPurchase()">
+</app-list-header>
+
+<p-table
+  #dt2
+  [value]="purchases"
+  dataKey="id"
+  [rows]="rows"
+  [lazy]="true"
+  selectionMode="multiple"
+  [(selection)]="selectedItems"
+  [totalRecords]="totalRecords"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [first]="first"
+  [paginator]="true"
+  (onLazyLoad)="onLazyLoad($event)">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>
+        {{ 'purchases.expenseType' | translate }}
+      </th>
+
+      <th pSortableColumn="purchaseDate">
+        {{ 'purchases.purchaseDate' | translate }}
+        <p-sortIcon field="purchaseDate" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="dueDate">
+        {{ 'purchases.payingDate' | translate }}
+        <p-sortIcon field="dueDate" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="totalPayable">
+        {{ 'purchases.totalAmount' | translate }}
+        <p-sortIcon field="totalPayable" class="mr-12px"></p-sortIcon>
+      </th>
+      <th>
+        {{ 'purchases.purchaseStatus' | translate }}
+      </th>
+      <th></th>
+      <th style="width: fit-content"></th>
+    </tr>
+    <tr>
+      <th>
+        <app-dropdown
+          appendTo="body"
+          [control]="$any(filterForm.get('type'))"
+          [options]="expenseType"
+          [controlName]="'type'"
+          [optionLabel]="'label.' + currentLang"
+          [optionValue]="'value'"
+          [placeholder]="'purchases.expenseType' | translate"
+          [showClear]="true">
+        </app-dropdown>
+      </th>
+
+      <th style="min-width: 200px">
+        <app-gregorian-date-picker
+          [control]="$any(filterForm.get('purchaseDate'))"
+          controlName="purchaseDate"
+          [showClear]="true"
+          [placeholder]="'purchases.selectDate' | translate">
+        </app-gregorian-date-picker>
+      </th>
+      <th style="min-width: 200px">
+        <app-gregorian-date-picker
+          [control]="$any(filterForm.get('dueDate'))"
+          controlName="dueDate"
+          [showClear]="true"
+          [placeholder]="'purchases.selectDate' | translate">
+        </app-gregorian-date-picker>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('totalAmount')!"
+          [controlName]="'totalAmount'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th style="min-width: 200px">
+        <app-dropdown
+          appendTo="body"
+          [control]="filterForm.get('status')!"
+          [options]="purchaseStatuses"
+          [controlName]="'status'"
+          [optionLabel]="'label.' + currentLang"
+          [optionValue]="'value'"
+          [placeholder]="'purchases.purchaseStatus' | translate"
+          [showClear]="true">
+        </app-dropdown>
+      </th>
+      <th></th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-purchase>
+    <tr>
+      <td>
+        {{
+        purchase.category.type === 'Purchases'
+        ? ('purchases.purchasesExpenses' | translate)
+        : ('purchases.generalExpenses' | translate)
+        }}
+      </td>
+
+      <td style="min-width: 200px">
+        {{ purchase.purchaseDate | date: 'dd/MM/yyyy' : 'UTC' }}
+      </td>
+      <td style="min-width: 200px">
+        {{ purchase.dueDate | date: 'dd/MM/yyyy' : 'UTC' }}
+      </td>
+      <td>
+        <div class="position-relative">
+          <span class="price-with-symbol">
+            <sar-symbol />
+            <span>
+              {{ purchase.totalPayable }}
+            </span>
+          </span>
+          <i
+            class="pi pi-question icon-question"
+          (click)="onClickStatus(purchase, $event)"></i>
+          @if (
+            statusTooltipVisible && selectedStatusItem?.id === purchase.id
+            ) {
+            <div
+              class="status-tooltip"
+              >
+              <div class="status-tooltip__content">
+                <div class="item">
+                  <div class="item__label">
+                    {{ 'purchases.totalAmount' | translate }}
+                  </div>
+                  <div class="item__value">
+                    <span class="price-with-symbol">
+                      <sar-symbol />
+                      <span>
+                        {{ purchase.totalPayable || 0 | number: '1.2-2' }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="item__label">
+                    {{ 'purchases.paidAmount' | translate }}
+                  </div>
+                  <div class="item__value">
+                    <span class="price-with-symbol">
+                      <sar-symbol />
+                      <span>
+                        {{ purchase.paidAmount || 0 | number: '1.2-2' }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="item__label">
+                    {{ 'purchases.remainingAmount' | translate }}
+                  </div>
+                  <div class="item__value">
+                    <span class="price-with-symbol">
+                      <sar-symbol />
+                      <span>
+                        {{
+                        (purchase.totalPayable || 0) -
+                        (purchase.paidAmount || 0) | number: '1.2-2'
+                        }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </td>
+      <td>
+        <app-status-badge [status]="purchase.status"></app-status-badge>
+      </td>
+      <td class="d-flex gap-2 align-items-center">
+        <div class="actions">
+          <div ngbDropdown container="body" class="d-inline-block">
+            <button
+              type="button"
+              class="options-button"
+              id="dropdownBasic1"
+              ngbDropdownToggle>
+              <span
+              class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
+              {{ 'common.options' | translate }}
+            </button>
+            <div
+              ngbDropdownMenu
+              aria-labelledby="dropdownBasic1"
+              class="p-menu p-menu-overlay">
+              @if (hasPermissionTo('update', purchase)) {
+                <button
+                  ngbDropdownItem
+                  (click)="editPurchase(purchase)"
+                  class="d-flex gap-3">
+                  <i class="pi pi-pencil"></i>
+                  <span>{{ 'common.edit' | translate }}</span>
+                </button>
+              }
+
+              @if (hasPermissionTo('view', purchase)) {
+                <button
+                  ngbDropdownItem
+                  (click)="viewPurchase(purchase)"
+                  class="d-flex gap-3">
+                  <i class="pi pi-eye"></i>
+                  <span>{{ 'common.view' | translate }}</span>
+                </button>
+              }
+
+              @if (hasPermissionTo('payment', purchase)) {
+                <button
+                  ngbDropdownItem
+                  (click)="navigateToPayments(purchase)"
+                  class="d-flex gap-3"
+                  >
+                  <i class="pi pi-money-bill"></i>
+                  <span>{{ 'purchases.Pay' | translate }}</span>
+                </button>
+              }
+
+              @if (hasPermissionTo('print', purchase)) {
+                <button
+                  ngbDropdownItem
+                  (click)="navigateToSettlement(purchase)"
+                  class="d-flex gap-3">
+                  <i class="pi pi-money-bill"></i>
+                  <span>{{ 'purchases.finalSettlement' | translate }}</span>
+                </button>
+              }
+
+              @if (hasPermissionTo('delete', purchase)) {
+                <button
+                  (click)="openDeleteConfirmation(purchase.id)"
+                  ngbDropdownItem
+                  class="d-flex gap-3">
+                  <i class="pi pi-times-circle"></i>
+                  <span>{{ 'common.delete' | translate }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="8">
+        <app-empty-state></app-empty-state>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<!-- Delete Confirmation Dialog -->
+<app-confirm-delete-popup
+  [visible]="showDeleteConfirmation"
+  [message]="'purchases.confirmDelete' | translate"
+  (confirm)="confirmDeletePurchase()"
+(reject)="rejectDeletePurchase()"></app-confirm-delete-popup>

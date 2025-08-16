@@ -1,0 +1,254 @@
+@if (!isLoading) {
+  <div class="sig-wrapper">
+    <div class="content">
+      <!--header-->
+      <div class="d-flex align-items-center justify-content-between p-4 pb-0">
+        <div class="logo">
+          <img
+            src="/assets/svg/logo.svg"
+            loading="lazy"
+            fetchpriority="high"
+            alt="logo" />
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+          <div class="lang">
+            <span (click)="changeLang('ar')" class="ar">ع</span>
+            <span (click)="changeLang('en')" class="en">EN</span>
+          </div>
+
+          <!-- <p-button
+          (onClick)="openPrintDialog($event)"
+          type="button"
+          id="print-contract"
+          label="{{ 'orders.print' | translate }}"
+          [icon]="'pi pi-print'">
+        </p-button> -->
+        </div>
+      </div>
+
+      <!--stepper-->
+      <div class="mt-5">
+        <div class="stepper-container">
+          <p-stepper [(activeStep)]="active" [linear]="true">
+            <!--step 1-->
+            <p-stepperPanel>
+              <ng-template pTemplate="header" let-index="index">
+                <button class="step-header">
+                  <i class="pi pi-eye"></i>
+                </button>
+              </ng-template>
+
+              <ng-template pTemplate="content" let-index="index">
+                <div style="min-height: 400px">
+                  <!--contract preview-->
+                  <app-contract-preview
+                    [contractInfo]="contractInfo"></app-contract-preview>
+                </div>
+
+                <!--action buttons-->
+                <div class="d-flex pt-4 justify-content-end p-3">
+                  <p-button
+                    [label]="'common.next' | translate"
+                    [icon]="
+                      lang.lang === 'ar'
+                        ? 'pi pi-arrow-left'
+                        : 'pi pi-arrow-right'
+                    "
+                    iconPos="right"
+                    (onClick)="next(true)" />
+                </div>
+              </ng-template>
+            </p-stepperPanel>
+            <!--step 2-->
+            <p-stepperPanel>
+              <ng-template
+                pTemplate="header"
+                let-onClick="onClick"
+                let-index="index">
+                <button class="step-header" (click)="onClick.emit()">
+                  <i class="pi pi-pen-to-square"></i>
+                </button>
+              </ng-template>
+
+              <ng-template
+                pTemplate="content"
+                let-nextCallback="nextCallback"
+                let-index="index">
+                <div style="min-height: 400px">
+                  <h5>
+                    {{ 'costumerSignature.costumerSignature' | translate }}
+                  </h5>
+
+                  <!--signature pad -->
+                  <div class="col-md-6">
+                    <app-input
+                      [control]="
+                        $any(customerSignatureForm.get('signatureName'))
+                      "
+                      [controlName]="'signatureName'"
+                      [label]="'costumerSignature.signatureLabel' | translate"
+                      [placeholder]="
+                        'costumerSignature.signaturePlaceholder' | translate
+                      "
+                      inputType="text">
+                      <i class="pi pi-pen" style="color: #bc9a53"></i>
+                    </app-input>
+                  </div>
+                  <div class="sig-pad-container mt-3">
+                    <app-signature-pad
+                      [existingSignatureData]="signatureData"
+                      [width]="300"
+                      [penColor]="'blue'"
+                      [label]="''"
+                      [instructions]="'halls.signatureInstructions' | translate"
+                      (signatureChange)="signatureChange($event)"
+                      (signatureCleared)="clearSignature()">
+                    </app-signature-pad>
+                  </div>
+
+                  <!--error-->
+                  @if (
+                    customerSignatureForm
+                      .get('signature')
+                      ?.hasError('required') &&
+                    customerSignatureForm.get('signature')?.touched
+                  ) {
+                    <div class="text-danger small">
+                      * {{ 'costumerSignature.required' | translate }}
+                    </div>
+                  }
+                </div>
+                <!--action btn-->
+                <div class="d-flex pt-4 justify-content-between p-3">
+                  <p-button
+                    [severity]="'secondary'"
+                    [label]="'common.previous' | translate"
+                    [icon]="
+                      lang.lang === 'ar'
+                        ? 'pi pi-arrow-right'
+                        : 'pi pi-arrow-left'
+                    "
+                    (onClick)="prev()" />
+
+                  <p-button
+                    [label]="'common.next' | translate"
+                    [icon]="
+                      lang.lang === 'ar'
+                        ? 'pi pi-arrow-left'
+                        : 'pi pi-arrow-right'
+                    "
+                    iconPos="right"
+                    (onClick)="next()" />
+                </div>
+              </ng-template>
+            </p-stepperPanel>
+
+            <!--step 3-->
+            <p-stepperPanel>
+              <ng-template pTemplate="header" let-index="index">
+                <button class="step-header">
+                  <i class="pi pi-shield"></i>
+                </button>
+              </ng-template>
+
+              <ng-template pTemplate="content" let-index="index">
+                <div style="min-height: 400px">
+                  <h5>{{ 'costumerSignature.costumerCaptcha' | translate }}</h5>
+
+                  <!-- Captcha -->
+                  <div class="d-flex align-items-center gap-2 flex-wrap mt-3">
+                    <div class="col-6">
+                      <app-input
+                        [control]="
+                          $any(customerSignatureForm.get('captchaText'))
+                        "
+                        [controlName]="'captchaText'"
+                        [label]="'costumerSignature.captchaLabel' | translate"
+                        [placeholder]="
+                          'costumerSignature.captchaLabel' | translate
+                        "
+                        inputType="text">
+                        <i class="pi pi-shield" style="color: #bc9a53"></i>
+                      </app-input>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                      <div class="d-flex align-items-center gap-3 h-100">
+                        <div
+                          [innerHTML]="captchaSvg"
+                          class="captcha-image"></div>
+                        <button
+                          type="button"
+                          class="refresh-button"
+                          (click)="refreshCaptcha()">
+                          <i class="pi pi-refresh"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--action buttons-->
+                <div class="d-flex pt-4 justify-content-between p-3">
+                  <p-button
+                    [severity]="'secondary'"
+                    [label]="'common.previous' | translate"
+                    [icon]="
+                      lang.lang === 'ar'
+                        ? 'pi pi-arrow-right'
+                        : 'pi pi-arrow-left'
+                    "
+                    (onClick)="prev()" />
+                  <p-button
+                    [label]="'common.save' | translate"
+                    [icon]="'pi pi-save'"
+                    iconPos="right"
+                    (onClick)="submit()" />
+                </div>
+              </ng-template>
+            </p-stepperPanel>
+
+            <!--step 4-->
+            <p-stepperPanel>
+              <ng-template
+                pTemplate="header"
+                let-onClick="onClick"
+                let-index="index">
+                <button class="step-header" (click)="onClick.emit()">
+                  <i class="pi pi-gift"></i>
+                </button>
+              </ng-template>
+
+              <ng-template
+                pTemplate="content"
+                let-nextCallback="nextCallback"
+                let-index="index">
+                <div style="min-height: 400px; text-align: center">
+                  <h4 class="done-head">
+                    {{ 'costumerSignature.congrats' | translate }}
+                    <i class="pi pi-sparkles"></i>
+                  </h4>
+                  <p>{{ 'costumerSignature.signatureUpdated' | translate }}</p>
+                  <p>{{ 'costumerSignature.reprintContract' | translate }}</p>
+
+                  <p-button
+                    (onClick)="openPrintDialog($event)"
+                    type="button"
+                    id="print-contract"
+                    label="{{ 'orders.print' | translate }}"
+                    [icon]="'pi pi-print'">
+                  </p-button>
+                </div>
+              </ng-template>
+            </p-stepperPanel>
+          </p-stepper>
+        </div>
+      </div>
+    </div>
+    <img
+      src="/assets/svg/auth-bg.svg"
+      fetchpriority="high"
+      alt="background-img"
+      class="background-img" />
+  </div>
+}

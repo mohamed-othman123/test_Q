@@ -1,0 +1,144 @@
+<div class="color-extractor-container">
+  <div class="row">
+    <div class="col-md-5">
+      <div class="image-preview-panel">
+        <div class="image-container">
+          <div class="image-wrapper">
+            <img [src]="imageUrl" alt="Image preview" class="preview-image" crossorigin="anonymous">
+          </div>
+          @if (loading) {
+            <div class="loading-overlay">
+              <div class="spinner-container">
+                <i class="pi pi-spin pi-spinner"></i>
+                <span>{{ 'halls.extractingColors' | translate }}</span>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="color-actions">
+          <div class="color-tabs">
+            <div
+              class="color-tab"
+              [class.active]="activeColorType === 'primary'"
+              (click)="setActiveColorType('primary')"
+              [style.background-color]="previewPalette.primary"
+              [style.color]="getContrastColor(previewPalette.primary)">
+              <i class="pi pi-palette"></i>
+              {{ 'halls.primaryColor' | translate }}
+            </div>
+            <div
+              class="color-tab"
+              [class.active]="activeColorType === 'secondary'"
+              (click)="setActiveColorType('secondary')"
+              [style.background-color]="previewPalette.secondary"
+              [style.color]="getContrastColor(previewPalette.secondary)">
+              <i class="pi pi-palette"></i>
+              {{ 'halls.secondaryColor' | translate }}
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="swap-btn"
+              (click)="swapColors()">
+              <i class="pi pi-arrows-h"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-7">
+      <div class="color-selection-panel">
+        <div class="header-section">
+          <h5>{{ title }}</h5>
+          <div class="selection-hint">
+            <i class="pi pi-info-circle"></i>
+            <span>{{
+              activeColorType === 'primary' ?
+              ('halls.selectPrimaryColorHint' | translate) :
+              ('halls.selectSecondaryColorHint' | translate)
+            }}</span>
+          </div>
+        </div>
+
+        @if (error) {
+          <div class="error-message">
+            <i class="pi pi-exclamation-triangle"></i>
+            <span>{{ error }}</span>
+          </div>
+        }
+
+        @if (!loading && colors.length > 0) {
+          <div class="color-grid-container">
+            <div class="color-grid">
+              @for (color of colors; track color) {
+                <div
+                  class="color-swatch"
+                  [style.background-color]="color.hex"
+                  [class.selected-primary]="isPrimarySelected(color.hex)"
+                  [class.selected-secondary]="isSecondarySelected(color.hex)"
+                  (click)="selectColor(color.hex)">
+                  <div
+                    class="hex-value"
+                    [style.color]="getContrastColor(color.hex)">
+                    {{ color.hex }}
+                  </div>
+                  @if (isPrimarySelected(color.hex)) {
+                    <div class="selection-indicator">
+                      <i class="pi pi-check-circle"></i>
+                      <span>{{ 'halls.primary' | translate }}</span>
+                    </div>
+                  }
+                  @if (isSecondarySelected(color.hex)) {
+                    <div class="selection-indicator">
+                      <i class="pi pi-check-circle"></i>
+                      <span>{{ 'halls.secondary' | translate }}</span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        @if (!loading && colors.length === 0 && !error) {
+          <div class="no-colors-message">
+            <i class="pi pi-image"></i>
+            <span>{{ 'halls.noColorsExtracted' | translate }}</span>
+          </div>
+        }
+
+        @if (!loading && previewPalette.primary && previewPalette.secondary) {
+          <div class="color-info-section">
+            <div class="current-color-info">
+              <h6>{{ 'halls.selectedColors' | translate }}</h6>
+              <div class="color-info-grid">
+                <div class="color-info-card">
+                  <div class="color-info-header">
+                    <div class="color-preview" [style.background-color]="previewPalette.primary"></div>
+                    <div class="color-detail">
+                      <div class="color-label">{{ 'halls.primaryColor' | translate }}</div>
+                      <div class="color-value">{{ previewPalette.primary }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="color-info-card">
+                  <div class="color-info-header">
+                    <div class="color-preview" [style.background-color]="previewPalette.secondary"></div>
+                    <div class="color-detail">
+                      <div class="color-label">{{ 'halls.secondaryColor' | translate }}</div>
+                      <div class="color-value">{{ previewPalette.secondary }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

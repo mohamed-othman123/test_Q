@@ -1,0 +1,9 @@
+.timepicker {
+  direction: ltr !important;
+}
+.timepicker__header,
+.clock-face__number > span.active,
+.clock-face__clock-hand:after,
+.clock-face__clock-hand {
+  background-color: var(--primary-color) !important;
+}

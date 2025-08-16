@@ -1,0 +1,48 @@
+@if (form) {
+  <form
+    (ngSubmit)="onSubmit()"
+    [formGroup]="form"
+    class="form d-flex gap-4">
+    <div class="form-group d-flex flex-column gap-3">
+      <div>
+        <label for="otp" translate>auth.otpMessage</label>
+        <span class="mx-1 align-self-start">
+          {{ email }}
+        </span>
+      </div>
+      <ng-otp-input
+        (onInputChange)="onOtpChange($event)"
+        [config]="{length: 4, allowNumbersOnly: true}"
+      [ngClass]="{
+        'is-invalid': formControls.otp.touched && formControls.otp.errors,
+      }"
+        id="otp">
+      </ng-otp-input>
+      @if (formControls.otp.touched && formControls.otp.errors) {
+        <div
+          class="invalid-feedback">
+          @if (
+            formControls.otp.errors['required'] ||
+            formControls.otp.errors['minlength']
+            ) {
+            <div
+              >
+              <span
+                [translateParams]="{fieldName: 'fields.OTP' | translate}"
+              [translate]="'errors.required'"></span>
+            </div>
+          }
+          @if (formControls.otp.errors['pattern']) {
+            <div>
+              <span [translate]="'invalidPattern'"></span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+    <p-button type="submit" icon="pi pi-check">
+      {{ 'auth.verify' | translate }}
+    </p-button>
+    <app-countdown-timer></app-countdown-timer>
+  </form>
+}

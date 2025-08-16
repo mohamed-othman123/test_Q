@@ -1,0 +1,81 @@
+<div class="col-container">
+  <div class="col-header">
+    <div>
+      <h3>
+        @switch (title) {
+          @case ('new') {
+            <i class="pi pi-plus-circle" style="color: rgb(255, 200, 0)"></i>
+          }
+          @case ('in_progress') {
+            <i class="pi pi-spinner-dotted" style="color: rgb(0, 89, 255)"></i>
+          }
+          @case ('completed') {
+            <i class="pi pi-check-circle" style="color: rgb(0, 255, 0)"></i>
+          }
+          @case ('rejected') {
+            <i class="pi pi-times-circle" style="color: rgb(255, 0, 0)"></i>
+          }
+        }
+        {{ 'refunds.' + title | translate }}
+      </h3>
+      <div class="sup-title">
+        @switch (title) {
+          @case ('new') {
+            <span> {{ 'refunds.subTitle.new' | translate }} </span>
+          }
+          @case ('in_progress') {
+            <span>{{ 'refunds.subTitle.in_progress' | translate }}</span>
+          }
+          @case ('completed') {
+            <span>{{ 'refunds.subTitle.completed' | translate }}</span>
+          }
+          @case ('rejected') {
+            <span>{{ 'refunds.subTitle.rejected' | translate }}</span>
+          }
+        }
+      </div>
+    </div>
+    <div
+      class="count"
+      [pTooltip]="'refunds.refundCount' | translate"
+      tooltipPosition="top">
+      {{ totalItems }}
+    </div>
+  </div>
+
+  <div
+    class="col-list"
+    cdkDropList
+    [cdkDropListData]="items"
+    [id]="title"
+    [style]="{}"
+    [cdkDropListSortingDisabled]="true"
+    (cdkDropListDropped)="handleDrop($event)">
+    @if (canDragFrom) {
+      @for (item of items; track $index) {
+        <div
+          class="kanban-card can-drag"
+          cdkDrag
+          [cdkDragData]="item"
+          (click)="view(item)">
+          <app-kanban-card [item]="item"></app-kanban-card>
+        </div>
+      }
+    } @else {
+      @for (item of items; track $index) {
+        <div class="kanban-card" (click)="view(item)">
+          <app-kanban-card [item]="item"></app-kanban-card>
+        </div>
+      }
+    }
+  </div>
+
+  <button
+    class="load-btn"
+    pButton
+    [disabled]="canLoadMore()"
+    (click)="loadMore()">
+    {{ 'common.loadMore' | translate }}
+    <i class="pi pi-angle-down"></i>
+  </button>
+</div>

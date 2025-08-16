@@ -1,0 +1,52 @@
+@use 'variables';
+@use 'mixins';
+:host {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  .content {
+    height: auto;
+    width: 649px;
+    top: 20%;
+    padding: 20px;
+    border-radius: 16px;
+    background-color: #fff;
+
+    @include mixins.sm(variables.$max) {
+      width: 70%;
+    }
+
+    &.overly {
+      position: fixed;
+      z-index: 4;
+    }
+
+    &.hidden {
+      display: none;
+    }
+
+    //CLOSE
+    .close {
+      display: flex;
+      width: 100%;
+      i {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+#body-overlay {
+  width: 130vw;
+  height: 100vh;
+  display: block;
+  position: fixed;
+  top: 0;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+}

@@ -1,0 +1,66 @@
+@switch (calendarType) {
+  @case ('gregorian') {
+    <app-gregorian-date-picker
+      [inputFieldStyle]="inputFieldStyle"
+      [control]="_control"
+      [controlName]="controlName"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [minDate]="minDate"
+      [maxDate]="maxDate"
+      [label]="label"
+      [placement]="placement">
+      <ng-container *ngTemplateOutlet="calendarTypeRef"></ng-container>
+    </app-gregorian-date-picker>
+  }
+  @case ('islamic') {
+    <app-islamic-date-picker
+      [inputFieldStyle]="inputFieldStyle"
+      [control]="_control"
+      [controlName]="controlName"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [minDate]="minDate"
+      [maxDate]="maxDate"
+      [label]="label"
+      [placement]="placement">
+      <ng-container *ngTemplateOutlet="calendarTypeRef"></ng-container>
+    </app-islamic-date-picker>
+  }
+}
+@if (_control.value && convertedDate && _control.valid) {
+  <span class="value">
+    {{
+      stringifyDate(_control.value) +
+        ' ' +
+        ((calendarType === 'gregorian'
+          ? 'fields.calendar.gregorianShort'
+          : 'fields.calendar.hijriShort'
+        ) | translate) +
+        ' ' +
+        ('fields.calendar.correspondsTo' | translate) +
+        ' ' +
+        convertedDate +
+        ' ' +
+        ((calendarType === 'gregorian'
+          ? 'fields.calendar.hijriShort'
+          : 'fields.calendar.gregorianShort'
+        ) | translate)
+    }}
+  </span>
+}
+
+<ng-template #calendarTypeRef>
+  <div class="calendar-type-switch">
+    <span
+      [ngClass]="{'selected': calendarType === 'islamic'}"
+      (click)="changeCalendarType('islamic')"
+      >{{ 'fields.calendar.islamic' | translate }}</span
+    >
+    <span
+      [ngClass]="{'selected': calendarType === 'gregorian'}"
+      (click)="changeCalendarType('gregorian')"
+      >{{ 'fields.calendar.gregorian' | translate }}</span
+    >
+  </div>
+</ng-template>

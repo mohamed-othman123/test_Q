@@ -1,0 +1,11 @@
+:host {
+  display: flex;
+
+  .sar-symbol {
+    width: 14px;
+    height: 14px;
+    vertical-align: bottom;
+    fill: currentColor;
+    margin-right: 0.25em;
+  }
+}

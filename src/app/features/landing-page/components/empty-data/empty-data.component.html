@@ -1,0 +1,20 @@
+<div class="empty-state" [@floatAnimation]="'visible'">
+  <div class="icon-wrapper" [@pulseAndFloat]="'visible'">
+    <i [class]="icon"></i>
+  </div>
+  <h5 [@slideInFade]="'visible'">{{ title | translate }}</h5>
+  <p [@slideInFade]="'visible'">{{ description | translate }}</p>
+  @if (showButton && !hideAddButton) {
+    <button
+      type="button"
+      pButton
+      [icon]="buttonIcon"
+      [label]="buttonLabel | translate"
+      (click)="onAction()"
+      [disabled]="disabled"
+      [loading]="loading"
+      [class]="buttonClass"
+      [@buttonPop]="'visible'">
+    </button>
+  }
+</div>

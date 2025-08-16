@@ -1,0 +1,25 @@
+@if (visible) {
+  @if (drawerState$ | async; as state) {
+    <p-sidebar
+      (onHide)="hide()"
+      [(visible)]="state.visible"
+      [position]="lang.dir === 'rtl' ? 'left' : 'right'">
+      <ng-template pTemplate="header">
+        <span>{{ state.title | translate }}</span>
+      </ng-template>
+      <form [formGroup]="form" class="content" (ngSubmit)="submit()">
+        <div class="form-content">
+          <ng-content></ng-content>
+        </div>
+        @if (!hideSubmitBtn && state.mode !== 'view') {
+          <p-button
+            class="gap-1"
+            type="submit"
+            [icon]="state.submitButtonIcon"
+            [label]="state.submitButtonText | translate">
+          </p-button>
+        }
+      </form>
+    </p-sidebar>
+  }
+}

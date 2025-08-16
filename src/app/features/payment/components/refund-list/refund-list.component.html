@@ -1,0 +1,105 @@
+<app-list-header
+  [title]="'sideNav.refundRequests' | translate"></app-list-header>
+
+<p-table
+  #dt2
+  [value]="refunds"
+  dataKey="id"
+  [rows]="rows"
+  selectionMode="multiple"
+  [lazy]="true"
+  [first]="first"
+  (onLazyLoad)="onLazyLoad($event)"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [paginator]="refunds.length > 0 ? true : false">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>
+        {{ 'refunds.requestDate' | translate }}
+      </th>
+      <th>
+        {{ 'refunds.refundedAmount' | translate }}
+      </th>
+      <th>
+        {{ 'refunds.clientName' | translate }}
+      </th>
+      <th>
+        {{ 'refunds.receiverName' | translate }}
+      </th>
+
+      <th>
+        {{ 'refunds.requestStatus' | translate }}
+      </th>
+
+      <th></th>
+      <th style="width: fit-content"></th>
+    </tr>
+    <tr></tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-request>
+    <tr>
+      <td style="text-wrap: auto">
+        {{
+          lang.lang === 'ar'
+            ? (request.request_date | arabicMonthDate)
+            : (request.request_date | englishMonthDate)
+        }}
+      </td>
+
+      <td class="payment-cell">
+        <span class="price-with-symbol">
+          <sar-symbol />
+          <span>
+            {{ request.amount | number: '1.2-2' }}
+          </span>
+        </span>
+      </td>
+
+      <td>
+        {{ request?.user?.name }}
+        @if (request.user?.isVIB) {
+          <img width="35px" src="/assets/icons/vip-icon.svg" alt="Vip" />
+        }
+      </td>
+      <td>
+        {{ request?.beneficiaryName }}
+      </td>
+
+      <td style="text-wrap: auto">
+        {{ 'refunds.' + request.status | translate }}
+      </td>
+      <td>
+        <div class="actions">
+          <div *appHasPermission="['read:refund requests']">
+            <div
+              class="action-button"
+              *ngIf="request.status !== 'canceled'"
+              (click)="viewRequest(request)">
+              <i class="pi pi-eye"></i>
+              <span>{{ 'common.view' | translate }}</span>
+            </div>
+          </div>
+
+          <div *appHasPermission="['update:refund request']">
+            <div
+              (click)="editRequest(request)"
+              class="action-button"
+              *ngIf="
+                request.status !== 'rejected' && request.status !== 'completed'
+              ">
+              <i class="pi pi-file-edit"></i>
+              <span>{{ 'common.edit' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="4">
+        <app-empty-state></app-empty-state>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

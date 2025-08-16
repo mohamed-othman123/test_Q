@@ -1,0 +1,15 @@
+:host {
+  .btn {
+    width: 90px;
+    height: 45px;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    &.cancel {
+      background: var(--primary-color);
+    }
+    &.save {
+      background: #ef4444;
+    }
+  }
+}

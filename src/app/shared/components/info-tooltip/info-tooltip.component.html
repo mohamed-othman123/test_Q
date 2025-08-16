@@ -1,0 +1,61 @@
+<div class="icon" (mouseenter)="showTooltip()" (mouseleave)="hideTooltip()">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"></circle>
+    <line x1="12" y1="8" x2="12" y2="12"></line>
+    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+  </svg>
+</div>
+
+@if (hasAnyActivity()) {
+  <div class="tooltip" [class.visible]="isVisible">
+    <div class="timeline" [class.rtl]="isRtl">
+      <div class="timeline-container">
+        @for (event of events; track event; let last = $last; let i = $index) {
+          @if (event.userId || event.date) {
+            <div class="event">
+              <div class="timeline-dot"></div>
+              <div class="event-content">
+                <div class="event-title">
+                  {{ 'common.' + event.type | translate }}
+                </div>
+                @if (event.userId) {
+                  <div class="event-details">
+                    @if (event.isLoading) {
+                      {{ 'common.loading' | translate }}
+                    }
+                    @if (!event.isLoading && event.userDetails) {
+                      {{ 'common.by' | translate }}
+                      {{
+                        event.userDetails.name ||
+                          event.userDetails.email ||
+                          'Unknown User'
+                      }}
+                    }
+                  </div>
+                }
+                @if (event.date) {
+                  <div class="event-details">
+                    {{ 'common.on' | translate }}
+
+                    @if (lang.lang === 'ar') {
+                      {{ event.date | arabicMonthDate: true }}
+                    } @else {
+                      {{ event.date | englishMonthDate: true }}
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+}

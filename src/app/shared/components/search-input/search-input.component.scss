@@ -1,0 +1,231 @@
+@use 'mixins';
+@use 'variables';
+
+:host {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+
+  .search-container {
+    position: relative;
+    display: flex;
+  }
+
+  .search-input-wrapper {
+    position: relative;
+    width: 0;
+    overflow: visible;
+
+    .input {
+      background-color: #fff;
+      border: 0;
+      font-size: 16px;
+      padding: 12px;
+      display: none;
+      width: 0;
+      transition: all 0.3s ease;
+      height: 41px;
+    }
+
+    .clear-icon {
+      position: absolute;
+
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      cursor: pointer;
+      color: #666;
+      font-size: 14px;
+      display: none;
+
+      &:hover {
+        color: #333;
+      }
+    }
+    @include mixins.ltr() {
+      .clear-icon {
+        right: 15px;
+      }
+    }
+    @include mixins.rtl() {
+      .clear-icon {
+        left: 15px;
+      }
+    }
+  }
+
+  .search-btn {
+    margin-inline: 10px;
+    background-color: #f8fafb;
+    padding: 11px;
+    border-radius: 50%;
+    border: 1px solid #f6f6f6;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 41px;
+    height: 41px;
+
+    &:hover {
+      background-color: #f0f2f3;
+    }
+
+    .pi-search {
+      font-size: 16px;
+      color: #666;
+    }
+  }
+
+  .search-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    min-width: 400px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow: hidden;
+
+    .search-results {
+      ::ng-deep {
+        .search-table {
+          .p-datatable-thead > tr > th {
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border: none;
+            font-weight: 600;
+            color: #333;
+          }
+
+          .p-datatable-tbody > tr {
+            cursor: pointer;
+            transition: background-color 0.2s;
+
+            > td {
+              padding: 12px 16px;
+              border: none;
+              border-bottom: 1px solid #f0f0f0;
+            }
+
+            &:hover {
+              background-color: #f5f5f5;
+            }
+
+            &:last-child > td {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+    }
+
+    .no-results {
+      padding: 16px;
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+    }
+  }
+
+  &.active {
+    .search-input-wrapper {
+      width: 200px;
+
+      .input {
+        width: 200px;
+        max-width: 200px;
+        display: block;
+        animation: slideIn 0.3s ease;
+        background-color: #f8fafb;
+        border-radius: 35px;
+        border: 1px solid #f6f6f6;
+
+        position: relative;
+        z-index: 1;
+
+        &:focus {
+          outline: none;
+          border-color: #e0e0e0;
+        }
+      }
+
+      .clear-icon {
+        display: block;
+      }
+    }
+
+    // .search-btn {
+    //   transform: translateX(-52px);
+    // }
+
+    @include mixins.sm(variables.$max) {
+      width: 100%;
+      z-index: 3;
+      background: white;
+      position: absolute;
+      left: 0;
+      height: inherit;
+      align-items: center;
+      justify-content: center;
+
+      .search-input-wrapper {
+        width: 100%;
+
+        .input {
+          width: 100% !important;
+          max-width: none;
+        }
+
+        .clear-icon {
+          right: 12px;
+        }
+      }
+
+      .search-btn {
+        display: none;
+      }
+    }
+  }
+}
+
+@include mixins.ltr() {
+  :host.active .btn {
+    transform: translateX(-52px);
+    left: 0;
+  }
+
+  @keyframes slideIn {
+    from {
+      width: 0px;
+      opacity: 0;
+    }
+    to {
+      width: 200px;
+      opacity: 1;
+    }
+  }
+}
+
+@media screen and (max-width: variables.$max) {
+  :host {
+    .search-dropdown {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      min-width: 100%;
+      max-height: calc(100vh - 60px);
+      border-radius: 0;
+    }
+
+    &.active {
+      .search-input-wrapper {
+        .input {
+          border-radius: 8px;
+        }
+      }
+    }
+  }
+}

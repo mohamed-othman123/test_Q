@@ -1,0 +1,16 @@
+@if (statusDetails) {
+  <div
+    class="badge"
+  [ngStyle]="{
+    'color': statusDetails.color,
+  }">
+    <span
+      class="dot"
+    [ngStyle]="{
+      'background-color': statusDetails.backgroundColor,
+    }"></span>
+    <span>
+      {{ currentLang == 'ar' ? statusDetails.nameAr : statusDetails.nameEn }}
+    </span>
+  </div>
+}

@@ -1,0 +1,377 @@
+@use './components/data-table';
+@use './components/list-header';
+@use './components/dashboard';
+
+@use 'variables';
+@use './mixins';
+
+@use 'sass:color';
+
+body {
+  font-family:
+    'Zain',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol';
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  min-width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #fafafa;
+  border: solid 1px #f0f0f0;
+  cursor: pointer;
+  @include mixins.sm(variables.$max) {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+  }
+}
+
+.delete-dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  img {
+    max-width: 13rem;
+  }
+
+  .actions {
+    display: flex;
+    width: 100%;
+    gap: 0.5rem;
+
+    span {
+      flex: 1 0;
+      border-radius: 12px;
+      text-align: center;
+      padding: 12px;
+      cursor: pointer;
+    }
+
+    .yes {
+      background-color: #fff5f5;
+      color: red;
+    }
+
+    .no {
+      background-color: #fafafa;
+    }
+  }
+}
+
+// custom scrollbar
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px variables.$light-gray;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: variables.$primary-color;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+}
+
+.modal-content {
+  margin-top: 20px;
+  height: 237px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .waning-msg,
+  .success-msg {
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #191919;
+    position: absolute;
+    margin-top: 12rem;
+    @include mixins.sm(variables.$max) {
+      font-size: 13px;
+    }
+  }
+}
+
+.errors {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2px;
+  font-size: 12px;
+  color: red;
+  position: absolute;
+  bottom: -4px;
+
+  img {
+    width: 14px;
+    filter: invert(11%) sepia(41%) saturate(10000%) hue-rotate(-30deg);
+  }
+}
+
+.options-button {
+  background-color: variables.$primary-color !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 0.5rem 1.5rem !important;
+  font-weight: 700;
+  font-size: 1rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:hover {
+    background-color: #007a68 !important;
+  }
+
+  .p-button-icon {
+    margin-left: 0.5rem !important;
+    font-size: 1.2rem;
+  }
+
+  &:focus {
+    box-shadow: none !important;
+  }
+}
+
+.lp-btn {
+  background: transparent;
+  border: 1px solid variables.$border-color;
+  color: #374151;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+
+  &:hover {
+    border-color: variables.$primary-color;
+    color: variables.$primary-color;
+  }
+
+  i {
+    font-size: 0.875rem;
+  }
+}
+
+.icon-picker-modal__header .icon-picker-modal--close {
+  margin-left: unset;
+}
+
+.whatsapp-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  position: relative;
+}
+
+.whatsapp-link .pi-whatsapp {
+  font-size: 1.2em;
+  color: #25d366;
+}
+
+.whatsapp-link:after {
+  bottom: 0;
+  content: '';
+  display: block;
+  height: 2px;
+  left: 50%;
+  position: absolute;
+  background: #25d366;
+  transition:
+    width 0.3s ease 0s,
+    left 0.3s ease 0s;
+  width: 0;
+}
+
+.whatsapp-link:hover:after {
+  width: 100%;
+  left: 0;
+}
+
+.whatsapp-link:hover .pi-whatsapp {
+  transform: scale(1.1);
+}
+
+.price-with-symbol {
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+  unicode-bidi: bidi-override;
+  direction: ltr;
+  font-size: 1.2rem;
+}
+
+.mr-12px {
+  margin-right: 12px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  .action-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-radius: 11px;
+    padding: 8px;
+    border: solid 1px lightgray;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      scale: 1.05;
+      color: color.adjust(variables.$primary-color, $lightness: 10%);
+      background-color: rgba(variables.$primary-color, 0.05);
+      transform: translateY(-1px);
+    }
+
+    i {
+      width: 20px;
+      height: 20px;
+      font-size: 20px;
+    }
+
+    &.delete {
+      color: red;
+
+      &:hover {
+        color: color.adjust(variables.$red, $lightness: 10%);
+        background-color: rgba(variables.$red, 0.05);
+      }
+    }
+  }
+}
+
+.secondary-btn {
+  display: flex;
+  gap: 0.5rem;
+
+  button {
+    background: transparent;
+    border: 1px solid variables.$primary-color;
+    color: #374151;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: variables.$primary-color;
+      color: variables.$primary-color;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &:active {
+      box-shadow: 0 0 0 0.2rem rgba(variables.$primary-color, 0.25);
+    }
+
+    i {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.ql-snow .ql-picker:not(.ql-color-picker):not(.ql-icon-picker) svg {
+  right: 84% !important;
+}
+
+.ql-toolbar.ql-snow {
+  display: flex;
+  gap: 20px;
+}
+
+.ql-snow .ql-picker.ql-size {
+  width: fit-content;
+}
+
+.ql-toolbar.ql-snow .ql-formats {
+  margin-right: 0 !important;
+}
+
+.sar-icon {
+  -webkit-mask-image: url(/assets/icons/sar.svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  mask-image: url(/assets/icons/sar.svg);
+  width: 16px;
+  height: 20px;
+  -webkit-mask-size: 100%;
+  mask-size: 100%;
+  background-color: #9e9e9e;
+}
+
+.man-icon {
+  display: inline-block;
+  width: 37px;
+  height: 36px;
+  background-image: url(/assets/icons/man.svg);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}
+
+.women-icon {
+  display: inline-block;
+  width: 37px;
+  height: 36px;
+  background-image: url(/assets/icons/women.svg);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}
+
+.ql-editor.ql-blank::before {
+  font-style: normal !important;
+}

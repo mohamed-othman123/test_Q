@@ -1,0 +1,69 @@
+:host {
+  background-color: white;
+  // Payment info styles
+  .payment-info {
+    margin-bottom: 1.5rem;
+
+    .payment-item {
+      border: 1px solid #f6f6f6;
+      padding: 10px 15px;
+      border-radius: 8px;
+      background-color: #f8fafb;
+      color: #393d40;
+      min-width: 150px;
+    }
+  }
+
+  // Section headers
+  h5 {
+    background-color: white;
+    padding: 1rem 0;
+    border-radius: 1rem;
+    margin-bottom: 0.5rem;
+    margin-top: 1.5rem;
+    font-weight: 600;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+
+  .section-title {
+    margin-top: 1rem;
+    padding-inline: 0;
+  }
+  /*****************/
+  .payment-details {
+    .remaining-amount {
+      display: flex;
+      flex-direction: column;
+      padding-top: 6px;
+
+      .remaining-view {
+        border: 1px solid #f6f6f6;
+        background-color: #f8fafb;
+        border-radius: 15px;
+        padding: 10px 20px;
+        min-width: 150px;
+
+        .price-with-symbol {
+          font-size: 1rem !important;
+        }
+      }
+    }
+  }
+
+  /*****************/
+  // Form actions
+  .actions {
+    display: flex;
+
+    justify-content: space-between;
+    margin: 1rem;
+
+    .cancel,
+    .save {
+      width: 200px;
+    }
+  }
+}

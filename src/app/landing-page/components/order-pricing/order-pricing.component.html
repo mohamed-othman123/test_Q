@@ -1,0 +1,167 @@
+<div class="pricing" id="pricing_popup">
+  <p-toast></p-toast>
+  <button (click)="closePopup()" class="border-0 p-0 close">
+    <i class="pi pi-times"></i>
+  </button>
+
+  <div class="content text-center">
+    <img
+      [src]="hallData?.logo_url || 'assets/icons/landmark.svg'"
+      class="price-logo"
+      alt="Hall Logo" />
+    <h3>{{ 'pricing.title' | translate }}</h3>
+    <p>{{ 'pricing.subtitle' | translate }}</p>
+
+    <form
+      appShakeable
+      [formGroup]="pricingForm"
+      (ngSubmit)="orderNow()"
+      class="row">
+      <!-- Name and Event Type -->
+      <div class="col-sm-6 mb-3">
+        <app-input
+          [control]="$any(pricingForm.get('name'))"
+          [controlName]="'name'"
+          [label]="'pricing.form.name.label' | translate"
+          [placeholder]="'pricing.form.name.placeholder' | translate"
+          inputType="text">
+          <i class="pi pi-user" style="color: #bc9a53"></i>
+        </app-input>
+      </div>
+
+      <div class="col-sm-6 mb-3">
+        <app-dropdown
+          [control]="$any(pricingForm.get('eventName'))"
+          [options]="eventTypes"
+          [controlName]="'eventName'"
+          [placeholder]="'pricing.form.eventType.placeholder' | translate"
+          [label]="'pricing.form.eventType.label' | translate"
+          [optionLabel]="'name'"
+          [optionValue]="'name'"
+          (onChange)="onEventTypeChange($event)">
+        </app-dropdown>
+      </div>
+      <div class="col-sm-6 mb-3">
+        <app-dropdown
+          [control]="$any(pricingForm.get('eventTime'))"
+          [options]="eventTimeOptions"
+          [controlName]="'eventTime'"
+          [optionLabel]="'label.' + lang.lang"
+          [optionValue]="'value'"
+          [placeholder]="'orders.selectEventTime' | translate"
+          [label]="'orders.eventTime' | translate">
+          <i class="pi pi-clock" style="color: gray"></i>
+        </app-dropdown>
+      </div>
+
+      @if (showOtherEventInput) {
+        <div class="col-12 mb-3">
+          <app-input
+            [control]="$any(pricingForm.get('otherEventName'))"
+            [controlName]="'otherEventName'"
+            [label]="'pricing.form.otherEventType.label' | translate"
+            [placeholder]="
+              'pricing.form.otherEventType.placeholder' | translate
+            "
+            inputType="text">
+            <i class="pi pi-calendar-plus" style="color: #bc9a53"></i>
+          </app-input>
+        </div>
+      }
+
+      <!-- Email and Phone -->
+      <div class="col-sm-6 mb-3">
+        <app-input
+          [control]="$any(pricingForm.get('email'))"
+          [controlName]="'email'"
+          [label]="'pricing.form.email.label' | translate"
+          [placeholder]="'pricing.form.email.placeholder' | translate"
+          inputType="email">
+          <i class="pi pi-envelope" style="color: #bc9a53"></i>
+        </app-input>
+      </div>
+
+      <div class="col-sm-6 mb-3">
+        <app-phone-input
+          [control]="$any(pricingForm.get('phoneNumber'))"
+          [label]="'pricing.form.phone.label' | translate"
+          [placeholder]="'pricing.form.phone.placeholder' | translate">
+        </app-phone-input>
+      </div>
+      <div class="col-sm-6 mb-3"></div>
+
+      <!-- Date and Flexible Date -->
+      <div class="col-sm-6 mb-3">
+        <app-date-picker
+          [inert]="$any(pricingForm.get('isFlexibleDate'))?.value"
+          #datePicker
+          [inputFieldStyle]="
+            lang.lang === 'en' ? {'text-indent': '25px'} : null
+          "
+          [control]="$any(pricingForm.get('eventDate'))"
+          [controlName]="'eventDate'"
+          [label]="'pricing.form.eventDate.label' | translate"
+          [placeholder]="'pricing.form.eventDate.placeholder' | translate"
+          [disabled]="$any(pricingForm.get('isFlexibleDate'))?.value"
+          [minDate]="today">
+        </app-date-picker>
+      </div>
+      <div class="col-sm-6 mb-3">
+        <div class="check_group h-100 d-flex gap-2 align-items-center">
+          <p-checkbox formControlName="isFlexibleDate" [binary]="true" />
+          <label class="m-0">{{
+            'pricing.form.eventDate.flexibleDate' | translate
+          }}</label>
+        </div>
+      </div>
+
+      <!-- Message -->
+      <div class="col-12 mb-3">
+        <app-input
+          [control]="$any(pricingForm.get('message'))"
+          [controlName]="'message'"
+          [label]="'pricing.form.message.label' | translate"
+          [placeholder]="'pricing.form.message.placeholder' | translate"
+          inputType="textarea">
+          <i class="pi pi-comments" style="color: #bc9a53"></i>
+        </app-input>
+      </div>
+
+      <!-- Captcha -->
+      <div class="col-sm-6 mb-3">
+        <app-input
+          [control]="$any(pricingForm.get('captchaText'))"
+          [controlName]="'captchaText'"
+          [label]="'pricing.form.captcha.label' | translate"
+          [placeholder]="'pricing.form.captcha.placeholder' | translate"
+          inputType="text">
+          <i class="pi pi-shield" style="color: #bc9a53"></i>
+        </app-input>
+      </div>
+      <div class="col-sm-6 mb-3">
+        <div class="captcha-container h-100">
+          <div [innerHTML]="captchaSvg" class="captcha-image"></div>
+          <button
+            type="button"
+            class="refresh-button"
+            (click)="refreshCaptcha()">
+            <i class="pi pi-refresh"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="col-12">
+        <div class="action-buttons">
+          <button type="button" (click)="closePopup()" class="btn-cancel">
+            {{ 'pricing.buttons.cancel' | translate }}
+          </button>
+          <button type="submit" class="btn-submit">
+            {{ 'pricing.buttons.submit' | translate }}
+            <i class="pi pi-arrow-left ms-2"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

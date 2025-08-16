@@ -1,0 +1,303 @@
+@use 'variables';
+@use 'mixins';
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
+  background-color: rgba(variables.$primary-color, 0.05);
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2px;
+  font-size: 16px;
+  color: red;
+}
+
+.hall-pricing,
+.hall-pricing-view {
+  .info-card {
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    background-color: rgba(variables.$primary-color, 0.02);
+    transition: all 0.3s ease;
+    height: 100%;
+
+    &:hover {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      transform: translateY(-2px);
+    }
+
+    h6 {
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      margin-bottom: 0.5rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.hall-pricing-view {
+  .special-days-list {
+    .special-day-card {
+      padding: 1.25rem;
+      border: 1px solid rgba(variables.$primary-color, 0.1);
+      border-radius: 0.5rem;
+      margin-bottom: 1.25rem;
+      background-color: rgba(variables.$primary-color, 0.02);
+      transition: all 0.3s ease;
+
+      &:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+      }
+
+      .badge {
+        font-weight: 500;
+        font-size: 0.8rem;
+      }
+
+      h6 {
+        color: variables.$primary-color;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.pricing-options {
+  display: flex;
+  gap: 20px;
+
+  .pricing-option {
+    flex: 1;
+    cursor: pointer;
+    min-height: 100%;
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+
+    &.active {
+      border-color: variables.$primary-color !important;
+      background-color: rgba(variables.$primary-color, 0.05);
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.07);
+    }
+
+    .form-check-label {
+      cursor: pointer;
+    }
+
+    .form-check-input {
+      &:checked {
+        background-color: variables.$primary-color;
+        border-color: variables.$primary-color;
+      }
+    }
+  }
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.pricing-table {
+  min-width: 650px;
+
+  td .d-flex {
+    min-width: 120px;
+  }
+}
+
+.table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+
+  th,
+  td {
+    vertical-align: middle;
+    padding: 1rem;
+  }
+
+  th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+  }
+
+  tbody tr:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.special-day-card {
+  background-color: rgba(variables.$primary-color, 0.02);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+
+  &:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  h6 {
+    color: variables.$primary-color;
+    font-weight: 600;
+  }
+}
+
+.btn-outline-primary {
+  color: variables.$primary-color;
+  border-color: variables.$primary-color;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: variables.$primary-color;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(variables.$primary-color, 0.2);
+  }
+
+  .date-range {
+    margin-bottom: 1.5rem;
+  }
+}
+
+input[type='number'] {
+  padding: 0.5rem;
+}
+
+.date-range-container {
+  display: flex;
+  justify-content: flex-end;
+
+  .date-range-badge {
+    display: flex;
+    align-items: center;
+    background-color: rgba(variables.$primary-color, 0.1);
+    padding: 0.5rem 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+
+    &.rtl {
+      flex-direction: row-reverse;
+      border-right: 3px solid variables.$primary-color;
+
+      .date-range-icon {
+        margin-right: 0;
+        margin-left: 0.5rem;
+        margin-top: 3px;
+      }
+
+      .date-range-dates {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .date-range-from {
+        order: 3;
+      }
+
+      .date-range-divider {
+        order: 2;
+        margin-top: 3px;
+      }
+
+      .date-range-to {
+        order: 1;
+      }
+    }
+
+    &:not(.rtl) {
+      flex-direction: row;
+      border-left: 3px solid variables.$primary-color;
+
+      .date-range-icon {
+        margin-left: 0;
+        margin-right: 0.5rem;
+        margin-top: 3px;
+      }
+
+      .date-range-dates {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .date-range-from {
+        order: 1;
+      }
+
+      .date-range-divider {
+        order: 2;
+        margin-top: 3px;
+      }
+
+      .date-range-to {
+        order: 3;
+      }
+    }
+  }
+}
+
+.text-danger {
+  font-size: 0.8rem;
+}
+
+.currency-label {
+  height: 35px;
+}
+
+:host ::ng-deep {
+  .sar-symbol {
+    transform: translateY(-50%);
+  }
+
+  .p-button {
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .p-checkbox {
+    .p-checkbox-box {
+      &.p-highlight {
+        border-color: variables.$primary-color;
+        background-color: variables.$primary-color;
+      }
+    }
+  }
+
+  app-input {
+    .is-invalid,
+    .ng-invalid.ng-touched {
+      border-color: variables.$red;
+    }
+  }
+}
+.apply-btn {
+  width: fit-content;
+  height: 47px;
+  border-radius: 6px;
+}
+.close-button {
+  background-color: #dedede45;
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

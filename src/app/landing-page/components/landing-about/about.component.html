@@ -1,0 +1,45 @@
+@if (section?.features?.length! > 0) {
+  <div class="about" id="features">
+    <div class="sec_id" id="about"></div>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12">
+          <div class="shape">
+            <svg
+              width="79"
+              height="83"
+              viewBox="0 0 79 83"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M0 41.5C19.2758 35.2091 33.9861 23.2826 39.5 0C45.0139 23.2826 59.7267 35.2091 79 41.5C59.7242 47.7909 45.0139 59.7174 39.5 83C33.9861 59.7174 19.2733 47.7909 0 41.5Z"
+                fill="#CAA372" />
+            </svg>
+          </div>
+          <div class="section_title text-center">
+            <h3>{{ lang === 'en' ? section?.title_en : section?.title_ar }}</h3>
+            <p>
+              {{
+                lang === 'en'
+                  ? section?.description_en
+                  : section?.description_ar
+              }}
+            </p>
+          </div>
+        </div>
+        @for (feature of section?.features; track feature) {
+          <div class="col-md-4 why_col">
+            <div class="why_item text-center">
+              <div
+                class="icon d-flex align-items-center justify-content-center">
+                <fa-icon [icon]="feature?.icon | faIcon"></fa-icon>
+              </div>
+              <h3>{{ feature?.title }}</h3>
+              <p>{{ feature?.description }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

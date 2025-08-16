@@ -1,0 +1,49 @@
+<section class="hall-contract">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">
+      {{ 'halls.contractSettings' | translate }}
+    </h5>
+    <div class="actions">
+      @if (!showContractForm && !showContractAttachments) {
+        <button
+          id="contracts-save-btn"
+          class="action-button"
+          (click)="openContractForm()"
+          type="submit">
+          <i class="pi pi-plus"></i>
+          {{ 'halls.addContract' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!--contract Table-->
+  @if (!showContractForm && !showContractAttachments) {
+    <app-contracts-list
+      [hallId]="hallId"
+      (editContract)="editContract($event)"
+      (uploadAttachment)="uploadAttachments($event)">
+    </app-contracts-list>
+  }
+
+  <!--contract form-->
+  @if (showContractForm) {
+    <app-edit-contract
+      [eventTypes]="eventTypes"
+      [hallId]="hallId"
+      [hallData]="hallData"
+      [isEditMode]="isEditMode"
+      [editedContract]="editedContract"
+      (closeForm)="closeEdit()">
+    </app-edit-contract>
+  }
+
+  <!--contract attachments-->
+  @if (showContractAttachments) {
+    <app-contract-attachments
+      [isEditMode]="isEditMode"
+      [editedContract]="editedContract"
+      (closeAttachments)="closeEdit()">
+    </app-contract-attachments>
+  }
+</section>

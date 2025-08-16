@@ -1,0 +1,330 @@
+@if (!isLoading && client) {
+  <div class="client-card">
+    <diV class="mb-5">
+      <h5>{{ 'clients.clientDetails' | translate }}</h5>
+    </diV>
+    <div class="card-content">
+      <section class="info-block">
+        <div class="field span-2">
+          <label>{{ 'clients.clientName' | translate }}</label>
+          <span>{{ client.name }}</span>
+          @if (client.isVIB) {
+            <img width="35px" src="/assets/icons/vip-icon.svg" alt="Vip" />
+          }
+        </div>
+        @if (client.nationalOrResidencyId) {
+          <div class="field">
+            <label>{{ 'clients.nationalOrResidencyId' | translate }}</label>
+            <span>{{ client.nationalOrResidencyId }}</span>
+          </div>
+        }
+        <div class="field">
+          <label>{{ 'clients.mobileNo' | translate }}</label>
+          <div dir="ltr">
+            <a
+              href="https://wa.me/{{ client.phone }}"
+              target="_blank"
+              (click)="$event.stopPropagation()"
+              class="whatsapp-link">
+              <span>{{ client.phone }}</span>
+              <i class="pi pi-whatsapp text-green-500"></i>
+            </a>
+          </div>
+        </div>
+        @if (client.email) {
+          <div class="field">
+            <label>{{ 'clients.email' | translate }}</label>
+            <span
+              ><a href="mailto:{{ client.email }}">{{ client.email }}</a></span
+              >
+            </div>
+          }
+          @if (client.gender) {
+            <div class="field">
+              <label>{{ 'clients.gender' | translate }}</label>
+              <span class="d-flex align-items-center gap-2">
+                {{ 'clients.' + client.gender | translate }}
+                @if (client.gender === 'female') {
+                  <i class="women-icon avatar"></i>
+                } @else {
+                  <i class="man-icon avatar"></i>
+                }
+              </span>
+            </div>
+          }
+          @if (client.address) {
+            <div class="field">
+              <label>{{ 'clients.address' | translate }}</label>
+              <span>{{ client.address }}</span>
+            </div>
+          }
+          @if (client.notes) {
+            <div class="field">
+              <label>{{ 'clients.notes' | translate }}</label>
+              <span>{{ client.notes }}</span>
+            </div>
+          }
+          @if (client.type === 'Facility' && client.companyDetails) {
+            <div class="field">
+              <label>{{ 'clients.VATNumber' | translate }}</label>
+              <span>{{ client.companyDetails.taxRegistrationNumber }}</span>
+            </div>
+            <div class="field">
+              <label>{{ 'clients.crNumber' | translate }}</label>
+              <span>{{ client.companyDetails.commercialRegistrationNumber }}</span>
+            </div>
+          }
+        </section>
+        @if (client.contacts?.length) {
+          <div class="contacts-section">
+            <h5>
+              {{ 'clients.contacts' | translate }} ({{ client.contacts?.length }})
+            </h5>
+            <div class="contacts-grid">
+              @for (c of client.contacts; track c) {
+                <div class="contact-card">
+                  <p class="contact-name">{{ c.name }}</p>
+                  <div class="d-flex justify-content-between gap-3">
+                    @if (c.email) {
+                      <p><i class="pi pi-envelope"></i> {{ c.email }}</p>
+                    }
+                    @if (c.phone) {
+                      <div dir="ltr">
+                        <a
+                          href="https://wa.me/{{ c.phone }}"
+                          target="_blank"
+                          (click)="$event.stopPropagation()"
+                          class="whatsapp-link">
+                          <span>{{ c.phone }}</span>
+                          <i class="pi pi-whatsapp text-green-500"></i>
+                        </a>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+      <div class="bookings-section">
+        <h4>{{ 'clients.bookings' | translate }}</h4>
+        <p-table
+          #dt2
+          [scrollable]="true"
+          [value]="bookings"
+          dataKey="id"
+          [rows]="rows"
+          [lazy]="true"
+          selectionMode="multiple"
+          [(selection)]="selectedItems"
+          [totalRecords]="totalRecords"
+          [rowsPerPageOptions]="rowsPerPageOptions"
+          [first]="first"
+          [paginator]="true"
+          (onLazyLoad)="onLazyLoad($event)">
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="bookingReference">
+                {{ 'orders.orderNumber' | translate }}
+                <p-sortIcon field="bookingReference" class="mr-12px" />
+              </th>
+              <th pSortableColumn="startDate">
+                {{ 'orders.appointmentFrom' | translate }}
+                <p-sortIcon field="startDate" class="mr-12px" />
+              </th>
+              <th pSortableColumn="endDate">
+                {{ 'orders.appointmentTo' | translate }}
+                <p-sortIcon field="endDate" class="mr-12px" />
+              </th>
+              <th>{{ 'orders.eventTime' | translate }}</th>
+              <th pSortableColumn="totalPayable">
+                {{ 'orders.orderPrice' | translate }}
+                <p-sortIcon field="totalPayable" class="mr-12px" />
+              </th>
+              <th>{{ 'orders.bookingStatus' | translate }}</th>
+            </tr>
+            <tr>
+              <th style="min-width: 135px">
+                <app-input
+                  [control]="filterForm.get('bookingReference')!"
+                  [controlName]="'bookingReference'"
+                  inputType="text"
+                  [showLabel]="false"
+                  [placeholder]="'common.search' | translate">
+                  <i class="pi pi-search" style="color: #667085"></i>
+                </app-input>
+              </th>
+              <th style="min-width: 220px">
+                <app-date-picker
+                  #startDate
+              [inputFieldStyle]="
+                lang.lang === 'en' ? {'text-indent': '25px'} : null
+              "
+                  [controlName]="'startDate'"
+                  [placeholder]="'common.search' | translate"
+                [control]="$any(filterForm.get('startDate'))"></app-date-picker>
+              </th>
+              <th style="min-width: 200px">
+                <app-date-picker
+                  #startDate
+              [inputFieldStyle]="
+                lang.lang === 'en' ? {'text-indent': '25px'} : null
+              "
+                  [controlName]="'endDate'"
+                  [placeholder]="'common.search' | translate"
+                [control]="$any(filterForm.get('endDate'))"></app-date-picker>
+              </th>
+              <th>
+                <p-dropdown
+                  appendTo="body"
+                  id="value"
+                  [formControl]="$any(filterForm.get('eventTime'))"
+                  [options]="eventTime"
+                  [showClear]="true"
+                  optionLabel="label.{{ lang.lang }}"
+                  [optionValue]="'value'"
+                  [placeholder]="'common.select' | translate" />
+              </th>
+              <th>
+                <app-input
+                  [control]="filterForm.get('totalPayable')!"
+                  [controlName]="'totalPayable'"
+                  inputType="text"
+                  [showLabel]="false"
+                  [placeholder]="'common.search' | translate">
+                  <i class="pi pi-search" style="color: #667085"></i>
+                </app-input>
+              </th>
+              <th [class]="currentLang">
+                <div
+                  class="input-status-container"
+                  [class]="'input-status-container--' + currentLang">
+                  <p-dropdown
+                    appendTo="body"
+                    id="value"
+                    [formControl]="$any(filterForm.get('bookingProcessStatus'))"
+                    [options]="bookingStatus"
+                    [showClear]="true"
+                    optionLabel="label.{{ lang.lang }}"
+                    [optionValue]="'value'"
+                    [placeholder]="'orders.bookingStatus' | translate">
+                    <ng-template let-status pTemplate="item">
+                      <div class="flex align-items-center gap-2">
+                        <app-status-badge
+                        [status]="status.label.en"></app-status-badge>
+                      </div>
+                    </ng-template>
+                  </p-dropdown>
+                </div>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-order>
+            <tr>
+              <td>
+                {{ order.bookingReference }}
+              </td>
+              <td
+                style="min-width: 200px"
+                [dir]="currentLang === 'ar' ? 'rtl' : 'ltr'">
+                @if (currentLang === 'en') {
+                  {{ order.startDate | date: 'dd/MM/yyyy' : 'UTC' }} G &nbsp; -
+                  &nbsp; {{ order.startDateHijri | date: 'dd/MM/yyyy' }} H
+                }
+                @if (currentLang === 'ar') {
+                  {{ order.startDate | formatDateLang: 'ar' }}م -
+                  {{ order.startDateHijri | formatDateLang: 'ar' }}هـ
+                }
+              </td>
+              <td
+                style="min-width: 220px"
+                [dir]="currentLang === 'ar' ? 'rtl' : 'ltr'">
+                @if (currentLang === 'en') {
+                  {{ order.endDate | date: 'dd/MM/yyyy' : 'UTC' }} G &nbsp; - &nbsp;
+                  {{ order.endDateHijri | date: 'dd/MM/yyyy' }} H
+                }
+                @if (currentLang === 'ar') {
+                  {{ order.endDate | formatDateLang: 'ar' }}م -
+                  {{ order.endDateHijri | formatDateLang: 'ar' }}هـ
+                }
+              </td>
+              <td>
+                {{ 'orders.' + order.eventTime | translate }}
+              </td>
+              <td class="payment-cell" (click)="onClickStatus(order, $event)">
+                <span class="price-with-symbol">
+                  <sar-symbol />
+                  <span>
+                    {{ order.totalPayable | number: '1.2-2' }}
+                  </span>
+                </span>
+                @if (
+                  statusTooltipVisible && selectedStatusItem?.id === order.id
+                  ) {
+                  <div
+                    class="status-tooltip"
+                    >
+                    <div class="status-tooltip__content">
+                      <div class="item">
+                        <div class="item__label">
+                          {{ 'orders.payableAmount' | translate }}
+                        </div>
+                        <div class="item__value">
+                          <span class="price-with-symbol">
+                            <sar-symbol />
+                            <span>
+                              {{ selectedStatusItem?.totalPayable | number: '1.2-2' }}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="item">
+                        <div class="item__label">
+                          {{ 'orders.paidAmount' | translate }}
+                        </div>
+                        <div class="item__value">
+                          <span class="price-with-symbol">
+                            <sar-symbol />
+                            <span>
+                              {{ selectedStatusItem?.paidAmount | number: '1.2-2' }}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="item">
+                        <div class="item__label">
+                          {{ 'orders.remainingAmount' | translate }}
+                        </div>
+                        <div class="item__value">
+                          <span class="price-with-symbol">
+                            <sar-symbol />
+                            <span>
+                              {{
+                              selectedStatusItem?.remainingAmount | number: '1.2-2'
+                              }}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </td>
+              <td>
+                <app-status-badge
+                [status]="order.bookingProcessStatus"></app-status-badge>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="8">
+                <app-empty-state></app-empty-state>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  }

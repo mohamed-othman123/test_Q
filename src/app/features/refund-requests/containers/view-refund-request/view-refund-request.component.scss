@@ -1,0 +1,131 @@
+.refund-request-details-container {
+  width: 100%;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #333;
+  }
+}
+
+.status-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.status-new {
+  background-color: rgb(255, 246, 213);
+  color: rgb(255, 200, 0);
+}
+
+.status-completed {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+}
+
+.status-rejected {
+  background-color: #ffebee;
+  color: #b71c1c;
+}
+
+.status-in-progress {
+  background-color: rgb(178, 205, 255);
+  color: rgb(0, 89, 255);
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: none;
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 20px;
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+
+    &.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .value {
+      font-size: 1.1rem;
+      color: #333;
+      font-weight: 500;
+
+      &.notes {
+        white-space: pre-line;
+        line-height: 1.5;
+        background-color: #f9f9f9;
+        padding: 10px;
+        border-radius: 4px;
+        font-weight: normal;
+      }
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10%;
+  margin-top: 30px;
+
+  .action-btn {
+    max-width: 200px;
+  }
+}
+
+// Print styles
+@media print {
+  .actions {
+    display: none;
+  }
+
+  .refund-request-details-container {
+    padding: 0;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+}

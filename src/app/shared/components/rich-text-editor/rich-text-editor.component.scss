@@ -1,0 +1,246 @@
+@use 'variables';
+
+* {
+  font-family: var(--font-family), serif !important;
+}
+
+.editor-wrapper {
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background-color: #f8fafb;
+
+  .editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: white;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 6px 6px 0 0;
+
+    .field-label {
+      font-size: 14px;
+      color: #344054;
+      margin: 0;
+
+      .required {
+        color: red;
+        margin-right: 4px;
+      }
+    }
+  }
+
+  .view-mode {
+    min-height: 100px;
+    padding: 1rem;
+    background-color: #f8fafb;
+    border-radius: 0 0 6px 6px;
+
+    &[dir='rtl'] {
+      .view-content,
+      .placeholder {
+        text-align: right !important;
+
+        p,
+        div,
+        span,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          text-align: right !important;
+        }
+      }
+    }
+
+    &[dir='ltr'] {
+      .view-content,
+      .placeholder {
+        text-align: left !important;
+
+        p,
+        div,
+        span,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          text-align: left !important;
+        }
+      }
+    }
+
+    &.error {
+      border: 1px solid #dc3545;
+      border-radius: 0 0 6px 0;
+    }
+
+    &.empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #98a2b3;
+      font-style: normal;
+
+      &.error {
+        color: rgba(220, 53, 69, 0.7);
+
+        .placeholder {
+          border-color: #dc3545;
+        }
+      }
+    }
+
+    .view-content {
+      border: none;
+      padding: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      width: 100%;
+
+      p {
+        margin: 0;
+      }
+
+      .ql-align-center {
+        text-align: center !important;
+      }
+
+      .ql-align-right {
+        text-align: right !important;
+      }
+
+      .ql-align-justify {
+        text-align: justify !important;
+      }
+
+      ol,
+      ul {
+        padding-right: 1.5em;
+        padding-left: 1.5em;
+      }
+    }
+
+    .placeholder {
+      color: #98a2b3;
+      font-style: normal;
+      cursor: text;
+      padding: 8px;
+      border: 1px dashed #ccc;
+      border-radius: 4px;
+      margin: 4px;
+      transition: all 0.2s ease;
+      background-color: rgba(0, 0, 0, 0.02);
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+        border-color: variables.$primary-color;
+        color: variables.$primary-color;
+      }
+    }
+  }
+
+  .error-container {
+    background-color: #fff;
+    padding: 8px 12px;
+    border-top: 1px solid #dc3545;
+    margin-top: -1px;
+    border-radius: 0 0 6px 6px;
+
+    .error-message {
+      color: #dc3545;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      i {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .quill-container {
+    &.hidden {
+      display: none;
+    }
+
+    .ql-toolbar {
+      border-color: #dee2e6;
+      background-color: white;
+    }
+
+    .ql-container {
+      border-color: #dee2e6;
+      background-color: white;
+      min-height: 150px;
+    }
+
+    .ql-editor {
+      min-height: 150px;
+
+      &::before {
+        right: 0;
+        left: 0;
+        text-align: inherit;
+      }
+    }
+  }
+
+  .editor-info {
+    padding: 8px 12px;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .char-count {
+      font-size: 12px;
+      color: #6b7280;
+
+      &.error {
+        color: #dc3545;
+      }
+    }
+
+    .error-message {
+      color: #dc3545;
+      font-size: 12px;
+    }
+  }
+
+  &.has-error {
+    border-color: #dc3545;
+
+    .editor-header {
+      border-bottom-color: #dc3545;
+    }
+
+    .view-mode {
+      background-color: rgba(220, 53, 69, 0.02);
+    }
+  }
+}
+
+:host ::ng-deep {
+  /* 2) RTL-specific adjustment */
+  .ql-editor[dir='rtl'],
+  .view-mode[dir='rtl'] {
+    li {
+      padding-right: 1.5em;
+    }
+    ol {
+      padding-right: 1.5em;
+    }
+    .ql-ui {
+      right: 0;
+    }
+  }
+}

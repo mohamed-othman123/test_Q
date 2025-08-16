@@ -1,0 +1,72 @@
+<div class="key-metrics">
+  <div class="key-metrics-item">
+    <img src="assets/svg/percent.svg" alt="tax icon" />
+    <div class="key-metrics-item-content">
+      <strong> {{ keyMetrics.occupancyRate }} % </strong>
+      <p class="m-0">{{ 'dashboard.occupancyRate' | translate }}</p>
+    </div>
+  </div>
+  <div class="key-metrics-item">
+    <img src="assets/svg/calendar.svg" alt="calendar icon" />
+    <div class="key-metrics-item-content">
+      <strong>{{ keyMetrics.totalBookings }}</strong>
+      <p class="m-0">{{ 'dashboard.totalBookings' | translate }}</p>
+    </div>
+  </div>
+  <div class="key-metrics-item">
+    <img src="assets/svg/up-arrow.svg" alt="total revenue icon" />
+    <div class="key-metrics-item-content">
+      <strong>
+        <span class="price-with-symbol">
+          <sar-symbol />
+          <span>
+            {{ keyMetrics.totalRevenue | number: '1.2-2' }}
+          </span>
+        </span>
+      </strong>
+      <p class="m-0">{{ 'dashboard.totalRevenue' | translate }}</p>
+    </div>
+  </div>
+  <div class="key-metrics-item">
+    <img src="assets/svg/dwon-arrow.svg" alt="total expenses icon" />
+    <div class="key-metrics-item-content">
+      <strong>
+        <span class="price-with-symbol">
+          <sar-symbol />
+          <span>
+            {{ keyMetrics.totalExpenses | number: '1.2-2' }}
+          </span>
+        </span>
+      </strong>
+      <p class="m-0">{{ 'dashboard.totalExpenses' | translate }}</p>
+    </div>
+  </div>
+  <div class="key-metrics-item">
+    <img src="assets/svg/cash.svg" alt="net profit icon" />
+    <div class="key-metrics-item-content">
+      <strong>
+        <span class="price-with-symbol">
+          <sar-symbol />
+          <span>
+            {{ keyMetrics.totalNet | number: '1.2-2' }}
+          </span>
+        </span>
+      </strong>
+      <p class="m-0">{{ 'dashboard.netProfit' | translate }}</p>
+    </div>
+  </div>
+  <div class="key-metrics-item">
+    <img src="assets/svg/percent.svg" alt="tax icon" />
+    <div class="key-metrics-item-content">
+      <strong>
+        <span class="price-with-symbol">
+          <sar-symbol />
+          <span>
+            {{ keyMetrics.totalTax }}
+          </span>
+        </span>
+      </strong>
+      <p class="m-0">{{ 'dashboard.taxDue' | translate }}</p>
+    </div>
+  </div>
+</div>

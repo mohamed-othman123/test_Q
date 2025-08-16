@@ -1,0 +1,43 @@
+@use 'variables';
+@use 'mixins';
+:host {
+  .statistics {
+    .chart-data {
+      display: flex;
+      gap: 3rem;
+      justify-content: flex-start;
+      align-items: center;
+      margin-inline-start: 2rem;
+      @include mixins.sm(variables.$max) {
+        flex-wrap: wrap;
+        margin-inline-start: 0;
+        gap: 1rem;
+        justify-content: center;
+      }
+      span {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        .label {
+          font-weight: 700;
+        }
+        .value {
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: black;
+        }
+
+        &:first-child {
+          color: #14c6a5;
+        }
+        &:nth-child(2) {
+          color: #75b940;
+        }
+        &:nth-child(3) {
+          color: #e74545;
+        }
+      }
+    }
+  }
+}

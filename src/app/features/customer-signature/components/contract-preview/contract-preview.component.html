@@ -1,0 +1,830 @@
+<div class="content">
+  <!-- Hall Logo -->
+  <div class="content__logo">
+    <img [src]="contractInfo.hall.logo_url" alt="hall-logo" />
+  </div>
+
+  <!-- Title -->
+  <div class="content__title">
+    <h2>
+      {{ 'costumerSignature.contract.title' | translate }} ({{
+        langService.lang === 'ar'
+          ? contractInfo.hall.name_ar
+          : contractInfo.hall.name
+      }})
+    </h2>
+  </div>
+
+  <div class="content__general">
+    <svg
+      class="canvas_1"
+      viewBox="0 0 158 159"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M148.227 204.227C94.5298 150.53 98.8037 59.1961 157.773 0.226921C98.8037 59.1961 7.4696 63.4699 -46.2275 9.77286C7.4696 63.4699 3.19575 154.804 -55.7734 213.773C3.19575 154.804 94.5298 150.53 148.227 204.227Z" />
+    </svg>
+    <div class="content__row">
+      <div class="content__col">
+        <div class="content__info-text">
+          <h5>{{ 'costumerSignature.contract.serial' | translate }}</h5>
+          <span>#{{ contractInfo.bookingReference }}</span>
+        </div>
+      </div>
+      <div class="content__col">
+        <div class="content__info-text">
+          <h5>{{ 'costumerSignature.contract.date' | translate }}</h5>
+          <span>
+            @if (langService.lang === 'en') {
+              <span
+                >{{ contractInfo.created_at | englishMonthDate }} (
+                {{ contractInfo.created_at | englishHijriDate }} )</span
+              >
+            }
+            @if (langService.lang === 'ar') {
+              <span
+                >{{ contractInfo.created_at | arabicMonthDate }} (
+                {{ contractInfo.created_at | arabicHijriDate }} )</span
+              >
+            }
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content__general" style="flex-grow: 1">
+    <svg
+      class="canvas_1"
+      viewBox="0 0 158 159"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M148.227 204.227C94.5298 150.53 98.8037 59.1961 157.773 0.226921C98.8037 59.1961 7.4696 63.4699 -46.2275 9.77286C7.4696 63.4699 3.19575 154.804 -55.7734 213.773C3.19575 154.804 94.5298 150.53 148.227 204.227Z" />
+    </svg>
+    <div class="content__info-title">
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 40 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M0 20C11.0457 20 20 11.0457 20 0C20 11.0457 28.9543 20 40 20C28.9543 20 20 28.9543 20 40C20 28.9543 11.0457 20 0 20Z" />
+      </svg>
+      <h4>
+        {{ 'costumerSignature.contract.firstParty' | translate }} ({{
+          langService.lang === 'ar'
+            ? contractInfo.hall.name_ar
+            : contractInfo.hall.name
+        }})
+      </h4>
+    </div>
+    <div class="content__row">
+      <div class="content__col">
+        <div class="content__info-text">
+          <h5>{{ 'costumerSignature.contract.ownerName' | translate }}</h5>
+          <span>{{
+            langService.lang === 'ar'
+              ? contractInfo.hall.name_ar
+              : contractInfo.hall.name
+          }}</span>
+        </div>
+        <div class="content__info-text">
+          <h5>{{ 'costumerSignature.contract.ownerAddress' | translate }}</h5>
+          <span>{{ contractInfo.owner.address }}</span>
+        </div>
+      </div>
+      <div class="content__col">
+        <div class="content__info-text">
+          <h5>{{ 'costumerSignature.contract.crNumber' | translate }}</h5>
+          <span>{{ contractInfo.owner.commercialRegistrationNumber }}</span>
+        </div>
+        <div class="content__info-text">
+          <h5>{{ 'costumerSignature.contract.vatNumber' | translate }}</h5>
+          <span>{{ contractInfo.owner.taxRegistrationNumber }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content__general">
+    <svg
+      class="canvas_1"
+      viewBox="0 0 158 159"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M148.227 204.227C94.5298 150.53 98.8037 59.1961 157.773 0.226921C98.8037 59.1961 7.4696 63.4699 -46.2275 9.77286C7.4696 63.4699 3.19575 154.804 -55.7734 213.773C3.19575 154.804 94.5298 150.53 148.227 204.227Z" />
+    </svg>
+    <div class="content__info-title">
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 40 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M0 20C11.0457 20 20 11.0457 20 0C20 11.0457 28.9543 20 40 20C28.9543 20 20 28.9543 20 40C20 28.9543 11.0457 20 0 20Z" />
+      </svg>
+      <h4>{{ 'costumerSignature.contract.secondParty' | translate }}</h4>
+    </div>
+    <ng-container
+      *ngIf="contractInfo.customer.type !== 'Facility'; else facilityBlock">
+      <div class="content__row">
+        <div class="content__col">
+          <div class="content__info-text">
+            <h5>{{ 'costumerSignature.contract.clientName' | translate }}</h5>
+            <span>{{ contractInfo.customer.name }}</span>
+          </div>
+          <div class="content__info-text">
+            <h5>{{ 'costumerSignature.contract.clientEmail' | translate }}</h5>
+            <span>{{ contractInfo.customer.email }}</span>
+          </div>
+        </div>
+        <div class="content__col">
+          <div class="content__info-text">
+            <h5>{{ 'costumerSignature.contract.clientPhone' | translate }}</h5>
+            <span dir="ltr">{{ contractInfo.customer.phone }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #facilityBlock>
+      <div class="content__row">
+        <div class="content__col">
+          <div class="content__info-text">
+            <h5>{{ 'costumerSignature.contract.facilityName' | translate }}</h5>
+            <span>{{ contractInfo.customer.name || '-' }}</span>
+          </div>
+          <div class="content__info-text">
+            <h5>
+              {{ 'costumerSignature.contract.facilityAddress' | translate }}
+            </h5>
+            <span>{{ contractInfo.customer.address }}</span>
+          </div>
+        </div>
+        <div class="content__col">
+          <div class="content__info-text">
+            <h5>{{ 'costumerSignature.contract.facilityCr' | translate }}</h5>
+            <span>{{
+              contractInfo.customer.company_details
+                ?.commercialRegistrationNumber
+            }}</span>
+          </div>
+          <div class="content__info-text">
+            <h5>{{ 'costumerSignature.contract.facilityVat' | translate }}</h5>
+            <span>{{
+              contractInfo.customer.company_details?.taxRegistrationNumber
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Details -->
+  <div class="content__details">
+    <div class="content__info-title">
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 40 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M0 20C11.0457 20 20 11.0457 20 0C20 11.0457 28.9543 20 40 20C28.9543 20 20 28.9543 20 40C20 28.9543 11.0457 20 0 20Z" />
+      </svg>
+      <h4>{{ 'costumerSignature.contract.serviceDetails' | translate }}</h4>
+    </div>
+    <table style="margin-bottom: 20px">
+      <thead>
+        <tr>
+          <th>{{ 'costumerSignature.contract.service' | translate }}</th>
+          <th style="text-align: center">
+            {{ 'costumerSignature.contract.price' | translate }}
+          </th>
+          <th style="text-align: center">
+            {{ 'costumerSignature.contract.note' | translate }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container
+          *ngIf="
+            contractInfo.services && contractInfo.services.length > 0;
+            else noServices
+          ">
+          <tr *ngFor="let service of contractInfo.services">
+            <td>
+              {{
+                langService.lang === 'ar' ? service['name_ar'] : service['name']
+              }}
+            </td>
+            <td style="text-align: center">
+              <span class="price-with-symbol">
+                <sar-symbol />
+                <span>
+                  {{ service['price'] | number: '1.2-2' }}
+                </span>
+              </span>
+            </td>
+            <td style="text-align: center">{{ service['note'] || '-' }}</td>
+          </tr>
+        </ng-container>
+        <ng-template #noServices>
+          <tr>
+            <td colspan="3" style="text-align: center">
+              {{ 'costumerSignature.contract.noServices' | translate }}
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </table>
+
+    <div class="content__payment">
+      <div class="content__general">
+        <div class="content__info-title">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M0 20C11.0457 20 20 11.0457 20 0C20 11.0457 28.9543 20 40 20C28.9543 20 20 28.9543 20 40C20 28.9543 11.0457 20 0 20Z" />
+          </svg>
+          <h4>{{ 'costumerSignature.contract.bookingDetails' | translate }}</h4>
+        </div>
+        <div class="content__info-text">
+          <span>{{
+            'costumerSignature.contract.bookingType' | translate
+          }}</span>
+          <strong>{{
+            'costumerSignature.contract.confirmed' | translate
+          }}</strong>
+        </div>
+        <div class="content__info-text">
+          <span>{{
+            'costumerSignature.contract.pricingType' | translate
+          }}</span>
+          <strong>{{
+            contractInfo.paymentDetails.priceCalculationType === 'PER_PERSON'
+              ? ('costumerSignature.contract.perPersonPrice' | translate)
+              : ('costumerSignature.contract.fixedPrice' | translate)
+          }}</strong>
+        </div>
+        <div class="content__info-text">
+          <span>{{
+            'costumerSignature.contract.attendeesType' | translate
+          }}</span>
+          <strong>
+            {{
+              contractInfo.attendeesType === 'Men'
+                ? ('costumerSignature.contract.menOnly' | translate)
+                : contractInfo.attendeesType === 'Women'
+                  ? ('costumerSignature.contract.womenOnly' | translate)
+                  : ('costumerSignature.contract.mixed' | translate)
+            }}
+          </strong>
+        </div>
+        <ng-container
+          *ngIf="
+            contractInfo.paymentDetails.priceCalculationType === 'PER_PERSON'
+          ">
+          <div
+            class="content__info-text"
+            *ngIf="
+              contractInfo.attendeesType === 'Men' ||
+              contractInfo.attendeesType === 'Men And Women'
+            ">
+            <span>{{
+              'costumerSignature.contract.maleCount' | translate
+            }}</span>
+            <strong>{{ contractInfo.maleAttendeesCount }}</strong>
+          </div>
+          <div
+            class="content__info-text"
+            *ngIf="
+              contractInfo.attendeesType === 'Women' ||
+              contractInfo.attendeesType === 'Men And Women'
+            ">
+            <span>{{
+              'costumerSignature.contract.femaleCount' | translate
+            }}</span>
+            <strong>{{ contractInfo.femaleAttendeesCount }}</strong>
+          </div>
+        </ng-container>
+
+        <div class="content__info-text">
+          <span>{{ 'costumerSignature.contract.eventType' | translate }}</span>
+          <strong>{{
+            langService.lang === 'ar'
+              ? contractInfo.event.name_ar
+              : contractInfo.event.name
+          }}</strong>
+        </div>
+        <div class="content__info-text">
+          <span>{{ 'costumerSignature.contract.eventTime' | translate }}</span>
+          <strong>{{ 'orders.' + contractInfo.eventTime | translate }}</strong>
+        </div>
+        <div class="content__info-text">
+          <span class="min-width-fit">{{
+            'costumerSignature.contract.eventFrom' | translate
+          }}</span>
+          <strong>
+            @if (langService.lang === 'en') {
+              <span
+                >{{ contractInfo.startDate | englishMonthDate }} (
+                {{ contractInfo.startDate | englishHijriDate }} )</span
+              >
+            }
+            @if (langService.lang === 'ar') {
+              <span
+                >{{ contractInfo.startDate | arabicMonthDate }} (
+                {{ contractInfo.startDate | arabicHijriDate }} )</span
+              >
+            }
+          </strong>
+        </div>
+        <div class="content__info-text">
+          <span class="min-width-fit">{{
+            'costumerSignature.contract.eventTo' | translate
+          }}</span>
+          <strong>
+            @if (langService.lang === 'en') {
+              <span
+                >{{ contractInfo.endDate | englishMonthDate }} (
+                {{ contractInfo.endDate | englishHijriDate }} )</span
+              >
+            }
+            @if (langService.lang === 'ar') {
+              <span
+                >{{ contractInfo.endDate | arabicMonthDate }} (
+                {{ contractInfo.endDate | arabicHijriDate }} )</span
+              >
+            }
+          </strong>
+        </div>
+        <div class="content__info-text">
+          <span>{{ 'costumerSignature.contract.sections' | translate }}</span>
+          @for (section of contractInfo.sections; track $index) {
+            <strong
+              >{{
+                langService.lang === 'ar' ? section['name_ar'] : section['name']
+              }}
+              ,
+            </strong>
+          }
+        </div>
+        <div class="content__info-text">
+          <span>{{ 'costumerSignature.contract.notes' | translate }}</span>
+          <strong>{{ contractInfo.notes || '-' }}</strong>
+        </div>
+      </div>
+
+      <div class="content__general">
+        <!-- Booking Price -->
+        <div class="content__payment-row">
+          <div style="display: flex; align-items: center">
+            <svg
+              height="20px"
+              viewBox="0 0 20 20"
+              width="20px"
+              xmlns="http://www.w3.org/2000/svg">
+              <g style="fill: var(--primary-color)">
+                <g id="check-circle-outline">
+                  <path
+                    d="M5.9,8.1 L4.5,9.5 L9,14 L19,4 L17.6,2.6 L9,11.2 L5.9,8.1 L5.9,8.1 Z M18,10 C18,14.4 14.4,18 10,18 C5.6,18 2,14.4 2,10 C2,5.6 5.6,2 10,2 C10.8,2 11.5,2.1 12.2,2.3 L13.8,0.7 C12.6,0.3 11.3,0 10,0 C4.5,0 0,4.5 0,10 C0,15.5 4.5,20 10,20 C15.5,20 20,15.5 20,10 L18,10 L18,10 Z"
+                    id="Shape" />
+                </g>
+              </g>
+            </svg>
+            <h6>
+              {{ 'costumerSignature.contract.bookingAmount' | translate }}
+            </h6>
+          </div>
+          <span style="display: flex; align-items: center">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                {{
+                  contractInfo.paymentDetails.priceCalculationType ===
+                  'FIXED_PRICE'
+                    ? contractInfo.paymentDetails.fixedBookingPrice
+                    : (contractInfo.maleAttendeesCount *
+                        contractInfo.paymentDetails.malePricePerAttendee +
+                        contractInfo.femaleAttendeesCount *
+                          contractInfo.paymentDetails.femalePricePerAttendee
+                      | number: '1.2-2')
+                }}
+              </span>
+            </span>
+          </span>
+        </div>
+        <!-- Total Services -->
+        <div class="content__payment-row">
+          <div style="display: flex; align-items: center">
+            <svg
+              height="20px"
+              viewBox="0 0 20 20"
+              width="20px"
+              xmlns="http://www.w3.org/2000/svg">
+              <g style="fill: var(--primary-color)">
+                <g id="check-circle-outline">
+                  <path
+                    d="M5.9,8.1 L4.5,9.5 L9,14 L19,4 L17.6,2.6 L9,11.2 L5.9,8.1 L5.9,8.1 Z M18,10 C18,14.4 14.4,18 10,18 C5.6,18 2,14.4 2,10 C2,5.6 5.6,2 10,2 C10.8,2 11.5,2.1 12.2,2.3 L13.8,0.7 C12.6,0.3 11.3,0 10,0 C4.5,0 0,4.5 0,10 C0,15.5 4.5,20 10,20 C15.5,20 20,15.5 20,10 L18,10 L18,10 Z"
+                    id="Shape" />
+                </g>
+              </g>
+            </svg>
+            <h6>
+              {{ 'costumerSignature.contract.servicesTotal' | translate }}
+            </h6>
+          </div>
+          <span style="display: flex; align-items: center">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                {{ totalServiceFee | number: '1.2-2' }}
+              </span>
+            </span>
+          </span>
+        </div>
+        <!-- Total before discount -->
+        <div
+          class="content__payment-row"
+          style="
+            border-top: 1px solid var(--primary-text-color);
+            padding-top: 10px;
+          ">
+          <div style="display: flex; align-items: center">
+            <svg
+              height="20px"
+              viewBox="0 0 20 20"
+              width="20px"
+              xmlns="http://www.w3.org/2000/svg">
+              <g style="fill: var(--primary-color)">
+                <g id="check-circle-outline">
+                  <path
+                    d="M5.9,8.1 L4.5,9.5 L9,14 L19,4 L17.6,2.6 L9,11.2 L5.9,8.1 L5.9,8.1 Z M18,10 C18,14.4 14.4,18 10,18 C5.6,18 2,14.4 2,10 C2,5.6 5.6,2 10,2 C10.8,2 11.5,2.1 12.2,2.3 L13.8,0.7 C12.6,0.3 11.3,0 10,0 C4.5,0 0,4.5 0,10 C0,15.5 4.5,20 10,20 C15.5,20 20,15.5 20,10 L18,10 L18,10 Z"
+                    id="Shape" />
+                </g>
+              </g>
+            </svg>
+            <h6>
+              {{ 'costumerSignature.contract.totalBeforeDiscount' | translate }}
+            </h6>
+          </div>
+          <span style="display: flex; align-items: center">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                {{ contractInfo.paymentDetails.subtotal | number: '1.2-2' }}
+              </span>
+            </span>
+          </span>
+        </div>
+        <!-- Discount Amount -->
+        <div class="content__payment-row">
+          <div style="display: flex; align-items: center">
+            <svg
+              height="20px"
+              viewBox="0 0 20 20"
+              width="20px"
+              xmlns="http://www.w3.org/2000/svg">
+              <g style="fill: var(--primary-color)">
+                <g id="check-circle-outline">
+                  <path
+                    d="M5.9,8.1 L4.5,9.5 L9,14 L19,4 L17.6,2.6 L9,11.2 L5.9,8.1 L5.9,8.1 Z M18,10 C18,14.4 14.4,18 10,18 C5.6,18 2,14.4 2,10 C2,5.6 5.6,2 10,2 C10.8,2 11.5,2.1 12.2,2.3 L13.8,0.7 C12.6,0.3 11.3,0 10,0 C4.5,0 0,4.5 0,10 C0,15.5 4.5,20 10,20 C15.5,20 20,15.5 20,10 L18,10 L18,10 Z"
+                    id="Shape" />
+                </g>
+              </g>
+            </svg>
+            <h6>
+              {{ 'costumerSignature.contract.discount' | translate }} ({{
+                contractInfo.paymentDetails.discountType === 'fixed'
+                  ? contractInfo.paymentDetails.discountValue
+                  : contractInfo.paymentDetails.discountValue + '%'
+              }})
+            </h6>
+          </div>
+          <span style="display: flex; align-items: center">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                {{
+                  contractInfo.paymentDetails.discountType === 'fixed'
+                    ? contractInfo.paymentDetails.discountValue
+                    : ((contractInfo.paymentDetails.discountValue *
+                        contractInfo.paymentDetails.subtotal) /
+                        100 | number: '1.2-2')
+                }}
+              </span>
+            </span>
+          </span>
+        </div>
+        <!-- Total After Discount -->
+        <div
+          class="content__payment-row"
+          style="
+            border-top: 1px solid var(--primary-text-color);
+            padding-top: 10px;
+          ">
+          <div style="display: flex; align-items: center">
+            <svg
+              height="20px"
+              viewBox="0 0 20 20"
+              width="20px"
+              xmlns="http://www.w3.org/2000/svg">
+              <g style="fill: var(--primary-color)">
+                <g id="check-circle-outline">
+                  <path
+                    d="M5.9,8.1 L4.5,9.5 L9,14 L19,4 L17.6,2.6 L9,11.2 L5.9,8.1 L5.9,8.1 Z M18,10 C18,14.4 14.4,18 10,18 C5.6,18 2,14.4 2,10 C2,5.6 5.6,2 10,2 C10.8,2 11.5,2.1 12.2,2.3 L13.8,0.7 C12.6,0.3 11.3,0 10,0 C4.5,0 0,4.5 0,10 C0,15.5 4.5,20 10,20 C15.5,20 20,15.5 20,10 L18,10 L18,10 Z"
+                    id="Shape" />
+                </g>
+              </g>
+            </svg>
+            <h6>
+              {{ 'costumerSignature.contract.totalAfterDiscount' | translate }}
+            </h6>
+          </div>
+          <span style="display: flex; align-items: center">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                {{
+                  contractInfo.paymentDetails.subtotalAfterDisc
+                    | number: '1.2-2'
+                }}
+              </span>
+            </span>
+          </span>
+        </div>
+        <!-- Insurance Amount -->
+        <div class="content__payment-row">
+          <div style="display: flex; align-items: center">
+            <svg
+              height="20px"
+              viewBox="0 0 20 20"
+              width="20px"
+              xmlns="http://www.w3.org/2000/svg">
+              <g style="fill: var(--primary-color)">
+                <g id="check-circle-outline">
+                  <path
+                    d="M5.9,8.1 L4.5,9.5 L9,14 L19,4 L17.6,2.6 L9,11.2 L5.9,8.1 L5.9,8.1 Z M18,10 C18,14.4 14.4,18 10,18 C5.6,18 2,14.4 2,10 C2,5.6 5.6,2 10,2 C10.8,2 11.5,2.1 12.2,2.3 L13.8,0.7 C12.6,0.3 11.3,0 10,0 C4.5,0 0,4.5 0,10 C0,15.5 4.5,20 10,20 C15.5,20 20,15.5 20,10 L18,10 L18,10 Z"
+                    id="Shape" />
+                </g>
+              </g>
+            </svg>
+            <h6>
+              {{ 'costumerSignature.contract.insuranceAmount' | translate }}
+            </h6>
+          </div>
+          <span style="display: flex; align-items: center">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                {{
+                  contractInfo.paymentDetails.insuranceAmount | number: '1.2-2'
+                }}
+              </span>
+            </span>
+          </span>
+        </div>
+        <!-- VAT Amount -->
+        <div class="content__payment-row">
+          <div style="display: flex; align-items: center">
+            <svg
+              height="20px"
+              viewBox="0 0 20 20"
+              width="20px"
+              xmlns="http://www.w3.org/2000/svg">
+              <g style="fill: var(--primary-color)">
+                <g id="check-circle-outline">
+                  <path
+                    d="M5.9,8.1 L4.5,9.5 L9,14 L19,4 L17.6,2.6 L9,11.2 L5.9,8.1 L5.9,8.1 Z M18,10 C18,14.4 14.4,18 10,18 C5.6,18 2,14.4 2,10 C2,5.6 5.6,2 10,2 C10.8,2 11.5,2.1 12.2,2.3 L13.8,0.7 C12.6,0.3 11.3,0 10,0 C4.5,0 0,4.5 0,10 C0,15.5 4.5,20 10,20 C15.5,20 20,15.5 20,10 L18,10 L18,10 Z"
+                    id="Shape" />
+                </g>
+              </g>
+            </svg>
+            <h6>
+              {{ 'costumerSignature.contract.vatAmount' | translate }} ({{
+                contractInfo.paymentDetails.vat + '%'
+              }})
+            </h6>
+          </div>
+          <span style="display: flex; align-items: center">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                {{
+                  (contractInfo.paymentDetails.subtotalAfterDisc *
+                    contractInfo.paymentDetails.vat) /
+                    100 | number: '1.2-2'
+                }}
+              </span>
+            </span>
+          </span>
+        </div>
+        <!-- Grand Total -->
+        <div
+          class="content__payment-row"
+          style="
+            border-top: 1px solid var(--primary-text-color);
+            padding-top: 10px;
+          ">
+          <div style="display: flex; align-items: center">
+            <svg
+              height="20px"
+              viewBox="0 0 20 20"
+              width="20px"
+              xmlns="http://www.w3.org/2000/svg">
+              <g style="fill: var(--primary-color)">
+                <g id="check-circle-outline">
+                  <path
+                    d="M5.9,8.1 L4.5,9.5 L9,14 L19,4 L17.6,2.6 L9,11.2 L5.9,8.1 L5.9,8.1 Z M18,10 C18,14.4 14.4,18 10,18 C5.6,18 2,14.4 2,10 C2,5.6 5.6,2 10,2 C10.8,2 11.5,2.1 12.2,2.3 L13.8,0.7 C12.6,0.3 11.3,0 10,0 C4.5,0 0,4.5 0,10 C0,15.5 4.5,20 10,20 C15.5,20 20,15.5 20,10 L18,10 L18,10 Z"
+                    id="Shape" />
+                </g>
+              </g>
+            </svg>
+            <h6>{{ 'costumerSignature.contract.grandTotal' | translate }}</h6>
+          </div>
+          <span style="display: flex; align-items: center">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                {{ contractInfo.paymentDetails.totalPayable | number: '1.2-2' }}
+              </span>
+            </span>
+          </span>
+        </div>
+        <!-- Paid Amount -->
+        <div class="content__payment-row">
+          <div style="display: flex; align-items: center">
+            <svg
+              height="20px"
+              viewBox="0 0 20 20"
+              width="20px"
+              xmlns="http://www.w3.org/2000/svg">
+              <g style="fill: var(--primary-color)">
+                <g id="check-circle-outline">
+                  <path
+                    d="M5.9,8.1 L4.5,9.5 L9,14 L19,4 L17.6,2.6 L9,11.2 L5.9,8.1 L5.9,8.1 Z M18,10 C18,14.4 14.4,18 10,18 C5.6,18 2,14.4 2,10 C2,5.6 5.6,2 10,2 C10.8,2 11.5,2.1 12.2,2.3 L13.8,0.7 C12.6,0.3 11.3,0 10,0 C4.5,0 0,4.5 0,10 C0,15.5 4.5,20 10,20 C15.5,20 20,15.5 20,10 L18,10 L18,10 Z"
+                    id="Shape" />
+                </g>
+              </g>
+            </svg>
+            <h6>{{ 'costumerSignature.contract.paidAmount' | translate }}</h6>
+          </div>
+          <span style="display: flex; align-items: center">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                {{ paidAmount | number: '1.2-2' }}
+              </span>
+            </span>
+          </span>
+        </div>
+        <!-- Remaining Amount -->
+        <div class="content__payment-row">
+          <div style="display: flex; align-items: center">
+            <svg
+              height="20px"
+              viewBox="0 0 20 20"
+              width="20px"
+              xmlns="http://www.w3.org/2000/svg">
+              <g style="fill: var(--primary-color)">
+                <g id="check-circle-outline">
+                  <path
+                    d="M5.9,8.1 L4.5,9.5 L9,14 L19,4 L17.6,2.6 L9,11.2 L5.9,8.1 L5.9,8.1 Z M18,10 C18,14.4 14.4,18 10,18 C5.6,18 2,14.4 2,10 C2,5.6 5.6,2 10,2 C10.8,2 11.5,2.1 12.2,2.3 L13.8,0.7 C12.6,0.3 11.3,0 10,0 C4.5,0 0,4.5 0,10 C0,15.5 4.5,20 10,20 C15.5,20 20,15.5 20,10 L18,10 L18,10 Z"
+                    id="Shape" />
+                </g>
+              </g>
+            </svg>
+            <h6>
+              {{ 'costumerSignature.contract.remainingAmount' | translate }}
+            </h6>
+          </div>
+          <span style="display: flex; align-items: center">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                {{
+                  contractInfo.paymentDetails.totalPayable - paidAmount
+                    | number: '1.2-2'
+                }}
+              </span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Terms & Conditions -->
+  <div
+    *ngIf="contractInfo.contractSetting"
+    class="content__general terms terms-section page-break">
+    <div class="content__info-title">
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 40 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M0 20C11.0457 20 20 11.0457 20 0C20 11.0457 28.9543 20 40 20C28.9543 20 20 28.9543 20 40C20 28.9543 11.0457 20 0 20Z" />
+      </svg>
+      <h4>{{ 'costumerSignature.contract.termsAndConditions' | translate }}</h4>
+    </div>
+    <div class="content__info-text">
+      <span
+        [innerHTML]="
+          langService.lang === 'ar'
+            ? contractInfo.contractSetting.terms_and_conditions_ar
+            : contractInfo.contractSetting.terms_and_conditions_en
+        "></span>
+    </div>
+  </div>
+
+  <!-- Signatures -->
+  <!-- <div class="signature-row">
+    <ng-container *ngIf="firstPartySignature">
+      <div class="signature-column">
+        <h4 class="signature-header">
+          {{ 'costumerSignature.contract.firstPartySignature' | translate }}
+        </h4>
+        <div class="signature-content">
+          <img
+            *ngIf="signature_url"
+            [src]="signature_url"
+            alt="First Party Signature"
+            class="signature-image" />
+          <p class="signature-name" *ngIf="signatureName">
+            {{ signatureName }}
+          </p>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="firstPartyStamp">
+      <div class="signature-column">
+        <h4 class="signature-header">
+          {{ 'costumerSignature.contract.firstPartyStamp' | translate }}
+        </h4>
+        <div class="signature-content">
+          <img
+            *ngIf="stampUrl"
+            [src]="stampUrl"
+            alt="First Party Stamp"
+            class="stamp-image" />
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="secondPartySignature">
+      <div class="signature-column">
+        <h4 class="signature-header">
+          {{ 'costumerSignature.contract.secondPartySignature' | translate }}
+        </h4>
+        <div class="signature-content">
+          <img
+            *ngIf="customerSignature"
+            [src]="customerSignature"
+            alt="Second Party Signature"
+            class="signature-image" />
+          <div
+            class="signature-section"
+            style="text-align: center; margin-top: 10px"
+            *ngIf="customerSignatureName || clientName">
+            <table style="border-collapse: collapse; margin: 0 auto">
+              <tr *ngIf="customerSignatureName">
+                <td style="text-align: center; padding: 0 10px">
+                  <p
+                    class="signature-label"
+                    style="font-weight: bold; margin: 0 0 3px 0">
+                    {{ 'costumerSignature.contract.siteName' | translate }}
+                  </p>
+                  <p class="signature-name" style="margin: 0">
+                    {{ customerSignatureName }}
+                  </p>
+                </td>
+              </tr>
+              <tr *ngIf="clientName">
+                <td style="text-align: center; padding: 0 10px">
+                  <p
+                    class="signature-label"
+                    style="font-weight: bold; margin: 0 0 3px 0">
+                    {{ 'costumerSignature.contract.client' | translate }}
+                  </p>
+                  <p class="signature-name" style="margin: 0">
+                    {{ clientName }}
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div> -->
+</div>

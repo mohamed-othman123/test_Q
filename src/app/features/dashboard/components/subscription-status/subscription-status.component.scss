@@ -1,0 +1,47 @@
+:host {
+  .subscription-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    margin: auto;
+
+    &.success {
+      border: 1px solid #bbf7d0;
+      background-color: rgba(240, 253, 244, 0.95);
+      color: #16a34a;
+    }
+
+    &.warning {
+      border: 1px solid #fde68a;
+      background-color: rgba(254, 252, 232, 0.95);
+      color: #ca8a04;
+    }
+
+    &.danger {
+      border: 1px solid #fecaca;
+      background-color: rgba(254, 242, 242, 0.95);
+      color: #dc2626;
+    }
+
+    .s-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .pi {
+        font-size: 1.25rem;
+      }
+      .text {
+        font-weight: 600;
+      }
+    }
+
+    .read-more {
+      font-size: 13px;
+      cursor: pointer;
+    }
+  }
+}

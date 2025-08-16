@@ -1,0 +1,124 @@
+<app-subscription-status></app-subscription-status>
+<!--duration bar-->
+<div class="duration-bar">
+  <div class="duration-title">
+    <h4>{{ 'dashboard.durationBarTitle' | translate }} :</h4>
+  </div>
+  <span
+    [ngClass]="{active: currentSelectedFilterType$.value === '1'}"
+    (click)="onDurationSelect(1)">
+    {{ 'dashboard.filters.month' | translate }}</span
+    >
+    <span
+      [ngClass]="{active: currentSelectedFilterType$.value === '3'}"
+      (click)="onDurationSelect(3)"
+      >{{ 'dashboard.filters.3months' | translate }}</span
+      >
+      <span
+        [ngClass]="{active: currentSelectedFilterType$.value === '6'}"
+        (click)="onDurationSelect(6)"
+        >{{ 'dashboard.filters.6months' | translate }}</span
+        >
+        <span
+          [ngClass]="{active: currentSelectedFilterType$.value === '12'}"
+          (click)="onDurationSelect(12)"
+          >{{ 'dashboard.filters.year' | translate }}</span
+          >
+          <span
+            [ngClass]="{active: currentSelectedFilterType$.value === 'custom'}"
+            (click)="toggleCustomDates()"
+            >{{ 'dashboard.filters.customize' | translate }}
+          </span>
+        </div>
+
+        @if (showCustomDates) {
+          <div class="d-flex flex-column flex-wrap">
+            <div class="d-flex gap-2 flex-wrap">
+              <div class="d-flex align-items-baseline">
+                <app-gregorian-date-picker
+                  [control]="$any(customDatesForm.get('fromDate'))"
+                  controlName="fromDate"
+                  [showClear]="true"
+                  [label]="'dashboard.filters.fromDate' | translate"
+                  [placeholder]="'common.select' | translate">
+                </app-gregorian-date-picker>
+              </div>
+              <div class="d-flex align-items-baseline">
+                <app-gregorian-date-picker
+                  [control]="$any(customDatesForm.get('toDate'))"
+                  controlName="toDate"
+                  [showClear]="true"
+                  [label]="'dashboard.filters.toDate' | translate"
+                  [placeholder]="'common.select' | translate">
+                </app-gregorian-date-picker>
+              </div>
+              <div class="d-flex align-items-center gap-1 duration-btns">
+                <button
+                  class="custom-btn"
+                  type="button"
+                  pButton
+                  (click)="applyCustomDates()">
+                  {{ 'common.apply' | translate }}
+                </button>
+                <button
+                  type="button"
+                  pButton
+                  class="p-button-secondary custom-btn"
+                  [label]="'common.cancel' | translate"
+                  icon="pi pi-times"
+                (click)="cancelCustomDates()"></button>
+              </div>
+            </div>
+            <div class="col-12">
+              @if (customDatesForm.hasError('dateRange')) {
+                <div
+                  class="text-danger small">
+                  {{ 'dashboard.dateRangeError' | translate }}
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <app-key-metrics [keyMetrics]="keyMetrics"></app-key-metrics>
+
+        <div class="dashboard-container">
+          <div class="general-statistics">
+            <app-new-dashboard-chart></app-new-dashboard-chart>
+
+            <!--recent transactions-->
+            <app-recent-transactions></app-recent-transactions>
+          </div>
+
+          <!--upcoming booking-->
+          <div class="upcoming-events">
+            <app-next-booking [upcomingBooking]="upcomingBooking"></app-next-booking>
+
+            <!--calender-->
+            <div class="calendar">
+              <ng-container>
+                <h3>{{ 'dashboard.calendar' | translate }}</h3>
+                <div class="viewer-control">
+                  <span
+                    [ngClass]="{'active': resViewer.calendarView === 'islamic'}"
+                    (click)="resViewer.calendarView = 'islamic'"
+                    >{{ 'dashboard.hijri' | translate }}</span
+                    >
+                    <span
+                      [ngClass]="{'active': resViewer.calendarView === 'gregorian'}"
+                      (click)="resViewer.calendarView = 'gregorian'"
+                      >{{ 'dashboard.gregorian' | translate }}</span
+                      >
+                    </div>
+                    <app-reservation-viewer
+                      [reservedBookings]="reservedBookings"
+                      (navigate)="onNavigate($event)"
+                    #resViewer></app-reservation-viewer>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+            <ng-template #failedState>
+              <!-- TODO: add failed state -->
+              <app-dashboard-failed-state></app-dashboard-failed-state>
+            </ng-template>

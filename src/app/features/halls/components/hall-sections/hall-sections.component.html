@@ -1,0 +1,128 @@
+@if (!isLoading) {
+  <section class="hall-sections">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">{{ 'halls.hallSections' | translate }}</h5>
+      <div class="actions"></div>
+    </div>
+    <div class="bg-white p-3 rounded">
+      <div class="table-responsive mb-4">
+        <table class="table table-bordered">
+          <thead>
+            <tr class="bg-light">
+              <th>{{ 'halls.sectionNameAr' | translate }}</th>
+              <th>{{ 'halls.sectionName' | translate }}</th>
+              <th>{{ 'halls.capacity' | translate }}</th>
+              <th>{{ 'common.options' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (section of sections; track section.id; let i = $index) {
+              <tr>
+                <td>{{ section.name_ar }}</td>
+                <td>{{ section.name }}</td>
+                <td>{{ section.capacity || 0 }}</td>
+                <td>
+                  <div class="actions">
+                    <div class="action-button" (click)="editSection(i)">
+                      <i class="pi pi-pencil"></i>
+                      {{ 'common.edit' | translate }}
+                    </div>
+                    <div
+                      class="action-button delete"
+                      appConfirmDeleteDialog
+                      [deletedItem]="'halls.hallSection' | translate"
+                      (acceptDelete)="removeSection(i)">
+                      <i class="pi pi-trash"></i>
+                      {{ 'common.delete' | translate }}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            }
+            @if (sections.length === 0) {
+              <tr>
+                <td colspan="3" class="text-center p-4">
+                  <div class="empty-state">
+                    <app-empty-state />
+                    <button
+                      type="button"
+                      class="btn btn-primary mt-3"
+                      (click)="addNewSection()">
+                      <i class="pi pi-plus"></i>
+                      {{ 'halls.addNewSection' | translate }}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (showSectionForm) {
+        <div class="section-form p-3 border rounded mb-3">
+          <h6 class="mb-3">
+            {{
+              editingSectionIndex === -1
+                ? ('halls.addNewSection' | translate)
+                : ('halls.editSection' | translate)
+            }}
+          </h6>
+          <form
+            appShakeable
+            (ngSubmit)="saveSection()"
+            [formGroup]="sectionForm">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <app-input
+                  [controlName]="'name_ar'"
+                  [control]="sectionForm.get('name_ar')!"
+                  [label]="'halls.sectionNameAr' | translate"
+                  [placeholder]="'halls.sectionNameAr' | translate"
+                  inputType="text">
+                  <i class="pi pi-tag" style="color: gray"></i>
+                </app-input>
+              </div>
+              <div class="col-md-6 mb-3">
+                <app-input
+                  [controlName]="'name'"
+                  [control]="sectionForm.get('name')!"
+                  [label]="'halls.sectionName' | translate"
+                  [placeholder]="'halls.sectionName' | translate"
+                  inputType="text">
+                  <i class="pi pi-tag" style="color: gray"></i>
+                </app-input>
+              </div>
+              <div class="col-md-6 mb-3">
+                <app-input
+                  [controlName]="'capacity'"
+                  [control]="sectionForm.get('capacity')!"
+                  [label]="'halls.capacity' | translate"
+                  [placeholder]="'halls.capacity' | translate"
+                  inputType="number">
+                  <i class="pi pi-users" style="color: gray"></i>
+                </app-input>
+              </div>
+            </div>
+            <div class="actions justify-content-end">
+              <div class="action-button delete" (click)="cancelSectionEdit()">
+                <i class="pi pi-times"></i> {{ 'common.cancel' | translate }}
+              </div>
+              <button class="action-button" type="submit">
+                <i class="pi pi-save"></i>
+                {{ 'common.save' | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+      @if (!showSectionForm) {
+        <div class="secondary-btn justify-content-center">
+          <button type="button" class="add-button" (click)="addNewSection()">
+            <i class="pi pi-plus"></i>
+            {{ 'halls.addNewSection' | translate }}
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+}

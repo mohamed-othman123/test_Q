@@ -1,0 +1,40 @@
+<div class="page-container">
+  <p-stepper
+    [activeStep]="purchasesService.currentStep$ | async"
+    [linear]="true">
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-index="index">
+        <div
+          (click)="changeStep(index)"
+          class="step"
+          [ngClass]="{
+            'active': index === purchasesService.currentStep$.value,
+          }">
+          <span>1</span>
+          <h6>{{ 'purchases.mainExpensesDetails' | translate }}</h6>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <app-purchase-details></app-purchase-details>
+      </ng-template>
+    </p-stepperPanel>
+
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-index="index">
+        <div
+          (click)="changeStep(index)"
+          class="step"
+          [ngClass]="{
+            'active': index === purchasesService.currentStep$.value,
+          }">
+          <span>2</span>
+          <h6>{{ 'purchases.attachmentPhoto' | translate }}</h6>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <app-invoice-attachment
+          (submitting)="submit()"></app-invoice-attachment>
+      </ng-template>
+    </p-stepperPanel>
+  </p-stepper>
+</div>

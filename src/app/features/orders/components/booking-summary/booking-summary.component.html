@@ -1,0 +1,25 @@
+<app-booking-details [bookingDetails]="bookingDetails">
+  <div class="actions">
+    <span
+      (click)="isConfirmed ? changeStep(currentStep - 1) : changeStep(1)"
+      class="previous">
+      <i
+        [ngClass]="
+          lang.dir === 'rtl' ? 'pi pi-arrow-right' : 'pi pi-arrow-left'
+        "></i>
+      {{ 'common.previous' | translate }}</span
+    >
+    @if (mode !== 'view') {
+      <p-button
+        label="{{ 'common.save' | translate }}"
+        type="submit"
+        [icon]="'pi pi-save'"></p-button>
+    } @else {
+      <p-button
+        (onClick)="editOrder()"
+        label="{{ 'common.edit' | translate }}"
+        type="button"
+        [icon]="'pi pi-pencil'"></p-button>
+    }
+  </div>
+</app-booking-details>

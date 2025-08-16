@@ -1,0 +1,97 @@
+@if (showLabel && label) {
+  <label [for]="controlName">
+    {{ label }}
+    @if (control.hasError('required')) {
+      <span>&nbsp;*</span>
+    }
+  </label>
+}
+@if (inputType !== 'date' && inputType !== 'textarea') {
+  <div
+    class="input-container"
+    #shakeableContent
+    [ngClass]="{shake: control.invalid && shake}">
+    @if (iconPath) {
+      <div class="icon">
+        <img [src]="iconPath" alt="" />
+      </div>
+    } @else {
+      <div class="icon">
+        <ng-content select="i"></ng-content>
+      </div>
+    }
+    <input
+      #input
+      [id]="controlName"
+      [formControl]="$any(control)"
+      class="input-field"
+      [pattern]="pattern"
+      [type]="inputType"
+      (blur)="blurred()"
+      (focus)="focused()"
+      (change)="setError()"
+      (input)="onInputChange()"
+      tooltipEvent="focus"
+      [attr.autocomplete]="autoComplete"
+      [tooltipPosition]="tooltipPosition"
+      [pTooltip]="toolTipText"
+      [placeholder]="placeholder"
+      [style]="{'text-align': textAlign}" />
+    @if (inputType === 'password') {
+      <div (click)="showHidePassword()" class="icon icon-end">
+        <img src="/assets/icons/eye.icon.svg" alt="eye icon" />
+      </div>
+    } @else if (percent) {
+      <div class="icon icon-start">
+        <i class="pi pi-percentage"></i>
+      </div>
+    } @else if (showClear && control.value) {
+      <div class="icon icon-end" (click)="onClearListener()">
+        <i class="pi pi-times"></i>
+      </div>
+    }
+  </div>
+}
+@if (inputType === 'textarea') {
+  <div class="input-container">
+    <textarea
+      #input
+      [rows]="rowsNo"
+      [id]="controlName"
+      [formControl]="$any(control)"
+      class="input-field"
+      (blur)="blurred()"
+      (focus)="focused()"
+      [placeholder]="placeholder"></textarea>
+  </div>
+}
+@if (inputType === 'date') {
+  <div class="input-container">
+    <div (click)="d.toggle()" class="icon icon-end">
+      <img src="/assets/icons/calendar.white.icon.svg" alt="date icon" />
+    </div>
+    <input
+      #input
+      [id]="controlName"
+      [formControl]="$any(control)"
+      class="input-field"
+      [pattern]="pattern"
+      (blur)="blurred()"
+      (focus)="focused()"
+      (ngModelChange)="setError()"
+      ngbDatepicker
+      [minDate]="minDate"
+      [maxDate]="maxDate"
+      [placement]="placement"
+      autoClose="outside"
+      [firstDayOfWeek]="7"
+      #d="ngbDatepicker"
+      [placeholder]="placeholder" />
+  </div>
+}
+@if (control.touched && control.invalid && translatedError) {
+  <span class="errors">
+    <img src="/assets/icons/exclamation.icon.svg" alt="" />
+    <span>{{ translatedError }}</span>
+  </span>
+}

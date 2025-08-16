@@ -1,0 +1,19 @@
+:host {
+  .refund-amount {
+    margin: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #edf8f6;
+    justify-content: center;
+  }
+  .more-info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: #7c7c7c;
+  }
+}

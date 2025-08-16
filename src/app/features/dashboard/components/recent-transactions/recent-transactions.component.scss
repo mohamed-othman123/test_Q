@@ -1,0 +1,18 @@
+.recent-transactions {
+  .filters {
+    ::ng-deep {
+      .input-container {
+        margin-bottom: 0;
+
+        .icon {
+          padding-top: 7px;
+        }
+
+        .p-dropdown .p-dropdown-label {
+          padding-block: 7px;
+          padding-inline-end: 0px;
+        }
+      }
+    }
+  }
+}

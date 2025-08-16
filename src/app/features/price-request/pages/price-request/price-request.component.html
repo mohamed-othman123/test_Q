@@ -1,0 +1,226 @@
+<div class="page-header">
+  <h3>{{ 'priceRequest.priceRequest' | translate }}</h3>
+</div>
+
+<p-table
+  #dt2
+  [value]="priceRequests"
+  dataKey="id"
+  [rows]="rows"
+  selectionMode="multiple"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [paginator]="true"
+  [totalRecords]="totalRecords"
+  [first]="first"
+  (onLazyLoad)="onLazyLoad($event)"
+  [lazy]="true">
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="created_at">
+        {{ 'priceRequest.requestNumber' | translate }}
+        <p-sortIcon field="created_at" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="created_at">
+        {{ 'priceRequest.requestCreationDate' | translate }}
+        <p-sortIcon field="created_at" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="name">
+        {{ 'priceRequest.customerName' | translate }}
+        <p-sortIcon field="name" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="eventName">
+        {{ 'priceRequest.eventType' | translate }}
+        <p-sortIcon field="eventName" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="eventDate">
+        {{ 'priceRequest.eventDate' | translate }}
+        <p-sortIcon field="eventDate" class="mr-12px"></p-sortIcon>
+      </th>
+      <th>
+        {{ 'priceRequest.status' | translate }}
+      </th>
+
+      <th style="width: fit-content"></th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>
+        <app-gregorian-date-picker
+          [control]="$any(filterForm.get('creationDate'))"
+          controlName="creationDate"
+          [showClear]="true"
+          [placeholder]="'common.search' | translate">
+        </app-gregorian-date-picker>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('name')!"
+          [controlName]="'name'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('eventName')!"
+          [controlName]="'eventName'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-gregorian-date-picker
+          [control]="$any(filterForm.get('eventDate'))"
+          controlName="eventDate"
+          [showClear]="true"
+          [placeholder]="'common.search' | translate">
+        </app-gregorian-date-picker>
+      </th>
+      <th>
+        <p-dropdown
+          appendTo="body"
+          id="value-status"
+          [formControl]="$any(filterForm.get('status'))"
+          [options]="priceRequestStatus"
+          [showClear]="true"
+          optionLabel="label.{{ lang.lang }}"
+          [optionValue]="'value'"
+          [placeholder]="'common.select' | translate" />
+      </th>
+
+      <th style="width: fit-content"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-priceRequest>
+    <tr>
+      <td>
+        {{ priceRequest.id }}
+      </td>
+
+      <td>
+        @if (lang.lang === 'en') {
+          {{ priceRequest.created_at | date: 'dd/MM/yyyy' : 'UTC' }}G
+        }
+        @if (lang.lang === 'ar') {
+          {{ priceRequest.created_at | formatDateLang: 'ar' }}م
+        }
+      </td>
+
+      <td>{{ priceRequest.name }}</td>
+      <td>{{ priceRequest.eventName }}</td>
+
+      <td style="min-width: 200px" [dir]="lang.lang === 'ar' ? 'rtl' : 'ltr'">
+        @if (priceRequest.isFlexibleDate) {
+          <div class="flex-date">
+            <span>{{ 'priceRequest.flexibleDate' | translate }}</span>
+            <i class="pi pi-check check-icon"></i>
+          </div>
+        } @else {
+          @if (lang.lang === 'en') {
+            {{ priceRequest.eventDate | date: 'dd/MM/yyyy' : 'UTC' }}G
+            Corresponds to
+            {{ priceRequest.eventDateHijri | date: 'dd/MM/yyyy' }}H
+          }
+          @if (lang.lang === 'ar') {
+            {{ priceRequest.eventDate | formatDateLang: 'ar' }}م الموافق
+            {{ priceRequest.eventDateHijri | formatDateLang: 'ar' }}هـ
+          }
+        }
+
+      </td>
+
+      <td>
+        {{ 'priceRequest.' + priceRequest.status | translate }}
+      </td>
+
+      <th class="d-flex gap-2 align-items-center">
+        <!-- <div class="actions">
+        <button
+          [disabled]="priceRequest.status === 'Canceled'"
+          pButton
+          type="button"
+          label="{{ 'common.options' | translate }}"
+          icon="pi pi-ellipsis-v"
+          class="p-button-text options-button"
+        (click)="menu.toggle($event)"></button>
+        <p-menu
+          #menu
+          [popup]="true"
+          [baseZIndex]="1000"
+          [tabindex]="undefined"
+          appendTo="body"
+          class="w-auto"
+        [model]="getMenuItems(priceRequest)"></p-menu>
+      </div>
+      <div
+        *ngIf="priceRequest.status !== 'Canceled'"
+        appConfirmDeleteDialog
+        [message]="'priceRequest.cancelOrDelMessage' | translate"
+        [deletedItem]="'orders.order' | translate"
+        (acceptDelete)="confirmDeletePriceRequest(priceRequest)"
+        class="action-button delete">
+        <i
+          style="color: red; font-size: 1.5rem"
+        class="pi pi-times-circle"></i>
+      </div> -->
+      <div ngbDropdown container="body" class="d-inline-block">
+        <button
+          type="button"
+          class="options-button"
+          id="dropdownBasic1"
+          ngbDropdownToggle>
+          <span
+          class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
+          {{ 'common.options' | translate }}
+        </button>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="dropdownBasic1"
+          class="p-menu p-menu-overlay">
+          <button
+            *appHasPermission="['update:price-requests']"
+            ngbDropdownItem
+            (click)="updatePriceRequest(priceRequest)"
+            class="d-flex gap-3">
+            <i class="pi pi-pencil"></i>
+            <span>{{ 'common.edit' | translate }}</span>
+          </button>
+          <button
+            *appHasPermission="['read:price-requests']"
+            ngbDropdownItem
+            (click)="viewPriceRequest(priceRequest)"
+            class="d-flex gap-3">
+            <i class="pi pi-eye"></i>
+            <span>{{ 'common.view' | translate }}</span>
+          </button>
+          <button
+            *appHasPermission="['delete:price-requests']"
+            ngbDropdownItem
+            class="d-flex gap-3"
+            (click)="openDeleteConfirmation(priceRequest)">
+            <i class="pi pi-times-circle"></i>
+            <span>{{ 'common.delete' | translate }}</span>
+          </button>
+        </div>
+      </div>
+    </th>
+  </tr>
+</ng-template>
+<ng-template pTemplate="emptymessage">
+  <tr>
+    <td colspan="5">
+      <app-empty-state></app-empty-state>
+    </td>
+  </tr>
+</ng-template>
+</p-table>
+<!-- Delete Confirmation Dialog -->
+<app-confirm-delete-popup
+  [visible]="showDeleteConfirmation"
+  [message]="'services.deleteService' | translate"
+  (confirm)="confirmDeletePriceRequest()"
+(reject)="rejectDeletePriceRequest()"></app-confirm-delete-popup>

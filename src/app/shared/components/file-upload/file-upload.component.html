@@ -1,0 +1,54 @@
+<h6>{{ title }} @if (control.hasError('required')) {
+  <span>&nbsp;*</span>
+}</h6>
+<div class="file-upload" (click)="!disabled && fileUpload.click()">
+  @if (!imgUrl) {
+    <i class="pi pi-upload"></i>
+  }
+
+  @if (imgUrl) {
+    @switch (uploadedFileType) {
+      @case ('pdf') {
+        <i class="pi pi-file-pdf" style="font-size: 4rem; color: #1eaa8f"></i>
+      }
+      @case ('image') {
+        <img [src]="imgUrl" alt="uploaded image" />
+      }
+      @case ('word') {
+        <i class="pi pi-file-word" style="font-size: 4rem; color: #1eaa8f"></i>
+      }
+      @case ('other') {
+        <i class="pi pi-file" style="font-size: 4rem; color: #1eaa8f"></i>
+      }
+    }
+  }
+
+  <!-- <img *ngIf="imgUrl" [src]="imgUrl" alt="uploaded image" /> -->
+
+  @if (imgUrl && !disabled) {
+    <div class="trash" (click)="deleteFile($event)">
+      <i class="pi pi-trash"></i>
+    </div>
+  }
+
+  @if (!imgUrl) {
+    <span>{{ hint }}</span>
+  }
+
+  <input
+    [accept]="accept"
+    [disabled]="disabled"
+    type="file"
+    class="file-input"
+    (change)="onFileSelected($event)"
+    #fileUpload />
+</div>
+@if (control.touched && control.invalid && control.hasError('required')) {
+  <span class="errors">
+    <img src="/assets/icons/exclamation.icon.svg" alt="exclamation icon" />
+    <span>{{
+      'errors.required'
+      | translate: {fieldName: 'orders.attachment' | translate}
+    }}</span>
+  </span>
+}

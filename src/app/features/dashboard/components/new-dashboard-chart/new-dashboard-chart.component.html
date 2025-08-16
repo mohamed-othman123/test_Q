@@ -1,0 +1,67 @@
+@if (chartData$ | async) {
+  <div class="statistics">
+    <div class="header">
+      <h3>{{ 'dashboard.statistics.title' | translate }}</h3>
+      <div class="filters">
+        <span
+          [ngClass]="{'active': chartFilter$.value === 'week'}"
+          (click)="chartFilter$.next('week')"
+          >{{ 'dashboard.statistics.weekly' | translate }}</span
+          >
+          <span
+            [ngClass]="{'active': chartFilter$.value === 'month'}"
+            (click)="chartFilter$.next('month')"
+            >{{ 'dashboard.statistics.monthly' | translate }}</span
+            >
+          </div>
+        </div>
+        <div class="chart-data">
+          <span>
+            <div class="label">
+              <img src="assets/images/calendar.green.icon.svg" alt="calendar icon" />
+              {{ 'dashboard.statistics.totalBookings' | translate }}
+            </div>
+            <div class="value">
+              {{ legendData.totalBookings }}
+              {{ 'dashboard.statistics.bookingsUnit' | translate }}
+            </div>
+          </span>
+          <span>
+            <div class="label">
+              <img src="assets/images/arrow-green.icon.svg" alt="arrow green icon" />
+              {{ 'dashboard.statistics.totalRevenue' | translate }}
+            </div>
+            <div class="value">
+              <div class="price-with-symbol gap-0">
+                <sar-symbol />
+                <div>
+                  {{ legendData.totalRevenue | number: '1.2-2' }}
+                </div>
+              </div>
+            </div>
+          </span>
+          <span>
+            <div class="label">
+              <img src="assets/images/arrow-down.icon.svg" alt="arrow down icon" />
+              {{ 'dashboard.statistics.totalExpenses' | translate }}
+            </div>
+            <div class="value">
+              <div class="price-with-symbol gap-0">
+                <sar-symbol />
+                <div>
+                  {{ legendData.totalExpenses | number: '1.2-2' }}
+                </div>
+              </div>
+            </div>
+          </span>
+        </div>
+        <div
+          style="height: 400px"
+          echarts
+          [options]="chartOption"
+        class="chart"></div>
+      </div>
+    } @else {
+      <app-dashboard-failed-state></app-dashboard-failed-state>
+    }
+

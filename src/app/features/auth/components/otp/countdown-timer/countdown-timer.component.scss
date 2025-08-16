@@ -1,0 +1,80 @@
+@use 'variables';
+
+.timer-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  align-content: center;
+}
+
+.text-dark-green {
+  color: variables.$primary-color;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+.text-light-green {
+  color: variables.$primary-color;
+  opacity: 0.7;
+}
+
+.base-timer {
+  position: relative;
+  width: 70px;
+  height: 70px;
+
+  .base-timer__svg {
+    transform: scaleX(-1);
+
+    .base-timer__circle {
+      fill: none;
+      stroke: none;
+
+      .base-timer__path-elapsed {
+        stroke-width: 6px;
+        stroke: rgba(255, 255, 255, 0.09);
+      }
+
+      .base-timer__path-remaining {
+        stroke-width: 7px;
+        stroke-linecap: round;
+        transform: rotate(90deg);
+        transform-origin: center;
+        transition: 1s linear all;
+        fill-rule: nonzero;
+        stroke: currentColor;
+      }
+
+      .base-timer__path-remaining.green {
+        color: variables.$primary-color;
+      }
+
+      .base-timer__path-remaining.orange {
+        color: variables.$orange;
+      }
+
+      .base-timer__path-remaining.red {
+        color: variables.$red;
+      }
+    }
+  }
+
+  .base-timer__label {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+}

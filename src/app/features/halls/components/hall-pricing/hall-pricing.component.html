@@ -1,0 +1,874 @@
+@if (formInitialized) {
+  <section class="hall-pricing">
+    <div class="bg-white p-3 rounded">
+      <form [formGroup]="pricingForm" appShakeable (ngSubmit)="submitPricing()">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="align-self-start mb-0">
+            {{ 'halls.hallPrices' | translate }}
+          </h5>
+          <div class="actions">
+            @if (showPricingForm && isEventPrice) {
+              <div (click)="cancelEdit()" class="action-button delete">
+                <i class="pi pi-times"></i> {{ 'common.cancel' | translate }}
+              </div>
+            }
+            @if (showPricingForm || !isEventPrice) {
+              <button
+                id="pricing-save-btn"
+                class="action-button"
+                [disabled]="isSubmitting"
+                type="submit">
+                <i class="pi pi-save"></i>
+                {{ 'halls.savePricing' | translate }}
+              </button>
+            }
+          </div>
+        </div>
+        <div class="pricing-type-selection mb-4">
+          <label class="form-label fw-medium mb-3">{{
+            'halls.pricingType' | translate
+          }}</label>
+          <div class="pricing-options">
+            <!-- Price While Booking -->
+            <div
+              class="pricing-option p-3 border rounded"
+              [class.active]="isBookingTime"
+              (click)="priceTypeListener(0)">
+              <div class="form-check">
+                <input
+                  type="radio"
+                  class="form-check-input"
+                  id="pricingType1"
+                  [value]="pricingTypes[0]"
+                  formControlName="pricingType" />
+                <label class="form-check-label fw-bold" for="pricingType1">
+                  {{ 'halls.pricingTypes.booking_time' | translate }}
+                </label>
+              </div>
+              <p class="text-muted mt-2 mb-0">
+                {{ bookingTimeBriefKey | translate }}
+              </p>
+            </div>
+            <!-- Price Through Admin -->
+            <div
+              class="pricing-option p-3 border rounded"
+              [class.active]="isFixedAdmin"
+              (click)="priceTypeListener(1)">
+              <div class="form-check">
+                <input
+                  type="radio"
+                  class="form-check-input"
+                  id="pricingType2"
+                  [value]="pricingTypes[1]"
+                  formControlName="pricingType" />
+                <label class="form-check-label fw-bold" for="pricingType2">
+                  {{ 'halls.pricingTypes.fixed' | translate }}
+                </label>
+              </div>
+              <p class="text-muted mt-2 mb-0">
+                {{ fixedAdminBriefKey | translate }}
+              </p>
+            </div>
+            <!-- Price Per Event -->
+            <div
+              class="pricing-option p-3 border rounded"
+              [class.active]="isEventPrice"
+              (click)="priceTypeListener(2)">
+              <div class="form-check">
+                <input
+                  type="radio"
+                  class="form-check-input"
+                  id="pricingType3"
+                  [value]="pricingTypes[2]"
+                  formControlName="pricingType" />
+                <label class="form-check-label fw-bold" for="pricingType3">
+                  {{ 'halls.pricingTypes.eventPrice' | translate }}
+                </label>
+              </div>
+              <p class="text-muted mt-2 mb-0">
+                {{ eventPriceBriefKey | translate }}
+              </p>
+            </div>
+          </div>
+        </div>
+        @if (!showPricingForm && isEventPrice) {
+          @if (hall.pricingType === 'EVENT') {
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered">
+                <thead>
+                  <tr class="bg-light">
+                    <th>{{ 'landing.eventName' | translate }}</th>
+                    <th>{{ 'halls.priceCalculationType' | translate }}</th>
+                    <th>{{ 'halls.insuranceAmount' | translate }}</th>
+                    <th>{{ 'common.options' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (pricing of pricings; track pricing; let i = $index) {
+                    <tr>
+                      <td>
+                        {{
+                          lang.lang === 'ar' ? pricing.name_ar : pricing.name
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          'halls.' + pricing.priceCalculationType
+                            | lowercase
+                            | translate
+                        }}
+                      </td>
+                      <td>{{ pricing.insuranceAmount }}</td>
+                      <td>
+                        <div class="actions">
+                          <div
+                            class="action-button"
+                            (click)="updatePricing(i, pricing.id)">
+                            <i class="pi pi-pencil"></i>
+                            {{ 'common.edit' | translate }}
+                          </div>
+                          <div
+                            class="action-button delete"
+                            appConfirmDeleteDialog
+                            [deletedItem]="'halls.eventPricing' | translate"
+                            (acceptDelete)="removePricing(pricing.id)">
+                            <i class="pi pi-trash"></i>
+                            {{ 'common.delete' | translate }}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                  @if (pricings.length === 0) {
+                    <tr>
+                      <td colspan="4" class="text-center p-4">
+                        <div class="empty-state">
+                          <app-empty-state />
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+          @if (isEventPrice) {
+            <div class="secondary-btn justify-content-center">
+              <button
+                type="button"
+                class="add-button"
+                (click)="addNewPricing()">
+                <i class="pi pi-plus"></i>
+                {{ 'halls.addNewEventPrice' | translate }}
+              </button>
+            </div>
+          }
+        }
+        @if (isFixedAdmin || (isEventPrice && showPricingForm)) {
+          <!-- Events Dropdown -->
+          @if (isEventPrice && selectedEventId === null) {
+            <div class="mb-4">
+              <h6 class="mb-3">{{ 'halls.selectEvents' | translate }}</h6>
+              <p-multiSelect
+                id="halls"
+                [options]="availableEvents"
+                optionValue="id"
+                [showToggleAll]="true"
+                dataKey="id"
+                [showHeader]="true"
+                [formControl]="getFormControl('events')"
+                [optionLabel]="lang.lang === 'ar' ? 'name_ar' : 'name'"
+                [placeholder]="'halls.selectEvents' | translate">
+                <ng-template let-value pTemplate="selectedItems">
+                  @if (value) {
+                    @if (value.length > 0) {
+                      <div class="selected-items-container">
+                        @for (
+                          option of value | slice: 0 : 2;
+                          track option;
+                          let i = $index
+                        ) {
+                          <span class="selected-item">
+                            {{
+                              lang.lang === 'ar'
+                                ? $any(option)['name_ar']
+                                : $any(option)['name']
+                            }}
+                            ,
+                          </span>
+                        }
+                        @if (value.length > 2) {
+                          <span class="selected-item-count">
+                            +{{ value.length - 2 }}
+                          </span>
+                        }
+                      </div>
+                    }
+                    @if (value.length === 0) {
+                      <span>
+                        {{ 'halls.eventTypePlaceholder' | translate }}
+                      </span>
+                    }
+                  }
+                  @if (!value) {
+                    {{ 'halls.eventTypePlaceholder' | translate }}
+                  }
+                </ng-template>
+              </p-multiSelect>
+            </div>
+          }
+          <div class="price-calculation-type mb-4">
+            <label class="form-label fw-medium mb-3">{{
+              'halls.priceCalculationType' | translate
+            }}</label>
+            <div class="pricing-options">
+              <!-- Fixed Price -->
+              <div
+                class="pricing-option p-3 border rounded"
+                [class.active]="
+                  getFormControl('priceCalculationType').value ===
+                  pricingCalculationTypes[0]
+                "
+                (click)="
+                  pricingForm
+                    .get('priceCalculationType')
+                    ?.setValue(pricingCalculationTypes[0])
+                ">
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    id="pricingCalc1"
+                    [value]="pricingCalculationTypes[0]"
+                    formControlName="priceCalculationType" />
+                  <label class="form-check-label fw-bold" for="pricingCalc1">
+                    {{ 'halls.pricingCalculation.fixed_price' | translate }}
+                  </label>
+                </div>
+                <p class="text-muted mt-2 mb-0">
+                  {{ fixedPriceBriefKey | translate }}
+                </p>
+              </div>
+              <!-- Price Per Person -->
+              <div
+                class="pricing-option p-3 border rounded"
+                [class.active]="
+                  getFormControl('priceCalculationType').value ===
+                  pricingCalculationTypes[1]
+                "
+                (click)="
+                  pricingForm
+                    .get('priceCalculationType')
+                    ?.setValue(pricingCalculationTypes[1])
+                ">
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    id="pricingCalc2"
+                    [value]="pricingCalculationTypes[1]"
+                    formControlName="priceCalculationType" />
+                  <label class="form-check-label fw-bold" for="pricingCalc2">
+                    {{ 'halls.pricingCalculation.per_person' | translate }}
+                  </label>
+                </div>
+                <p class="text-muted mt-2 mb-0">
+                  {{ pricePerPersonBriefKey | translate }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3">
+            <app-input
+              [controlName]="'insuranceAmount'"
+              [control]="getFormControl('insuranceAmount')!"
+              [label]="'halls.insuranceAmount' | translate"
+              [placeholder]="'halls.insuranceAmountPlaceholder' | translate"
+              inputType="number">
+              <i class="pi pi-shield" style="color: gray"></i>
+            </app-input>
+          </div>
+          <div class="mb-4">
+            <h6 class="mb-3">{{ 'halls.regularPricing' | translate }}</h6>
+            <form
+              appShakeable
+              class="table-responsive"
+              formGroupName="regularPricing">
+              <table class="table table-bordered pricing-table">
+                <thead>
+                  <tr class="bg-light">
+                    <th>{{ 'halls.day' | translate }}</th>
+                    <th>{{ 'halls.morning' | translate }}</th>
+                    <th>{{ 'halls.evening' | translate }}</th>
+                    <th>{{ 'halls.fullDay' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (day of days; track day) {
+                    <tr [formGroupName]="day">
+                      <td class="py-3 bg-light">
+                        {{ 'halls.days.' + day | translate }}
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <!--control for fixed price-->
+                          @if (
+                            getFormControl('priceCalculationType').value ===
+                            'FIXED_PRICE'
+                          ) {
+                            <app-input
+                              preventNegative
+                              [showRequiredError]="false"
+                              class="w-100"
+                              [label]="''"
+                              [controlName]="'fixedPrice'"
+                              [control]="
+                                getFormControl(
+                                  'regularPricing.' +
+                                    day +
+                                    '.morning.fixedPrice'
+                                )
+                              "
+                              [placeholder]="'common.required' | translate"
+                              inputType="number">
+                              <i class="pi pi-sun" style="color: gray"></i>
+                            </app-input>
+                          }
+                          <!--control for per person-->
+                          @if (
+                            getFormControl('priceCalculationType').value ===
+                            'PER_PERSON'
+                          ) {
+                            <app-input
+                              preventNegative
+                              [showRequiredError]="false"
+                              class="w-100"
+                              [label]="''"
+                              [controlName]="'menPrice'"
+                              [control]="
+                                getFormControl(
+                                  'regularPricing.' + day + '.morning.menPrice'
+                                )
+                              "
+                              [placeholder]="'halls.menPrice' | translate"
+                              inputType="number"
+                              [textAlign]="'center'">
+                              <i class="man-icon"></i>
+                            </app-input>
+                            <app-input
+                              preventNegative
+                              [showRequiredError]="false"
+                              class="w-100"
+                              [label]="''"
+                              [controlName]="'womenPrice'"
+                              [control]="
+                                getFormControl(
+                                  'regularPricing.' +
+                                    day +
+                                    '.morning.womenPrice'
+                                )
+                              "
+                              [placeholder]="'halls.womenPrice' | translate"
+                              inputType="number"
+                              [textAlign]="'center'">
+                              <i class="women-icon"></i>
+                            </app-input>
+                          }
+                          <span class="currency-label"><sar-symbol /></span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <!--control for fixed price-->
+                          @if (
+                            getFormControl('priceCalculationType').value ===
+                            'FIXED_PRICE'
+                          ) {
+                            <app-input
+                              preventNegative
+                              [showRequiredError]="false"
+                              class="w-100"
+                              [label]="''"
+                              [controlName]="'fixedPrice'"
+                              [control]="
+                                getFormControl(
+                                  'regularPricing.' +
+                                    day +
+                                    '.evening.fixedPrice'
+                                )
+                              "
+                              [placeholder]="'common.required' | translate"
+                              inputType="number">
+                              <i class="pi pi-sun" style="color: gray"></i>
+                            </app-input>
+                          }
+                          <!--control for per person-->
+                          @if (
+                            getFormControl('priceCalculationType').value ===
+                            'PER_PERSON'
+                          ) {
+                            <app-input
+                              preventNegative
+                              [showRequiredError]="false"
+                              class="w-100"
+                              [label]="''"
+                              [controlName]="'menPrice'"
+                              [control]="
+                                getFormControl(
+                                  'regularPricing.' + day + '.evening.menPrice'
+                                )
+                              "
+                              [placeholder]="'halls.menPrice' | translate"
+                              inputType="number"
+                              [textAlign]="'center'">
+                              <i class="man-icon"></i>
+                            </app-input>
+                            <app-input
+                              preventNegative
+                              [showRequiredError]="false"
+                              class="w-100"
+                              [label]="''"
+                              [controlName]="'womenPrice'"
+                              [control]="
+                                getFormControl(
+                                  'regularPricing.' +
+                                    day +
+                                    '.evening.womenPrice'
+                                )
+                              "
+                              [placeholder]="'halls.womenPrice' | translate"
+                              inputType="number"
+                              [textAlign]="'center'">
+                              <i class="women-icon"></i>
+                            </app-input>
+                          }
+                          <span class="currency-label"><sar-symbol /></span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <!--control for fixed price-->
+                          @if (
+                            getFormControl('priceCalculationType').value ===
+                            'FIXED_PRICE'
+                          ) {
+                            <app-input
+                              preventNegative
+                              [showRequiredError]="false"
+                              class="w-100"
+                              [label]="''"
+                              [controlName]="'fixedPrice'"
+                              [control]="
+                                getFormControl(
+                                  'regularPricing.' +
+                                    day +
+                                    '.fullDay.fixedPrice'
+                                )
+                              "
+                              [placeholder]="'common.required' | translate"
+                              inputType="number">
+                              <i class="pi pi-sun" style="color: gray"></i>
+                            </app-input>
+                          }
+                          <!--control for per person-->
+                          @if (
+                            getFormControl('priceCalculationType').value ===
+                            'PER_PERSON'
+                          ) {
+                            <app-input
+                              preventNegative
+                              [showRequiredError]="false"
+                              class="w-100"
+                              [label]="''"
+                              [controlName]="'menPrice'"
+                              [control]="
+                                getFormControl(
+                                  'regularPricing.' + day + '.fullDay.menPrice'
+                                )
+                              "
+                              [placeholder]="'halls.menPrice' | translate"
+                              inputType="number"
+                              [textAlign]="'center'">
+                              <i class="man-icon"></i>
+                            </app-input>
+                            <app-input
+                              preventNegative
+                              [showRequiredError]="false"
+                              class="w-100"
+                              [label]="''"
+                              [controlName]="'womenPrice'"
+                              [control]="
+                                getFormControl(
+                                  'regularPricing.' +
+                                    day +
+                                    '.fullDay.womenPrice'
+                                )
+                              "
+                              [placeholder]="'halls.womenPrice' | translate"
+                              inputType="number"
+                              [textAlign]="'center'">
+                              <i class="women-icon"></i>
+                            </app-input>
+                          }
+                          <span class="currency-label"><sar-symbol /></span>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </form>
+            @if (
+              pricingForm.get('regularPricing')?.errors &&
+              pricingForm.get('regularPricing')?.touched
+            ) {
+              <div class="error">
+                {{ 'halls.daysError' | translate }}
+              </div>
+            }
+          </div>
+          <div class="mb-3">
+            <div
+              class="form-check d-flex align-items-center justify-content-start gap-2 mb-3">
+              <!--add special days-->
+              @if (!getFormControl('isSpecial').value) {
+                <div class="justify-content-center">
+                  <button
+                    class="apply-btn"
+                    pButton
+                    size="small"
+                    icon="pi pi-plus"
+                    [label]="'halls.addPricingForSpecialDays' | translate"
+                    (click)="openSpecialDaysForm()"></button>
+                </div>
+              }
+            </div>
+            @if (getFormControl('isSpecial').value) {
+              <div formArrayName="specialDaysPricing">
+                @for (
+                  specialDay of specialDaysPricing.controls;
+                  track specialDay;
+                  let i = $index
+                ) {
+                  <div class="special-day-card p-3 border rounded mb-3">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3">
+                      <h6 class="mb-0">
+                        {{ 'halls.specialDay' | translate }} #{{ i + 1 }}
+                      </h6>
+                      @if (specialDaysPricing.length > 1) {
+                        <div class="actions">
+                          <div
+                            class="action-button delete"
+                            appConfirmDeleteDialog
+                            [deletedItem]="'halls.specialDay' | translate"
+                            (acceptDelete)="removeSpecialDay(i)">
+                            <i class="pi pi-trash"></i>
+                            {{ 'common.delete' | translate }}
+                          </div>
+                        </div>
+                      }
+                    </div>
+                    <div [formGroupName]="i">
+                      <div class="mb-3">
+                        <app-input
+                          [controlName]="'title'"
+                          [control]="getSpecialDayTitleControl(i)"
+                          [label]="'halls.specialDayTitle' | translate"
+                          [placeholder]="
+                            'halls.specialDayTitlePlaceholder' | translate
+                          "
+                          inputType="text">
+                          <i class="pi pi-tag" style="color: gray"></i>
+                        </app-input>
+                      </div>
+                      <div class="row mb-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                          <app-date-picker
+                            [calendarType]="getDateTypeControl(i).value"
+                            (onCalenderType)="setDateTypeValue(i, $event)"
+                            [controlName]="'startDate'"
+                            [control]="getSpecialDayStartDateControl(i)"
+                            [label]="'halls.startDate' | translate">
+                            <i class="pi pi-calendar" style="color: gray"></i>
+                          </app-date-picker>
+                        </div>
+                        <div class="col-md-6">
+                          <app-date-picker
+                            [calendarType]="getDateTypeControl(i).value"
+                            (onCalenderType)="setDateTypeValue(i, $event)"
+                            [controlName]="'endDate'"
+                            [control]="getSpecialDayEndDateControl(i)"
+                            [label]="'halls.endDate' | translate">
+                            <i class="pi pi-calendar" style="color: gray"></i>
+                          </app-date-picker>
+                        </div>
+                        <div class="col-12 mt-2">
+                          @if (hasDateRangeError(i)) {
+                            <div class="text-danger small">
+                              {{ 'halls.dateRangeError' | translate }}
+                            </div>
+                          }
+                        </div>
+                      </div>
+                      <div class="table-responsive" formGroupName="pricing">
+                        <table class="table table-bordered pricing-table">
+                          <thead>
+                            <tr class="bg-light">
+                              <th>{{ 'halls.morning' | translate }}</th>
+                              <th>{{ 'halls.evening' | translate }}</th>
+                              <th>{{ 'halls.fullDay' | translate }}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                <div class="d-flex align-items-center gap-2">
+                                  <!--Fixed price-->
+                                  @if (
+                                    getFormControl('priceCalculationType')
+                                      .value === 'FIXED_PRICE'
+                                  ) {
+                                    <app-input
+                                      class="w-100"
+                                      [label]="''"
+                                      [controlName]="'fixedPrice'"
+                                      [control]="
+                                        getSpecialDayPricingControl(
+                                          i,
+                                          'morning.fixedPrice'
+                                        )
+                                      "
+                                      [placeholder]="
+                                        'common.required' | translate
+                                      "
+                                      inputType="number">
+                                      <i
+                                        class="pi pi-sun"
+                                        style="color: gray"></i>
+                                    </app-input>
+                                  }
+                                  <!--Per person-->
+                                  @if (
+                                    getFormControl('priceCalculationType')
+                                      .value === 'PER_PERSON'
+                                  ) {
+                                    <app-input
+                                      class="w-100"
+                                      [label]="''"
+                                      [controlName]="'menPrice'"
+                                      [control]="
+                                        getSpecialDayPricingControl(
+                                          i,
+                                          'morning.menPrice'
+                                        )
+                                      "
+                                      [placeholder]="
+                                        'halls.menPrice' | translate
+                                      "
+                                      inputType="number"
+                                      [textAlign]="'center'">
+                                      <i class="man-icon"></i>
+                                    </app-input>
+                                    <app-input
+                                      class="w-100"
+                                      [label]="''"
+                                      [controlName]="'womenPrice'"
+                                      [control]="
+                                        getSpecialDayPricingControl(
+                                          i,
+                                          'morning.womenPrice'
+                                        )
+                                      "
+                                      [placeholder]="
+                                        'halls.womenPrice' | translate
+                                      "
+                                      inputType="number"
+                                      [textAlign]="'center'">
+                                      <i class="women-icon"></i>
+                                    </app-input>
+                                  }
+                                  <span class="currency-label"
+                                    ><sar-symbol
+                                  /></span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="d-flex align-items-center gap-2">
+                                  <!--Fixed Price-->
+                                  @if (
+                                    getFormControl('priceCalculationType')
+                                      .value === 'FIXED_PRICE'
+                                  ) {
+                                    <app-input
+                                      class="w-100"
+                                      [label]="''"
+                                      [controlName]="'fixedPrice'"
+                                      [control]="
+                                        getSpecialDayPricingControl(
+                                          i,
+                                          'evening.fixedPrice'
+                                        )
+                                      "
+                                      [placeholder]="
+                                        'common.required' | translate
+                                      "
+                                      inputType="number">
+                                      <i
+                                        class="pi pi-sun"
+                                        style="color: gray"></i>
+                                    </app-input>
+                                  }
+                                  <!--Per person-->
+                                  @if (
+                                    getFormControl('priceCalculationType')
+                                      .value === 'PER_PERSON'
+                                  ) {
+                                    <app-input
+                                      class="w-100"
+                                      [label]="''"
+                                      [controlName]="'menPrice'"
+                                      [control]="
+                                        getSpecialDayPricingControl(
+                                          i,
+                                          'evening.menPrice'
+                                        )
+                                      "
+                                      [placeholder]="
+                                        'halls.menPrice' | translate
+                                      "
+                                      inputType="number"
+                                      [textAlign]="'center'">
+                                      <i class="man-icon"></i>
+                                    </app-input>
+                                    <app-input
+                                      class="w-100"
+                                      [label]="''"
+                                      [controlName]="'womenPrice'"
+                                      [control]="
+                                        getSpecialDayPricingControl(
+                                          i,
+                                          'evening.womenPrice'
+                                        )
+                                      "
+                                      [placeholder]="
+                                        'halls.womenPrice' | translate
+                                      "
+                                      inputType="number"
+                                      [textAlign]="'center'">
+                                      <i class="women-icon"></i>
+                                    </app-input>
+                                  }
+                                  <span class="currency-label"
+                                    ><sar-symbol
+                                  /></span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="d-flex align-items-center gap-2">
+                                  <!--Fixed Price-->
+                                  @if (
+                                    getFormControl('priceCalculationType')
+                                      .value === 'FIXED_PRICE'
+                                  ) {
+                                    <app-input
+                                      class="w-100"
+                                      [label]="''"
+                                      [controlName]="'fixedPrice'"
+                                      [control]="
+                                        getSpecialDayPricingControl(
+                                          i,
+                                          'fullDay.fixedPrice'
+                                        )
+                                      "
+                                      [placeholder]="
+                                        'common.required' | translate
+                                      "
+                                      inputType="number">
+                                      <i
+                                        class="pi pi-sun"
+                                        style="color: gray"></i>
+                                    </app-input>
+                                  }
+                                  <!--Per person-->
+                                  @if (
+                                    getFormControl('priceCalculationType')
+                                      .value === 'PER_PERSON'
+                                  ) {
+                                    <app-input
+                                      class="w-100"
+                                      [label]="''"
+                                      [controlName]="'menPrice'"
+                                      [control]="
+                                        getSpecialDayPricingControl(
+                                          i,
+                                          'fullDay.menPrice'
+                                        )
+                                      "
+                                      [placeholder]="
+                                        'halls.menPrice' | translate
+                                      "
+                                      inputType="number"
+                                      [textAlign]="'center'">
+                                      <i class="man-icon"></i>
+                                    </app-input>
+                                    <app-input
+                                      class="w-100"
+                                      [label]="''"
+                                      [controlName]="'womenPrice'"
+                                      [control]="
+                                        getSpecialDayPricingControl(
+                                          i,
+                                          'fullDay.womenPrice'
+                                        )
+                                      "
+                                      [placeholder]="
+                                        'halls.womenPrice' | translate
+                                      "
+                                      inputType="number"
+                                      [textAlign]="'center'">
+                                      <i class="women-icon"></i>
+                                    </app-input>
+                                  }
+                                  <span class="currency-label"
+                                    ><sar-symbol
+                                  /></span>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                }
+                <div class="d-flex justify-content-around">
+                  <!--close special days-->
+                  <div class="justify-content-center">
+                    <button
+                      type="button"
+                      class="close-button"
+                      (click)="closeSpecialDaysForm()">
+                      <i class="pi pi-times"></i>
+                      {{ 'common.cancel' | translate }}
+                    </button>
+                  </div>
+                  <div class="justify-content-center">
+                    <button
+                      [disabled]="!isLastSpecialDayValid()"
+                      class="apply-btn"
+                      pButton
+                      size="small"
+                      icon="pi pi-plus"
+                      [label]="'halls.addNewSpecialDay' | translate"
+                      (click)="addSpecialDay()"></button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </form>
+    </div>
+  </section>
+}

@@ -1,0 +1,132 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2>
+      {{
+        mode === 'view'
+          ? ('expensesItems.viewExpensesItem' | translate)
+          : mode === 'edit'
+            ? ('expensesItems.editExpensesItem' | translate)
+            : ('expensesItems.addNewItem' | translate)
+      }}
+    </h2>
+  </div>
+
+  <form [formGroup]="form" appShakeable (ngSubmit)="submit()">
+    <div class="form-section">
+      <div class="row d-flex align-items-baseline">
+        <!--expense category-->
+        <div class="col-md-6">
+          @if (mode !== 'view') {
+            <app-dropdown
+              [control]="getControl('categoryId')"
+              [controlName]="'categoryId'"
+              [options]="categories"
+              [optionLabel]="'name'"
+              [optionValue]="'id'"
+              [placeholder]="
+                mode !== 'add'
+                  ? lang.lang === 'ar'
+                    ? item.category?.name_ar
+                    : item.category?.name
+                  : ('expensesItems.categoryPlaceholder' | translate)
+              "
+              [label]="'expensesItems.category' | translate">
+              <i class="pi pi-list" style="color: gray"></i>
+            </app-dropdown>
+          } @else {
+            <div class="form-control-static">
+              <strong>{{ 'expensesItems.category' | translate }} </strong> :
+              {{
+                lang.lang === 'ar'
+                  ? item.category?.name_ar!
+                  : item.category?.name!
+              }}
+            </div>
+          }
+        </div>
+        <div class="col-md-6"></div>
+
+        <!--expense name ar-->
+        <div class="col-md-6">
+          <app-input
+            [control]="getControl('nameAr')"
+            [controlName]="'nameAr'"
+            inputType="text"
+            [placeholder]="'expensesItems.itemNameArPlaceholder' | translate"
+            [label]="'expensesItems.itemNameAr' | translate">
+            <i class="pi pi-pencil" style="color: gray"></i>
+          </app-input>
+        </div>
+
+        <!--expense name en-->
+        <div class="col-md-6">
+          <app-input
+            [control]="getControl('name')"
+            [controlName]="'name'"
+            inputType="text"
+            [placeholder]="'expensesItems.itemNameEnPlaceholder' | translate"
+            [label]="'expensesItems.itemNameEn' | translate">
+            <i class="pi pi-pencil" style="color: gray"></i>
+          </app-input>
+        </div>
+
+        <!--expense item description-->
+        <div class="col-md-12">
+          <app-input
+            [control]="getControl('description')"
+            [controlName]="'description'"
+            inputType="textarea"
+            [placeholder]="
+              'expensesItems.itemDescriptionPlaceholder' | translate
+            "
+            [label]="'expensesItems.itemDescription' | translate">
+          </app-input>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="row d-flex align-items-baseline">
+        <!--expense Accounts-->
+        <app-expense-accounts [accounts]="accounts"></app-expense-accounts>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="row d-flex align-items-baseline">
+        <!--expense element-->
+        <app-expense-element [elements]="elements"></app-expense-element>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button
+        type="button"
+        pButton
+        class="p-button-secondary"
+        [label]="'common.cancel' | translate"
+        icon="pi pi-times"
+        (click)="cancel()"></button>
+
+      @if (mode !== 'view') {
+        <button
+          type="submit"
+          pButton
+          icon="pi pi-save"
+          [label]="
+            mode === 'edit'
+              ? ('common.update' | translate)
+              : ('common.save' | translate)
+          "></button>
+      } @else {
+        <button
+          (click)="navigateToUpdate()"
+          type="button"
+          pButton
+          icon="pi pi-pencil"
+          [label]="'common.edit' | translate"></button>
+      }
+    </div>
+  </form>
+</div>

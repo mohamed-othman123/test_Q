@@ -1,0 +1,110 @@
+<div class="hall-form-container">
+  <ul class="nav nav-tabs nav-fill mb-4">
+    @for (tab of tabs; track tab; let i = $index) {
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          [class.active]="activeTabIndex === i"
+          (click)="setActiveTab(i)">
+          <i [class]="tab.icon"></i>
+          <span class="ms-2">{{ tab.title | translate }}</span>
+          @if (isTabDirty(i)) {
+            <span
+              class="unsaved-indicator"
+              [ngClass]="{
+                'unsaved-indicator-rtl': isRtl(),
+                'unsaved-indicator-ltr': !isRtl(),
+              }"
+              >*</span
+            >
+          }
+        </a>
+      </li>
+    }
+  </ul>
+
+  <div class="tab-content">
+    <div
+      class="tab-pane"
+      [class.active]="activeTabIndex === 0"
+      id="main-details">
+      <app-hall-details
+        [hallId]="hallId"
+        [hallData]="hall"
+        (detailsUpdated)="handleDetailsUpdated($event)"
+        (formChanged)="formStateService.markTabAsDirty(0)">
+      </app-hall-details>
+    </div>
+
+    <div
+      class="tab-pane"
+      [class.active]="activeTabIndex === 1"
+      id="hall-sections">
+      @if (activeTabIndex === 1) {
+        <app-hall-sections [hallId]="hallId"> </app-hall-sections>
+      }
+    </div>
+
+    <div
+      class="tab-pane"
+      [class.active]="activeTabIndex === 2"
+      id="hall-signature">
+      @if (activeTabIndex === 2) {
+        <app-hall-signature
+          [hallId]="hallId"
+          (signatureUpdated)="handleSignatureUpdate($event)"
+          (formChanged)="formStateService.markTabAsDirty(2)"
+          [hallData]="hall">
+        </app-hall-signature>
+      }
+    </div>
+
+    <div
+      class="tab-pane"
+      [class.active]="activeTabIndex === 3"
+      id="contract-settings">
+      @if (activeTabIndex === 3) {
+        <app-hall-contract
+          [eventTypes]="eventTypes"
+          [hallId]="hallId"
+          [hallData]="hall">
+        </app-hall-contract>
+      }
+    </div>
+
+    <div
+      class="tab-pane"
+      [class.active]="activeTabIndex === 4"
+      id="hall-prices">
+      <app-hall-pricing
+        [events]="eventTypes"
+        [hallId]="hallId"
+        [hall]="hall"
+        (pricingUpdated)="handlePricingUpdated($event)"
+        (formChanged)="formStateService.markTabAsDirty(4)">
+      </app-hall-pricing>
+    </div>
+
+    <div class="tab-pane" [class.active]="activeTabIndex === 5" id="team-data">
+      @if (activeTabIndex === 5) {
+        <app-hall-team
+          [hallId]="hallId"
+          [hallData]="hall"
+          (teamUpdated)="handleTeamUpdated($event)">
+        </app-hall-team>
+      }
+    </div>
+  </div>
+
+  <app-confirmation-dialog
+    [visible]="showConfirmDialog"
+    [title]="dialogTitle"
+    [message]="dialogMessage"
+    [continueText]="dialogContinueText"
+    [cancelText]="dialogCancelText"
+    [saveText]="dialogSaveText"
+    (cancel)="onDialogCancel()"
+    (continue)="onDialogContinue()"
+    (save)="onDialogSave()">
+  </app-confirmation-dialog>
+</div>

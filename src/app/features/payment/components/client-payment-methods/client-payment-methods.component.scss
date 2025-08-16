@@ -1,0 +1,24 @@
+:host {
+  // Section headers
+  h5 {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-bottom: 0.5rem;
+    margin-top: 1.5rem;
+    font-weight: 600;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+
+  .section-title {
+    margin-top: 1rem;
+    padding-inline: 0;
+  }
+
+  .form-grid {
+    margin-top: 1rem;
+  }
+}

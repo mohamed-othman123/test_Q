@@ -1,0 +1,205 @@
+@if (breakPointObserver | async; as isMobileView) {
+  <div
+    [@openClose]="sidebarVisible ? true : false"
+    class="content"
+    [ngClass]="{
+      overly: isMobileView.matches && sidebarVisible,
+      visible: sidebarVisible,
+    }">
+    <img class="logo" src="assets/svg/logo.svg" alt="logo icon" />
+    <div class="hall-logo">
+      @if (currentHallWithLogo$ | async; as currentHall) {
+        <img
+          class="icon-wrapper hall-logo-img"
+          [src]="
+            currentHall.hasValidLogo
+              ? currentHall.logo_url
+              : 'assets/icons/landmark.svg'
+          "
+          [alt]="currentHall.hasValidLogo ? 'hall logo' : 'default hall logo'"
+          (error)="onImageError($event)" />
+      }
+      <span>{{
+        lang.lang === 'en'
+          ? hallsService.getCurrentHall()?.name
+          : hallsService.getCurrentHall()?.name_ar
+      }}</span>
+    </div>
+    <div class="divider"></div>
+    <ul [ngClass]="{'mobile': showMobileStyle}">
+      <li
+        *appHasPermission="['read:statistcs']"
+        [routerLink]="['/dashboard']"
+        routerLinkActive="router-link-active">
+        <img src="assets/icons/dashboard.icon.svg" alt="dashboard icon" />
+        <span>{{ 'sideNav.dashboard' | translate }}</span>
+      </li>
+      <li [routerLink]="['/analytics']" routerLinkActive="router-link-active">
+        <img src="assets/icons/analytics.icon.svg" alt="analytics icon" />
+        <span>{{ 'sideNav.analytics' | translate }}</span>
+      </li>
+      <li
+        *appHasPermission="['read:bookings']"
+        [routerLink]="['/home']"
+        routerLinkActive="router-link-active">
+        <img src="assets/icons/calendar.icon.svg" alt="calendar icon" />
+        <span>{{ 'sideNav.calendar' | translate }}</span>
+      </li>
+      <li
+        *appHasPermission="['read:bookings']"
+        [routerLink]="['/orders']"
+        routerLinkActive="router-link-active">
+        <img src="assets/icons/orders.icon.svg" alt="orders icon" />
+        <span>{{ 'sideNav.orders' | translate }}</span>
+      </li>
+      <li
+        *appHasPermission="['read:hallsClients']"
+        [routerLink]="['/clients']"
+        routerLinkActive="router-link-active">
+        <img src="assets/icons/group.icon.svg" alt="clients icon" />
+        <span>{{ 'sideNav.clients' | translate }}</span>
+      </li>
+      <li
+        *appHasPermission="['read:services']"
+        [routerLink]="['/services']"
+        routerLinkActive="router-link-active">
+        <img src="assets/icons/services.icon.svg" alt="services icon" />
+        <span>{{ 'sideNav.services' | translate }}</span>
+      </li>
+      <li
+        *appHasPermission="['read:expenses']"
+        [routerLink]="['/purchases']"
+        routerLinkActive="router-link-active">
+        <img src="assets/icons/purchase.icon.svg" alt="purchases icon" />
+        <span>{{ 'sideNav.expenses' | translate }}</span>
+      </li>
+      <li
+        *appHasPermission="['read:suppliers']"
+        [routerLink]="['/suppliers']"
+        routerLinkActive="router-link-active">
+        <img src="assets/icons/suppliers.icon.svg" alt="suppliers icon" />
+        <span>{{ 'sideNav.suppliers' | translate }}</span>
+      </li>
+      <li
+        *appHasPermission="['read:refund requests']"
+        [routerLink]="['/refund-requests']"
+        routerLinkActive="router-link-active">
+        <img src="assets/icons/refund.icon.svg" alt="refund icon" />
+        <span>{{ 'sideNav.refundRequests' | translate }}</span>
+      </li>
+      <li
+        *appHasPermission="['read:price-requests']"
+        [routerLink]="['/price-requests']"
+        routerLinkActive="router-link-active">
+        <img src="assets/icons/credit-card.icon.svg" alt="price icon" />
+        <span>{{ 'sideNav.priceRequest' | translate }}</span>
+        @if (newPriceRequestsCount > 0) {
+          <span class="price-notifications">{{ newPriceRequestsCount }}</span>
+        }
+      </li>
+      <li
+        *appHasPermission="['read:Landing Pages']"
+        [routerLink]="['/admin-lp']"
+        routerLinkActive="router-link-active">
+        <img src="assets/icons/globe2.svg" alt="orders icon" />
+        <span>{{ 'sideNav.website' | translate }}</span>
+      </li>
+      <ul class="settings">
+        <li (click)="toggleSettings()">
+          <img
+            [ngClass]="{spin: isSettingsOpen}"
+            src="assets/icons/setting.icon.svg"
+            alt="settings icon" />
+          <span>{{ 'sideNav.settings' | translate }}</span>
+          <i [ngClass]="{rotate: isSettingsOpen}" class="pi pi-angle-down"></i>
+        </li>
+        <ul [ngClass]="{show: isSettingsOpen}">
+          @if (userData?.user?.type !== 'employee') {
+            <li
+              [routerLink]="['/halls']"
+              routerLinkActive="router-link-active"
+              (click)="clickSubItem($event)">
+              <img src="assets/icons/landmark.svg" alt="city hall icon" />
+              <span>{{ 'sideNav.halls' | translate }}</span>
+            </li>
+          }
+          <li
+            *appHasPermission="['read:events']"
+            (click)="clickSubItem($event)"
+            [routerLink]="['/events']"
+            routerLinkActive="router-link-active">
+            <img src="assets/icons/event.icon.svg" alt="events icon" />
+            <span>{{ 'sideNav.events' | translate }}</span>
+          </li>
+          @if (userData?.user?.type !== 'employee') {
+            <li
+              [routerLink]="['/permissions']"
+              routerLinkActive="router-link-active">
+              <img
+                src="assets/icons/permissions.icon.svg"
+                alt="permissions icon" />
+              <span>{{ 'sideNav.permissions' | translate }}</span>
+            </li>
+          }
+          @if (userData?.user?.type !== 'employee') {
+            <li
+              [routerLink]="['/employees']"
+              routerLinkActive="router-link-active">
+              <img src="assets/icons/employees.icon.svg" alt="employees icon" />
+              <span>{{ 'sideNav.employees' | translate }}</span>
+            </li>
+          }
+          <li
+            *appHasPermission="['read:paymentMethods']"
+            (click)="clickSubItem($event)"
+            [routerLink]="['/payment-methods']"
+            routerLinkActive="router-link-active">
+            <img
+              src="assets/icons/credit-card.icon.svg"
+              alt="payment methods icon" />
+            <span>{{ 'sideNav.paymentMethods' | translate }}</span>
+          </li>
+          <li
+            *appHasPermission="['read:expense categories']"
+            [routerLink]="['/purchase-categories']"
+            routerLinkActive="router-link-active">
+            <img
+              src="assets/icons/purchase.icon.svg"
+              alt="purchase categories icon" />
+            <span>{{ 'sideNav.expensesCategory' | translate }}</span>
+          </li>
+          <li
+            *appHasPermission="['read:expenseItems']"
+            [routerLink]="['/expenses-items']"
+            routerLinkActive="router-link-active">
+            <img src="assets/icons/cash-stack.svg" alt="expenses items icon" />
+            <span>{{ 'sideNav.expensesItems' | translate }}</span>
+          </li>
+          @if (userData?.user?.type !== 'employee') {
+            <li
+              [routerLink]="['/discounts']"
+              routerLinkActive="router-link-active">
+              <img src="assets/icons/percent.svg" alt="discounts icon" />
+              <span>{{ 'sideNav.discounts' | translate }}</span>
+            </li>
+          }
+        </ul>
+      </ul>
+    </ul>
+    <div class="app-version" (click)="showVersionPopup = !showVersionPopup">
+      v{{ env.appVersion }}
+    </div>
+    <div (click)="hidSideNav()" id="body-overlay"></div>
+  </div>
+}
+
+<p-dialog
+  [header]="'dashboard.latestVersions' | translate"
+  [modal]="true"
+  [dismissableMask]="true"
+  [(visible)]="showVersionPopup"
+  [style]="{'max-width': '90%'}"
+  [draggable]="false"
+  [resizable]="true">
+  <app-latest-versions></app-latest-versions>
+</p-dialog>

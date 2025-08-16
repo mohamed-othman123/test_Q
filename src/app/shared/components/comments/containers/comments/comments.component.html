@@ -1,0 +1,96 @@
+<div
+  class="comments"
+  [class.expanded]="isExpanded"
+  [ngClass]="{
+    'expanded': isExpanded,
+    'comments--rtl': translateService.currentLang === 'ar',
+    'comments--ltr': translateService.currentLang === 'en',
+  }">
+  <button
+    type="button"
+    class="comments-toggle"
+    (click)="toggleExpand()"
+    [title]="totalComments + ' comments in total'">
+    <span class="comments-icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+        <path
+        d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+    </span>
+    <span class="comments-count">{{ totalComments }}</span>
+  </button>
+
+  @if (isExpanded) {
+    <div class="comments-panel">
+      <div class="comments-header">
+        <h3 class="section-title">
+          {{ 'comments.title' | translate }} ({{ totalComments }})
+        </h3>
+        <button type="button" class="close-button" (click)="toggleExpand()">
+          ×
+        </button>
+      </div>
+      <div #commentsContainer class="comments-list" (scroll)="onCommentsScroll()">
+        @if (allLoaded && comments.length > 0) {
+          <div class="end-message">
+            <div class="divider"></div>
+            <span>{{ 'comments.reachedEnd' | translate }}</span>
+          </div>
+        }
+        @if (comments.length > 0) {
+          @for (comment of comments; track comment) {
+            <comment-item
+              [comment]="comment"
+              [canEdit]="canEditComment(comment)"
+              (edit)="onEditComment(comment, $event)"
+              (delete)="onDeleteComment(comment.id)">
+            </comment-item>
+          }
+        } @else {
+          @if (!loading) {
+            <div class="no-comments">
+              <p>{{ 'comments.noComments' | translate }}</p>
+            </div>
+          }
+        }
+        @if (loading) {
+          <div class="loading-indicator">
+            <div class="spinner"></div>
+            <span>{{ 'comments.loadingMore' | translate }}</span>
+          </div>
+        }
+      </div>
+      <form
+        [formGroup]="commentForm"
+        (ngSubmit)="onSubmit()"
+        class="comment-form">
+        <div class="form-group">
+          <textarea
+            #commentInput
+            formControlName="content"
+            placeholder="{{ 'comments.writeComment' | translate }}"
+            rows="2"
+          class="comment-textarea"></textarea>
+        </div>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="commentForm.invalid || submitting"
+          [class.btn-loading]="submitting">
+          @if (!submitting) {
+            <span>{{ 'comments.addComment' | translate }}</span>
+          }
+        </button>
+      </form>
+    </div>
+  }
+</div>

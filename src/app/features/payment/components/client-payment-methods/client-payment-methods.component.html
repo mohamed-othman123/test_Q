@@ -1,0 +1,91 @@
+<!-- Client Payment Method Section (only for refunds) -->
+
+<h5 class="section-title">
+  {{ 'refunds.clientPaymentMethod' | translate }}
+</h5>
+
+<div class="form-grid" [formGroup]="form">
+  <div class="row">
+    <!--payment method types-->
+    <div class="col-md-4">
+      <app-dropdown
+        (onChange)="onPaymentMethodTypeChange($event)"
+        [control]="$any(form.get('type'))"
+        [options]="paymentMethodTypes"
+        [controlName]="'type'"
+        [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+        [optionValue]="'value'"
+        [placeholder]="'suppliers.paymentMethodTypePlaceholder' | translate"
+        [label]="'suppliers.paymentMethodType' | translate">
+        <i class="pi pi-list" style="color: gray"></i>
+      </app-dropdown>
+    </div>
+  </div>
+
+  <div class="row">
+    @if (form.get('type')?.value === 'bankAccount') {
+      <!--Bank name-->
+      <div class="col-md-4">
+        <app-dropdown
+          [control]="$any(form.get('bankName'))"
+          [options]="banks"
+          [controlName]="'bankName'"
+          [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+          [optionValue]="'value'"
+          [placeholder]="'suppliers.selectBank' | translate"
+          [label]="'suppliers.bankName' | translate">
+          <i class="pi pi-list" style="color: gray"></i>
+        </app-dropdown>
+      </div>
+
+      <!--Iban number-->
+      <div class="col-md-4">
+        <app-input
+          [control]="$any(form.get('iban'))"
+          [controlName]="'iban'"
+          inputType="text"
+          [placeholder]="'suppliers.IBANPlaceholder' | translate"
+          [label]="'suppliers.IBAN' | translate">
+          <i class="pi pi-credit-card" style="color: gray"></i>
+        </app-input>
+      </div>
+
+      <!--Acount number-->
+      <div class="col-md-4">
+        <app-input
+          [control]="$any(form.get('accountNumber'))"
+          [controlName]="'accountNumber'"
+          inputType="text"
+          [placeholder]="'suppliers.accountNumberPlaceholder' | translate"
+          [label]="'suppliers.accountNumber' | translate">
+          <i class="pi pi-credit-card" style="color: gray"></i>
+        </app-input>
+      </div>
+    }
+
+    @if (form.get('type')?.value === 'eWallet') {
+      <!--E Wallet-->
+      <div class="col-md-4">
+        <app-dropdown
+          [control]="$any(form.get('ewalletName'))"
+          [options]="eWallets"
+          [controlName]="'ewalletName'"
+          [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+          [optionValue]="'value'"
+          [placeholder]="'suppliers.eWalletNamePlaceholder' | translate"
+          [label]="'suppliers.eWalletName' | translate">
+          <i class="pi pi-list" style="color: gray"></i>
+        </app-dropdown>
+      </div>
+
+      <!--E Wallet Number-->
+      <div class="col-md-5">
+        <app-phone-input
+          [control]="$any(form.get('ewalletMobile'))"
+          [label]="'fields.mobileNo' | translate"
+          [placeholder]="'fields.mobileNoPlaceholder' | translate">
+        </app-phone-input>
+      </div>
+    }
+  </div>
+</div>

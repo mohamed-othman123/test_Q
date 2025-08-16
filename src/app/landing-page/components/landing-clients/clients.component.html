@@ -1,0 +1,72 @@
+@if (section?.customers?.length! > 0) {
+  <div class="clients">
+    <div class="sec_id" id="clients"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="section_title text-center">
+            <h3>{{ lang === 'en' ? section?.title_en : section?.title_ar }}</h3>
+            <p>
+              {{
+              lang === 'en'
+              ? section?.description_en
+              : section?.description_ar
+              }}
+            </p>
+          </div>
+        </div>
+        <div class="col-12">
+          <swiper-container
+            class="swiper2"
+            loop="true"
+            dir="rtl"
+            slides-per-view="2"
+            speed="2500"
+            mousewheel-force-to-axis="true"
+            space-between="20"
+            pagination="true"
+            grab-cursor="true"
+            pagination-clickable="true"
+            autoplay-delay="3000"
+            autoplay-disable-on-interaction="false">
+            @for (slid of section?.customers; track slid) {
+              <swiper-slide>
+                <div class="client_item d-flex align-items-start">
+                  <div class="icon text-center client-img">
+                    <img
+                      width="70px"
+                      [src]="slid.imagePath"
+                      [alt]="slid.name" />
+
+                    <span>{{ '5' }}</span>
+                  </div>
+                  <div class="content">
+                    <h3>
+                      {{ slid.name }}
+                    </h3>
+                    <h4 class="d-flex items-center justify-center gap-2">
+                      <i class="pi pi-link" style="color: #708090"></i>
+
+                      @if (slid.site_url) {
+                        <a
+                        [href]="
+                          slid.site_url.startsWith('http')
+                            ? slid.site_url
+                            : 'http://' + slid.site_url
+                        "
+                          target="_blank">
+                          {{ 'landing.clientWebsite' | translate }}</a
+                          >
+                        }
+                      </h4>
+                      <p></p>
+                    </div>
+                  </div>
+                </swiper-slide>
+              }
+            </swiper-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  }

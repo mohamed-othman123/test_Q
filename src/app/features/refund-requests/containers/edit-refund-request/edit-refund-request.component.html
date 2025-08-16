@@ -1,0 +1,12 @@
+<div class="page-header">
+  <h2>
+    {{ 'refunds.updateRequest' | translate }}
+  </h2>
+</div>
+
+<refund-request-form
+  [refundRequest]="refundRequest"
+  [paymentMethods]="paymentMethods"
+  [lang]="translateService.currentLang"
+  (onSubmit)="updateRefundRequest($event)">
+</refund-request-form>

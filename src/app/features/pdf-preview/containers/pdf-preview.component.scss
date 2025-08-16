@@ -1,0 +1,92 @@
+.print-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.mobile-pdf {
+  pointer-events: none; /* Prevents the default "Open" button behavior */
+}
+.header {
+  height: 64px;
+  background-color: #015a5e;
+  color: white;
+  z-index: 1;
+  direction: rtl;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.content {
+  flex: 1;
+  background-color: #f5f5f5;
+  position: relative;
+  overflow: hidden;
+}
+
+.pdf-frame {
+  width: 100%;
+  height: calc(100vh - 64px);
+  border: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+  }
+}
+
+::ng-deep {
+  .toolbar {
+    display: none !important;
+  }
+
+  #viewerContainer {
+    top: 0 !important;
+  }
+}
+
+:host ::ng-deep .p-button-text {
+  color: white;
+  padding: 0.5rem;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .p-button-icon {
+    font-size: 1.25rem;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+
+  svg {
+    cursor: pointer;
+  }
+}

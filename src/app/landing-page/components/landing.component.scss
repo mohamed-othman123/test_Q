@@ -1,0 +1,75 @@
+@use 'variables';
+@use 'mixins';
+
+::ng-deep {
+  * {
+    scroll-behavior: smooth;
+  }
+
+  body:has(app-landing) .new-design {
+    margin: 0 !important;
+  }
+
+  body:has(app-landing app-order-pricing) {
+    overflow: hidden !important;
+  }
+
+  .section_title {
+    margin: 0 auto 40px;
+    max-width: 560px;
+    position: relative;
+    z-index: 99;
+
+    h3 {
+      font-size: 32px;
+      font-weight: bold;
+      line-height: 40px;
+      margin: 0 0 30px;
+      color: var(--hall-main-color);
+    }
+
+    p {
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 30px;
+      margin: 0;
+      color: variables.$hall_dark_color;
+    }
+
+    @include mixins.sm(variables.$max) {
+      margin: 0 auto 20px;
+
+      h3 {
+        font-size: 24px;
+        line-height: 30px;
+        margin: 0 0 15px;
+      }
+
+      p {
+        font-size: 12px;
+        line-height: 22px;
+      }
+    }
+  }
+
+  .sec_id {
+    position: absolute;
+    height: 0;
+    width: 100%;
+    top: -30px;
+    right: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  ul,
+  li {
+    padding: 0;
+    margin: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}

@@ -1,0 +1,101 @@
+@if (landingPageData?.id) {
+  <div class="services-section">
+    <div class="section-header">
+      <h4>{{ 'landing.hallServices' | translate }}</h4>
+      <div class="header-actions">
+        @if (!isEditMode && hallServices.length > 0) {
+          <button
+            type="button"
+            class="edit-button"
+            (click)="toggleEditMode()">
+            <i class="pi pi-pencil"></i>
+            {{ 'common.edit' | translate }}
+          </button>
+        }
+        @if (!isEditMode && hallServices.length === 0) {
+          <button
+            type="button"
+            class="add-button"
+            (click)="addService()">
+            <i class="pi pi-plus"></i>
+            {{ 'landing.addService' | translate }}
+          </button>
+        }
+        @if (isEditMode) {
+          <button
+            type="button"
+            class="add-button"
+            (click)="addService()"
+            [disabled]="hallServices.length >= maxServices || hasEmptyService()">
+            <i class="pi pi-plus"></i>
+            {{ 'landing.addService' | translate }}
+          </button>
+        }
+      </div>
+    </div>
+    @if (hallServices.length < 1 && !isEditMode) {
+      <app-empty-data
+        icon="pi pi-check-circle"
+        [title]="'landing.noServices'"
+        [description]="'landing.addFirstService'"
+      [disabled]="hallServices.length >= maxServices"></app-empty-data>
+    }
+    <div
+      class="services-list"
+      cdkDropList
+      (cdkDropListDropped)="onDrop($event)"
+      [cdkDropListDisabled]="!isEditMode">
+      @for (service of hallServices.controls; track service; let i = $index) {
+        <div class="service-item" cdkDrag>
+          @if (!isEditMode) {
+            <div class="service-content">
+              <i class="pi pi-check-circle"></i>
+              <span class="service-text">{{ service.value }}</span>
+            </div>
+          }
+          @if (isEditMode) {
+            <div class="service-content edit">
+              <app-input
+                [control]="service"
+                [controlName]="'service'"
+                [inputType]="'text'"
+                [label]="'landing.serviceName' | translate"
+                [placeholder]="'landing.serviceNamePlaceholder' | translate">
+              </app-input>
+              <div class="service-actions">
+                <button
+                  type="button"
+                  class="remove-button"
+                  (click)="removeService(i)">
+                  <i class="pi pi-trash"></i>
+                </button>
+                <div class="drag-handle" cdkDragHandle>
+                  <i class="pi pi-bars"></i>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+    <!-- Action Buttons -->
+    @if (isEditMode) {
+      <div class="form-actions">
+        <button
+          type="button"
+          pButton
+          class="p-button-secondary"
+          [label]="'common.cancel' | translate"
+          icon="pi pi-times"
+        (click)="cancelEdit()"></button>
+        <button
+          type="button"
+          pButton
+          icon="pi pi-save"
+          [label]="'common.save' | translate"
+          (click)="saveServices()"
+        [disabled]="hallServices.invalid"></button>
+      </div>
+    }
+  </div>
+}

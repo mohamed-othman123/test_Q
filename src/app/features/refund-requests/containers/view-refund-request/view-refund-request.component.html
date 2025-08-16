@@ -1,0 +1,190 @@
+@if (refundRequest) {
+  <div class="mb-4">
+    <info-tooltip
+      [createdBy]="refundRequest.created_by"
+      [createdAt]="refundRequest.created_at"
+      [updatedBy]="refundRequest.updated_by"
+      [updatedAt]="refundRequest.updated_at">
+    </info-tooltip>
+  </div>
+}
+
+@if (refundRequest) {
+  <div class="refund-request-details-container">
+    <div class="header">
+      <h1>{{ 'refunds.refundRequestDetails' | translate }}</h1>
+      <div class="status-badge mx-3" [ngClass]="getStatusClass()">
+        {{ getStatusLabel() }}
+      </div>
+    </div>
+    <div class="card refund-info">
+      <h2>{{ 'refunds.refundInformation' | translate }}</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">{{ 'orders.orderNumber' | translate }}</span>
+          <div class="value">
+            {{ refundRequest.booking.bookingReference }}
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="label">{{ 'refunds.refundedAmount' | translate }}</span>
+          <div class="value">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span class="">
+                {{ refundRequest.amount | number: '1.2-2' }}
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="label">{{ 'refunds.requestDate' | translate }}</span>
+          @if (translateService.currentLang === 'en') {
+            {{ refundRequest.request_date | date: 'MMM d, y' : 'UTC' }}
+          }
+          @if (translateService.currentLang === 'ar') {
+            {{
+              refundRequest.request_date | formatDateLang: 'ar' : 'MMM d, y'
+            }}م
+          }
+        </div>
+        <div class="info-item">
+          <span class="label">{{ 'payment.paymentMethod' | translate }}</span>
+          <span class="value">{{ getPaymentMethodName() }}</span>
+        </div>
+        @if (refundRequest.notes) {
+          <div class="info-item full-width">
+            <span class="label">{{ 'payment.notes' | translate }}</span>
+            <span class="value notes">{{ refundRequest.notes }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Client Information -->
+    <div class="card client-info">
+      <h2>
+        {{ 'payment.receiverInfo' | translate }} -
+        @if (refundRequest.beneficiaryType === 'customer') {
+          {{ 'payment.customerHimself' | translate }}
+        } @else {
+          {{ 'payment.anotherPerson' | translate }}
+        }
+      </h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">{{ 'payment.receiverName' | translate }}</span>
+          <span class="value">{{ refundRequest.beneficiaryName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">{{ 'payment.receiverMobile' | translate }}</span>
+          <span class="value">{{ refundRequest.beneficiaryMobile }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card client-payment-method">
+      <h2>{{ 'refunds.clientPaymentMethod' | translate }}</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">{{
+            'refunds.paymentMethodType' | translate
+          }}</span>
+          <span class="value">{{ getClientPaymentMethodTypeName() }}</span>
+        </div>
+        <!-- Cash fields -->
+        @if (isCashSelected()) {
+          @if (refundRequest.clientPaymentMethod.receiver_name) {
+            <div class="info-item">
+              <span class="label">{{
+                'refunds.receiverName' | translate
+              }}</span>
+              <span class="value">{{
+                refundRequest.clientPaymentMethod.receiver_name
+              }}</span>
+            </div>
+          }
+        }
+        <!-- Bank Account fields -->
+        @if (isBankAccountSelected()) {
+          @if (refundRequest.clientPaymentMethod.bank_name) {
+            <div class="info-item">
+              <span class="label">{{ 'refunds.bankName' | translate }}</span>
+              <span class="value">{{
+                getBankName(refundRequest.clientPaymentMethod.bank_name)
+              }}</span>
+            </div>
+          }
+          @if (refundRequest.clientPaymentMethod.account_number) {
+            <div class="info-item">
+              <span class="label">{{
+                'refunds.accountNumber' | translate
+              }}</span>
+              <span class="value">{{
+                refundRequest.clientPaymentMethod.account_number
+              }}</span>
+            </div>
+          }
+          @if (refundRequest.clientPaymentMethod.iban) {
+            <div class="info-item">
+              <span class="label">{{ 'refunds.iban' | translate }}</span>
+              <span class="value">{{
+                refundRequest.clientPaymentMethod.iban
+              }}</span>
+            </div>
+          }
+        }
+        <!-- E-Wallet fields -->
+        @if (isEWalletSelected()) {
+          @if (refundRequest.clientPaymentMethod.ewallet_name) {
+            <div class="info-item">
+              <span class="label">{{ 'refunds.ewalletName' | translate }}</span>
+              <span class="value">{{
+                getEWalletName(refundRequest.clientPaymentMethod.ewallet_name)
+              }}</span>
+            </div>
+          }
+          @if (refundRequest.clientPaymentMethod.ewallet_mobile) {
+            <div class="info-item">
+              <span class="label">{{ 'refunds.mobile' | translate }}</span>
+              <span class="value">{{
+                refundRequest.clientPaymentMethod.ewallet_mobile
+              }}</span>
+            </div>
+          }
+        }
+      </div>
+    </div>
+    <div class="actions">
+      <button
+        pButton
+        type="button"
+        [icon]="lang === 'ar' ? 'pi pi-arrow-right' : 'pi pi-arrow-left'"
+        label="{{ 'common.cancel' | translate }}"
+        class="p-button-secondary action-btn"
+        (click)="navigateBack()"></button>
+
+      @if (
+        refundRequest.status === 'new' || refundRequest.status === 'in_progress'
+      ) {
+        <button
+          *appHasPermission="'update:refund request'"
+          class="action-btn"
+          pButton
+          type="button"
+          icon="pi pi-pencil"
+          label="{{ 'common.update' | translate }}"
+          (click)="navigateToEdit()"></button>
+      }
+    </div>
+  </div>
+}
+
+<p-confirmDialog
+  header="{{ 'common.confirm' | translate }}"
+  icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
+<comments
+  [entityId]="refundRequest.id!"
+  [type]="commentType.REFUND_REQUEST"></comments>

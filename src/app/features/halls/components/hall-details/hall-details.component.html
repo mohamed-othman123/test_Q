@@ -1,0 +1,332 @@
+<form
+  appShakeable
+  (ngSubmit)="submitDetails()"
+  class="basic-info"
+  [formGroup]="detailsForm">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="align-self-start mb-0">
+      {{ 'halls.basicInfo' | translate }}
+    </h5>
+    <div class="actions">
+      <button
+        id="details-save-btn"
+        type="submit"
+        class="action-button"
+        [disabled]="isSubmitting">
+        <i class="pi pi-save me-2"></i>
+        {{ 'halls.saveDetails' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-white p-3 p-md-4 rounded shadow-sm">
+    <div class="row g-3">
+      <div class="col-md-6 mb-3">
+        <app-input
+          [controlName]="'name_ar'"
+          [control]="detailsForm.controls['name_ar']"
+          [label]="'halls.hallNameAr' | translate"
+          [placeholder]="'halls.hallNameArPlaceholder' | translate"
+          inputType="text">
+          <i class="pi pi-building" style="color: gray"></i>
+        </app-input>
+      </div>
+      <div class="col-md-6 mb-3">
+        <app-input
+          [controlName]="'name'"
+          [control]="detailsForm.controls['name']"
+          [label]="'halls.hallName' | translate"
+          [placeholder]="'halls.hallNamePlaceholder' | translate"
+          inputType="text">
+          <i class="pi pi-building" style="color: gray"></i>
+        </app-input>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <app-input
+        [controlName]="'description'"
+        [control]="detailsForm.controls['description']"
+        [label]="'halls.hallDescription' | translate"
+        [placeholder]="'halls.hallDescription' | translate"
+        inputType="textarea">
+        <i class="pi pi-user-edit" style="color: gray"></i>
+      </app-input>
+    </div>
+
+    <div class="booking-settings-section mb-4">
+      <h6 class="section-title mb-3">
+        <i class="pi pi-calendar me-2"></i>
+        {{ 'halls.bookingSettings' | translate }}
+      </h6>
+
+      <div class="row g-3">
+        <div class="col-md-6 mb-3">
+          <app-input
+            [controlName]="'dailyTempBookings'"
+            [control]="detailsForm.controls['dailyTempBookings']"
+            [label]="'halls.tempBookingsCount' | translate"
+            [placeholder]="'halls.tempBookingsCountPlaceholder' | translate"
+            inputType="number">
+            <i class="pi pi-calendar" style="color: gray"></i>
+          </app-input>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <app-input
+            [controlName]="'autoCancelDaysTempBookings'"
+            [control]="detailsForm.controls['autoCancelDaysTempBookings']"
+            [label]="'halls.autoCancelDays' | translate"
+            [placeholder]="'halls.autoCancelDaysPlaceholder' | translate"
+            inputType="number">
+            <i class="pi pi-clock" style="color: gray"></i>
+          </app-input>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3 mt-2">
+      <div class="col-md-4">
+        <div class="logo-section">
+          <h6 class="logo-section-title">
+            <i class="pi pi-image me-2"></i>
+            {{ 'halls.logo' | translate }}
+          </h6>
+
+          <div class="logo-uploader">
+            <div class="logo-preview" [class.has-logo]="logoUrl">
+              @if (logoUrl) {
+                <img
+                  class="logo-image"
+                  [src]="logoUrl"
+                  crossorigin="anonymous"
+                  alt="Hall logo"
+                  [class.has-transparency]="uploadedImageHasTransparency" />
+              }
+
+              @if (!logoUrl) {
+                <div class="empty-logo">
+                  <i class="pi pi-image"></i>
+                  <div class="empty-logo-text">
+                    {{ 'halls.noLogoUploaded' | translate }}
+                  </div>
+                </div>
+              }
+
+              <div class="logo-controls">
+                <div class="upload-btn">
+                  <input
+                    #fileInput
+                    (change)="onChangePhoto($any($event.target).files)"
+                    accept="image/*"
+                    class="file-input"
+                    type="file" />
+                  <button
+                    (click)="fileInput.click()"
+                    class="btn btn-upload"
+                    type="button">
+                    <i class="pi pi-camera"></i>
+                    {{
+                      logoUrl
+                        ? ('halls.changeLogo' | translate)
+                        : ('halls.submitLogo' | translate)
+                    }}
+                  </button>
+                </div>
+
+                @if (logoUrl) {
+                  <button
+                    type="button"
+                    class="btn btn-delete"
+                    appConfirmDeleteDialog
+                    [deletedItem]="'halls.logo' | translate"
+                    (acceptDelete)="deleteLogo()">
+                    <i class="pi pi-trash"></i>
+                    {{ 'common.delete' | translate }}
+                  </button>
+                }
+              </div>
+            </div>
+
+            @if (!logoUrl) {
+              <div class="logo-instructions">
+                <div class="instruction-item">
+                  <i class="pi pi-check-circle"></i>
+                  <span>{{ 'halls.logoInstruction1' | translate }}</span>
+                </div>
+                <div class="instruction-item">
+                  <i class="pi pi-check-circle"></i>
+                  <span>{{ 'halls.logoInstruction2' | translate }}</span>
+                </div>
+                <div class="instruction-item">
+                  <i class="pi pi-check-circle"></i>
+                  <span>{{ 'halls.logoInstruction3' | translate }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-8 mb-3">
+        <div class="color-section">
+          <div class="color-section-title">
+            <span>
+              <i class="pi pi-palette me-2"></i>
+              {{ 'halls.brandColors' | translate }}
+            </span>
+            <button
+              type="button"
+              class="btn-extract-colors"
+              (click)="openColorPickerFromLogo()">
+              <i class="pi pi-image"></i>
+              {{ 'halls.extractColors' | translate }}
+            </button>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div class="color-picker-wrapper">
+                <label class="form-label">{{
+                  'halls.primaryColor' | translate
+                }}</label>
+                <div
+                  class="color-preview"
+                  [style.background-color]="
+                    detailsForm.get('primary_color')?.value || '#3B82F6'
+                  "
+                  (click)="openColorPickerFromLogo()"></div>
+                <div class="color-input-container">
+                  <p-colorPicker
+                    formControlName="primary_color"
+                    [inline]="false"
+                    [style]="{'width': '100%'}"
+                    [format]="'hex'"></p-colorPicker>
+                  <div class="manual-color-input">
+                    <input
+                      type="text"
+                      [value]="
+                        detailsForm.get('primary_color')?.value || '#3B82F6'
+                      "
+                      placeholder="{{ 'halls.enterColor' | translate }}"
+                      (change)="updateColorManually('primary_color', $event)"
+                      class="hex-input" />
+                  </div>
+                </div>
+                <small class="text-muted">{{
+                  'halls.primaryColorHint' | translate
+                }}</small>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <div class="color-picker-wrapper">
+                <label class="form-label">{{
+                  'halls.secondaryColor' | translate
+                }}</label>
+                <div
+                  class="color-preview"
+                  [style.background-color]="
+                    detailsForm.get('secondary_color')?.value || '#64748B'
+                  "
+                  (click)="openColorPickerFromLogo()"></div>
+                <div class="color-input-container">
+                  <p-colorPicker
+                    formControlName="secondary_color"
+                    [inline]="false"
+                    [style]="{'width': '100%'}"
+                    [format]="'hex'"></p-colorPicker>
+                  <div class="manual-color-input">
+                    <input
+                      type="text"
+                      [value]="
+                        detailsForm.get('secondary_color')?.value || '#64748B'
+                      "
+                      placeholder="{{ 'halls.enterColor' | translate }}"
+                      (change)="updateColorManually('secondary_color', $event)"
+                      class="hex-input" />
+                  </div>
+                </div>
+                <small class="text-muted">{{
+                  'halls.secondaryColorHint' | translate
+                }}</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="color-preview-section mt-3">
+            <div
+              class="button-preview"
+              [style.background-color]="
+                detailsForm.get('primary_color')?.value || '#3B82F6'
+              ">
+              <span
+                [style.color]="
+                  detailsForm.get('primary_color')?.value === '#FFFFFF'
+                    ? '#000000'
+                    : '#FFFFFF'
+                ">
+                {{ 'halls.primaryButton' | translate }}
+              </span>
+            </div>
+
+            <div
+              class="button-preview secondary"
+              [style.background-color]="
+                detailsForm.get('secondary_color')?.value || '#64748B'
+              ">
+              <span
+                [style.color]="
+                  detailsForm.get('secondary_color')?.value === '#FFFFFF'
+                    ? '#000000'
+                    : '#FFFFFF'
+                ">
+                {{ 'halls.secondaryButton' | translate }}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              class="reset-colors-btn"
+              (click)="resetColors()">
+              <i class="pi pi-refresh"></i>
+              {{ 'halls.resetColors' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<p-dialog
+  [(visible)]="showColorExtractor"
+  [modal]="true"
+  [dismissableMask]="true"
+  [style]="{width: '90%', maxWidth: '900px'}"
+  [draggable]="false"
+  [resizable]="false"
+  [header]="'halls.extractColors' | translate"
+  [closeOnEscape]="true"
+  [blockScroll]="true"
+  styleClass="color-extractor-dialog"
+  (onHide)="closeColorExtractor()">
+  <app-color-extractor
+    [imageUrl]="logoPreviewUrl"
+    [title]="'halls.suggestedColors' | translate"
+    [primaryColor]="detailsForm.get('primary_color')?.value"
+    [secondaryColor]="detailsForm.get('secondary_color')?.value"
+    (colorSelected)="onColorSelected($event)">
+  </app-color-extractor>
+
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer actions">
+      <div class="action-button" (click)="confirmColorSelection()">
+        <i class="pi pi-check"></i> {{ 'common.confirm' | translate }}
+      </div>
+      <div class="action-button delete" (click)="closeColorExtractor()">
+        <i class="pi pi-times"></i> {{ 'common.cancel' | translate }}
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>

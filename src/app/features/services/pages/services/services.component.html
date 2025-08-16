@@ -1,0 +1,185 @@
+<app-list-header
+  [btnAddText]="'services.addNewService' | translate"
+  [disableAddBtn]="!permissionsService.hasPermission('create:service')"
+  [title]="'sideNav.services' | translate"
+(sideDrawerToggler)="addNewService()"></app-list-header>
+
+<p-table
+  #dt2
+  [value]="services"
+  dataKey="name"
+  [rows]="rows"
+  selectionMode="multiple"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [paginator]="true"
+  [totalRecords]="totalRecords"
+  [first]="first"
+  (onLazyLoad)="onLazyLoad($event)"
+  [lazy]="true">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th pSortableColumn="name">
+        {{ 'services.ServiceName' | translate }}
+        <p-sortIcon field="name" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="price">
+        {{ 'services.price' | translate }}
+        <p-sortIcon field="price" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="cost">
+        {{ 'services.cost' | translate }}
+        <p-sortIcon field="cost" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="note">
+        {{ 'services.serviceDescription' | translate }}
+        <p-sortIcon field="note" class="mr-12px"></p-sortIcon>
+      </th>
+      <th>{{ 'services.serviceProviderType' | translate }}</th>
+      <th style="width: fit-content"></th>
+    </tr>
+    <tr>
+      <th style="width: 20px"></th>
+      <th>
+        <app-input
+          [control]="filterForm.get('name')!"
+          [controlName]="'name'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('price')!"
+          [controlName]="'price'"
+          inputType="number"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('cost')!"
+          [controlName]="'cost'"
+          inputType="number"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('note')!"
+          [controlName]="'note'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th style="width: fit-content">
+        <app-dropdown
+          appendTo="body"
+          [control]="filterForm.get('providerType')!"
+          [options]="serviceProviderType"
+          [controlName]="'providerType'"
+          [optionLabel]="'label.' + lang.lang"
+          [optionValue]="'value'"
+          [placeholder]="'common.select' | translate"
+          [showClear]="true">
+        </app-dropdown>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-service>
+    <tr>
+      <td>
+        <div style="width: fit-content"></div>
+      </td>
+      <td class="text-wrap">
+        {{ lang.lang === 'ar' ? service.name_ar : service.name }}
+      </td>
+      <td>
+        <span class="price-with-symbol">
+          <sar-symbol />
+          {{
+          getServicePriceByHallId(service, filterForm.get('hallId')?.value)
+          }}
+        </span>
+      </td>
+      <td>
+        <span class="price-with-symbol">
+          <sar-symbol />
+          <span>
+            {{
+            getServiceCostByHallId(service, filterForm.get('hallId')?.value)
+            }}
+          </span>
+        </span>
+      </td>
+      <td class="text-wrap">{{ service.note || '-' }}</td>
+      <td>
+        {{ getProviderTypeDisplay(service, filterForm.get('hallId')?.value) }}
+      </td>
+      <td>
+        <div ngbDropdown container="body" class="d-inline-block">
+          <button
+            type="button"
+            class="options-button"
+            id="dropdownBasic1"
+            ngbDropdownToggle>
+            <span
+            class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
+            {{ 'common.options' | translate }}
+          </button>
+          <div
+            ngbDropdownMenu
+            aria-labelledby="dropdownBasic1"
+            class="p-menu p-menu-overlay">
+            @if (hasPermissionTo('update', service)) {
+              <button
+                ngbDropdownItem
+                (click)="updateService(service.id)"
+                class="d-flex gap-3">
+                <i class="pi pi-pencil"></i>
+                <span>{{ 'common.edit' | translate }}</span>
+              </button>
+            }
+            <button
+              ngbDropdownItem
+              (click)="viewService(service.id)"
+              class="d-flex gap-3">
+              <i class="pi pi-eye"></i>
+              <span>{{ 'common.view' | translate }}</span>
+            </button>
+            @if (hasPermissionTo('delete', service)) {
+              <button
+                ngbDropdownItem
+                class="d-flex gap-3"
+                (click)="openDeleteConfirmation(service.id)">
+                <i class="pi pi-times-circle"></i>
+                <span>{{ 'common.delete' | translate }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="5">
+        <app-empty-state></app-empty-state>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<app-confirm-delete-popup
+  [visible]="showDeleteConfirmation"
+  [message]="'services.deleteService' | translate"
+  (confirm)="confirmDeleteService()"
+(reject)="rejectDeleteService()"></app-confirm-delete-popup>

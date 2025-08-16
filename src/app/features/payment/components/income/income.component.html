@@ -1,0 +1,189 @@
+@if (paymentDetails) {
+  <div class="mb-4">
+    <info-tooltip
+      [createdBy]="paymentDetails.created_by"
+      [createdAt]="paymentDetails.created_at"
+      [updatedBy]="paymentDetails.updated_by"
+      [updatedAt]="paymentDetails.updated_at">
+    </info-tooltip>
+  </div>
+}
+
+<!-- Payment Information Section -->
+<h5>{{ 'payment.paymentDetails' | translate }}</h5>
+<div class="d-flex align-items-center gap-4 flex-wrap payment-info">
+  <div class="payment-item">
+    <strong>{{ 'payment.totalPayable' | translate }}</strong> :
+    <span class="price-with-symbol">
+      <sar-symbol />
+      <span>
+        {{ bookingDetails.totalPayable | number: '1.2-2' }}
+      </span>
+    </span>
+  </div>
+  <div class="payment-item">
+    <strong>{{ 'payment.totalPaid' | translate }}</strong> :
+    <span class="price-with-symbol">
+      <sar-symbol />
+      <span>
+        {{ bookingDetails.paidAmount | number: '1.2-2' }}
+      </span>
+    </span>
+  </div>
+  <div class="payment-item">
+    <strong>{{ 'payment.remainingAmount' | translate }}</strong> :
+    <span class="price-with-symbol">
+      <sar-symbol />
+      <span>
+        {{ bookingDetails.remainingAmount | number: '1.2-2' }}
+      </span>
+    </span>
+  </div>
+</div>
+
+<form appShakeable [formGroup]="form" (ngSubmit)="submit()">
+  <!-- Payment/Refund Details Section -->
+  <h5>
+    {{ 'payment.payment' | translate }}
+  </h5>
+
+  <div class="section-container">
+    <div class="payment-details">
+      <!-- First row with method and amount side by side -->
+      <div class="row">
+        <div class="payment-method col-md-4">
+          <app-dropdown
+            [optionValue]="'id'"
+            [control]="getControl('paymentMethod')"
+            [options]="paymentMethods"
+            [optionLabel]="'name'"
+            [controlName]="'paymentMethod'"
+            [placeholder]="'payment.paymentMethod' | translate"
+            [label]="'payment.paymentMethod' | translate">
+            <i class="pi pi-money-bill" style="color: gray"></i>
+          </app-dropdown>
+        </div>
+
+        <div class="payment-amount col-md-4">
+          <app-input
+            [control]="getControl('amount')"
+            [controlName]="'amount'"
+            inputType="number"
+            [placeholder]="'payment.paidAmount' | translate"
+            [label]="'payment.paidAmount' | translate">
+          </app-input>
+        </div>
+
+        <!-- Remaining amount  -->
+        <div class="remaining-amount col-md-4">
+          <span>{{ 'payment.remainingAmount' | translate }}</span>
+          <span class="remaining-view">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span>
+                {{ getControl('remainingAmount').value | number: '1.2-2' }}
+              </span>
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Second row with date -->
+      <div class="date col-md-4">
+        <app-date-picker
+          [inputFieldStyle]="
+            lang.lang === 'en' ? {'text-indent': '25px'} : null
+          "
+          placement="top-end"
+          [controlName]="'paymentDate'"
+          [label]="'payment.paymentDate' | translate"
+          [control]="getControl('paymentDate')"></app-date-picker>
+      </div>
+    </div>
+  </div>
+
+  <!-- Beneficiary Section -->
+  <h5 class="section-title">
+    {{ 'payment.payeeInfo' | translate }}
+  </h5>
+  <div class="section-container">
+    <div class="beneficiary-section">
+      <div class="beneficiary-type d-flex align-items-center mb-4">
+        <div class="radio-option d-flex align-items-center">
+          <p-radioButton
+            formControlName="beneficiaryType"
+            value="customer"
+            inputId="beneficiary-customer">
+          </p-radioButton>
+          <label for="beneficiary-customer" class="mx-3">
+            {{ 'payment.customerHimself' | translate }}
+          </label>
+        </div>
+
+        <div class="radio-option d-flex align-items-center mx-4">
+          <p-radioButton
+            formControlName="beneficiaryType"
+            value="other"
+            inputId="beneficiary-other">
+          </p-radioButton>
+          <label for="beneficiary-other" class="mx-3">
+            {{ 'payment.anotherPerson' | translate }}
+          </label>
+        </div>
+      </div>
+
+      <div class="beneficiary-info row">
+        <app-input
+          class="col-md-6"
+          [control]="getControl('beneficiaryName')"
+          [controlName]="'beneficiaryName'"
+          inputType="text"
+          [placeholder]="'payment.payerName' | translate"
+          [label]="'payment.payerName' | translate">
+        </app-input>
+
+        <app-phone-input
+          class="col-md-6"
+          [control]="getControl('beneficiaryMobile')"
+          [label]="'fields.mobileNo' | translate"
+          [placeholder]="'fields.mobileNoPlaceholder' | translate"
+          [phoneNumber]="
+            paymentId
+              ? paymentDetails?.beneficiary_mobile
+              : bookingDetails.user.phone
+          ">
+        </app-phone-input>
+      </div>
+    </div>
+  </div>
+
+  <!--client payment methods-->
+  <!-- <app-client-payment-methods></app-client-payment-methods> -->
+
+  <!-- Notes Section (at the end) -->
+  <h5 class="section-title">{{ 'payment.notes' | translate }}</h5>
+  <div class="section-container">
+    <div class="notes-section">
+      <app-input
+        [control]="getControl('notes')"
+        [controlName]="'notes'"
+        inputType="textarea"
+        [placeholder]="'payment.notes' | translate">
+      </app-input>
+    </div>
+  </div>
+
+  <!-- Form Actions -->
+  <div class="actions">
+    <p-button severity="secondary" class="cancel" (click)="navigateBack()">
+      <i class="pi pi-times"></i> {{ 'common.cancel' | translate }}
+    </p-button>
+
+    <p-button
+      class="save"
+      label="{{ 'common.save' | translate }}"
+      type="submit"
+      [icon]="'pi pi-save'">
+    </p-button>
+  </div>
+</form>

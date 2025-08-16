@@ -1,0 +1,43 @@
+@if (showLabel && label) {
+  <label [for]="controlName">
+    {{ label }}
+    @if (control.hasError('required')) {
+      <span>&nbsp;*</span>
+    }
+  </label>
+}
+<div class="picker">
+  @if (iconClass) {
+    <i [class]="iconClass + ' icon'"></i>
+  }
+  <input
+    [id]="controlName"
+    [formControl]="$any(control)"
+    [placeholder]="placeholder"
+    [ngxTimepicker]="timepickerWithButtons"
+    class="input-field"
+    [value]="selectedTime"
+    readonly />
+
+  <ngx-material-timepicker
+    [hoursOnly]="hoursOnly"
+    #timepickerWithButtons
+    [cancelBtnTmpl]="cancelBtn"
+    [confirmBtnTmpl]="confirmBtn"
+    (timeSet)="onTimeSet($event)"></ngx-material-timepicker>
+
+  <ng-template #cancelBtn>
+    <button class="btn cancel-btn" style="margin-right: 10px">
+      {{ 'common.cancel' | translate }}
+    </button>
+  </ng-template>
+  <ng-template #confirmBtn>
+    <button pButton class="btn">{{ 'common.select' | translate }}</button>
+  </ng-template>
+</div>
+@if (control.touched && control.hasError('required')) {
+  <span class="errors">
+    <img src="/assets/icons/exclamation.icon.svg" alt="" />
+    <span>{{ 'errors.generalRequired' | translate }}</span>
+  </span>
+}

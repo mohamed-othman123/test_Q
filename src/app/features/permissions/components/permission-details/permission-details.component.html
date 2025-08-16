@@ -1,0 +1,91 @@
+@if (!isLoading) {
+  <div class="content">
+    <div class="header">
+      <h6>
+        {{
+          (isAddMode
+            ? 'permissions.addNewPermission'
+            : isEditMode
+              ? 'permissions.editPermission'
+              : 'permissions.viewPermission'
+          ) | translate
+        }}
+      </h6>
+    </div>
+    @if (permissions$ | async; as permissions) {
+      <form [formGroup]="form" appShakeable (ngSubmit)="submit()">
+        <div class="section">
+          <div class="form-grid">
+            <app-input
+              [control]="formControls.name_ar"
+              [controlName]="'name_ar'"
+              inputType="text"
+              [disabled]="isViewMode"
+              [placeholder]="'permissions.enterRoleName' | translate"
+              [label]="'permissions.roleNameAr' | translate">
+              <i class="pi pi-users" style="color: gray"></i>
+            </app-input>
+            <app-input
+              [control]="formControls.name"
+              [controlName]="'name'"
+              inputType="text"
+              [disabled]="isViewMode"
+              [placeholder]="'permissions.enterRoleName' | translate"
+              [label]="'permissions.roleName' | translate">
+              <i class="pi pi-users" style="color: gray"></i>
+            </app-input>
+            <app-input
+              [control]="formControls.notes"
+              [controlName]="'notes'"
+              inputType="textarea"
+              [disabled]="isViewMode"
+              [placeholder]="'permissions.enterRoleDescription' | translate"
+              [label]="'permissions.roleDescription' | translate">
+              <i class="pi pi-sticky" style="color: gray"></i>
+            </app-input>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>{{ 'permissions.permissions' | translate }}</h4>
+          <app-permission-matrix
+            [isViewMode]="isViewMode"
+            [permissions]="permissions"
+            [selectedPermissions]="selectedPermissions"
+            [showSaveButton]="false">
+          </app-permission-matrix>
+        </div>
+        <div class="actions">
+          <p-button
+            (onClick)="cancel()"
+            type="button"
+            [icon]="'pi pi-times'"
+            label="{{ 'common.cancel' | translate }}"
+            styleClass="p-button-secondary">
+          </p-button>
+          @if (!isViewMode) {
+            <p-button
+              type="submit"
+              label="{{
+                isEditMode
+                  ? ('common.update' | translate)
+                  : ('common.save' | translate)
+              }}"
+              [icon]="'pi pi-save'">
+            </p-button>
+          } @else {
+            <p-button
+              type="submit"
+              label="{{ 'common.edit' | translate }}"
+              [icon]="'pi pi-pencil'">
+            </p-button>
+          }
+        </div>
+      </form>
+    }
+  </div>
+} @else {
+  <div class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+}

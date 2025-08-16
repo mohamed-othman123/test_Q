@@ -1,0 +1,137 @@
+@if (form) {
+  <div class="page-container">
+    <div class="page-header">
+      <h2>
+        {{ 'organizationInfo.title' | translate }}
+      </h2>
+    </div>
+    <div class="content">
+      @if (!isEditMode) {
+        <div class="details">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              {{ 'organizationInfo.organizationName' | translate }} :
+              {{ getControl('name').value }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ 'organizationInfo.phone' | translate }} :
+              <span>
+                <bdi>{{
+                  getControl('phone').value?.internationalNumber ||
+                  getControl('phone').value
+                }}</bdi></span
+                >
+              </div>
+              <div class="col-md-6 mb-3">
+                {{ 'organizationInfo.crNumber' | translate }} :
+                <span
+                  ><bdi>{{
+                  getControl('commercialRegistrationNumber').value
+                }}</bdi></span
+                >
+              </div>
+              <div class="col-md-6 mb-3">
+                {{ 'organizationInfo.enterTaxRegistrationNumber' | translate }} :
+                <span>
+                  <bdi>{{ getControl('taxRegistrationNumber').value }}</bdi></span
+                  >
+                </div>
+                <div class="col-md-6 mb-3">
+                  {{ 'organizationInfo.address' | translate }} :
+                  {{ getControl('address').value }}
+                </div>
+              </div>
+              <div class="action-button" *appHasPermission="['update:organization']">
+                <button type="button" class="edit-btn" (click)="toggleEditMode()">
+                  <i class="pi pi-pencil"></i>
+                  {{ 'common.edit' | translate }}
+                </button>
+              </div>
+            </div>
+          }
+          @if (isEditMode) {
+            <form
+              [formGroup]="form"
+              appShakeable
+              (ngSubmit)="submit()">
+              <div class="row">
+                <!-- name-->
+                <div class="col-md-6 mb-3">
+                  <app-input
+                    [control]="$any(getControl('name'))"
+                    [controlName]="'name'"
+                    inputType="text"
+                    [placeholder]="'organizationInfo.enterOrganizationName' | translate"
+                    [label]="'organizationInfo.organizationName' | translate"
+                    formName="organization_info"
+                    [enableTracking]="true">
+                    <i class="pi pi-service" style="color: gray"></i>
+                  </app-input>
+                </div>
+                <!-- phone-->
+                <div class="col-md-6 mb-3">
+                  <app-phone-input
+                    [control]="getControl('phone')"
+                    [label]="'fields.mobileNo' | translate"
+                    [placeholder]="'fields.mobileNoPlaceholder' | translate"
+                    [phoneNumber]="organizationInfoData.phone">
+                    <i class="pi pi-phone" style="color: gray"></i>
+                  </app-phone-input>
+                </div>
+                <!--commercial Registration Number -->
+                <div class="col-md-6 mb-3">
+                  <app-input
+                    [control]="$any(getControl('commercialRegistrationNumber'))"
+                    [controlName]="'commercialRegistrationNumber'"
+                    inputType="text"
+                    [placeholder]="'organizationInfo.enterCrNumber' | translate"
+                    [label]="'organizationInfo.crNumber' | translate"
+                    formName="organization_info"
+                    [enableTracking]="true">
+                    <i class="pi pi-service" style="color: gray"></i>
+                  </app-input>
+                </div>
+                <!--tax Registration Number -->
+                <div class="col-md-6 mb-3">
+                  <app-input
+                    [control]="$any(getControl('taxRegistrationNumber'))"
+                    [controlName]="'taxRegistrationNumber'"
+                    inputType="text"
+            [placeholder]="
+              'organizationInfo.enterTaxRegistrationNumber' | translate
+            "
+                    [label]="'organizationInfo.taxRegistrationNumber' | translate"
+                    formName="organization_info"
+                    [enableTracking]="true">
+                    <i class="pi pi-service" style="color: gray"></i>
+                  </app-input>
+                </div>
+                <!--address -->
+                <div class="col-md-6 mb-3">
+                  <app-input
+                    [control]="$any(getControl('address'))"
+                    [controlName]="'address'"
+                    inputType="text"
+                    [placeholder]="'organizationInfo.enterAddress' | translate"
+                    [label]="'organizationInfo.address' | translate"
+                    formName="organization_info"
+                    [enableTracking]="true">
+                    <i class="pi pi-service" style="color: gray"></i>
+                  </app-input>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="cancel-btn" (click)="toggleEditMode()">
+                  <i class="pi pi-times"></i>
+                  {{ 'common.cancel' | translate }}
+                </button>
+                <button type="submit" class="save-btn">
+                  <i class="pi pi-save"></i>
+                  {{ 'common.save' | translate }}
+                </button>
+              </div>
+            </form>
+          }
+        </div>
+      </div>
+    }

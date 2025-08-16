@@ -1,0 +1,56 @@
+:host {
+  .form-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px #0000000d;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding-bottom: 1rem;
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: #1f2937;
+      }
+    }
+  }
+  .apply-btn {
+    height: 45px;
+    width: fit-content;
+  }
+  .add-btn {
+    border-radius: 12px;
+    padding: 1rem;
+    color: #1eaa8f;
+    background-color: #f0f4f3;
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+  .error-text {
+    color: #ff0000;
+    font-size: 13px;
+    margin-top: -5px;
+    img {
+      width: 14px;
+      filter: invert(11%) sepia(41%) saturate(10000%) hue-rotate(-30deg);
+    }
+  }
+}

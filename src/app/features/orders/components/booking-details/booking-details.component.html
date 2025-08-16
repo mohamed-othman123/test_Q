@@ -1,0 +1,486 @@
+<div class="d-flex align-items-center justify-content-between">
+  <h5>{{ 'orders.bookingData' | translate }}</h5>
+  <div>
+    @if (
+      showPrintBtn &&
+      (bookingDetails.bookingProcessStatus === 'Completed' ||
+      bookingDetails.bookingProcessStatus === 'Fully Paid')
+      ) {
+      <p-button
+        (onClick)="previewPdf($event, template.INVOICE)"
+        type="button"
+        class="mx-4"
+        id="print-invoice"
+        label="{{ 'orders.printInvoice' | translate }}"
+        [icon]="'pi pi-print'">
+      </p-button>
+    }
+
+    @if (showPrintBtn) {
+      <p-button
+        (onClick)="previewPdf($event, template.CONTRACT)"
+        type="button"
+        id="print-contract"
+        label="{{ 'orders.print' | translate }}"
+        [icon]="'pi pi-print'">
+      </p-button>
+    }
+  </div>
+</div>
+<div class="wrapper">
+  <div class="basic-info">
+    <div class="info-item span-2">
+      <span>{{ 'orders.bookingType' | translate }}</span>
+      <span>{{
+        bookingDetails.isConfirmed
+        ? ('orders.confirmedBooking' | translate)
+        : ('orders.temporaryBooking' | translate)
+      }}</span>
+    </div>
+
+    <div class="info-item">
+      <span>{{ 'orders.appointmentFrom' | translate }}</span>
+      @if (lang.lang === 'en') {
+        <span
+          >{{ bookingDetails.startDate | englishMonthDate }} (
+          {{ bookingDetails.startDate | englishHijriDate }} )</span
+          >
+        }
+        @if (lang.lang === 'ar') {
+          <span
+            >{{ bookingDetails.startDate | arabicMonthDate }} (
+            {{ bookingDetails.startDate | arabicHijriDate }} )</span
+            >
+          }
+        </div>
+        <div class="info-item">
+          <span>{{ 'orders.appointmentTo' | translate }}</span>
+          @if (lang.lang === 'en') {
+            <span
+              >{{ bookingDetails.endDate | englishMonthDate }} (
+              {{ bookingDetails.endDate | englishHijriDate }} )</span
+              >
+            }
+            @if (lang.lang === 'ar') {
+              <span
+                >{{ bookingDetails.endDate | arabicMonthDate }} (
+                {{ bookingDetails.endDate | arabicHijriDate }} )</span
+                >
+              }
+            </div>
+            <div class="info-item">
+              <span>{{ 'orders.eventTime' | translate }}</span>
+              <span>{{ 'orders.' + bookingDetails.eventTime | translate }}</span>
+            </div>
+            <div class="info-item">
+              <span>{{ 'orders.HallSections' | translate }}</span>
+              @for (section of bookingDetails.sectionIds; track $index) {
+                @if (lang.lang === 'ar') {
+                  <p-tag [value]="section.name_ar || section.name" />
+                } @else {
+                  <p-tag [value]="section.name" />
+                }
+              }
+              @for (section of bookingDetails.sections; track $index) {
+                @if (lang.lang === 'ar') {
+                  <p-tag [value]="section.name_ar || section.name" />
+                } @else {
+                  <p-tag [value]="section.name" />
+                }
+              }
+            </div>
+            @if (
+              (bookingDetails.user?.type &&
+              bookingDetails.user?.type !== 'Individual') ||
+              (bookingDetails.client?.type &&
+              bookingDetails.client?.type !== 'Individual')
+              ) {
+              <div
+                class="info-item"
+                >
+                <span>{{ 'orders.address' | translate }}</span>
+                <span>{{
+                  bookingDetails.user?.address || bookingDetails.client?.address || '-'
+                }}</span>
+              </div>
+            }
+            <div class="info-item">
+              <span>{{ 'orders.hallName' | translate }}</span>
+              <span>{{
+                lang.lang === 'ar'
+                ? bookingDetails.hall?.name_ar
+                : bookingDetails.hall?.name
+              }}</span>
+            </div>
+            <div class="info-item">
+              <span>{{ 'orders.clientName' | translate }}</span>
+              <span
+                >{{ bookingDetails.user?.name || bookingDetails.client?.name || '-' }}
+                @if (bookingDetails.client?.isVIB || bookingDetails.user?.isVIB) {
+                  <img width="45px" src="/assets/icons/vip-icon.svg" alt="Vip" />
+                }
+              </span>
+            </div>
+            <div class="info-item">
+              <span>{{ 'orders.occasionType' | translate }}</span>
+              <span>{{
+                lang.lang === 'ar'
+                ? bookingDetails.eventType?.name_ar
+                : bookingDetails.eventType?.name
+              }}</span>
+            </div>
+            @if (bookingDetails.setFoodTime) {
+              <div class="info-item">
+                <span>{{ 'orders.setFoodTime' | translate }}</span>
+                <span>
+                  <bdi style="color: black">{{ bookingDetails.foodTime }}</bdi>
+                </span>
+              </div>
+            }
+
+            <div class="info-item">
+              <span>{{ 'orders.bookingStatus' | translate }}</span>
+              @if (!bookingDetails.isConfirmed) {
+                <div class="app-state">
+                  <app-status-badge [status]="$any('Temporary')"></app-status-badge>
+                </div>
+              } @else if (!bookingDetails.id) {
+                <div class="app-state">
+                  <app-status-badge [status]="calculatedStatus"></app-status-badge>
+                </div>
+              } @else if (bookingDetails.bookingProcessStatus) {
+                <div class="app-state">
+                  <app-status-badge
+                  [status]="bookingDetails.bookingProcessStatus!"></app-status-badge>
+                </div>
+              }
+            </div>
+          </div>
+          @if (bookingDetails.services && bookingDetails.services.length > 0) {
+            <div
+              class="services-info"
+              >
+              <h6>{{ 'orders.servicesDetails' | translate }}</h6>
+              @for (service of bookingDetails.services; track service) {
+                <div class="service-item">
+                  @if (service; as serviceDetails) {
+                    <div class="service-name">
+                      <span>{{ 'orders.serviceName' | translate }}</span>
+                      <span>{{ lang.lang === 'ar' ? service.name_ar : service.name }}</span>
+                    </div>
+                  }
+                  <div class="service-price">
+                    <span>{{ 'orders.servicePrice' | translate }}</span>
+                    <span class="price-with-symbol symbol-color">
+                      <sar-symbol />
+                      <span>
+                        {{ service?.price ?? service.halls[0].price }}
+                      </span>
+                    </span>
+                  </div>
+                  <div class="note">
+                    <span>{{ 'orders.notes' | translate }}</span>
+                    <span>{{ service.note || '-' }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+          @if (bookingDetails.isConfirmed) {
+            <div class="payment-info-wrapper">
+              <h6>{{ 'orders.paymentDetails' | translate }}</h6>
+
+              <div class="payment-info">
+                <div class="payment-item span-2">
+                  <span class="label">{{ 'orders.priceType' | translate }}</span>
+                  <span>{{
+                    bookingDetails.priceCalculationType === 'FIXED_PRICE'
+                    ? ('orders.fixedPrice' | translate)
+                    : ('orders.perAttendeePrice' | translate)
+                  }}</span>
+                </div>
+
+                @if (bookingDetails.priceCalculationType === 'FIXED_PRICE') {
+                  <div
+                    class="payment-item">
+                    <span class="label">{{ 'orders.bookingPrice' | translate }}</span>
+                    <span class="price-with-symbol">
+                      <sar-symbol />
+                      <span>
+                        {{ bookingDetails.fixedBookingPrice | number: '1.2-2' }}
+                      </span>
+                    </span>
+                  </div>
+                }
+
+                <!--men-->
+                @if (bookingDetails.priceCalculationType !== 'FIXED_PRICE') {
+                  <div
+                    class="payment-item"
+                    >
+                    <span class="label">{{
+                      'orders.maleAttendeesCount' | translate
+                    }}</span>
+                    <span>{{ bookingDetails.maleAttendeesCount || '-' }}</span>
+                  </div>
+                }
+
+                @if (bookingDetails.priceCalculationType !== 'FIXED_PRICE') {
+                  <div
+                    class="payment-item">
+                    <span class="label">{{
+                      'orders.malePricePerAttendee' | translate
+                    }}</span>
+                    <span class="price-with-symbol">
+                      <sar-symbol />
+                      <span>
+                        {{ bookingDetails.malePricePerAttendee | number: '1.2-2' }}
+                      </span>
+                    </span>
+                  </div>
+                }
+
+                <!--women-->
+                @if (bookingDetails.priceCalculationType !== 'FIXED_PRICE') {
+                  <div
+                    class="payment-item"
+                    >
+                    <span class="label">{{
+                      'orders.femaleAttendeesCount' | translate
+                    }}</span>
+                    <span>{{ bookingDetails.femaleAttendeesCount || '-' }}</span>
+                  </div>
+                }
+
+                @if (bookingDetails.priceCalculationType !== 'FIXED_PRICE') {
+                  <div
+                    class="payment-item">
+                    <span class="label">{{
+                      'orders.femalePricePerAttendee' | translate
+                    }}</span>
+                    <span class="price-with-symbol">
+                      <sar-symbol />
+                      <span>
+                        {{ bookingDetails.femalePricePerAttendee | number: '1.2-2' }}
+                      </span>
+                    </span>
+                  </div>
+                }
+              </div>
+
+              <!--calculation table-->
+              <div class="col-lg-7 col-md-6 col-12 mb-4">
+                <div class="summery mt-4">
+                  <table>
+                    <!--booking price-->
+                    <tr>
+                      <td class="label">
+                        <i class="pi pi-check-circle"></i>
+                        {{ 'orders.bookingPrice' | translate }}
+                      </td>
+                      <td class="value">
+                        <span class="price-with-symbol">
+                          <sar-symbol />
+                          <span>
+                            {{
+                            bookingDetails.priceCalculationType === 'FIXED_PRICE'
+                            ? (bookingDetails.fixedBookingPrice || 0
+                            | number: '1.2-2')
+                            : (calculatePerPersonPrice() | number: '1.2-2')
+                            }}
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">
+                        <i class="pi pi-check-circle"></i>
+                        {{ 'orders.totalServiceFee' | translate }}
+                      </td>
+                      <td class="value">
+                        <span class="price-with-symbol">
+                          <sar-symbol />
+                          <span>
+                            {{ getServicesTotals() | number: '1.2-2' }}
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr style="border-top: 2px solid black">
+                      <td class="label">
+                        <i class="pi pi-check-circle"></i>
+                        {{ 'orders.amountBeforeDiscount' | translate }}
+                      </td>
+                      <td class="value">
+                        <span class="price-with-symbol">
+                          <sar-symbol />
+                          <span>
+                            {{ bookingDetails.subtotal || 0 | number: '1.2-2' }}
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+                    <!--discount-->
+                    <tr>
+                      <td class="label">
+                        <i class="pi pi-check-circle"></i>
+                        {{ 'orders.discountPercent' | translate }}
+                        (
+                        @if (bookingDetails.discountType === 'percent') {
+                          {{ bookingDetails.discountValue || 0 }}%
+                        }
+                        @if (bookingDetails.discountType !== 'percent') {
+                          <span class="price-with-symbol">
+                            <sar-symbol class="currency-icon"></sar-symbol>
+                            <span>{{ bookingDetails.discountValue || 0 }}</span>
+                          </span>
+                        }
+                        )
+                      </td>
+
+                      <td class="value">
+                        <span class="sign"> - </span>
+                        @if (bookingDetails.discountType === 'percent') {
+                          <span class="price-with-symbol">
+                            <sar-symbol />
+                            <span>
+                              {{
+                              (bookingDetails.discountValue! *
+                              bookingDetails.subtotal!) /
+                              100 | number: '1.2-2'
+                              }}
+                            </span>
+                          </span>
+                        } @else {
+                          <span class="price-with-symbol">
+                            <sar-symbol />
+                            <span>
+                              {{ bookingDetails.discountValue | number: '1.2-2' }}
+                            </span>
+                          </span>
+                        }
+                      </td>
+                    </tr>
+
+                    <!--after discount -->
+                    <tr style="border-top: 2px solid black">
+                      <td class="label">
+                        <i class="pi pi-check-circle"></i>
+                        {{ 'orders.amountAfterDiscount' | translate }}
+                      </td>
+                      <td class="value">
+                        <span class="price-with-symbol">
+                          <sar-symbol />
+                          <span>
+                            {{
+                            bookingDetails.amountAfterDiscount ||
+                            bookingDetails.subtotalAfterDisc ||
+                            0 | number: '1.2-2'
+                            }}
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+                    <!--insurance amount-->
+                    <tr>
+                      <td class="label">
+                        <i class="pi pi-check-circle"></i>
+                        {{ 'orders.insurance' | translate }}
+                      </td>
+                      <td class="value">
+                        <span class="price-with-symbol">
+                          <sar-symbol />
+                          <span>
+                            {{ bookingDetails.insuranceAmount || 0 | number: '1.2-2' }}
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+
+                    <!--Vat-->
+                    <tr>
+                      <td class="label">
+                        <i class="pi pi-check-circle"></i>
+                        {{ 'orders.vat' | translate }} ({{ bookingDetails.vat || 0 }}%)
+                      </td>
+                      <td class="value">
+                        <span class="price-with-symbol">
+                          <sar-symbol />
+                          <span>
+                            {{
+                            (bookingDetails.vat! *
+                            (bookingDetails.amountAfterDiscount! ||
+                            bookingDetails.subtotalAfterDisc!)) /
+                            100 | number: '1.2-2'
+                            }}
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+                    <!--total Value-->
+                    <tr style="border-top: 2px solid black">
+                      <td class="label">
+                        <i class="pi pi-check-circle"></i>
+                        {{ 'orders.totalValue' | translate }}
+                      </td>
+                      <td class="value">
+                        <span class="price-with-symbol">
+                          <sar-symbol />
+                          <span>
+                            {{ bookingDetails.totalPayable | number: '1.2-2' }}
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+                    <!--paid amount-->
+                    <tr>
+                      <td class="label">
+                        <i class="pi pi-check-circle"></i>
+                        {{ 'orders.paidAmount' | translate }}
+                      </td>
+                      <td class="value">
+                        <span class="price-with-symbol">
+                          <sar-symbol />
+                          <span>
+                            {{ bookingDetails.paidAmount || 0 | number: '1.2-2' }} -
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">
+                        <i
+                  [class]="
+                    lang.dir === 'rtl'
+                      ? 'pi pi-arrow-left'
+                      : 'pi pi-arrow-right'
+                  "></i>
+                        {{ 'orders.remainingAmount' | translate }}
+                      </td>
+                      <td class="value">
+                        <span class="price-with-symbol">
+                          <sar-symbol />
+                          <span>
+                            {{ bookingDetails.remainingAmount | number: '1.2-2' }}
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          }
+          <div class="d-flex align-items-center justify-content-between">
+            <div></div>
+            @if (hasPermissionTo('update', bookingDetails)) {
+              <p-button
+                (onClick)="updateBooking()"
+                type="button"
+                label="{{ 'orders.editOrder' | translate }}"
+                [icon]="'pi pi-pencil'">
+              </p-button>
+            }
+          </div>
+          <ng-content></ng-content>
+        </div>

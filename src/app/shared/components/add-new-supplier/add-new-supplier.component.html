@@ -1,0 +1,226 @@
+<app-drawer-form-wrapper [form]="form" (onSubmit)="submit()">
+  <div class="section">
+    <h4>{{ 'suppliers.supplierDetails' | translate }}</h4>
+    <div class="form-grid">
+      <app-input
+        [control]="getControl('name')"
+        [controlName]="'name'"
+        inputType="text"
+        [placeholder]="'suppliers.namePlaceholder' | translate"
+        [label]="'suppliers.supplierName' | translate">
+        <i class="pi pi-user" style="color: gray"></i>
+      </app-input>
+
+      <app-phone-input
+        [control]="getControl('phone')"
+        [label]="'fields.mobileNo' | translate"
+        [placeholder]="'fields.mobileNoPlaceholder' | translate">
+        <i class="pi pi-phone" style="color: gray"></i>
+      </app-phone-input>
+
+      <!--payment methods-->
+      <div class="section">
+        <h4>{{ 'suppliers.paymentMethods' | translate }}</h4>
+        @for (form of paymentMethods.controls; track form; let i = $index) {
+          <div class="payment-methods-form">
+            <div class="d-flex gap-3 flex-column">
+              <!--name-->
+              <div>
+                <app-input
+                  [control]="$any(form.get('name'))"
+                  [controlName]="'name'"
+                  inputType="text"
+                  [placeholder]="
+                    'suppliers.paymentMethodNamePlaceholder' | translate
+                  "
+                  [label]="'suppliers.paymentMethodName' | translate">
+                  <i class="pi pi-pencil" style="color: gray"></i>
+                </app-input>
+              </div>
+
+              <!--payment method types-->
+              <div>
+                <app-dropdown
+                  (onChange)="onPaymentMethodTypeChange($event, i)"
+                  [control]="$any(form.get('paymentMethodType'))"
+                  [options]="paymentMethodTypes"
+                  [controlName]="'paymentMethodType'"
+                  [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+                  [optionValue]="'value'"
+                  [placeholder]="
+                    'suppliers.paymentMethodTypePlaceholder' | translate
+                  "
+                  [label]="'suppliers.paymentMethodType' | translate">
+                  <i class="pi pi-list" style="color: gray"></i>
+                </app-dropdown>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3 flex-column">
+              @if (form.get('paymentMethodType')?.value === 'bankAccount') {
+                <!--Bank name-->
+                <div>
+                  <app-dropdown
+                    [control]="$any(form.get('bankName'))"
+                    [options]="banks"
+                    [controlName]="'bankName'"
+                    [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+                    [optionValue]="'value'"
+                    [placeholder]="'suppliers.selectBank' | translate"
+                    [label]="'suppliers.bankName' | translate">
+                    <i class="pi pi-list" style="color: gray"></i>
+                  </app-dropdown>
+                </div>
+
+                <!--Iban number-->
+                <div>
+                  <app-input
+                    [control]="$any(form.get('IBAN'))"
+                    [controlName]="'IBAN'"
+                    inputType="text"
+                    [placeholder]="'suppliers.IBANPlaceholder' | translate"
+                    [label]="'suppliers.IBAN' | translate">
+                    <i class="pi pi-credit-card" style="color: gray"></i>
+                  </app-input>
+                </div>
+
+                <!--Acount number-->
+                <div>
+                  <app-input
+                    [control]="$any(form.get('accountNumber'))"
+                    [controlName]="'accountNumber'"
+                    inputType="text"
+                    [placeholder]="
+                      'suppliers.accountNumberPlaceholder' | translate
+                    "
+                    [label]="'suppliers.accountNumber' | translate">
+                    <i class="pi pi-credit-card" style="color: gray"></i>
+                  </app-input>
+                </div>
+              }
+
+              @if (form.get('paymentMethodType')?.value === 'eWallet') {
+                <!--E Wallet-->
+                <div>
+                  <app-dropdown
+                    [control]="$any(form.get('eWalletName'))"
+                    [options]="eWallets"
+                    [controlName]="'eWalletName'"
+                    [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+                    [optionValue]="'value'"
+                    [placeholder]="
+                      'suppliers.eWalletNamePlaceholder' | translate
+                    "
+                    [label]="'suppliers.eWalletName' | translate">
+                    <i class="pi pi-list" style="color: gray"></i>
+                  </app-dropdown>
+                </div>
+
+                <!--E Wallet Number-->
+                <div>
+                  <app-phone-input
+                    [control]="$any(form.get('eWalletPhone'))"
+                    [label]="'fields.mobileNo' | translate"
+                    [placeholder]="'fields.mobileNoPlaceholder' | translate">
+                  </app-phone-input>
+                </div>
+              }
+            </div>
+
+            <div class="row">
+              <app-input
+                class="full-width"
+                [control]="$any(form.get('paymentMethodNotes'))"
+                [controlName]="'note'"
+                inputType="textarea"
+                [rowsNo]="2"
+                [placeholder]="'suppliers.notePlaceholder' | translate"
+                [label]="'suppliers.note' | translate">
+              </app-input>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              @if (i !== 0) {
+                <div
+                  appConfirmDeleteDialog
+                  [deletedItem]="'suppliers.paymentMethod' | translate"
+                  (acceptDelete)="deleteMethod(i)"
+                  class="delete">
+                  <i class="pi pi-trash"></i>
+                  <span>{{ 'common.delete' | translate }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+        <div class="add-btn">
+          <p-button
+            (onClick)="addPaymentMethod()"
+            type="button"
+            [icon]="'pi pi-plus'"
+            label="{{ 'suppliers.addNewPaymentMethod' | translate }}"
+            styleClass="p-button-success">
+          </p-button>
+        </div>
+      </div>
+
+      <!--commercial register-->
+      <app-input
+        [control]="getControl('commercialRegistrationNumber')"
+        [controlName]="'commercialRegistrationNumber'"
+        inputType="text"
+        [placeholder]="
+          'suppliers.commercialRegistrationNumberPlaceholder' | translate
+        "
+        [label]="'suppliers.commercialRegistrationNumber' | translate">
+        <i class="pi pi-id-card" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getControl('taxRegistrationNumber')"
+        [controlName]="'taxRegistrationNumber'"
+        inputType="text"
+        [placeholder]="'suppliers.taxRegistrationNumberPlaceholder' | translate"
+        [label]="'suppliers.taxRegistrationNumber' | translate">
+        <i class="pi pi-id-card" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getControl('email')"
+        [controlName]="'email'"
+        inputType="email"
+        [placeholder]="'suppliers.emailPlaceholder' | translate"
+        [label]="'suppliers.email' | translate">
+        <i class="pi pi-envelope" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getControl('address')"
+        [controlName]="'address'"
+        inputType="text"
+        [placeholder]="'suppliers.addressPlaceholder' | translate"
+        [label]="'suppliers.address' | translate">
+        <i class="pi pi-map-marker" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getControl('activity')"
+        [controlName]="'activity'"
+        inputType="text"
+        [placeholder]="'suppliers.activityPlaceholder' | translate"
+        [label]="'suppliers.activity' | translate">
+        <i class="pi pi-briefcase" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        class="full-width"
+        [control]="getControl('note')"
+        [controlName]="'note'"
+        inputType="textarea"
+        [placeholder]="'suppliers.notePlaceholder' | translate"
+        [label]="'suppliers.note' | translate">
+        <i class="pi pi-sticky" style="color: gray"></i>
+      </app-input>
+    </div>
+  </div>
+</app-drawer-form-wrapper>

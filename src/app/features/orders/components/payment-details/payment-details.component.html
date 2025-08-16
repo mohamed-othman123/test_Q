@@ -1,0 +1,778 @@
+<h5 class="mb-0">{{ 'orders.paymentDetails' | translate }}</h5>
+<div class="wrapper">
+  <div class="row">
+    <!--mismatch booking payment-->
+    <div class="p-3">
+      @if (bookingPrices && !isMatchedPriceCalculation) {
+        <div
+          class="info-note">
+          <p class="text-muted">
+            <strong>{{ 'orders.adminNote' | translate }}</strong>
+          </p>
+          <p>
+            {{ 'orders.priceChangesTextInfo' | translate }}
+          </p>
+          <!--current booking plane -->
+          <div class="booking-plan">
+            <p class="current">
+              <strong>{{ 'orders.currentPlan' | translate }}</strong>
+            </p>
+            <div class="plan-content">
+              <p>
+                <strong> {{ 'orders.pricingType' | translate }}</strong> :
+                @if (formControls.pricingType.value === 'FIXED') {
+                  {{ 'orders.fixedPrice' | translate }}
+                } @else if (formControls.pricingType.value === 'EVENT') {
+                  {{ 'orders.eventPrice' | translate }}
+                } @else {
+                  {{ 'orders.priceWhileBooking' | translate }}
+                }
+              </p>
+              <div>
+                @if (
+                  formControls.priceCalculationType.value === 'PER_PERSON'
+                  ) {
+                  <span>
+                    <strong>{{ 'orders.calculationType' | translate }} : </strong>
+                    {{ 'orders.perAttendeePrice' | translate }}
+                  </span>
+                  <!--men price-->
+                  @if (formControls.malePricePerAttendee.value) {
+                    <span>
+                      <strong
+                        >{{ 'orders.malePricePerAttendee' | translate }} :
+                      </strong>
+                      <span class="price-with-symbol">
+                        <sar-symbol />
+                        <span>
+                          {{ formControls.malePricePerAttendee.value }}
+                        </span>
+                      </span>
+                    </span>
+                    <span>
+                      <strong
+                        >{{ 'orders.maleAttendeesCount' | translate }} :
+                      </strong>
+                      {{ formControls.maleAttendeesCount.value }}
+                    </span>
+                  }
+                  <!--women price-->
+                  @if (formControls.femalePricePerAttendee.value) {
+                    <span>
+                      <strong
+                        >{{ 'orders.femalePricePerAttendee' | translate }} :
+                      </strong>
+                      <span class="price-with-symbol">
+                        <sar-symbol />
+                        <span>
+                          {{ formControls.femalePricePerAttendee.value }}
+                        </span>
+                      </span>
+                    </span>
+                    <span>
+                      <strong
+                        >{{ 'orders.femaleAttendeesCount' | translate }} :
+                      </strong>
+                      {{ formControls.femaleAttendeesCount.value }}
+                    </span>
+                  }
+                }
+                @if (
+                  formControls.priceCalculationType.value === 'FIXED_PRICE'
+                  ) {
+                  <span>
+                    <strong>{{ 'orders.calculationType' | translate }} : </strong>
+                    {{ 'orders.fixedPrice' | translate }}
+                  </span>
+                  <span>
+                    <strong>{{ 'orders.fixedBookingPrice' | translate }}</strong>
+                    :
+                    <span class="price-with-symbol">
+                      <sar-symbol />
+                      <span>
+                        {{ formControls.fixedBookingPrice.value }}
+                      </span>
+                    </span>
+                  </span>
+                }
+                <span>
+                  <strong>{{ 'orders.insurance' | translate }} : </strong>
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{ formControls.insuranceAmount.value }}
+                    </span>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <!--hall booking plane-->
+          <div class="booking-plan">
+            <p class="next">
+              <strong>{{ 'orders.hallPlan' | translate }}</strong>
+            </p>
+            <div class="plan-content">
+              <p>
+                <strong>{{ 'orders.pricingType' | translate }}</strong> :
+                @if (bookingPrices.pricingType === 'FIXED') {
+                  {{ 'orders.fixedPrice' | translate }}
+                } @else if (bookingPrices.pricingType === 'EVENT') {
+                  {{ 'orders.eventPrice' | translate }}
+                } @else {
+                  {{ 'orders.priceWhileBooking' | translate }}
+                }
+              </p>
+              <div>
+                @if (bookingPrices.priceCalculationType === 'PER_PERSON') {
+                  <span>
+                    <strong>{{ 'orders.calculationType' | translate }} :</strong>
+                    {{ 'orders.perAttendeePrice' | translate }}
+                  </span>
+                  <span>
+                    <strong
+                      >{{ 'orders.malePricePerAttendee' | translate }} :
+                    </strong>
+                    <span class="price-with-symbol">
+                      <sar-symbol />
+                      <span>
+                        {{ bookingPrices.totalAmountMen }}
+                      </span>
+                    </span>
+                  </span>
+                  <span>
+                    <strong
+                      >{{ 'orders.femalePricePerAttendee' | translate }} :
+                    </strong>
+                    <span class="price-with-symbol">
+                      <sar-symbol />
+                      <span>
+                        {{ bookingPrices.totalAmountWomen }}
+                      </span>
+                    </span>
+                  </span>
+                }
+                @if (bookingPrices.priceCalculationType === 'FIXED_PRICE') {
+                  <span>
+                    <strong>{{ 'orders.calculationType' | translate }} : </strong>
+                    {{ 'orders.fixedPrice' | translate }}
+                  </span>
+                  <span>
+                    <strong
+                      >{{ 'orders.fixedBookingPrice' | translate }} :
+                    </strong>
+                    <span class="price-with-symbol">
+                      <sar-symbol />
+                      <span>
+                        {{ bookingPrices.totalAmount }}
+                      </span>
+                    </span>
+                  </span>
+                }
+                <span>
+                  <strong>{{ 'orders.insurance' | translate }} </strong> :
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{ bookingPrices.insuranceAmount }}
+                    </span>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <p>
+            <strong>
+              {{ 'orders.priceChangeConfirmation' | translate }}
+            </strong>
+          </p>
+          <button
+            pButton
+            size="small"
+            type="button"
+            icon="pi pi-pencil"
+            label="{{ 'common.apply' | translate }}"
+          (click)="applyHallPrices()"></button>
+        </div>
+      }
+    </div>
+    @if (isMatchedPriceCalculation) {
+      <!--price type-->
+      <div class="col-12 mb-4">
+        <div>
+          <strong>{{ 'orders.adminPriceCalculation' | translate }} :</strong>
+          @if (formControls.pricingType.value === 'FIXED') {
+            {{ 'orders.fixedPrice' | translate }}
+          } @else if (formControls.pricingType.value === 'EVENT') {
+            {{ 'orders.eventPrice' | translate }}
+          } @else {
+            {{ 'orders.priceWhileBooking' | translate }}
+          }
+        </div>
+      </div>
+      <!-- price calculation  type section-->
+      <div class="col-12 mb-4">
+        <div class="fixed-price">
+          <div class="custom-radio">
+            <p-radioButton
+              [inputId]="'fixedPrice'"
+              class="el-radio"
+              value="FIXED_PRICE"
+              name="fixedPrice"
+              [formControl]="formControls.priceCalculationType" />
+            <label [for]="'fixedPrice'">
+              <img
+                src="assets/svg/money.svg"
+                alt="net profit icon"
+                width="22" />
+              <span>{{ 'orders.fixedPrice' | translate }}</span>
+            </label>
+          </div>
+          <div class="custom-radio">
+            <p-radioButton
+              [inputId]="'perAttendeePrice'"
+              name="fixedPrice"
+              class="el-radio"
+              [formControl]="formControls.priceCalculationType"
+              value="PER_PERSON" />
+            <label [for]="'perAttendeePrice'">
+              <img src="assets/svg/user.svg" alt="net profit icon" width="22" />
+              <span>{{ 'orders.perAttendeePrice' | translate }} </span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <!--per attendee price section-->
+      @if (formControls.priceCalculationType.value === 'PER_PERSON') {
+        <!--male price-->
+        @if (
+          $any(bookingInfoControls.attendeesType).value?.value === 'Men' ||
+          $any(bookingInfoControls.attendeesType).value?.value ===
+          'Men And Women'
+          ) {
+          <div class="col-md-3 col-12 mb-4">
+            <app-input
+              [placeholder]="'orders.maleAttendeesCount' | translate"
+              [label]="'orders.maleAttendeesCount' | translate"
+              [control]="formControls.maleAttendeesCount"
+              [controlName]="'maleAttendeesCount'"
+              inputType="number"
+              [textAlign]="'center'">
+              <i class="man-icon"></i>
+            </app-input>
+          </div>
+          <div class="col-md-3 col-12 mb-4 d-flex align-items-center">
+            <app-input
+              class="flex-fill"
+              [label]="'orders.malePricePerAttendee' | translate"
+              [placeholder]="'orders.malePricePerAttendee' | translate"
+              [control]="formControls.malePricePerAttendee"
+              [controlName]="'malePricePerAttendee'"
+              inputType="number"
+              [textAlign]="'center'">
+              <i class="man-icon"></i>
+            </app-input>
+            <span class="currency-label"><sar-symbol /></span>
+          </div>
+        }
+        <!--female price-->
+        @if (
+          $any(bookingInfoControls.attendeesType).value?.value === 'Women' ||
+          $any(bookingInfoControls.attendeesType).value?.value ===
+          'Men And Women'
+          ) {
+          <div class="col-md-3 col-12 mb-4">
+            <app-input
+              [placeholder]="'orders.femaleAttendeesCount' | translate"
+              [label]="'orders.femaleAttendeesCount' | translate"
+              [control]="formControls.femaleAttendeesCount"
+              [controlName]="'femaleAttendeesCount'"
+              inputType="number"
+              [textAlign]="'center'">
+              <i class="women-icon"></i>
+            </app-input>
+          </div>
+          <div class="col-md-3 col-12 mb-4 d-flex align-items-center">
+            <app-input
+              class="flex-fill"
+              [label]="'orders.femalePricePerAttendee' | translate"
+              [placeholder]="'orders.femalePricePerAttendee' | translate"
+              [control]="formControls.femalePricePerAttendee"
+              [controlName]="'femalePricePerAttendee'"
+              inputType="number"
+              [textAlign]="'center'">
+              <i class="women-icon"></i>
+            </app-input>
+            <span class="currency-label"><sar-symbol /></span>
+          </div>
+        }
+      }
+      <!--fixed price section-->
+      @if (formControls.priceCalculationType.value === 'FIXED_PRICE') {
+        <div
+          class="col-md-4 col-12 mb-4"
+          >
+          <app-input
+            [label]="'orders.fixedBookingPrice' | translate"
+            [control]="formControls.fixedBookingPrice"
+            [placeholder]="'orders.fixedBookingPrice' | translate"
+            [controlName]="'fixedBookingPrice'"
+            inputType="number">
+          </app-input>
+        </div>
+      }
+      <!--insurance Amount section-->
+      <div class="col-md-4 col-12 mb-4">
+        <app-input
+          class="insurance"
+          [placeholder]="'orders.insurance' | translate"
+          [label]="'orders.insurance' | translate"
+          [control]="formControls.insuranceAmount"
+          [controlName]="'insuranceAmount'"
+          inputType="number">
+        </app-input>
+      </div>
+      <!--initial payment section-->
+      <div class="col-md-4 col-12 mb-4">
+        <app-input
+          [disabled]="!showPaymentForm"
+          [placeholder]="'orders.paidAmount' | translate"
+          [label]="'orders.paidAmount' | translate"
+          [control]="formControls.paidAmount"
+          [controlName]="'paidAmount'"
+          inputType="number">
+        </app-input>
+      </div>
+      @if (showPaymentForm) {
+        <div class="col-md-4 col-12 mb-4">
+          <app-dropdown
+            [control]="formControls.paymentMethod"
+            [options]="filteredPaymentMethods"
+            [optionLabel]="'name'"
+            [controlName]="'paymentMethod'"
+            [placeholder]="'payment.paymentMethod' | translate"
+            [label]="'payment.paymentMethod' | translate">
+            <i class="pi pi-money-bill" style="color: gray"></i>
+          </app-dropdown>
+        </div>
+      }
+      @if (showPaymentForm) {
+        <div class="col-md-8 col-12 mb-4">
+          <app-input
+            [control]="formControls.notes"
+            [controlName]="'notes'"
+            inputType="textarea"
+            [label]="'payment.notes' | translate"
+            [placeholder]="'payment.notes' | translate">
+          </app-input>
+        </div>
+      }
+    }
+    <!--list of services -->
+    @if (services && services.length > 0) {
+      <div class="col-12 mb-4">
+        <div class="services">
+          <table class="custom-table">
+            <tr>
+              <th>
+                {{ 'orders.serviceName' | translate }}
+              </th>
+              <th>
+                {{ 'orders.servicePrice' | translate }}
+              </th>
+              <th>
+                {{ 'orders.theNotes' | translate }}
+              </th>
+            </tr>
+            <tbody>
+              @for (service of services; track service) {
+                <tr>
+                  <td>{{ lang.lang === 'ar' ? service.name_ar : service.name }}</td>
+                  <td>
+                    <span class="price-with-symbol">
+                      <sar-symbol />
+                      <span>
+                        {{ service.price | number: '1.2-2' }}
+                      </span>
+                    </span>
+                  </td>
+                  <td>{{ service.note ?? '' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <div class="col-12">
+      <div class="row">
+        <!--discount section -->
+        <div
+          class="col-lg-5 col-md-6 col-12 mb-4"
+          *appHasPermission="['create:booking-discount']">
+          <div class="discount-wrapper mb-4">
+            <h6>
+              {{ 'orders.addDiscount' | translate }}
+            </h6>
+
+            <h6 class="discount-type">
+              {{ 'orders.discountType' | translate }}
+            </h6>
+            <div class="radio-buttons">
+              <div class="custom-radio">
+                <p-radioButton
+                  [inputId]="'percent'"
+                  [value]="selectedDiscount.PERCENT"
+                  class="el-radio"
+                  name="discountType"
+                  [formControl]="formControls.selectedDiscount" />
+                <label [for]="'percent'">
+                  <img
+                    src="assets/svg/ratio.svg"
+                    alt="net profit icon"
+                    width="22" />
+                  <span>{{ 'orders.percent' | translate }}</span>
+                </label>
+              </div>
+
+              <!--fixed discount-->
+              <div class="custom-radio">
+                <p-radioButton
+                  [inputId]="'fixed'"
+                  name="discountType"
+                  class="el-radio"
+                  [formControl]="formControls.selectedDiscount"
+                  [value]="selectedDiscount.FIXED" />
+                <label [for]="'fixed'">
+                  <img
+                    src="assets/svg/money.svg"
+                    alt="net profit icon"
+                    width="22" />
+                  <span>{{ 'orders.fixed' | translate }}</span>
+                </label>
+              </div>
+
+              <!--special discount-->
+              <div class="custom-radio">
+                <p-radioButton
+                  [inputId]="'special'"
+                  name="discountType"
+                  class="el-radio"
+                  [formControl]="formControls.selectedDiscount"
+                  [value]="selectedDiscount.SPECIAL" />
+                <label [for]="'special'">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="22"
+                    fill="#1eaa8f"
+                    class="bi bi-tags-fill"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586zm3.5 4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
+                    <path
+                      d="M1.293 7.793A1 1 0 0 1 1 7.086V2a1 1 0 0 0-1 1v4.586a1 1 0 0 0 .293.707l7 7a1 1 0 0 0 1.414 0l.043-.043z" />
+                  </svg>
+                  <span>{{ 'orders.specialDiscount' | translate }}</span>
+                </label>
+              </div>
+            </div>
+
+            @if (
+              formControls.selectedDiscount.value === selectedDiscount.SPECIAL
+              ) {
+              <!--special discount-->
+              @if (!disableDiscount) {
+                <app-dropdown
+                  filterBy="name"
+                  [filter]="true"
+                  [control]="formControls.specialDiscountId"
+                  [options]="discountsList"
+                  (onChange)="onDiscountChange($event)"
+                  [optionLabel]="'name'"
+                  [controlName]="'service'"
+                  [placeholder]="'orders.specialDiscountsPlaceholder' | translate"
+                  [label]="'orders.specialDiscounts' | translate"
+                  [showClear]="true"
+                  (onClear)="onDiscountClear()">
+                  <i class="pi pi-percentage"></i>
+                </app-dropdown>
+              }
+
+              <!--displayed if the discount disabled-->
+              @if (disableDiscount) {
+                <div
+                  class="d-flex align-items-center justify-content-between"
+                  >
+                  <div>
+                    <strong
+                      >{{ 'orders.appliedSpecialDiscount' | translate }} :
+                    </strong>
+                    {{ updatedBooking.specialDiscount.name }}
+                  </div>
+                  <div>
+                    <p-button
+                      [style]="{width: '170px'}"
+                      size="small"
+                      icon="pi pi-plus"
+                      label="{{ 'orders.enterNewDiscount' | translate }}"
+                    (click)="onDiscountClear()"></p-button>
+                  </div>
+                </div>
+              }
+            }
+
+            <div class="discount-value">
+              <app-input
+                [disabled]="mode === 'view'"
+                [percent]="
+                  formControls.discountType.value === discountType.PERCENT
+                "
+                [placeholder]="'orders.discountValue' | translate"
+                [label]="'orders.discountValue' | translate"
+                [control]="formControls.discountValue"
+                [controlName]="'discountValue'"
+                inputType="number">
+              </app-input>
+              @if (mode !== 'view' && !disableDiscount) {
+                <p-button
+                  size="small"
+                  icon="pi pi-plus"
+                  label="{{ 'common.apply' | translate }}"
+                (click)="applyDiscount()"></p-button>
+              }
+            </div>
+
+            @if (form.getError('discountInvalid')) {
+              <p class="discount-error">
+                {{ 'orders.discountInvalid' | translate }}
+              </p>
+            }
+            <!--discount notes-->
+            <app-input
+              [control]="formControls.discountDetails"
+              [controlName]="'discountDetails'"
+              inputType="textarea"
+              [label]="'orders.discountDetails' | translate"
+              [placeholder]="'orders.discountDetails' | translate">
+            </app-input>
+          </div>
+        </div>
+
+        <!--calculation table-->
+        <div class="col-lg-7 col-md-6 col-12 mb-4">
+          <div class="summery mt-4">
+            <table>
+              <!--booking price-->
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.bookingPrice' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{
+                      formControls.priceCalculationType.value ===
+                      'FIXED_PRICE'
+                      ? (formControls.fixedBookingPrice.value || 0
+                      | number: '1.2-2')
+                      : (calculatePerPersonPrice() | number: '1.2-2')
+                      }}
+                      <!--todo count for both men and women-->
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.totalServiceFee' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{ totalServiceFee | number: '1.2-2' }}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <tr style="border-top: 2px solid black">
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.amountBeforeDiscount' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{ formControls.subtotal.value || 0 | number: '1.2-2' }}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <!--discount-->
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.discountPercent' | translate }}
+                  (
+                  @if (
+                    formControls.discountType.value === discountType.PERCENT
+                    ) {
+                    {{ formControls.discountValue.value || 0 }}%
+                  }
+                  @if (
+                    formControls.discountType.value !== discountType.PERCENT
+                    ) {
+                    <span class="price-with-symbol">
+                      <sar-symbol class="currency-icon"></sar-symbol>
+                      <span>{{ formControls.discountValue.value || 0 }}</span>
+                    </span>
+                  }
+                  )
+                </td>
+
+                <td class="value">
+                  <span class="sign"> - </span>
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{ formControls.discountAmount.value | number: '1.2-2' }}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+
+              <!--after discount -->
+              <tr style="border-top: 2px solid black">
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.amountAfterDiscount' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{
+                      formControls.amountAfterDiscount.value || 0
+                      | number: '1.2-2'
+                      }}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <!--insurance amount-->
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.insurance' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{
+                      formControls.insuranceAmount.value || 0
+                      | number: '1.2-2'
+                      }}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+
+              <!--Vat-->
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.vat' | translate }} ({{
+                  formControls.vat.value || 0
+                  }}%)
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{ formControls.vatAmount.value | number: '1.2-2' }}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <!--total Value-->
+              <tr style="border-top: 2px solid black">
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.totalValue' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{ formControls.totalPayable.value | number: '1.2-2' }}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <!--paid amount-->
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.paidAmount' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{ formControls.paidAmount.value || 0 | number: '1.2-2' }}
+                      -
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="label">
+                  <i
+                    [class]="
+                      lang.dir === 'rtl'
+                        ? 'pi pi-arrow-left'
+                        : 'pi pi-arrow-right'
+                    "></i>
+                  {{ 'orders.remainingAmount' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{ formControls.remainingAmount.value | number: '1.2-2' }}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="actions">
+        <span (click)="changeStep(currentStep - 1)" class="previous">
+          <i
+            [ngClass]="
+              lang.dir === 'rtl' ? 'pi pi-arrow-right' : 'pi pi-arrow-left'
+            "></i>
+          {{ 'common.previous' | translate }}</span
+          >
+          <p-button
+            (click)="changeStep(currentStep + 1)"
+            type="button"
+          [icon]="
+            lang.dir === 'rtl' ? 'pi pi-arrow-left' : 'pi pi-arrow-right'
+          ">
+            {{ 'common.next' | translate }}
+          </p-button>
+        </div>
+      </div>
+    </div>
+  </div>

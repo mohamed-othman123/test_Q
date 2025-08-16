@@ -1,0 +1,46 @@
+<app-drawer-form-wrapper [form]="form" (onSubmit)="submit()">
+  <app-input
+    [control]="getFormControl('name')"
+    [controlName]="'code'"
+    inputType="text"
+    [placeholder]="'discounts.discountNamePlaceholder' | translate"
+    [label]="'discounts.discountName' | translate">
+    <i class="pi pi-pencil" style="color: gray"></i>
+  </app-input>
+
+  <app-dropdown
+    [control]="getFormControl('type')"
+    [options]="discountTypes"
+    [controlName]="'type'"
+    [optionLabel]="'label.' + lang.lang"
+    [optionValue]="'value'"
+    [placeholder]="'discounts.discountTypePlaceholder' | translate"
+    [showClear]="true"
+    [label]="'discounts.discountType' | translate">
+  </app-dropdown>
+
+  <div>
+    <app-input
+      [control]="getFormControl('value')"
+      [controlName]="'discount'"
+      inputType="number"
+      [placeholder]="'discounts.discountValuePlaceholder' | translate"
+      [label]="'discounts.discountValue' | translate">
+      <i class="pi pi-pencil" style="color: gray"></i>
+    </app-input>
+    @if (form.hasError('invalidDiscountValue')) {
+      <div class="t-danger">
+        {{ 'discounts.invalidDiscountValue' | translate }}
+      </div>
+    }
+  </div>
+
+  <app-input
+    [control]="getFormControl('note')"
+    [controlName]="'note'"
+    inputType="textarea"
+    [placeholder]="'discounts.notes' | translate"
+    [label]="'discounts.notes' | translate">
+    <i class="pi pi-pencil" style="color: gray"></i>
+  </app-input>
+</app-drawer-form-wrapper>

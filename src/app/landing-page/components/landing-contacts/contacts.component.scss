@@ -1,0 +1,137 @@
+@use "sass:color";
+@use 'variables';
+@use 'mixins';
+
+.contact {
+  margin-bottom: 40px;
+  position: relative;
+
+  .row {
+    padding: 60px 0 0;
+    border-radius: 14px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #fefaf6 0%, #ffffff 87.64%);
+    @include mixins.sm(variables.$max) {
+      padding-top: 30px;
+    }
+  }
+
+  iframe {
+    border-radius: 14px;
+    margin-top: 40px;
+  }
+
+  .map-container {
+    position: relative;
+    margin-top: 40px;
+    border-radius: 14px;
+    overflow: hidden;
+    height: 320px;
+  }
+
+  .map-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    background: transparent;
+    cursor: default;
+  }
+
+  .address-tooltip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    z-index: 10;
+    cursor: pointer;
+    width: max-content;
+    max-width: 90%;
+    height: max-content;
+    transition: transform 0.2s ease;
+
+    .tooltip-content {
+      background: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      direction: rtl;
+
+      span {
+        font-size: 10px;
+        color: #2563eb;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: color 0.2s ease;
+      }
+    }
+
+    .tooltip-arrow {
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 16px;
+      height: 16px;
+      background: white;
+      box-shadow: 4px 4px 8px -4px rgba(0, 0, 0, 0.15);
+      z-index: -1;
+    }
+
+    &:hover {
+      transform: translate(-50%, -100%) scale(1.02);
+
+      .tooltip-content {
+        span {
+          color: #1d4ed8;
+        }
+      }
+    }
+  }
+}
+
+.contact_info {
+  li {
+    margin: 0 10px;
+  }
+
+  a,
+  .d-flex {
+    font-weight: bold;
+    color: variables.$hall_dark_color;
+    font-size: 14px;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: color.adjust(variables.$hall_dark_color, $lightness: -15%);
+    }
+
+    span {
+      direction: ltr;
+      display: inline-block;
+    }
+
+    svg {
+      margin-inline-end: 8px;
+      min-width: 20px;
+    }
+  }
+
+  @include mixins.sm(variables.$max) {
+    flex-direction: column;
+    li {
+      margin-bottom: 12px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

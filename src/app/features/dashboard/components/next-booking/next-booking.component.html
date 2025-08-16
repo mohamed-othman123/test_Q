@@ -1,0 +1,89 @@
+<div class="upcoming-event">
+  <h3>{{ 'dashboard.upcomingBooking' | translate }}</h3>
+  <!--=====================-->
+  @if (nextBookings.length > 0) {
+    <p-carousel
+      [value]="nextBookings"
+      [numVisible]="1"
+      [numScroll]="1"
+      autoplayInterval="3000"
+      [showNavigators]="false">
+      <ng-template let-upcomingBooking pTemplate="item">
+        <div
+          class="upcoming-event-card"
+          [dir]="lang.lang === 'ar' ? 'rtl' : 'ltr'">
+          @if (upcomingBooking.startDate) {
+            <div class="tag">
+              <app-status-badge
+                [status]="
+                  upcomingBooking.bookingProcessStatus
+                "></app-status-badge>
+              <a (click)="viewDetails(upcomingBooking)" class="view-details">
+                <i class="pi pi-eye"></i>
+              </a>
+            </div>
+            @if (upcomingBooking.userType === 'Individual') {
+              @if (upcomingBooking.userGender === 'female') {
+                <i class="women-icon avatar"></i>
+              } @else {
+                <i class="man-icon avatar"></i>
+              }
+            } @else if (upcomingBooking.userType === 'Facility') {
+              <i class="fac-icon avatar"></i>
+            } @else if (upcomingBooking.userType === 'Governmental Facility') {
+              <i class="gov-icon avatar"></i>
+            }
+            <h3 class="name">
+              {{ upcomingBooking.userName }}
+              @if (upcomingBooking.isVIB) {
+                <img width="45px" src="/assets/icons/vip-icon.svg" alt="Vip" />
+              }
+            </h3>
+            <div class="date">
+              <i class="pi pi-calendar"></i>
+              @if (!upcomingBooking.isTheSameDay) {
+                <span>{{ 'dashboard.from' | translate }}:</span>
+              }
+              <span>{{ upcomingBooking.startDate | dayName }}</span>
+              <span>{{ upcomingBooking.startDate | date: 'dd/MM/yyyy' }}</span>
+              <span>{{ 'dashboard.corresponding' | translate }}</span>
+              <span>{{ upcomingBooking.hijriStartDate }}</span>
+            </div>
+            @if (!upcomingBooking.isTheSameDay) {
+              <div class="date">
+                <i class="pi pi-calendar"></i>
+                <span>{{ 'dashboard.to' | translate }}:</span>
+                <span>{{ upcomingBooking.endDate | dayName }}</span>
+                <span>{{ upcomingBooking.endDate | date: 'dd/MM/yyyy' }}</span>
+                <span>{{ 'dashboard.corresponding' | translate }}</span>
+                <span>{{ upcomingBooking.hijriEndDate }}</span>
+              </div>
+            }
+            <div class="whatsapp">
+              <a
+                dir="ltr"
+                href="https://wa.me/{{ upcomingBooking.userPhone }}"
+                target="_blank"
+                (click)="$event.stopPropagation()"
+                class="whatsapp-link">
+                <span style="color: black">{{
+                  upcomingBooking.userPhone
+                }}</span>
+                <i class="pi pi-whatsapp" style="color: black"></i>
+              </a>
+            </div>
+          } @else {
+            <div class="empty-state">
+              <p>{{ 'dashboard.noUpcomingBookings' | translate }}</p>
+            </div>
+          }
+        </div>
+      </ng-template>
+    </p-carousel>
+  } @else {
+    <div class="empty-state">
+      <p>{{ 'dashboard.noUpcomingBookings' | translate }}</p>
+    </div>
+  }
+  <!--=====================-->
+</div>

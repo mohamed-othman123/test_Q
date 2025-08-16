@@ -1,0 +1,124 @@
+<app-drawer-form-wrapper [form]="form" (onSubmit)="submit()">
+  @if (mode === 'edit') {
+    <app-dropdown
+      [control]="formControls.active"
+      [options]="employeeStatuses"
+      [optionLabel]="translate.currentLang === 'ar' ? 'label.ar' : 'label.en'"
+      [optionValue]="'value'"
+      [controlName]="'active'"
+      [placeholder]="'employees.status' | translate"
+      [label]="'employees.status' | translate">
+      <i class="pi pi-wallet" style="color: gray"></i>
+    </app-dropdown>
+  }
+
+  <!--name-->
+  <app-input
+    [control]="formControls.name"
+    [controlName]="'name'"
+    inputType="text"
+    [placeholder]="'employees.employeeName' | translate"
+    [label]="'employees.employeeName' | translate">
+    <i class="pi pi-user" style="color: gray"></i>
+  </app-input>
+
+  <!--phone-->
+  <app-phone-input
+    [control]="formControls.phone"
+    [label]="'fields.mobileNo' | translate"
+    [placeholder]="'fields.mobileNoPlaceholder' | translate"
+    [phoneNumber]="moderator?.phone">
+  </app-phone-input>
+
+  <!--email-->
+  <app-input
+    [control]="formControls.email"
+    [controlName]="'email'"
+    inputType="email"
+    [placeholder]="'employees.employeeEmailPlaceHolder' | translate"
+    iconPath="/assets/icons/email.icon.svg"
+    [label]="'auth.email' | translate">
+  </app-input>
+
+  <!--type-->
+  <app-dropdown
+    [control]="formControls.type"
+    [options]="types"
+    [optionLabel]="translate.currentLang === 'ar' ? 'label.ar' : 'label.en'"
+    [controlName]="'types'"
+    [placeholder]="'employees.selectType' | translate"
+    [label]="'employees.type' | translate">
+    <i class="pi pi-wallet" style="color: gray"></i>
+  </app-dropdown>
+
+  <!--role-->
+  @if (isEmployee) {
+    <app-dropdown
+      [control]="formControls.role"
+      [options]="roles"
+      [optionLabel]="'name'"
+      [controlName]="'role'"
+      [placeholder]="'employees.jobNamePlaceholder' | translate"
+      [label]="'employees.job' | translate">
+      <i class="pi pi-briefcase" style="color: gray"></i>
+    </app-dropdown>
+  }
+
+  <!--permission type-->
+  <div>
+    @if (isEmployee) {
+      <app-dropdown
+        [control]="formControls.permissionType"
+        [options]="permissionTypes"
+        [optionLabel]="translate.currentLang === 'ar' ? 'label.ar' : 'label.en'"
+        [controlName]="'permissionType'"
+        [placeholder]="'employees.selectPermissionType' | translate"
+        [label]="'employees.permissionType' | translate">
+        <i class="pi pi-briefcase" style="color: gray"></i>
+      </app-dropdown>
+    }
+
+    @if (isEmployee) {
+      <div class="permission-type-info">
+        <strong>{{ 'employees.generalPermission' | translate }}: </strong>
+        <span>{{ 'employees.generalPermissionDesc' | translate }}</span>
+        <br />
+        <strong>{{ 'employees.specialPermission' | translate }}: </strong>
+        <span>{{ 'employees.specialPermissionDesc' | translate }}</span>
+      </div>
+    }
+  </div>
+
+  <!--halls-->
+  @if (isEmployee) {
+    <div class="mb-2">
+      <label for="halls">
+        {{ 'employees.halls' | translate }}
+        @if (formControls.halls.hasError('required')) {
+          <span class="text-danger"
+            >&nbsp;*</span
+            >
+          }
+        </label>
+        <p-multiSelect
+          id="halls"
+          [options]="halls"
+          [showToggleAll]="true"
+          dataKey="id"
+          [showHeader]="true"
+          [formControl]="formControls.halls"
+          [optionLabel]="translate.currentLang === 'ar' ? 'name_ar' : 'name'"
+          [placeholder]="'employees.selectHalls' | translate" />
+        @if (
+          formControls.halls.hasError('required') && formControls.halls.touched
+          ) {
+          <div
+            class="d-flex gap-1 text-error align-items-center text-xs mt-1"
+            >
+            <i class="pi pi-exclamation-circle"></i>
+            <span>{{ 'employees.hallsSelectionRequired' | translate }}</span>
+          </div>
+        }
+      </div>
+    }
+  </app-drawer-form-wrapper>

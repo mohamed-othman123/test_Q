@@ -1,0 +1,264 @@
+<form [formGroup]="paymentForm" (ngSubmit)="submit()" class="form-section">
+  <div class="row">
+    <!--payment type-->
+    @if (!parentForm) {
+      <div class="col-md-4">
+        <app-dropdown
+          [control]="$any(paymentForm.get('paymentType'))"
+          [options]="paymentTypes || []"
+          [controlName]="'paymentType'"
+          [optionLabel]="lang.lang === 'en' ? 'label.en' : 'label.ar'"
+          [optionValue]="'value'"
+          [label]="'purchases.paymentType' | translate"
+          [placeholder]="'purchases.selectPaymentType' | translate">
+        </app-dropdown>
+      </div>
+    }
+
+    <!--amount-->
+    <div class="col-md-4">
+      <app-input
+        [control]="$any(paymentForm.get('amount'))"
+        [controlName]="'amount'"
+        inputType="number"
+        [placeholder]="'purchases.enterAmount' | translate"
+        [label]="'purchases.amount' | translate">
+      </app-input>
+    </div>
+
+    <!--hall payment methods-->
+    <div class="col-md-4">
+      <app-dropdown
+        [control]="$any(paymentForm.get('hallPaymentMethodId'))"
+        [options]="paymentMethods || []"
+        [controlName]="'hallPaymentMethodId'"
+        [optionLabel]="'name'"
+        [optionValue]="'id'"
+        [placeholder]="'purchases.hallAccountFromPlaceholder' | translate"
+        [label]="'purchases.hallAccountFrom' | translate">
+      </app-dropdown>
+    </div>
+  </div>
+
+  <!--expense item accounts-->
+  @if (
+    purchase?.expenseItem ||
+    parentForm?.get('expensesType')?.value === 'General'
+    ) {
+    <div
+      class="row mt-4"
+      >
+      <div class="col-md-4">
+        <app-dropdown
+          [control]="$any(paymentForm.get('itemTransferAccountId'))"
+          [options]="expenseItem?.transferAccounts || []"
+          [controlName]="'itemTransferAccountId'"
+          [optionLabel]="'accountName'"
+          [optionValue]="'id'"
+          [label]="'purchases.expenseItemTo' | translate"
+          [placeholder]="'purchases.expenseItemToPlaceholder' | translate"
+          [showAddNew]="expenseItem?.transferAccounts?.length === 0"
+          [addNewLabel]="'purchases.addNewExpenseItemAccount' | translate"
+          (onAddNew)="navigateToExpenseItem(expenseItem?.id)">
+        </app-dropdown>
+      </div>
+      @if (paymentForm.get('itemTransferAccountId')?.value) {
+        <div
+          class="col-md-4 as-input"
+          >
+          <app-input
+            [control]="$any(paymentForm.get('expenseAccountNumber'))"
+            [controlName]="'expenseAccountNumber'"
+            inputType="text"
+            [label]="'purchases.accountNumber' | translate">
+          </app-input>
+        </div>
+      }
+    </div>
+  }
+
+  <!--supplier accounts-->
+  @if (
+    purchase?.supplier || parentForm?.get('invoiceType')?.value === 'tax'
+    ) {
+    <div
+      class="row mt-4"
+      >
+      <div class="col-md-4">
+        <app-dropdown
+          [control]="$any(paymentForm.get('supplierPaymentMethodId'))"
+          [options]="supplier?.paymentMethods || []"
+          [controlName]="'supplierPaymentMethodId'"
+          [optionLabel]="'name'"
+          [optionValue]="'id'"
+          [label]="'purchases.supplierAccountTo' | translate"
+          [placeholder]="'purchases.supplierAccountToPlaceholder' | translate"
+          [showAddNew]="supplier?.paymentMethods?.length === 0"
+          [addNewLabel]="'purchases.addNewSupplierAccount' | translate"
+          (onAddNew)="navigateToSupplier(supplier?.id)">
+        </app-dropdown>
+      </div>
+      @if (paymentForm.get('supplierPaymentMethodId')?.value) {
+        <div class="col-md-4">
+          <app-dropdown
+            [control]="$any(paymentForm.get('paymentMethodType'))"
+            [options]="paymentMethodTypes || []"
+            [controlName]="'paymentMethodType'"
+            [optionLabel]="lang.lang === 'en' ? 'label.en' : 'label.ar'"
+            [optionValue]="'value'"
+            [label]="'purchases.paymentMethodType' | translate">
+          </app-dropdown>
+        </div>
+      }
+    </div>
+  }
+  <div class="row">
+    @if (paymentForm.get('supplierPaymentMethodId')?.value) {
+      @switch (paymentForm.get('paymentMethodType')?.value) {
+        @case ('bankAccount') {
+          <div class="col-md-4">
+            <app-dropdown
+              [control]="$any(paymentForm.get('bankName'))"
+              [options]="banks || []"
+              [controlName]="'bankName'"
+              [optionLabel]="lang.lang === 'en' ? 'label.en' : 'label.ar'"
+              [optionValue]="'value'"
+              [label]="'purchases.bankName' | translate">
+            </app-dropdown>
+          </div>
+
+          <div class="col-md-4">
+            <app-input
+              [control]="$any(paymentForm.get('IBAN'))"
+              [controlName]="'IBAN'"
+              inputType="text"
+              [label]="'purchases.IBAN' | translate">
+            </app-input>
+          </div>
+
+          <div class="col-md-4">
+            <app-input
+              [control]="$any(paymentForm.get('accountNumber'))"
+              [controlName]="'accountNumber'"
+              inputType="text"
+              [label]="'purchases.accountNumber' | translate">
+            </app-input>
+          </div>
+        }
+        @case ('eWallet') {
+          <div class="col-md-4">
+            <app-dropdown
+              [control]="$any(paymentForm.get('eWalletName'))"
+              [options]="eWallets || []"
+              [controlName]="'eWalletName'"
+              [optionLabel]="lang.lang === 'en' ? 'label.en' : 'label.ar'"
+              [optionValue]="'value'"
+              [label]="'purchases.eWalletName' | translate">
+            </app-dropdown>
+          </div>
+          <div class="col-md-4">
+            <app-phone-input
+              [control]="$any(paymentForm.get('eWalletPhone'))"
+              [label]="'purchases.eWalletPhone' | translate"
+              [placeholder]="'fields.mobileNoPlaceholder' | translate"
+              [phoneNumber]="paymentForm.get('eWalletOriginalPhone')?.value">
+            </app-phone-input>
+          </div>
+        }
+        @case ('cash') {
+          <div class="col-md-4">
+            <app-input
+              [control]="$any(paymentForm.get('cashReceiverName'))"
+              [controlName]="'cashReceiverName'"
+              inputType="text"
+              [placeholder]="
+                'purchases.cashReceiverNamePlaceholder' | translate
+              "
+              [label]="'purchases.cashReceiverName' | translate">
+            </app-input>
+          </div>
+        }
+        @case ('pos') {
+          <div class="col-md-4">
+            <app-input
+              [control]="$any(paymentForm.get('posName'))"
+              [controlName]="'posName'"
+              inputType="text"
+              [placeholder]="'purchases.posNamePlaceholder' | translate"
+              [label]="'purchases.posName' | translate">
+            </app-input>
+          </div>
+        }
+      }
+    }
+  </div>
+
+  <!--payment Date-->
+  @if (!parentForm) {
+    @if (paymentForm.get('paymentDate')?.value && isEditMode) {
+      <div
+        class="flex-grow-1 col-md-6"
+        >
+        <div class="flex-wrap">
+          <div class="date">
+            @if (paymentForm.get('paymentDate')) {
+              <app-date-picker
+            [inputFieldStyle]="
+              lang.lang === 'en' ? {'text-indent': '25px'} : null
+            "
+                [controlName]="'paymentDate'"
+                [label]="'purchases.paymentDate' | translate"
+              [control]="paymentDate"></app-date-picker>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (!isEditMode) {
+      <div class="flex-grow-1 col-md-6">
+        <div class="flex-wrap">
+          <div class="date">
+            @if (paymentForm.get('paymentDate')) {
+              <app-date-picker
+            [inputFieldStyle]="
+              lang.lang === 'en' ? {'text-indent': '25px'} : null
+            "
+                [controlName]="'paymentDate'"
+                [label]="'purchases.paymentDate' | translate"
+              [control]="paymentDate"></app-date-picker>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  }
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <app-input
+        [control]="$any(paymentForm.get('notes'))"
+        controlName="note"
+        [inputType]="'textarea'"
+        [label]="'purchases.notes' | translate">
+      </app-input>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button
+      type="button"
+      pButton
+      class="p-button-secondary"
+      [label]="'common.cancel' | translate"
+    (click)="cancel()"></button>
+    @if (!parentForm) {
+      <button
+        type="submit"
+        pButton
+        class="p-button-primary"
+        [label]="'common.save' | translate"
+      [disabled]="paymentForm.invalid"></button>
+    }
+  </div>
+</form>

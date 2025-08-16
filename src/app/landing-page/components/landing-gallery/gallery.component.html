@@ -1,0 +1,68 @@
+@if (section?.images?.length! > 0) {
+  <div class="gallery">
+    <div class="sec_id" id="gallery"></div>
+    <svg
+      class="section_shap"
+      width="120"
+      height="240"
+      viewBox="0 0 168 307"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M-42.4088 0.122006C6.15706 66.9835 70.8276 109.074 167.955 101.261C84.668 151.838 56.9252 223.849 56.7406 306.477C8.17469 239.616 -56.4959 197.525 -153.623 205.338C-70.3363 154.761 -42.5935 82.7504 -42.4088 0.122006Z"
+        fill="#F2EBDD" />
+    </svg>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="section_title text-center">
+            <h3>{{ lang === 'en' ? section?.title_en : section?.title_ar }}</h3>
+            <p>
+              {{
+                lang === 'en'
+                  ? section?.description_en
+                  : section?.description_ar
+              }}
+            </p>
+          </div>
+        </div>
+        <div class="col-12">
+          <swiper-container
+            class="swiper1"
+            loop="true"
+            dir="rtl"
+            slides-per-view="3"
+            speed="2000"
+            mousewheel-force-to-axis="true"
+            space-between="20"
+            pagination="true"
+            grab-cursor="true"
+            pagination-clickable="true"
+            autoplay-delay="2500"
+            autoplay-disable-on-interaction="false">
+            @for (image of section?.images; track image) {
+              <swiper-slide>
+                <img
+                  [src]="image.path"
+                  class="gallery_img"
+                  (click)="openImage(image.path)" />
+              </swiper-slide>
+            }
+          </swiper-container>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<p-dialog
+  header="معرض الصور"
+  [modal]="true"
+  [dismissableMask]="true"
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="true">
+  <img [src]="selectedImg" alt="gallery img" />
+</p-dialog>

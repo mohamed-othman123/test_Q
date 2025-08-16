@@ -1,0 +1,27 @@
+@use 'variables';
+@use 'mixins';
+:host {
+  @include mixins.sm(variables.$max) {
+    display: flex;
+  }
+  .empty-message {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    img {
+      width: 224px;
+    }
+    &__text {
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 24px;
+      color: #000f0b;
+    }
+    p-button{
+        margin: 0 4px;
+    }
+  }
+}

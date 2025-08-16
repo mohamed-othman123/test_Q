@@ -1,0 +1,55 @@
+@use 'variables';
+@use 'mixins';
+
+:host {
+  .key-metrics {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    @include mixins.xl(variables.$max) {
+      justify-content: start;
+    }
+
+    .key-metrics-item {
+      display: flex;
+      gap: 0.5rem;
+      border: 1px solid #f0f4f3;
+      border-radius: 1rem;
+      align-items: center;
+      justify-content: start;
+      padding: 1rem;
+      min-width: 15%;
+
+      @include mixins.sm(variables.$max) {
+        width: 100%;
+        min-width: 100%;
+      }
+
+      img {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        padding: 0.5rem;
+        background-color: #caf6ee;
+        object-fit: scale-down;
+      }
+
+      .key-metrics-item-content {
+        white-space: nowrap;
+
+        strong {
+          color: #14c6a5;
+          font-size: 1rem;
+          font-weight: 700;
+        }
+
+        p {
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}

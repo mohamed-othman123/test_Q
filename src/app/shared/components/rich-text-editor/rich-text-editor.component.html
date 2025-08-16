@@ -1,0 +1,66 @@
+<div
+  class="editor-wrapper"
+  [class.has-error]="showError && touched && required">
+  @if (label) {
+    <div class="editor-header">
+      <label class="field-label">
+        {{ label }}@if (required) {
+        <span class="required">*</span>
+      }
+    </label>
+  </div>
+}
+
+@if (!isEditMode) {
+  <div
+    class="view-mode"
+    [class.empty]="!currentValue"
+    [class.error]="showError && touched && required"
+    [class.disabled]="disabled"
+    (click)="!disabled && toggleEditMode()"
+    [dir]="textDirection">
+    @if (currentValue) {
+      <div
+        class="ql-editor view-content"
+        [innerHTML]="currentSafeValue"
+      [style.text-align]="textDirection === 'rtl' ? 'right' : 'left'"></div>
+    } @else {
+      <div
+        class="placeholder"
+        [style.text-align]="textDirection === 'rtl' ? 'right' : 'left'">
+        {{ placeholder }}
+      </div>
+    }
+  </div>
+}
+
+@if (showError && touched && required) {
+  <div class="error-container">
+    <div class="error-message">
+      <i class="pi pi-exclamation-circle"></i>
+      {{ 'common.required' | translate }}
+    </div>
+  </div>
+}
+
+<div
+  #quillContainer
+  class="quill-container"
+  [class.hidden]="!isEditMode"
+  [dir]="textDirection">
+  <div #editor></div>
+
+  @if (isEditMode && maxLength > 0) {
+    <div class="editor-info">
+      <div class="char-count" [class.error]="hasMaxLengthError">
+        {{ currentLength }}/{{ maxLength }}
+      </div>
+      @if (hasMaxLengthError) {
+        <div class="error-message">
+          {{ 'common.maxLengthError' | translate: {length: maxLength} }}
+        </div>
+      }
+    </div>
+  }
+</div>
+</div>

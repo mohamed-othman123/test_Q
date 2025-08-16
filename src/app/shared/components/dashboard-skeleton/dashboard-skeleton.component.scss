@@ -1,0 +1,16 @@
+:host {
+  .skelton-border {
+    border: 1px solid #f4f4f4;
+    border-radius: 8px;
+  }
+  .statistic {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    .statistic-box {
+      flex-basis: 170px;
+      flex-grow: 1;
+    }
+  }
+}

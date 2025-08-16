@@ -1,0 +1,49 @@
+<div
+  class="phone-input-container"
+  [ngClass]="{rtl: languageService.dir === 'rtl'}">
+  <div class="d-flex mb-3 flex-column gap-1">
+    <ng-container>
+      <label style="width: fit-content">
+        {{ label }}
+        @if (control.hasError('required')) {
+          <span style="color: red; font-weight: bold"> &nbsp;* </span>
+        }
+      </label>
+      <div #phoneInputContainer [ngClass]="{shake: control.invalid && shake}">
+        <ngx-intl-tel-input
+          [cssClass]="'custom'"
+          [preferredCountries]="['sa']"
+          [onlyCountries]="allowedCountries"
+          [enableAutoCountrySelect]="true"
+          [customPlaceholder]="getCustomPlaceholder()"
+          [searchCountryField]="[
+            SearchCountryField.Iso2,
+            SearchCountryField.Name,
+          ]"
+          [selectFirstCountry]="false"
+          [selectedCountryISO]="selectedCountry"
+          [maxLength]="15"
+          [phoneValidation]="true"
+          [formControl]="control"
+          name="phone"
+          [separateDialCode]="true"
+          [disabled]="isViewOnly"
+          (countryChange)="onCountryChange($event)">
+        </ngx-intl-tel-input>
+      </div>
+
+      @if (control.touched && control.hasError('required')) {
+        <span class="phone-error">
+          <img src="/assets/icons/exclamation.icon.svg" alt="" />
+          <span>{{ 'errors.phoneRequired' | translate }}</span>
+        </span>
+      }
+      @if (control.touched && control.hasError('validatePhoneNumber')) {
+        <span class="phone-error">
+          <img src="/assets/icons/exclamation.icon.svg" alt="" />
+          <span>{{ 'errors.wrongMobile' | translate }}</span>
+        </span>
+      }
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,92 @@
+<div
+  class="modal"
+  [class.show]="display$ | async"
+  tabindex="-1"
+  [style.display]="(display$ | async) ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="close-btn" (click)="onClose()">
+        <i class="pi pi-times"></i>
+      </div>
+
+      <div class="modal-body text-center">
+        <div class="icon-container mb-4">
+          <div
+            class="circle bg-opacity-10"
+            [ngClass]="{
+              'bg-primary': mode$.value === 'print',
+              'bg-danger': mode$.value !== 'print',
+            }">
+            <img
+              [src]="
+                'assets/svg/' +
+                (mode$.value !== 'print' ? 'folder-error.svg' : 'print.svg')
+              "
+              alt="{{ 'common.cancel' | translate }}" />
+          </div>
+        </div>
+
+        <h5 class="title mb-2">
+          <span
+            [ngClass]="{
+              'text-primary': mode$.value === 'print',
+              'text-danger': mode$.value !== 'print',
+            }"
+            >{{
+            'common.' + (mode$.value !== 'print' ? 'cancel' : 'print')
+            | translate
+            }}</span
+            >
+            {{
+            (mode$.value !== 'print'
+            ? 'orders.' + (mode$ | async) + 'Order'
+            : 'halls.contract'
+            ) | translate
+            }}
+          </h5>
+
+          <p class="subtitle mb-4">
+            @if (mode$.value !== 'print') {
+              {{ 'orders.confirmCancelBooking' | translate }}
+              {{ 'orders.' + (mode$ | async) + 'Order' | translate }}
+            }
+            @if (mode$.value === 'print') {
+              {{ 'orders.printConfirm' | translate }}
+            }
+          </p>
+
+          <div class="actions">
+            @if (mode$.value !== 'print') {
+              <button type="button" class="cancel-btn" (click)="onReject()">
+                <i class="pi pi-times"></i>
+                {{ 'common.cancel' | translate }}
+              </button>
+              <button type="button" class="confirm-btn" (click)="onConfirm()">
+                <i class="pi pi-check"></i>
+                {{ 'common.yes' | translate }}
+              </button>
+            }
+
+            @if (mode$.value === 'print') {
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                (click)="onReject()">
+                {{ 'orders.printAr' | translate }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                (click)="onConfirm()">
+                {{ 'orders.printEn' | translate }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (display$ | async) {
+    <div class="modal-backdrop fade show"></div>
+  }

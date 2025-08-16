@@ -1,0 +1,165 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2>
+      {{
+      mode === 'view'
+      ? ('priceRequest.viewPriceRequest' | translate)
+      : ('priceRequest.editPriceRequest' | translate)
+      }}
+    </h2>
+  </div>
+
+  <form [formGroup]="priceRequestForm" appShakeable (ngSubmit)="submit()">
+    <div class="form-section">
+      <div class="row d-flex align-items-baseline">
+        <div class="col-md-6">
+          <app-input
+            [control]="getController('name')"
+            [controlName]="'name'"
+            inputType="text"
+            [label]="'priceRequest.customerName' | translate">
+            <i class="pi pi-users" style="color: gray"></i>
+          </app-input>
+        </div>
+
+        <!-- email-->
+        <div class="col-md-6">
+          <app-input
+            [control]="getController('email')"
+            [controlName]="'email'"
+            inputType="text"
+            [placeholder]="'priceRequest.enterEmail' | translate"
+            [label]="'priceRequest.email' | translate">
+            <i class="pi pi-at" style="color: gray"></i>
+          </app-input>
+        </div>
+
+        <!--phone-->
+        <div class="col-md-6">
+          <app-phone-input
+            [control]="getController('phoneNumber')"
+            [label]="'fields.mobileNo' | translate"
+            [placeholder]="'fields.mobileNoPlaceholder' | translate"
+            [phoneNumber]="priceRequestData.phoneNumber">
+          </app-phone-input>
+        </div>
+
+        <!--event name-->
+        <div class="col-md-6">
+          <app-input
+            [inert]="true"
+            [control]="getController('eventName')"
+            [controlName]="'eventName'"
+            inputType="text"
+            [label]="'priceRequest.eventType' | translate">
+            <i class="pi pi-megaphone" style="color: gray"></i>
+          </app-input>
+        </div>
+
+        <!--event time-->
+        <div class="col-md-6">
+          <app-dropdown
+            [control]="getController('eventTime')"
+            [options]="eventTimeOptions"
+            [controlName]="'eventTime'"
+            [optionLabel]="'label.' + lang.lang"
+            [optionValue]="'value'"
+            [placeholder]="'orders.selectEventTime' | translate"
+            [label]="'orders.eventTime' | translate">
+            <i class="pi pi-clock" style="color: gray"></i>
+          </app-dropdown>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="row d-flex align-items-center">
+        <div class="col-md-6">
+          <!--event date-->
+          <app-date-picker
+            #datePicker
+            [inert]="mode === 'view' || disableEventDate"
+            [disabled]="mode === 'view' || disableEventDate"
+            [inputFieldStyle]="
+              lang.lang === 'en' ? {'text-indent': '25px'} : null
+            "
+            [controlName]="'eventDate'"
+            [placeholder]="'pricing.form.eventDate.placeholder' | translate"
+            [label]="'priceRequest.eventDate' | translate"
+          [control]="getController('eventDate')"></app-date-picker>
+        </div>
+
+        <div class="col-md-6 d-flex gap-2">
+          <!--flexible date-->
+          <p-checkbox
+            formControlName="isFlexibleDate"
+            binary="true"
+            inputId="isFlexible" />
+          <label for="isFlexible">{{
+            'priceRequest.flexibleDate' | translate
+          }}</label>
+        </div>
+
+        <div>
+          <!--customer massage-->
+          <app-input
+            [control]="getController('message')"
+            [controlName]="'message'"
+            inputType="textarea"
+            [placeholder]="'priceRequest.messagePlaceholder' | translate"
+            [label]="'priceRequest.message' | translate">
+          </app-input>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <!-- status-->
+      <app-dropdown
+        [control]="getController('status')"
+        [options]="priceRequestStatus"
+        [controlName]="'status'"
+        [optionLabel]="'label.' + lang.lang"
+        [optionValue]="'value'"
+        [placeholder]="lang.lang === 'ar' ? 'جديد' : 'New'"
+        [label]="'priceRequest.statusLabel' | translate">
+        <i class="pi pi-list" style="color: gray"></i>
+      </app-dropdown>
+
+      <app-input
+        [control]="getController('notes')"
+        [controlName]="'notes'"
+        inputType="textarea"
+        [placeholder]="'priceRequest.enterNotes' | translate"
+        [label]="'priceRequest.notes' | translate">
+      </app-input>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button
+        type="button"
+        pButton
+        class="p-button-secondary"
+        [label]="'common.cancel' | translate"
+        icon="pi pi-times"
+      (click)="cancel()"></button>
+
+      @if (mode !== 'view') {
+        <button
+          type="submit"
+          pButton
+          icon="pi pi-save"
+        [label]="'common.update' | translate"></button>
+      } @else {
+        <button
+          (click)="navigateToUpdate()"
+          type="button"
+          pButton
+          icon="pi pi-pencil"
+        [label]="'common.edit' | translate"></button>
+      }
+
+    </div>
+  </form>
+</div>

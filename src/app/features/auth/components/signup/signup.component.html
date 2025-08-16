@@ -1,0 +1,35 @@
+<form appShakeable [formGroup]="form" (ngSubmit)="signup()">
+
+  <app-input
+    [placeholder]="'auth.namePlaceholder' | translate"
+    [controlName]="'name'"
+    inputType="text"
+    [label]="'auth.fullName' | translate"
+    [control]="form.controls.name">
+    <i class="pi pi-user" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [placeholder]="'auth.emailPlaceHolder' | translate"
+    [controlName]="'email'"
+    inputType="email"
+    [label]="'auth.email' | translate"
+    [control]="form.controls.email"
+    iconPath="/assets/icons/email.icon.svg">
+  </app-input>
+
+  <app-input
+    [placeholder]="'auth.passwordPlaceHolder' | translate"
+    [controlName]="'password'"
+    inputType="password"
+    [autoComplete]="'new-password'"
+    [toolTipText]="passwordToolTipText | translate"
+    [label]="'auth.password' | translate"
+    [control]="form.controls.password"
+    iconPath="/assets/icons/lock.icon.svg">
+  </app-input>
+
+  <p-button type="submit" icon="pi pi-user-plus">
+    {{ 'auth.signup' | translate }}
+  </p-button>
+</form>

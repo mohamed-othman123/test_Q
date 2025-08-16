@@ -1,0 +1,28 @@
+<div class="map-picker">
+  <div class="coordinates-display" [class.editable]="isEditMode">
+    <div class="coordinate-item">
+      <label>{{ 'common.latitude' | translate }}</label>
+      <input
+        type="number"
+        [value]="currentLocation?.lat || ''"
+        (input)="updateLatitude($event)"
+        [readonly]="!isEditMode"
+        step="0.000001"
+        placeholder="{{ 'common.latitude' | translate }}"
+      />
+    </div>
+    <div class="coordinate-item">
+      <label>{{ 'common.longitude' | translate }}</label>
+      <input
+        type="number"
+        [value]="currentLocation?.long || ''"
+        (input)="updateLongitude($event)"
+        [readonly]="!isEditMode"
+        step="0.000001"
+        placeholder="{{ 'common.longitude' | translate }}"
+      />
+    </div>
+  </div>
+
+  <div class="map-container" #mapContainer></div>
+</div>

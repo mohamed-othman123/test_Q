@@ -1,0 +1,121 @@
+@if (eventObject['Morning']) {
+  <div
+    class="event-row morning"
+    [dir]="land.lang === 'ar' ? 'rtl' : 'ltr'">
+    <span>{{ 'orders.Morning' | translate }}</span>
+    <div>
+      <span
+      (click)="
+        getTemporaryBooking(eventObject['Morning']).length > 0 &&
+          opmt.toggle($event)
+      "
+        ><span class="icon-hourglass bg-morning"></span>
+        <i class="badge first">{{
+          getTemporaryBooking(eventObject['Morning']).length
+        }}</i></span
+        >
+        <p-overlayPanel #opmt>
+          <app-tooltip-content
+            [events]="getTemporaryBooking(eventObject['Morning'])"
+          time="morning"></app-tooltip-content>
+        </p-overlayPanel>
+        <span
+      (click)="
+        getConfirmedBooking(eventObject['Morning']).length > 0 &&
+          opmc.toggle($event)
+      "
+          ><span class="icon-check bg-morning"></span>
+          <i class="badge first">{{
+            getConfirmedBooking(eventObject['Morning']).length
+          }}</i></span
+          >
+          <p-overlayPanel #opmc>
+            <app-tooltip-content
+              [events]="getConfirmedBooking(eventObject['Morning'])"
+            time="morning"></app-tooltip-content>
+          </p-overlayPanel>
+        </div>
+      </div>
+    }
+
+    <!--Evening-->
+    @if (eventObject['Evening']) {
+      <div
+        class="event-row evening"
+        [dir]="land.lang === 'ar' ? 'rtl' : 'ltr'">
+        <span>{{ 'orders.Evening' | translate }}</span>
+        <div>
+          <span
+      (click)="
+        getTemporaryBooking(eventObject['Evening']).length > 0 &&
+          opet.toggle($event)
+      "
+            ><span class="icon-hourglass bg-evening"></span>
+            <i class="badge second">{{
+              getTemporaryBooking(eventObject['Evening']).length
+            }}</i></span
+            >
+            <p-overlayPanel #opet>
+              <app-tooltip-content
+                [events]="getTemporaryBooking(eventObject['Evening'])"
+              time="evening"></app-tooltip-content>
+            </p-overlayPanel>
+            <span
+      (click)="
+        getConfirmedBooking(eventObject['Evening']).length > 0 &&
+          opec.toggle($event)
+      "
+              ><span class="icon-check bg-evening"></span>
+              <i class="badge second">{{
+                getConfirmedBooking(eventObject['Evening']).length
+              }}</i></span
+              >
+              <p-overlayPanel #opec>
+                <app-tooltip-content
+                  [events]="getConfirmedBooking(eventObject['Evening'])"
+                time="evening"></app-tooltip-content>
+              </p-overlayPanel>
+            </div>
+          </div>
+        }
+
+        <!--Full Day-->
+        @if (eventObject['Full Day']) {
+          <div
+            class="event-row full"
+            [dir]="land.lang === 'ar' ? 'rtl' : 'ltr'">
+            <span>{{ 'orders.Full Day' | translate }}</span>
+            <div>
+              <span
+      (click)="
+        getTemporaryBooking(eventObject['Full Day']).length > 0 &&
+          opft.toggle($event)
+      "
+                ><span class="icon-hourglass bg-full"></span>
+                <i class="badge third">{{
+                  getTemporaryBooking(eventObject['Full Day']).length
+                }}</i></span
+                >
+                <p-overlayPanel #opft>
+                  <app-tooltip-content
+                    [events]="getTemporaryBooking(eventObject['Full Day'])"
+                  time="full"></app-tooltip-content>
+                </p-overlayPanel>
+                <span
+      (click)="
+        getConfirmedBooking(eventObject['Full Day']).length > 0 &&
+          opfc.toggle($event)
+      "
+                  ><span class="icon-check bg-full"></span>
+                  <i class="badge third">{{
+                    getConfirmedBooking(eventObject['Full Day']).length
+                  }}</i></span
+                  >
+                  <p-overlayPanel #opfc>
+                    <app-tooltip-content
+                      [events]="getConfirmedBooking(eventObject['Full Day'])"
+                    time="full"></app-tooltip-content>
+                  </p-overlayPanel>
+                </div>
+              </div>
+            }

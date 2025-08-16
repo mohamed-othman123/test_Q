@@ -1,0 +1,30 @@
+@if (auth.isLoggedIn && hallsService.halls.length > 0) {
+  <app-side-nave
+  [ngClass]="{'new-design': isLayoutVisible}"></app-side-nave>
+}
+<div
+  [ngClass]="{'authenticated': auth.isLoggedIn, 'new-design': isLayoutVisible}"
+  class="content">
+  @if (auth.isLoggedIn && hallsService.halls.length > 0) {
+    <app-header
+    [ngClass]="{'new-design': isLayoutVisible}"></app-header>
+  }
+  <app-confirmation-modal></app-confirmation-modal>
+
+  <!--show the skelton until the navigation end-->
+  @if (loadingSkelton) {
+    <app-dashboard-skeleton></app-dashboard-skeleton>
+  }
+
+  <!--hide the content until the navigation end-->
+  <div class="h-100" [ngClass]="{'hide-content': loadingSkelton}">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+@if (loader.isVisible$ | async) {
+  <div class="spinner">
+    <ng-lottie [options]="options" />
+  </div>
+}
+<p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}" />
+<p-confirmPopup />

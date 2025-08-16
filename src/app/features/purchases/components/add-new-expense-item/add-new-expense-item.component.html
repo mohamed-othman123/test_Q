@@ -1,0 +1,123 @@
+<app-drawer-form-wrapper
+  [form]="form"
+  (onSubmit)="submit()"
+  [id]="'expenseItem'">
+  <!--expense name ar-->
+  <div>
+    <app-input
+      [control]="getControl('nameAr')"
+      [controlName]="'nameAr'"
+      inputType="text"
+      [placeholder]="'expensesItems.itemNameArPlaceholder' | translate"
+      [label]="'expensesItems.itemNameAr' | translate">
+      <i class="pi pi-pencil" style="color: gray"></i>
+    </app-input>
+  </div>
+
+  <!--expense name en-->
+  <div>
+    <app-input
+      [control]="getControl('name')"
+      [controlName]="'name'"
+      inputType="text"
+      [placeholder]="'expensesItems.itemNameEnPlaceholder' | translate"
+      [label]="'expensesItems.itemNameEn' | translate">
+      <i class="pi pi-pencil" style="color: gray"></i>
+    </app-input>
+  </div>
+
+  <!--expense category-->
+  <div>
+    <app-dropdown
+      [control]="getControl('categoryId')"
+      [controlName]="'categoryId'"
+      [options]="categories"
+      [optionLabel]="'name'"
+      [optionValue]="'id'"
+      [placeholder]="'expensesItems.categoryPlaceholder' | translate"
+      [label]="'expensesItems.category' | translate">
+      <i class="pi pi-list" style="color: gray"></i>
+    </app-dropdown>
+  </div>
+
+  <!--expense item description-->
+  <div>
+    <app-input
+      [control]="getControl('description')"
+      [controlName]="'description'"
+      [rowsNo]="2"
+      inputType="textarea"
+      [placeholder]="'expensesItems.itemDescriptionPlaceholder' | translate"
+      [label]="'expensesItems.itemDescription' | translate">
+    </app-input>
+  </div>
+
+  <div class="page-header">
+    <h2>
+      {{ 'expensesItems.expenseAccounts' | translate }}
+    </h2>
+  </div>
+
+  <!--expense accounts-->
+  @for (form of accounts.controls; track form; let i = $index) {
+    <div class="form-grid">
+      <div class="row">
+        <!--accountName-->
+        <div>
+          <app-input
+            [control]="$any(form.get('accountName'))"
+            [controlName]="'accountName'"
+            inputType="text"
+            [placeholder]="'expensesItems.accountNamePlaceholder' | translate"
+            [label]="'expensesItems.accountName' | translate">
+            <i class="pi pi-pencil" style="color: gray"></i>
+          </app-input>
+        </div>
+
+        <!--accountNumber-->
+        <div>
+          <app-input
+            [control]="$any(form.get('accountNumber'))"
+            [controlName]="'accountNumber'"
+            inputType="text"
+            [placeholder]="'expensesItems.accountNumberPlaceholder' | translate"
+            [label]="'expensesItems.accountNumber' | translate">
+            <i class="pi pi-pencil" style="color: gray"></i>
+          </app-input>
+        </div>
+      </div>
+
+      <div class="row">
+        <app-input
+          class="full-width"
+          [control]="$any(form.get('description'))"
+          [controlName]="'description'"
+          inputType="textarea"
+          [rowsNo]="2"
+          [placeholder]="'expensesItems.notesPlaceholder' | translate"
+          [label]="'expensesItems.notes' | translate">
+        </app-input>
+      </div>
+
+      <div class="d-flex justify-content-end">
+        @if (i !== 0) {
+          <div
+            appConfirmDeleteDialog
+            [deletedItem]="'expensesItems.expenseAccount' | translate"
+            (acceptDelete)="deleteAccount(i)"
+            class="delete">
+            <i class="pi pi-trash"></i>
+            <span>{{ 'common.delete' | translate }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <span
+    (click)="addNewExpenseAccount()"
+    class="add-another-account ng-star-inserted"
+    ><i class="pi pi-plus-circle"></i>
+    {{ 'expensesItems.addExpenseAccount' | translate }}
+  </span>
+</app-drawer-form-wrapper>

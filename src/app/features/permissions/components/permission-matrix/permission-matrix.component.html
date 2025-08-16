@@ -1,0 +1,200 @@
+<div
+  class="permissions-container"
+  [formGroup]="form"
+  [class.view-mode]="isViewMode">
+  <table class="permissions-table">
+    <thead>
+      <tr>
+        <th class="module-name">{{ 'permissions.permissions' | translate }}</th>
+        <th>
+          <div class="checkbox-container">
+            <div class="label">{{ 'permissions.selectAll' | translate }}</div>
+            <p-checkbox
+              [readonly]="isViewMode"
+              [ngStyle]="
+                isViewMode ? {'cursor': 'default'} : {'cursor': 'pointer'}
+              "
+              formControlName="global_all"
+              [binary]="true"
+              (onChange)="toggleGlobalAll()">
+            </p-checkbox>
+          </div>
+        </th>
+        <!-- <th>
+        <div class="checkbox-container">
+          <div class="label">{{ 'permissions.getAll' | translate }}</div>
+          <p-checkbox
+            [readonly]="isViewMode"
+              [ngStyle]="
+                isViewMode ? {'cursor': 'default'} : {'cursor': 'pointer'}
+              "
+            formControlName="all_getAll"
+            [binary]="true"
+            (onChange)="toggleAllPermissionType('getAll')">
+          </p-checkbox>
+        </div>
+      </th> -->
+        <th>
+          <div class="checkbox-container">
+            <div class="label">{{ 'permissions.read' | translate }}</div>
+            <p-checkbox
+              [readonly]="isViewMode"
+              [ngStyle]="
+                isViewMode ? {'cursor': 'default'} : {'cursor': 'pointer'}
+              "
+              formControlName="all_read"
+              [binary]="true"
+              (onChange)="toggleAllPermissionType('read')">
+            </p-checkbox>
+          </div>
+        </th>
+        <th>
+          <div class="checkbox-container">
+            <div class="label">{{ 'permissions.create' | translate }}</div>
+            <p-checkbox
+              [readonly]="isViewMode"
+              [ngStyle]="
+                isViewMode ? {'cursor': 'default'} : {'cursor': 'pointer'}
+              "
+              formControlName="all_create"
+              [binary]="true"
+              (onChange)="toggleAllPermissionType('create')">
+            </p-checkbox>
+          </div>
+        </th>
+
+        <th>
+          <div class="checkbox-container">
+            <div class="label">{{ 'permissions.update' | translate }}</div>
+            <p-checkbox
+              [readonly]="isViewMode"
+              [ngStyle]="
+                isViewMode ? {'cursor': 'default'} : {'cursor': 'pointer'}
+              "
+              formControlName="all_update"
+              [binary]="true"
+              (onChange)="toggleAllPermissionType('update')">
+            </p-checkbox>
+          </div>
+        </th>
+        <th>
+          <div class="checkbox-container">
+            <div class="label">{{ 'permissions.delete' | translate }}</div>
+            <p-checkbox
+              [readonly]="isViewMode"
+              [ngStyle]="
+                isViewMode ? {'cursor': 'default'} : {'cursor': 'pointer'}
+              "
+              formControlName="all_delete"
+              [binary]="true"
+              (onChange)="toggleAllPermissionType('delete')">
+            </p-checkbox>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (module of modules; track module.key) {
+        @if (shouldShowModule(module.key)) {
+          <tr [ngClass]="{'nested-row': isNestedModule(module.key)}">
+            <td class="module-name">
+              @if (isNestedModule(module.key)) {
+                <strong class="mx-2">-</strong>
+              }
+              {{ 'permissions.module.' + module.key | translate }}
+              @if (isParentModule(module.key)) {
+                @if (isReadSelected(module.key)) {
+                  <i class="pi pi-angle-up mx-3"></i>
+                } @else {
+                  <i class="pi pi-angle-down mx-3"></i>
+                }
+              }
+            </td>
+            <td>
+              <p-checkbox
+                [readonly]="isViewMode"
+                [ngStyle]="
+                  isViewMode ? {'cursor': 'default'} : {'cursor': 'pointer'}
+                "
+                [formControlName]="module.key + '_all'"
+                [binary]="true"
+                (onChange)="toggleAllModulePermissions(module.key)">
+              </p-checkbox>
+            </td>
+            <!-- <td>
+          <p-checkbox
+            [readonly]="isViewMode"
+                [ngStyle]="
+                  isViewMode ? {'cursor': 'default'} : {'cursor': 'pointer'}
+                "
+            [formControlName]="module.key + '_getAll'"
+            [binary]="true"
+            (click)="checkDependence(module.key, 'getAll')"
+            (onChange)="updateSelectAll(module.key)">
+          </p-checkbox>
+        </td> -->
+            <td>
+              <p-checkbox
+                [readonly]="isViewMode"
+                [ngStyle]="
+                  isViewMode ? {'cursor': 'default'} : {'cursor': 'pointer'}
+                "
+                [formControlName]="module.key + '_read'"
+                [binary]="true"
+                (click)="checkDependence(module.key, 'read')"
+                (click)="autoSelectReadPermission(module.key, 'read')"
+                (onChange)="updateSelectAll(module.key)">
+              </p-checkbox>
+            </td>
+
+            <td>
+              <p-checkbox
+                [readonly]="isViewMode"
+                [ngStyle]="
+                  isViewMode ? {'cursor': 'default'} : {'cursor': 'pointer'}
+                "
+                [formControlName]="module.key + '_create'"
+                [binary]="true"
+                (click)="autoSelectReadPermission(module.key, 'create')"
+                (onChange)="updateSelectAll(module.key)">
+              </p-checkbox>
+            </td>
+
+            <td>
+              <p-checkbox
+                [readonly]="isViewMode"
+                [ngStyle]="
+                  isViewMode ? {'cursor': 'default'} : {'cursor': 'pointer'}
+                "
+                [formControlName]="module.key + '_update'"
+                [binary]="true"
+                (click)="autoSelectReadPermission(module.key, 'update')"
+                (onChange)="updateSelectAll(module.key)">
+              </p-checkbox>
+            </td>
+            <td>
+              <p-checkbox
+                [readonly]="isViewMode"
+                [ngStyle]="
+                  isViewMode ? {'cursor': 'default'} : {'cursor': 'pointer'}
+                "
+                [formControlName]="module.key + '_delete'"
+                [binary]="true"
+                (click)="autoSelectReadPermission(module.key, 'delete')"
+                (onChange)="updateSelectAll(module.key)">
+              </p-checkbox>
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+
+  @if (!isViewMode && showSaveButton) {
+    <p-button
+      icon="pi pi-save"
+      (click)="onSave()"
+      [label]="'permissions.save' | translate">
+    </p-button>
+  }
+</div>

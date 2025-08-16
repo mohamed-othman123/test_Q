@@ -1,0 +1,81 @@
+<div class="form-container">
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <!-- View Mode -->
+    @if (!isEditMode) {
+      <div class="info-row">
+        <span class="info-label">{{ 'profile.name' | translate }}</span>
+        <span class="info-value">{{ profileData?.name }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">{{ 'profile.email' | translate }}</span>
+        <span class="info-value">{{ profileData?.email }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">{{ 'profile.phone' | translate }}</span>
+        <span dir="ltr" class="info-value">{{ formattedPhoneNumber }}</span>
+      </div>
+      <div class="action-button">
+        <button type="button" class="edit-btn" (click)="toggleEditMode()">
+          <i class="pi pi-pencil"></i>
+          {{ 'common.edit' | translate }}
+        </button>
+      </div>
+    }
+
+    <!-- Edit Mode -->
+    @if (isEditMode) {
+      <div class="edit-section">
+        <div class="input-group">
+          <app-input
+            [control]="formControls['name']"
+            [controlName]="'name'"
+            inputType="text"
+            [label]="'profile.name' | translate"
+            [placeholder]="'profile.enterName' | translate">
+            <i class="pi pi-user" style="color: #667085"></i>
+          </app-input>
+        </div>
+        <div class="input-group">
+          <span class="label">{{ 'profile.email' | translate }}</span>
+          <app-input
+            [control]="formControls['email']"
+            [controlName]="'email'"
+            inputType="email"
+            [showLabel]="false"
+            [placeholder]="'profile.enterEmail' | translate">
+            <i class="pi pi-envelope" style="color: #667085"></i>
+          </app-input>
+        </div>
+        <div class="input-group">
+          <app-phone-input
+            [control]="formControls['phone']"
+            [label]="'profile.phone' | translate"
+            [placeholder]="'profile.enterPhone' | translate"
+            [phoneNumber]="profileData?.phone">
+          </app-phone-input>
+        </div>
+        <div class="input-group">
+          <span class="label">{{ 'profile.password' | translate }}</span>
+          <app-input
+            [control]="formControls['password']"
+            [controlName]="'password'"
+            inputType="password"
+            [showLabel]="false"
+            [placeholder]="'profile.enterPassword' | translate">
+            <i class="pi pi-lock" style="color: #667085"></i>
+          </app-input>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="toggleEditMode()">
+            <i class="pi pi-times"></i>
+            {{ 'common.cancel' | translate }}
+          </button>
+          <button type="submit" class="save-btn">
+            <i class="pi pi-save"></i>
+            {{ 'common.save' | translate }}
+          </button>
+        </div>
+      </div>
+    }
+  </form>
+</div>

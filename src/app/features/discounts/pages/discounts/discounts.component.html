@@ -1,0 +1,138 @@
+<app-list-header
+  [btnAddText]="'discounts.addNewDiscount' | translate"
+  [title]="'sideNav.discounts' | translate"
+  (sideDrawerToggler)="addNewDiscount()"></app-list-header>
+
+<p-table
+  #dt2
+  [value]="discounts"
+  dataKey="name"
+  [rows]="rows"
+  selectionMode="multiple"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [paginator]="true"
+  [totalRecords]="totalRecords"
+  [first]="first"
+  (onLazyLoad)="onLazyLoad($event)"
+  [lazy]="true">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th pSortableColumn="name">
+        {{ 'discounts.discountName' | translate }}
+        <p-sortIcon field="name" class="mr-12px"></p-sortIcon>
+      </th>
+      <th pSortableColumn="value">
+        {{ 'discounts.discountValue' | translate }}
+        <p-sortIcon field="value" class="mr-12px"></p-sortIcon>
+      </th>
+      <th>
+        {{ 'discounts.discountType' | translate }}
+      </th>
+      <th pSortableColumn="note">
+        {{ 'discounts.notes' | translate }}
+        <p-sortIcon field="note" class="mr-12px"></p-sortIcon>
+      </th>
+      <th style="width: fit-content"></th>
+    </tr>
+    <tr>
+      <th style="width: 20px"></th>
+      <th>
+        <app-input
+          [control]="filterForm.get('name')!"
+          [controlName]="'name'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('value')!"
+          [controlName]="'value'"
+          inputType="number"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-dropdown
+          appendTo="body"
+          [control]="filterForm.get('type')!"
+          [options]="discountTypes"
+          [controlName]="'type'"
+          [optionLabel]="'label.' + lang.lang"
+          [optionValue]="'value'"
+          [placeholder]="'common.select' | translate"
+          [showClear]="true">
+        </app-dropdown>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('note')!"
+          [controlName]="'note'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-discount>
+    <tr>
+      <td>
+        <div style="width: fit-content"></div>
+      </td>
+      <td class="text-wrap">
+        {{ discount.name }}
+      </td>
+      <td>
+        @if (discount.type === 'percent') {
+          {{ discount.value }} %
+        } @else {
+          <span class="price-with-symbol">
+            <sar-symbol />
+            {{ discount.value }}
+          </span>
+        }
+      </td>
+      <td>
+        {{ 'discounts.' + discount.type | translate }}
+      </td>
+      <td class="text-wrap">{{ discount.note || '-' }}</td>
+
+      <td>
+        <div class="actions">
+          <div (click)="viewDiscount($event, discount)" class="action-button">
+            <i class="pi pi-eye"></i>
+            <span>{{ 'common.view' | translate }}</span>
+          </div>
+          <div (click)="updateDiscount($event, discount)" class="action-button">
+            <i class="pi pi-file-edit"></i>
+            <span>{{ 'common.edit' | translate }}</span>
+          </div>
+          <div
+            appConfirmDeleteDialog
+            [deletedItem]="'discounts.discount' | translate"
+            (acceptDelete)="deleteDiscount(discount)"
+            class="action-button delete">
+            <i class="pi pi-trash"></i>
+            <span>{{ 'common.delete' | translate }}</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="5">
+        <app-empty-state></app-empty-state>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<app-add-new-discount (submitted)="refreshData()"></app-add-new-discount>

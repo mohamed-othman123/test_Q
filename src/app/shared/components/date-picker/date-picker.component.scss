@@ -1,0 +1,53 @@
+@use 'variables';
+@use 'mixins';
+:host {
+  label {
+    margin-bottom: 4px;
+    > span {
+      color: red;
+      font-weight: bold;
+    }
+  }
+  .calendar-type-switch {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    display: flex;
+    border: 1px solid variables.$primary-color;
+    color: variables.$primary-color;
+    align-items: center;
+    overflow: hidden;
+    font-size: 12px;
+    transition: all 0.3s ease-in-out;
+    span {
+      padding-inline: 6px;
+      padding-block: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+      &.selected {
+        background-color: variables.$primary-color;
+        color: white;
+      }
+    }
+  }
+  .value {
+    font-size: 13px;
+    display: block;
+    margin-top: -1rem;
+  }
+}
+@include mixins.rtl() {
+  .calendar-type-switch {
+    border-top-right-radius: variables.$space-xl;
+    border-bottom-right-radius: variables.$space-xl;
+  }
+}
+@include mixins.ltr() {
+  .calendar-type-switch {
+    border-top-left-radius: variables.$space-xl;
+    border-bottom-left-radius: variables.$space-xl;
+  }
+}
+:host ::ng-deep input {
+  padding-inline-start: 96px !important;
+}

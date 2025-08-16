@@ -1,0 +1,13 @@
+@use "sass:meta";
+// The Best Way to RTL Websites with Sass! https://elad.medium.com/the-best-way-to-rtl-your-website-with-sass-105e34a4298a
+
+body {
+  direction: $direction;
+  text-align: $start-direction;
+}
+@layer overrides {
+  @include meta.load-css('overrides/prime-ng.scss');
+  @include meta.load-css('overrides/ng-bootstrap.scss');
+  @include meta.load-css('overrides/calender.scss');
+  @include meta.load-css('overrides/quill-editor.scss');
+}

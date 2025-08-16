@@ -1,0 +1,248 @@
+@if (!isLoading) {
+  <div class="bg-white p-3 rounded mb-4">
+    <h6 class="mb-3">
+      {{
+      isEditMode
+      ? ('halls.editContract' | translate)
+      : ('halls.addNewContract' | translate)
+      }}
+    </h6>
+    <form [formGroup]="contractForm" appShakeable (ngSubmit)="submitContract()">
+      <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-medium"
+            >{{ 'halls.eventType' | translate }}
+            <span class="text-danger">*</span></label
+            >
+            <p-multiSelect
+              [options]="eventTypes"
+              formControlName="eventId"
+              [optionLabel]="lang.lang === 'ar' ? 'name_ar' : 'name'"
+              optionValue="id"
+              [placeholder]="'halls.eventTypePlaceholder' | translate"
+              styleClass="w-100"
+              [filter]="true"
+              [required]="true">
+              <ng-template let-value pTemplate="selectedItems">
+                @if (value) {
+                  @if (value.length > 0) {
+                    <div class="selected-items-container">
+                      @for (option of value | slice: 0 : 2; track option; let i = $index) {
+                        <span
+                          class="selected-item">
+                          <i class="pi pi-tag me-1"></i
+                            >{{
+                            lang.lang === 'ar'
+                            ? $any(option).name_ar
+                            : $any(option).name
+                            }}
+                          </span>
+                        }
+                        @if (value.length > 2) {
+                          <span class="selected-item-count">
+                            +{{ value.length - 2 }}
+                          </span>
+                        }
+                      </div>
+                    }
+                    @if (value.length === 0) {
+                      <span>
+                        {{ 'halls.eventTypePlaceholder' | translate }}
+                      </span>
+                    }
+                  }
+                  @if (!value) {
+                    {{ 'halls.eventTypePlaceholder' | translate }}
+                  }
+                </ng-template>
+              </p-multiSelect>
+              @if (
+                contractForm.get('eventId')?.errors?.['required'] &&
+                contractForm.get('eventId')?.['touched']
+                ) {
+                <div
+                  class="text-danger mt-1 small">
+                  {{
+                  'errors.required'
+                  | translate: {fieldName: 'halls.eventType' | translate}
+                  }}
+                </div>
+              }
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-medium"
+                >{{ 'halls.clientType' | translate }}
+                <span class="text-danger">*</span></label
+                >
+                <p-multiSelect
+                  [options]="customerTypes"
+                  formControlName="customerType"
+                  optionLabel="name"
+                  optionValue="id"
+                  [placeholder]="'halls.selectClientType' | translate"
+                  styleClass="w-100"
+                  [required]="true">
+                  <ng-template let-option pTemplate="item">
+                    {{ lang.lang === 'ar' ? option.name_ar : option.name }}
+                  </ng-template>
+                  <ng-template let-value pTemplate="selectedItems">
+                    @if (value) {
+                      @if (value.length > 0) {
+                        <div class="selected-items-container">
+                          @for (option of value | slice: 0 : 2; track option; let i = $index) {
+                            <span
+                              class="selected-item">
+                              <i class="pi pi-tag me-1"></i
+                                >{{
+                                lang.lang === 'ar'
+                                ? $any(option).name_ar
+                                : $any(option).name
+                                }}
+                              </span>
+                            }
+                            @if (value.length > 2) {
+                              <span class="selected-item-count">
+                                +{{ value.length - 2 }}
+                              </span>
+                            }
+                          </div>
+                        }
+                        @if (value.length === 0) {
+                          <span>
+                            {{ 'halls.selectClientType' | translate }}
+                          </span>
+                        }
+                      }
+                      @if (!value) {
+                        {{ 'halls.selectClientType' | translate }}
+                      }
+                    </ng-template>
+                  </p-multiSelect>
+                  @if (
+                    contractForm.get('customerType')?.errors?.['required'] &&
+                    contractForm.get('customerType')?.['touched']
+                    ) {
+                    <div
+                      class="text-danger mt-1 small">
+                      {{
+                      'errors.required'
+                      | translate: {fieldName: 'halls.clientType' | translate}
+                      }}
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="mb-4">
+                <div class="contract-section">
+                  <!-- <h6 class="mb-3">{{ 'halls.termsAndConditionsAr' | translate }}</h6> -->
+                  <div class="mb-4">
+                    <app-rich-text-editor
+                      [formControl]="$any(contractForm.get('terms_and_conditions_ar'))"
+                      [label]="'halls.termsAndConditionsAr' | translate"
+                      [placeholder]="'halls.termsAndConditionsArPlaceholder' | translate">
+                    </app-rich-text-editor>
+                  </div>
+                </div>
+                <div class="contract-section">
+                  <!-- <h6 class="mb-3">{{ 'halls.termsAndConditionsEn' | translate }}</h6> -->
+                  <div class="mb-4">
+                    <app-rich-text-editor
+                      [formControl]="$any(contractForm.get('terms_and_conditions_en'))"
+                      [label]="'halls.termsAndConditionsEn' | translate"
+                      [placeholder]="'halls.termsAndConditionsEnPlaceholder' | translate">
+                    </app-rich-text-editor>
+                  </div>
+                </div>
+                <div class="contract-section">
+                  <div class="signature-head">
+                    {{ 'halls.selectRequiredSignatures' | translate }}
+                  </div>
+                  <div class="signature-options">
+                    <div>
+                      <div class="d-flex align-items-center gap-2">
+                        <p-checkbox
+                          formControlName="firstPartySignature"
+                          [binary]="true"
+                          inputId="firstPs" />
+                        <label for="firstPs">{{ 'halls.firstParty' | translate }}</label>
+                      </div>
+                      @if (contractForm.get('firstPartySignature')?.value) {
+                        <div>
+                          @if (hallData.signatureUrl) {
+                            <img
+                              (click)="openImagePopup(hallData.signatureUrl!)"
+                              class="s-img"
+                              [src]="hallData.signatureUrl"
+                              alt="hall signature" />
+                          } @else {
+                            <p class="danger">
+                              {{ 'halls.noSignatureUploaded' | translate }}
+                            </p>
+                          }
+                        </div>
+                      }
+                    </div>
+                    <div>
+                      <div class="d-flex align-items-center gap-2">
+                        <p-checkbox
+                          formControlName="firstPartyStamp"
+                          [binary]="true"
+                          inputId="firstPt" />
+                        <label for="firstPt">{{
+                          'halls.firstPartyStamp' | translate
+                        }}</label>
+                      </div>
+                      @if (contractForm.get('firstPartyStamp')?.value) {
+                        <div>
+                          @if (hallData.stampUrl) {
+                            <img
+                              (click)="openImagePopup(hallData.stampUrl!)"
+                              class="s-img"
+                              [src]="hallData.stampUrl"
+                              alt="hall signature" />
+                          } @else {
+                            <p class="danger">
+                              {{ 'halls.noStampUploadedYet' | translate }}
+                            </p>
+                          }
+                        </div>
+                      }
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                      <p-checkbox
+                        formControlName="secondPartySignature"
+                        [binary]="true"
+                        inputId="secondP" />
+                      <label for="secondP">{{ 'halls.secondParty' | translate }}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="actions">
+                <div class="action-button delete" (click)="cancel()">
+                  <i class="pi pi-times"></i> {{ 'common.cancel' | translate }}
+                </div>
+                <button id="contracts-submit-btn" class="action-button" type="submit">
+                  <i class="pi pi-save"></i>
+                  {{
+                  isEditMode
+                  ? ('common.update' | translate)
+                  : ('common.save' | translate)
+                  }}
+                </button>
+              </div>
+            </form>
+          </div>
+        }
+
+        <p-dialog
+          [header]="'common.imagePreview' | translate"
+          [modal]="true"
+          [dismissableMask]="true"
+          [(visible)]="showImagePopup"
+          [modal]="true"
+          [style]="{'max-width': '90%'}"
+          [draggable]="false"
+          [resizable]="true">
+          <img [src]="selectedImg" alt="gallery img" />
+        </p-dialog>

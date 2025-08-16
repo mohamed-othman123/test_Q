@@ -1,0 +1,232 @@
+@if (service) {
+  <div class="mb-4">
+    <info-tooltip
+      [createdBy]="service.created_by"
+      [createdAt]="service.created_at"
+      [updatedBy]="service.updated_by"
+      [updatedAt]="service.updated_at">
+    </info-tooltip>
+  </div>
+}
+
+<div class="page-container">
+  <div class="page-header">
+    <h2>
+      {{
+        mode === 'view'
+          ? ('services.viewService' | translate)
+          : mode === 'edit'
+            ? ('services.updateService' | translate)
+            : ('services.addNewService' | translate)
+      }}
+    </h2>
+  </div>
+
+  <form [formGroup]="serviceForm" appShakeable (ngSubmit)="submit()">
+    <div class="form-section">
+      <div class="row d-flex align-items-baseline">
+        <div class="col-md-6">
+          <app-input
+            [disabled]="mode === 'view'"
+            [control]="serviceNameArControl"
+            controlName="name_ar"
+            inputType="text"
+            [placeholder]="'services.ServiceNamePlaceholderAr' | translate"
+            [label]="'services.ServiceNameAr' | translate">
+            <i class="pi pi-service" style="color: gray"></i>
+          </app-input>
+        </div>
+
+        <div class="col-md-6">
+          <app-input
+            [disabled]="mode === 'view'"
+            [control]="serviceNameControl"
+            controlName="name"
+            inputType="text"
+            [placeholder]="'services.ServiceNamePlaceholder' | translate"
+            [label]="'services.serviceName' | translate">
+            <i class="pi pi-service" style="color: gray"></i>
+          </app-input>
+        </div>
+
+        <div class="col-md-6">
+          <app-input
+            [disabled]="mode === 'view'"
+            [control]="priceControl"
+            controlName="price"
+            inputType="number"
+            [placeholder]="'services.servicePricePlaceholder' | translate"
+            [label]="'services.servicePrice' | translate">
+            <i class="sar-icon" style="color: gray"></i>
+          </app-input>
+        </div>
+
+        <div class="col-md-6">
+          <app-input
+            [disabled]="mode === 'view'"
+            [control]="costControl"
+            controlName="cost"
+            inputType="number"
+            [placeholder]="'services.servicePricePlaceholder' | translate"
+            [label]="'services.serviceCost' | translate">
+            <i class="sar-icon" style="color: gray"></i>
+          </app-input>
+
+          @if (
+            serviceForm.errors?.['costExceedsPrice'] &&
+            serviceForm.controls['price'].value &&
+            serviceForm.controls['cost'].value
+          ) {
+            <span class="text-error">
+              {{ 'services.costExceedsPrice' | translate }}
+            </span>
+          }
+        </div>
+
+        <div class="col-md-6">
+          @if (mode === 'view') {
+            <app-input
+              [disabled]="true"
+              [control]="providerTypeViewControl"
+              controlName="providerTypeView"
+              inputType="text"
+              [placeholder]="'services.selectProviderType' | translate"
+              [label]="'services.serviceProviderType' | translate">
+              <i class="pi pi-check" style="color: gray"></i>
+            </app-input>
+          } @else {
+            <app-dropdown
+              [control]="providerTypeControl"
+              [options]="providerTypeOptions"
+              controlName="providerType"
+              optionLabel="label"
+              optionValue="value"
+              [placeholder]="'services.selectProviderType' | translate"
+              [label]="'services.serviceProviderType' | translate">
+              <i class="pi pi-check" style="color: gray"></i>
+            </app-dropdown>
+          }
+        </div>
+
+        @if (showSuppliers) {
+          <div class="col-md-6">
+            @if (mode === 'view') {
+              <app-input
+                [disabled]="true"
+                [control]="supplierViewControl"
+                controlName="supplierView"
+                inputType="text"
+                [placeholder]="'services.selectSupplier' | translate"
+                [label]="'services.supplier' | translate">
+                <i class="pi pi-user" style="color: gray"></i>
+              </app-input>
+            } @else {
+              <app-dropdown
+                [emptyMessage]="'services.pleaseAddSupplierFirst' | translate"
+                [control]="supplierIdControl"
+                [options]="currentAvailableSuppliers"
+                controlName="supplier"
+                optionLabel="name"
+                optionValue="id"
+                [placeholder]="'services.selectSupplier' | translate"
+                [label]="'services.supplier' | translate">
+                <i class="pi pi-user" style="color: gray"></i>
+              </app-dropdown>
+            }
+          </div>
+        }
+
+        @if (showProviders) {
+          <div formArrayName="providers">
+            @for (fg of providersControls.controls; track fg; let i = $index) {
+              <div class="providers" [formGroupName]="i">
+                <div class="d-flex flex-column gap-lg-4">
+                  <app-input
+                    [control]="getControl('name', fg)"
+                    controlName="name"
+                    inputType="text"
+                    [placeholder]="'services.namePlaceholder' | translate"
+                    [label]="'services.name' | translate">
+                    <i class="pi pi-user" style="color: gray"></i>
+                  </app-input>
+                  <app-input
+                    [control]="getControl('email', fg)"
+                    controlName="email"
+                    inputType="email"
+                    [placeholder]="'clients.clientEmailPlaceHolder' | translate"
+                    iconPath="/assets/icons/email.icon.svg"
+                    [label]="'clients.email' | translate"></app-input>
+                  <app-phone-input
+                    [control]="getControl('phone', fg)"
+                    [label]="'fields.mobileNo' | translate"
+                    [placeholder]="'fields.mobileNoPlaceholder' | translate"
+                    [phoneNumber]="getControl('originalPhone', fg).value">
+                  </app-phone-input>
+                </div>
+                @if (mode !== 'view') {
+                  <button
+                    type="button"
+                    pButton
+                    class="p-button-secondary"
+                    [label]="'common.delete' | translate"
+                    icon="pi pi-times"
+                    [disabled]="providersControls.length === 1"
+                    (click)="deleteThirdParty(i)"></button>
+                }
+              </div>
+            }
+            <div class="d-flex align-items-baseline gap-4">
+              @if (mode !== 'view') {
+                <button
+                  type="button"
+                  pButton
+                  icon="pi pi-pencil"
+                  [label]="'services.addThirdParty' | translate"
+                  (click)="addThirdParty()"></button>
+              }
+            </div>
+          </div>
+        }
+
+        <app-input
+          [disabled]="mode === 'view'"
+          [control]="noteControl"
+          controlName="note"
+          inputType="textarea"
+          [placeholder]="'services.serviceDescriptionPlaceholder' | translate"
+          [label]="'services.serviceDescription' | translate"></app-input>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="button"
+        pButton
+        class="p-button-secondary"
+        [label]="'common.cancel' | translate"
+        icon="pi pi-times"
+        (click)="cancel()"></button>
+
+      @if (mode !== 'view') {
+        <button
+          type="submit"
+          pButton
+          icon="pi pi-save"
+          [label]="
+            mode === 'edit'
+              ? ('common.update' | translate)
+              : ('common.save' | translate)
+          "></button>
+      } @else {
+        <button
+          *appHasPermission="['update:service']"
+          type="button"
+          pButton
+          icon="pi pi-pencil"
+          [label]="'common.edit' | translate"
+          [disabled]="serviceForm.invalid"
+          (click)="navigateToUpdate()"></button>
+      }
+    </div>
+  </form>
+</div>

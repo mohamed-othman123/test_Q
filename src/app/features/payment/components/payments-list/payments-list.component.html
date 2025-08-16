@@ -1,0 +1,76 @@
+<app-list-header
+  [title]="'payment.previousPayments' | translate"></app-list-header>
+
+<p-table
+  #dt2
+  [value]="payments"
+  dataKey="id"
+  [rows]="rows"
+  selectionMode="multiple"
+  [lazy]="true"
+  [first]="first"
+  (onLazyLoad)="onLazyLoad($event)"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [paginator]="payments.length > 0 ? true : false">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>{{ 'payment.paymentDate' | translate }}</th>
+      <th>{{ 'payment.paidAmount' | translate }}</th>
+      <th>{{ 'payment.paymentMethod' | translate }}</th>
+      <th>{{ 'payment.payerName' | translate }}</th>
+      <th>{{ 'payment.paymentType' | translate }}</th>
+      <th style="width: 20px !important"></th>
+    </tr>
+    <tr></tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-payment>
+    <tr>
+      <td>
+        {{
+          lang.lang === 'ar'
+            ? (payment.paymentDate | arabicMonthDate)
+            : (payment.paymentDate | englishMonthDate)
+        }}
+      </td>
+      <td>
+        <span class="price-with-symbol">
+          <sar-symbol />
+          <span>
+            {{ payment.amount }}
+          </span>
+        </span>
+      </td>
+      <td>
+        {{
+          lang.lang === 'ar'
+            ? payment.paymentMethod?.name_ar
+            : payment.paymentMethod?.name
+        }}
+      </td>
+
+      <td>
+        {{ payment.beneficiaryName }}
+      </td>
+
+      <td>
+        {{ 'purchases.paymentTypes.' + payment.paymentType | translate }}
+      </td>
+
+      <td>
+        <div class="actions">
+          <div (click)="printReceipt($event, payment)" class="action-button">
+            <i class="pi pi-print"></i>
+            <span>{{ 'common.print' | translate }}</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="4">
+        <app-empty-state></app-empty-state>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
