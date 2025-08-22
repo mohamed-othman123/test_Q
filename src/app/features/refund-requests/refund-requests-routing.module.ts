@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {RefundRequestComponent} from './containers/refund-requests/refund-requests.component';
 import {EditRefundRequestComponent} from './containers/edit-refund-request/edit-refund-request.component';
 import {GetRefundRequestResolver} from './resolvers/get-refund-request.resolver';
 import {ViewRefundRequestComponent} from './containers/view-refund-request/view-refund-request.component';

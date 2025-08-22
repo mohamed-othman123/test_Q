@@ -11,11 +11,11 @@ import {
 import {TranslateModule} from '@ngx-translate/core';
 
 @Component({
-    selector: 'app-clients',
-    imports: [TranslateModule],
-    templateUrl: './clients.component.html',
-    styleUrl: './clients.component.scss',
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  selector: 'app-clients',
+  imports: [TranslateModule],
+  templateUrl: './clients.component.html',
+  styleUrl: './clients.component.scss',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ClientsComponent implements AfterViewInit, OnInit {
   @Input() section: LandingPageSection | null = null;
@@ -58,14 +58,14 @@ export class ClientsComponent implements AfterViewInit, OnInit {
       const style = document.createElement('style');
       style.textContent = `
             .swiper-pagination-bullet {
-              background-color: #C09156 !important;
+              background-color: var(--hall-main-color) !important;
               border-radius: 50% !important;
               width: 8px !important;
               height: 8px !important;
             }
             .swiper-pagination-bullet-active {
               border-radius: 30px !important;
-              background-color: #C09156 !important;  background-color: #C09156 !important;
+              background-color:var(--hall-main-color) !important;
               width:24px !important;
             }
           `;

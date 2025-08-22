@@ -18,11 +18,8 @@ import {
 import {PaymentMethod} from '@paymentmethods/models/payment.model';
 import {RefundStatusTypes} from '@refund-requests/constants/refund-status.constant';
 import {
-  ClientPaymentMethodType,
   PaymentMethodType,
   RefundRequest,
-  RefundStatus,
-  StatusOption,
 } from '@refund-requests/models/refund-request.model';
 import {UpdateRefundRequestDto} from '@refund-requests/services/dto/update-refund.dto';
 import {dateToGregorianIsoString} from '@shared/components/date-picker/helper/date-helper';
@@ -43,32 +40,11 @@ export class RefundRequestFormComponent implements OnInit, OnDestroy {
 
   form!: FormGroup;
 
+  maxDate: Date = new Date();
+
   banks: Item[] = BANKS_DATA;
   paymentMethodTypes: Item[] = PAYMENT_METHOD_TYPES;
   eWallets: Item[] = E_WALLETS;
-
-  clientPaymentMethodTypes: ClientPaymentMethodType[] = [
-    {
-      value: PaymentMethodType.CASH,
-      label: 'Cash',
-      label_ar: 'نقدًا',
-    },
-    {
-      value: PaymentMethodType.BANK_ACCOUNT,
-      label: 'Bank Account',
-      label_ar: 'حساب بنكي',
-    },
-    {
-      value: PaymentMethodType.E_WALLET,
-      label: 'E-Wallet',
-      label_ar: 'محفظة إلكترونية',
-    },
-    {
-      value: PaymentMethodType.POS,
-      label: 'POS',
-      label_ar: 'نقاط البيع',
-    },
-  ];
 
   statusOptions: Item[] = RefundStatusTypes;
 
@@ -83,6 +59,7 @@ export class RefundRequestFormComponent implements OnInit, OnDestroy {
     this.initializeForm();
     this.setupFormValueChanges();
     this.patchFormValues();
+    this.statusChangeListener();
   }
 
   ngOnDestroy(): void {
@@ -91,13 +68,12 @@ export class RefundRequestFormComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    console.log(this.form);
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    const formValue = this.form.value;
+    const formValue = this.form.getRawValue();
 
     const clientPaymentMethod = {
       type: formValue.clientPaymentType,
@@ -120,9 +96,8 @@ export class RefundRequestFormComponent implements OnInit, OnDestroy {
       beneficiaryName: formValue.beneficiary_name,
       beneficiaryMobile: formValue.beneficiary_mobile.internationalNumber,
       status: formValue.status,
+      rejectReason: formValue.rejectReason,
     };
-
-    console.log('Submit refund request:', requestData);
 
     this.onSubmit.emit(requestData);
   }
@@ -161,6 +136,7 @@ export class RefundRequestFormComponent implements OnInit, OnDestroy {
         status: [null, Validators.required],
         requestDate: [null, Validators.required],
         notes: [null, [noDoubleSpaceValidator()]],
+        rejectReason: [null, []],
 
         // Beneficiary fields
         beneficiary_type: ['customer', Validators.required],
@@ -191,14 +167,24 @@ export class RefundRequestFormComponent implements OnInit, OnDestroy {
       .get('beneficiary_type')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((type) => {
+        const phone = extractNationalPhoneNumber(
+          this.refundRequest.user.phone || '',
+        );
+
         if (type === 'customer') {
-          // Optionally pre-fill customer data here if available
-          // this.form.get('beneficiary_name').setValue(this.customerName);
-          // this.form.get('beneficiary_mobile').setValue(this.customerMobile);
+          this.form
+            .get('beneficiary_name')
+            ?.setValue(this.refundRequest.user.name);
+          this.form.get('beneficiary_mobile')?.setValue(phone);
+          this.form.get('beneficiary_name')?.disable();
+          this.form.get('beneficiary_mobile')?.disable();
         } else {
           // Clear fields when 'other' is selected
           this.form.get('beneficiary_name')?.setValue(null);
           this.form.get('beneficiary_mobile')?.setValue(null);
+
+          this.form.get('beneficiary_name')?.enable();
+          this.form.get('beneficiary_mobile')?.enable();
         }
       });
   }
@@ -255,6 +241,7 @@ export class RefundRequestFormComponent implements OnInit, OnDestroy {
       amount: this.refundRequest.amount,
       requestDate: this.refundRequest.request_date,
       notes: this.refundRequest.notes,
+      rejectReason: this.refundRequest.rejectReason,
 
       // Patch beneficiary fields
       beneficiary_type: this.refundRequest.beneficiaryType || 'customer',
@@ -278,5 +265,19 @@ export class RefundRequestFormComponent implements OnInit, OnDestroy {
         ewallet_mobile: ewalletMobile,
       });
     }
+  }
+
+  statusChangeListener() {
+    this.form
+      .get('status')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((status) => {
+        if (status === 'rejected') {
+          this.form.get('rejectReason')?.setValidators([Validators.required]);
+        } else {
+          this.form.get('rejectReason')?.clearValidators();
+        }
+        this.form.get('rejectReason')?.updateValueAndValidity();
+      });
   }
 }

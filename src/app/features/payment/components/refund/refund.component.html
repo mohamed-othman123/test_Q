@@ -75,12 +75,13 @@
 
         <div class="date col-md-4">
           <app-date-picker
+            [maxDate]="maxDate"
             [inputFieldStyle]="
               lang.lang === 'en' ? {'text-indent': '25px'} : null
             "
             placement="top-end"
             [controlName]="'paymentDate'"
-            [label]="'payment.refundDate' | translate"
+            [label]="'fields.orderDate' | translate"
             [control]="getControl('requestDate')"></app-date-picker>
         </div>
       </div>

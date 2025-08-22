@@ -10,6 +10,7 @@ export class EnglishMonthDatePipe implements PipeTransform {
   transform(
     value: string | Date | null | undefined,
     includeTime: boolean = false,
+    format: string = 'dddd DD MMMM YYYY',
     ...args: unknown[]
   ): unknown {
     if (!value) return;
@@ -18,8 +19,8 @@ export class EnglishMonthDatePipe implements PipeTransform {
     if (includeTime) {
       return moment(newValue)
         .locale('en')
-        .format('dddd DD MMMM YYYY - hh:mm:ss A');
+        .format(format + ' - hh:mm:ss A');
     }
-    return moment(newValue).locale('en').format('dddd DD MMMM YYYY');
+    return moment(newValue).locale('en').format(format);
   }
 }

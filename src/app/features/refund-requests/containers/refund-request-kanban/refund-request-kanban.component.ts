@@ -9,6 +9,7 @@ import {HallsService} from '@halls/services/halls.service';
 import {RefundRequest} from '@refund-requests/models/refund-request.model';
 import {RefundRequestsService} from '@refund-requests/services/refund-request.service';
 import {stringifyDate} from '@shared/components/date-picker/helper/date-helper';
+import moment from 'moment';
 import {forkJoin} from 'rxjs';
 
 @Component({
@@ -25,7 +26,7 @@ export class RefundRequestKanbanComponent extends Filter implements OnInit {
     bookingReference: [null],
   };
 
-  override rows = 5;
+  override rows = 10;
 
   columns = ['new', 'in_progress', 'completed', 'rejected'];
 
@@ -47,7 +48,7 @@ export class RefundRequestKanbanComponent extends Filter implements OnInit {
 
   rejectedRequestEvent: CdkDragDrop<RefundRequest[]> | null = null;
 
-  rejectionNote = new FormControl<string>('', {
+  rejectReason = new FormControl<string>('', {
     validators: Validators.required,
   });
 
@@ -72,10 +73,12 @@ export class RefundRequestKanbanComponent extends Filter implements OnInit {
 
     // if startDate is not null then check if it valid date and assign it to filters
     if (request_date) {
-      restFilters['request_date'] = stringifyDate(request_date);
+      const date = stringifyDate(request_date);
+      if (!moment(date).isValid()) return;
+      restFilters['request_date'] = date;
     }
     restFilters['hallId'] = this.hallsService.getCurrentHall()?.id;
-    restFilters['sortBy'] = 'updated_at';
+    restFilters['sortBy'] = 'created_at';
     restFilters['sortOrder'] = 'DESC';
 
     restFilters['limit'] = this.rows;
@@ -143,8 +146,8 @@ export class RefundRequestKanbanComponent extends Filter implements OnInit {
   }
 
   saveRejectionNote() {
-    if (!this.rejectedRequestEvent || !this.rejectionNote.value) {
-      this.rejectionNote.markAsTouched();
+    if (!this.rejectedRequestEvent || !this.rejectReason.value) {
+      this.rejectReason.markAsTouched();
       return;
     }
 
@@ -153,7 +156,7 @@ export class RefundRequestKanbanComponent extends Filter implements OnInit {
     const currentStatus = container.id;
     const item = this.rejectedRequestEvent.item.data;
     const itemId = item.id;
-    const note = this.rejectionNote.value;
+    const rejectReason = this.rejectReason.value;
 
     this.totalItems[previousStatus]--;
     this.totalItems[currentStatus]++;
@@ -161,7 +164,7 @@ export class RefundRequestKanbanComponent extends Filter implements OnInit {
     this.refundRequestsService
       .updateRefundStatus(itemId, {
         status: 'rejected',
-        notes: note,
+        rejectReason,
       })
       .subscribe(() => {
         if (!this.rejectedRequestEvent) return;
@@ -175,7 +178,7 @@ export class RefundRequestKanbanComponent extends Filter implements OnInit {
 
         this.showRejectionNotePopup = false;
         this.rejectedRequestEvent = null;
-        this.rejectionNote.setValue('');
+        this.rejectReason.setValue('');
       });
   }
 }

@@ -18,13 +18,13 @@ import {
   toNgbDateStruct,
   toNgbDateStructControl,
 } from './helper/date-helper';
-import moment from 'moment';
+import moment from 'moment-hijri';
 
 @Component({
-    selector: 'app-date-picker',
-    templateUrl: './date-picker.component.html',
-    styleUrl: './date-picker.component.scss',
-    standalone: false
+  selector: 'app-date-picker',
+  templateUrl: './date-picker.component.html',
+  styleUrl: './date-picker.component.scss',
+  standalone: false,
 })
 export class DatePickerComponent implements OnInit, OnChanges {
   @Input({required: true})
@@ -72,16 +72,25 @@ export class DatePickerComponent implements OnInit, OnChanges {
         // Set the converted date while value change event.
         this.setConvertedDate(value);
 
-        // Adjust the emitted date to the local time zone
-        const localDate = moment({
-          year: value.year,
-          month: value.month - 1,
-          day: value.day,
+        // // Adjust the emitted date to the local time zone
+        const localDate =
+          this.calendarType === 'islamic'
+            ? moment(stringifyDate(value), 'iYYYY/iM/iD')
+            : moment(stringifyDate(value), 'YYYY/MM/DD');
+
+        localDate.set({
           hour: moment().hour(),
           minute: moment().minute(),
           second: moment().second(),
+          millisecond: moment().millisecond(),
         });
-        this.control.setValue(localDate.toISOString(true));
+
+        const displayedDate =
+          this.calendarType === 'islamic'
+            ? localDate.locale('en').format('iYYYY-iMM-iDD[T]HH:mm:ss.SSSZ')
+            : localDate.locale('en').format('YYYY-MM-DD[T]HH:mm:ss.SSSZ');
+
+        this.control.setValue(displayedDate);
       });
   }
 

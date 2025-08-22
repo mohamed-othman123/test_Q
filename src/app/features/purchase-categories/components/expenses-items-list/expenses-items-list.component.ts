@@ -1,5 +1,5 @@
-import {Component, ViewChild} from '@angular/core';
-import {Router} from '@angular/router';
+import {Component, Input, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {PermissionTypes} from '@auth/models';
 import {Filter} from '@core/interfaces';
 import {DataTableFilter, TableData} from '@core/models';
@@ -11,12 +11,12 @@ import {HallsService} from '@halls/services/halls.service';
 import {Table} from 'primeng/table';
 
 @Component({
-    selector: 'app-expenses-items',
-    templateUrl: './expenses-items.component.html',
-    styleUrl: './expenses-items.component.scss',
-    standalone: false
+  selector: 'app-expenses-items-list',
+  standalone: false,
+  templateUrl: './expenses-items-list.component.html',
+  styleUrl: './expenses-items-list.component.scss',
 })
-export class ExpensesItemsComponent extends Filter {
+export class ExpensesItemsListComponent extends Filter {
   @ViewChild('dt2')
   override dataTable!: Table;
 
@@ -27,8 +27,9 @@ export class ExpensesItemsComponent extends Filter {
 
   protected override filterConfig: DataTableFilter = {
     item: [null],
-    category: [null],
   };
+
+  categoryId: number | null = null;
 
   constructor(
     protected override filterService: FilterService,
@@ -38,14 +39,17 @@ export class ExpensesItemsComponent extends Filter {
     private expensesItemsService: ExpensesItemsService,
     public permissionService: PermissionsService,
     private auth: AuthService,
+    private route: ActivatedRoute,
   ) {
     super(filterService);
+    this.categoryId = this.route.snapshot.params['categoryId'];
   }
 
   protected override loadDataTable(filters: DataTableFilter): void {
     const queryFilters = {
       ...filters,
       hallId: this.hallsService.getCurrentHall()?.id,
+      categoryId: this.categoryId,
     };
 
     const sub = this.expensesItemsService
@@ -56,15 +60,21 @@ export class ExpensesItemsComponent extends Filter {
       });
   }
   addNewExpenseItem() {
-    this.router.navigate(['/expenses-items/add']);
+    this.router.navigate(['/expenses-items/add'], {
+      queryParams: {categoryId: this.categoryId},
+    });
   }
 
   viewExpenseItem(id: string) {
-    this.router.navigate(['/expenses-items/view', id]);
+    this.router.navigate(['/expenses-items/view', id], {
+      queryParams: {categoryId: this.categoryId},
+    });
   }
 
   updateExpenseItem(id: string) {
-    this.router.navigate(['/expenses-items/edit', id]);
+    this.router.navigate(['/expenses-items/edit', id], {
+      queryParams: {categoryId: this.categoryId},
+    });
   }
 
   hasPermissionTo(

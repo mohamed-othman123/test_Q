@@ -45,7 +45,7 @@
       <div class="icon icon-start">
         <i class="pi pi-percentage"></i>
       </div>
-    } @else if (showClear && control.value) {
+    } @else if (alwaysShowClear || (showClear && control.value)) {
       <div class="icon icon-end" (click)="onClearListener()">
         <i class="pi pi-times"></i>
       </div>

@@ -8,6 +8,9 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import {Router} from '@angular/router';
+import {PermissionTypes} from '@auth/models';
+import {AuthService} from '@core/services';
+import {PermissionsService} from '@core/services/permissions.service';
 import {HallsService} from '@halls/services/halls.service';
 import {RefundRequest} from '@refund-requests/models/refund-request.model';
 import {RefundRequestsService} from '@refund-requests/services/refund-request.service';
@@ -28,12 +31,14 @@ export class KanbanColumnComponent implements OnChanges {
   @Output() itemDropped = new EventEmitter<CdkDragDrop<RefundRequest[]>>();
 
   page = 1;
-  limit = 5;
+  limit = 10;
 
   constructor(
     private refundRequestsService: RefundRequestsService,
     private hallsService: HallsService,
     private router: Router,
+    private auth: AuthService,
+    private permissionsService: PermissionsService,
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -67,5 +72,16 @@ export class KanbanColumnComponent implements OnChanges {
 
   view(item: RefundRequest) {
     this.router.navigate(['refund-requests', 'view', item.id]);
+  }
+
+  hasPermissionToDrag(item: RefundRequest): boolean {
+    const isOwner = item.created_by === this.auth.userData?.user?.userId;
+    const canEdit =
+      isOwner ||
+      this.auth.userData?.user.permissionType === PermissionTypes.GENERAL;
+
+    return (
+      this.permissionsService.hasPermission('update:refund request') && canEdit
+    );
   }
 }

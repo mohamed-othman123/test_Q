@@ -56,6 +56,7 @@
         <div
           class="kanban-card can-drag"
           cdkDrag
+          [cdkDragDisabled]="!hasPermissionToDrag(item)"
           [cdkDragData]="item"
           (click)="view(item)">
           <app-kanban-card [item]="item"></app-kanban-card>

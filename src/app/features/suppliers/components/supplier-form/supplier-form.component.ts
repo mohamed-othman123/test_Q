@@ -19,24 +19,29 @@ import {Hall} from '@halls/models/halls.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ParsedPhoneNumber} from '@core/models/ParsedPhoneNumber';
 import {requireOneOf, validateDoubleName} from '@core/validators';
-import {LanguageService, NotificationService, FilterService} from '@core/services';
+import {
+  LanguageService,
+  NotificationService,
+  FilterService,
+} from '@core/services';
 import {SUPPLIER_STATUS_OPTIONS} from '@suppliers/constants/constants';
 import {Item, DataTableFilter} from '@core/models';
 import {CommentType} from '@shared/components/comments/models/comment';
 import {PurchaseModel} from '@purchases/models/purchase-model';
 import {Filter} from '@core/interfaces';
 import {Table} from 'primeng/table';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {stringifyDate} from '@shared/components/date-picker/helper/date-helper';
 import {ExpensesType} from '@purchases/constants/purchase.constants';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
+import moment from 'moment';
 
 @Component({
-    selector: 'app-supplier-form',
-    templateUrl: './supplier-form.component.html',
-    styleUrl: './supplier-form.component.scss',
-    standalone: false
+  selector: 'app-supplier-form',
+  templateUrl: './supplier-form.component.html',
+  styleUrl: './supplier-form.component.scss',
+  standalone: false,
 })
 export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
   @ViewChild('expensesTable') expensesTable!: Table;
@@ -165,21 +170,19 @@ export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
 
     this.expensesLoading = true;
 
-    const formattedFilters = {...filters};
-    if (
-      formattedFilters['purchaseDate'] &&
-      typeof formattedFilters['purchaseDate'] !== 'string'
-    ) {
-      formattedFilters['purchaseDate'] = stringifyDate(
-        formattedFilters['purchaseDate'],
-      );
+    const {dueDate, purchaseDate, ...formattedFilters} = {...filters};
+    if (purchaseDate) {
+      const date = stringifyDate(purchaseDate);
+      if (!moment(date).isValid()) return;
+
+      formattedFilters['purchaseDate'] = date;
     }
 
-    if (
-      formattedFilters['dueDate'] &&
-      typeof formattedFilters['dueDate'] !== 'string'
-    ) {
-      formattedFilters['dueDate'] = stringifyDate(formattedFilters['dueDate']);
+    if (dueDate) {
+      const date = stringifyDate(dueDate);
+      if (!moment(date).isValid()) return;
+
+      formattedFilters['dueDate'] = date;
     }
 
     formattedFilters['page'] =

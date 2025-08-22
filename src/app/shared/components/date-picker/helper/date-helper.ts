@@ -10,7 +10,12 @@ export function toNgbDateStruct(
     return null;
   }
   if (typeof date === 'string') {
-    date = new Date(date.split('T')[0]);
+    const stringDate = date.split('T')[0].split('-');
+    date = {
+      year: +stringDate[0],
+      month: +stringDate[1],
+      day: +stringDate[2],
+    };
   }
   if (date instanceof Date) {
     return {

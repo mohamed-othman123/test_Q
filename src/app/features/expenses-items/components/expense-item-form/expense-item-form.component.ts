@@ -15,14 +15,16 @@ import {HallsService} from '@halls/services/halls.service';
 import {Subject, takeUntil} from 'rxjs';
 
 @Component({
-    selector: 'app-expense-item-form',
-    templateUrl: './expense-item-form.component.html',
-    styleUrl: './expense-item-form.component.scss',
-    standalone: false
+  selector: 'app-expense-item-form',
+  templateUrl: './expense-item-form.component.html',
+  styleUrl: './expense-item-form.component.scss',
+  standalone: false,
 })
 export class ExpenseItemFormComponent implements OnInit, OnDestroy {
   mode: 'add' | 'edit' | 'view' = 'add';
   id: number | null = null;
+
+  categoryId: number | null = null;
 
   categories: any[] = [];
 
@@ -44,6 +46,7 @@ export class ExpenseItemFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.mode = this.route.snapshot.data['mode'];
     this.id = this.route.snapshot.params['id'];
+    this.categoryId = this.route.snapshot.queryParams['categoryId'] || null;
 
     const {categories, item, elements} = this.route.snapshot.data['data'];
     this.categories = categories;
@@ -55,7 +58,9 @@ export class ExpenseItemFormComponent implements OnInit, OnDestroy {
         elements,
       });
     } else {
-      this.initForm();
+      this.initForm({
+        category: {id: +this.categoryId! || undefined},
+      });
     }
   }
 
@@ -74,7 +79,10 @@ export class ExpenseItemFormComponent implements OnInit, OnDestroy {
     this.form = this.fb.group(
       {
         hallId: [this.hallsService.getCurrentHall()?.id],
-        categoryId: [data?.category?.id || null, Validators.required],
+        categoryId: [
+          {value: data?.category?.id || null, disabled: true},
+          Validators.required,
+        ],
         name: [data?.name || null, Validators.required],
         nameAr: [data?.nameAr || null, Validators.required],
         description: [data?.description || null],
@@ -113,15 +121,17 @@ export class ExpenseItemFormComponent implements OnInit, OnDestroy {
         : this.expensesItemsService.updateExpenseItem(payload, this.id!);
 
     sub.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.router.navigate(['expenses-items']);
+      this.router.navigate(['purchase-categories/view', this.categoryId]);
     });
   }
 
   navigateToUpdate() {
-    this.router.navigate(['expenses-items/edit', this.id]);
+    this.router.navigate(['expenses-items/edit', this.id], {
+      queryParams: {categoryId: this.categoryId},
+    });
   }
   cancel() {
-    this.router.navigate(['expenses-items']);
+    this.router.navigate(['purchase-categories/view', this.categoryId]);
   }
 
   ngOnDestroy(): void {

@@ -7,9 +7,9 @@ export const RefundStatusTypes = [
   },
   {
     value: RefundStatus.IN_PROGRESS,
-    label: {ar: 'قيد المراجعة', en: 'In Progress'},
+    label: {ar: 'قيد الإجراء', en: 'In Progress'},
   },
-  {value: RefundStatus.COMPLETED, label: {ar: 'تم الإكتمال', en: 'Completed'}},
+  {value: RefundStatus.COMPLETED, label: {ar: 'مكتمل', en: 'Completed'}},
   {
     value: RefundStatus.REJECTED,
     label: {ar: 'مرفوض', en: 'Rejected'},

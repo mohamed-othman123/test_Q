@@ -150,22 +150,24 @@
       </td>
       <td style="min-width: 200px" [dir]="currentLang === 'ar' ? 'rtl' : 'ltr'">
         @if (currentLang === 'en') {
-          {{ order.startDate | date: 'dd/MM/yyyy' : 'UTC' }} G &nbsp; - &nbsp;
-          {{ order.startDateHijri | date: 'dd/MM/yyyy' }} H
+          {{ order.startDate | englishMonthDate: false : 'DD-MM-YYYY' }} G
+          &nbsp; - &nbsp;
+          {{ order.startDateHijri | englishHijriDate: 'iDD-iMM-iYYYY' }} H
         }
         @if (currentLang === 'ar') {
-          {{ order.startDate | formatDateLang: 'ar' }}م -
-          {{ order.startDateHijri | formatDateLang: 'ar' }}هـ
+          {{ order.startDate | arabicMonthDate: false : 'DD-MM-YYYY' }}م -
+          {{ order.startDateHijri | arabicHijriDate: 'iDD-iMM-iYYYY' }}هـ
         }
       </td>
       <td style="min-width: 220px" [dir]="currentLang === 'ar' ? 'rtl' : 'ltr'">
         @if (currentLang === 'en') {
-          {{ order.endDate | date: 'dd/MM/yyyy' : 'UTC' }} G &nbsp; - &nbsp;
-          {{ order.endDateHijri | date: 'dd/MM/yyyy' }} H
+          {{ order.endDate | englishMonthDate: false : 'DD-MM-YYYY' }} G &nbsp;
+          - &nbsp;
+          {{ order.endDateHijri | englishHijriDate: 'iDD-iMM-iYYYY' }} H
         }
         @if (currentLang === 'ar') {
-          {{ order.endDate | formatDateLang: 'ar' }}م -
-          {{ order.endDateHijri | formatDateLang: 'ar' }}هـ
+          {{ order.endDate | arabicMonthDate: false : 'DD-MM-YYYY' }}م -
+          {{ order.endDateHijri | arabicHijriDate: 'iDD-iMM-iYYYY' }}هـ
         }
       </td>
       <td>

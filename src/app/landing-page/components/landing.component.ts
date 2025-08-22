@@ -1,4 +1,11 @@
-import {Component, Inject, OnDestroy, OnInit, Renderer2, DOCUMENT} from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  DOCUMENT,
+} from '@angular/core';
 import {GalleryComponent} from './landing-gallery/gallery.component';
 import {FeaturesComponent} from './landing-features/features.component';
 import {HeroComponent} from './landing-hero/hero.component';
@@ -21,8 +28,8 @@ import {Subject, takeUntil} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({
-    selector: 'app-landing',
-    imports: [
+  selector: 'app-landing',
+  imports: [
     HeaderComponent,
     FooterComponent,
     HeroComponent,
@@ -34,10 +41,10 @@ import {TranslateService} from '@ngx-translate/core';
     ContactsComponent,
     FaqsComponent,
     OrderPricingComponent,
-    FontAwesomeModule
-],
-    templateUrl: './landing.component.html',
-    styleUrl: './landing.component.scss'
+    FontAwesomeModule,
+  ],
+  templateUrl: './landing.component.html',
+  styleUrl: './landing.component.scss',
 })
 export class LandingComponent implements OnInit, OnDestroy {
   hallName: string | null = null;
@@ -77,7 +84,7 @@ export class LandingComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.unsubscribeAll))
         .subscribe((res) => {
           this.landingPageData = res;
-          this.setDocumentTitle(this.landingPageData.hallName);
+          this.setDocumentTitle(this.landingPageData.hall?.name_ar!);
           this.applyHallColors();
           this.faviconService.setFavIcon(this.landingPageData?.hall?.logo_url!);
         });
@@ -96,15 +103,14 @@ export class LandingComponent implements OnInit, OnDestroy {
     if (this.landingPageData.hall.primary_color) {
       this.document.documentElement.style.setProperty(
         '--hall-main-color',
-        this.landingPageData.hall.primary_color
+        this.landingPageData.hall.primary_color,
       );
-
     }
 
     if (this.landingPageData.hall.secondary_color) {
       this.document.documentElement.style.setProperty(
         '--hall-secondary-color',
-        this.landingPageData.hall.secondary_color
+        this.landingPageData.hall.secondary_color,
       );
     }
   }

@@ -12,10 +12,10 @@ import {LanguageService} from '@core/services';
 import {noDoubleSpaceValidator} from '@core/validators';
 
 @Component({
-    selector: 'add-section',
-    templateUrl: './add-section.component.html',
-    styleUrls: ['./add-section.component.scss'],
-    standalone: false
+  selector: 'add-section',
+  templateUrl: './add-section.component.html',
+  styleUrls: ['./add-section.component.scss'],
+  standalone: false,
 })
 export class AddSectionComponent implements OnInit {
   @Input() landingPageData!: LandingGeneralInformationDto;
@@ -59,7 +59,7 @@ export class AddSectionComponent implements OnInit {
         label: {en: 'Customers', ar: 'العملاء'},
         description: {
           en: 'Display customer testimonials',
-          ar: 'عرض شهادات العملاء',
+          ar: 'عرض قائمة العملاء',
         },
         icon: 'pi pi-users',
       },

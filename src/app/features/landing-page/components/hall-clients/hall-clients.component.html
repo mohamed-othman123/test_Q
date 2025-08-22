@@ -4,19 +4,13 @@
       <h4>{{ 'landing.hallClients' | translate }}</h4>
       <div class="header-actions">
         @if (!isEditMode && hallClients.length > 0) {
-          <button
-            type="button"
-            class="edit-button"
-            (click)="toggleEditMode()">
+          <button type="button" class="edit-button" (click)="toggleEditMode()">
             <i class="pi pi-pencil"></i>
             {{ 'common.edit' | translate }}
           </button>
         }
         @if (!isEditMode && hallClients.length === 0) {
-          <button
-            type="button"
-            class="add-button"
-            (click)="addClient()">
+          <button type="button" class="add-button" (click)="addClient()">
             <i class="pi pi-plus"></i>
             {{ 'landing.addClient' | translate }}
           </button>
@@ -36,20 +30,19 @@
     @if (hallClients.length < 1 && !isEditMode) {
       <div>
         <app-empty-data
+          (click)="addClient()"
           icon="pi pi-list"
           [title]="'landing.noClients'"
           [description]="'landing.addFirstClient'"
-        [disabled]="hallClients.length >= maxClients"></app-empty-data>
+          [disabled]="hallClients.length >= maxClients"></app-empty-data>
       </div>
     }
     <div class="client-list">
       @for (client of hallClients.controls; track client; let i = $index) {
-        <div
-          class="client-item">
+        <div class="client-item">
           <!-- View Mode -->
           @if (!isEditMode || client !== activeClient) {
-            <div
-              class="client-content">
+            <div class="client-content">
               <div class="client-image">
                 <img [src]="client.get('image')?.value" alt="Client image" />
               </div>
@@ -65,7 +58,10 @@
                     (click)="editClient($any(client))">
                     <i class="pi pi-pencil"></i>
                   </button>
-                  <button type="button" class="delete-button" (click)="removeClient(i)">
+                  <button
+                    type="button"
+                    class="delete-button"
+                    (click)="removeClient(i)">
                     <i class="pi pi-trash"></i>
                   </button>
                 </div>
@@ -85,7 +81,9 @@
                       [control]="client.get('name')!"
                       [controlName]="'name'"
                       [label]="'landing.clientName' | translate"
-                      [placeholder]="'landing.clientNamePlaceholder' | translate">
+                      [placeholder]="
+                        'landing.clientNamePlaceholder' | translate
+                      ">
                     </app-input>
                   </div>
                   <div class="field">
@@ -124,13 +122,13 @@
                     pButton
                     icon="pi pi-times"
                     label="{{ 'common.cancel' | translate }}"
-                  (click)="cancel($any(client))"></button>
+                    (click)="cancel($any(client))"></button>
                   <button
                     type="submit"
                     pButton
                     [disabled]="client.invalid"
                     icon="pi pi-check"
-                  label="{{ 'common.save' | translate }}"></button>
+                    label="{{ 'common.save' | translate }}"></button>
                 </div>
               </div>
             </form>
@@ -145,7 +143,7 @@
           pButton
           class="p-button-secondary"
           [label]="'common.done' | translate"
-        (click)="toggleEditMode()"></button>
+          (click)="toggleEditMode()"></button>
       </div>
     }
   </div>

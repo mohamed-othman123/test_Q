@@ -2,12 +2,13 @@ import {LandingPageSection} from '@admin-landing-page/models/section.model';
 
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
+import {FeaturesImgComponent} from './components/features-img/features-img.component';
 
 @Component({
-    selector: 'app-features',
-    imports: [TranslateModule],
-    templateUrl: './features.component.html',
-    styleUrl: './features.component.scss'
+  selector: 'app-features',
+  imports: [TranslateModule, FeaturesImgComponent],
+  templateUrl: './features.component.html',
+  styleUrl: './features.component.scss',
 })
 export class FeaturesComponent {
   @Input() section: LandingPageSection | null = null;

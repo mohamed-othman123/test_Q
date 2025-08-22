@@ -8,9 +8,9 @@
             <h3>{{ lang === 'en' ? section?.title_en : section?.title_ar }}</h3>
             <p>
               {{
-              lang === 'en'
-              ? section?.description_en
-              : section?.description_ar
+                lang === 'en'
+                  ? section?.description_en
+                  : section?.description_ar
               }}
             </p>
           </div>
@@ -45,28 +45,28 @@
                       {{ slid.name }}
                     </h3>
                     <h4 class="d-flex items-center justify-center gap-2">
-                      <i class="pi pi-link" style="color: #708090"></i>
-
                       @if (slid.site_url) {
+                        <i class="pi pi-link" style="color: #708090"></i>
                         <a
-                        [href]="
-                          slid.site_url.startsWith('http')
-                            ? slid.site_url
-                            : 'http://' + slid.site_url
-                        "
+                          class="client-link"
+                          [href]="
+                            slid.site_url.startsWith('http')
+                              ? slid.site_url
+                              : 'http://' + slid.site_url
+                          "
                           target="_blank">
                           {{ 'landing.clientWebsite' | translate }}</a
-                          >
-                        }
-                      </h4>
-                      <p></p>
-                    </div>
+                        >
+                      }
+                    </h4>
+                    <p></p>
                   </div>
-                </swiper-slide>
-              }
-            </swiper-container>
-          </div>
+                </div>
+              </swiper-slide>
+            }
+          </swiper-container>
         </div>
       </div>
     </div>
-  }
+  </div>
+}

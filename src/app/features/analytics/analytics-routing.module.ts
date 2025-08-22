@@ -4,6 +4,7 @@ import { AnalyticsOverviewComponent } from './components/analytics-overview/anal
 import { DashboardListComponent } from './components/dashboard-list/dashboard-list.component';
 import { DashboardViewerComponent } from './components/dashboard-viewer/dashboard-viewer.component';
 import { QuestionViewerComponent } from './components/question-viewer/question-viewer.component';
+import {AiChatComponent} from './components/ai-chat/ai-chat.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,11 @@ const routes: Routes = [
     path: 'question/:id',
     component: QuestionViewerComponent,
     data: { title: 'pageTitles.analyticsQuestion' }
+  },
+  {
+    path: 'ai-chat',
+    component: AiChatComponent,
+    data: { title: 'pageTitles.aiChat' }
   }
 ];
 

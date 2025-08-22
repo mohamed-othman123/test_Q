@@ -10,7 +10,7 @@
           [label]="'common.save' | translate"
           [loading]="loading"
           [disabled]="loading"
-        (click)="saveMedia()"></button>
+          (click)="saveMedia()"></button>
       }
       @if (!hasUnsavedChanges()) {
         <button
@@ -20,7 +20,7 @@
           [label]="'common.update' | translate"
           [loading]="loading"
           [disabled]="loading"
-        (click)="finishEditing()"></button>
+          (click)="finishEditing()"></button>
       }
     </div>
     <!-- Banners Section -->
@@ -28,7 +28,7 @@
       <div class="media-container">
         <h5>{{ 'landing.hallBanners' | translate }}</h5>
         <p class="helper-text">{{ 'landing.bannersHelperText' | translate }}</p>
-        @if (banners.length < 1) {
+        <!-- @if (banners.length < 1) {
           <div>
             <app-empty-data
               icon="pi pi-images"
@@ -36,11 +36,13 @@
               [description]="'landing.addFirstBanner'"
             [disabled]="banners.length >= maxBanners"></app-empty-data>
           </div>
-        }
+        } -->
         <div class="media-grid banners-grid">
           @for (banner of banners; track banner; let i = $index) {
             <div class="media-item">
-              <div class="upload-box" [class.has-file]="banner.file || banner.url">
+              <div
+                class="upload-box"
+                [class.has-file]="banner.file || banner.url">
                 <input
                   type="file"
                   accept="image/*"
@@ -54,7 +56,9 @@
                   }
                   @if (banner.file || banner.url) {
                     <img
-                      [src]="banner.file ? (banner.file | filePreview) : banner.url"
+                      [src]="
+                        banner.file ? (banner.file | filePreview) : banner.url
+                      "
                       alt="Banner Preview"
                       class="preview-image" />
                   }
@@ -80,7 +84,8 @@
                 </button>
                 @if (banner.isUploading) {
                   <div class="upload-overlay">
-                    <p-progressSpinner [style]="{width: '50px', height: '50px'}">
+                    <p-progressSpinner
+                      [style]="{width: '50px', height: '50px'}">
                     </p-progressSpinner>
                   </div>
                 }
@@ -112,19 +117,21 @@
       <div class="media-container">
         <h5>{{ 'landing.hallImages' | translate }}</h5>
         <p class="helper-text">{{ 'landing.imagesHelperText' | translate }}</p>
-        @if (images.length < 1) {
+        <!-- @if (images.length < 1) {
           <div>
             <app-empty-data
               icon="pi pi-image"
               [title]="'landing.noImages'"
               [description]="'landing.addFirstImage'"
-            [disabled]="images.length >= maxImages"></app-empty-data>
+              [disabled]="images.length >= maxImages"></app-empty-data>
           </div>
-        }
+        } -->
         <div class="media-grid images-grid">
           @for (image of images; track image; let i = $index) {
             <div class="media-item">
-              <div class="upload-box" [class.has-file]="image.file || image.url">
+              <div
+                class="upload-box"
+                [class.has-file]="image.file || image.url">
                 <input
                   type="file"
                   accept="image/*"
@@ -138,7 +145,9 @@
                   }
                   @if (image.file || image.url) {
                     <img
-                      [src]="image.file ? (image.file | filePreview) : image.url"
+                      [src]="
+                        image.file ? (image.file | filePreview) : image.url
+                      "
                       alt="Image Preview"
                       class="preview-image" />
                   }
@@ -164,7 +173,8 @@
                 </button>
                 @if (image.isUploading) {
                   <div class="upload-overlay">
-                    <p-progressSpinner [style]="{width: '50px', height: '50px'}">
+                    <p-progressSpinner
+                      [style]="{width: '50px', height: '50px'}">
                     </p-progressSpinner>
                   </div>
                 }

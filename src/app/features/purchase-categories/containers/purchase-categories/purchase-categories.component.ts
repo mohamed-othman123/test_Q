@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Router} from '@angular/router';
 import {PermissionTypes} from '@auth/models';
 import {Filter} from '@core/interfaces';
 import {DataTableFilter, FormMode, Item} from '@core/models';
@@ -15,10 +16,10 @@ import {Table} from 'primeng/table';
 import {Subject, takeUntil} from 'rxjs';
 
 @Component({
-    selector: 'purchase-categories',
-    templateUrl: './purchase-categories.component.html',
-    styleUrls: ['./purchase-categories.component.scss'],
-    standalone: false
+  selector: 'purchase-categories',
+  templateUrl: './purchase-categories.component.html',
+  styleUrls: ['./purchase-categories.component.scss'],
+  standalone: false,
 })
 export class PurchaseCategoriesComponent
   extends Filter
@@ -37,6 +38,9 @@ export class PurchaseCategoriesComponent
     description: [null],
   };
 
+  selectedCategoryId: number | null = null;
+  showDeleteConfirmation = false;
+
   private _unsubscribeAll: Subject<void> = new Subject();
 
   constructor(
@@ -47,6 +51,7 @@ export class PurchaseCategoriesComponent
     private hallsService: HallsService,
     private authService: AuthService,
     public permissionsService: PermissionsService,
+    private router: Router,
   ) {
     super(filterService);
   }
@@ -102,20 +107,8 @@ export class PurchaseCategoriesComponent
     this.loadDataTable(this.filters);
   }
 
-  deletePurchaseCategory(data: PurchaseCategory) {
-    this.purchaseCategoryService.delete(data.id).subscribe({
-      next: (_) => {
-        this.loadDataTable(this.filters);
-      },
-    });
-  }
-
   view(category: PurchaseCategory) {
-    this.drawerService.open({
-      mode: 'view',
-      title: 'events.viewEvent',
-      data: category,
-    });
+    this.router.navigate(['purchase-categories', 'view', category.id]);
   }
 
   hasPermissionTo(
@@ -144,6 +137,32 @@ export class PurchaseCategoriesComponent
       default:
         return false;
     }
+  }
+
+  openDeleteConfirmation(id: number) {
+    this.selectedCategoryId = id;
+    this.showDeleteConfirmation = true;
+  }
+
+  confirmDeleteCategory() {
+    this.purchaseCategoryService.delete(this.selectedCategoryId!).subscribe({
+      next: (_) => {
+        this.loadDataTable(this.filters);
+        this.selectedCategoryId = null;
+        this.showDeleteConfirmation = false;
+      },
+    });
+  }
+
+  rejectDeleteCategory(): void {
+    this.selectedCategoryId = null;
+    this.showDeleteConfirmation = false;
+  }
+
+  addExpenseItem(category: PurchaseCategory) {
+    this.router.navigate(['/expenses-items/add'], {
+      queryParams: {categoryId: category.id},
+    });
   }
 
   override ngOnDestroy(): void {

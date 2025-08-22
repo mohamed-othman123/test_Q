@@ -1,0 +1,41 @@
+:host {
+  .cat-desc {
+    font-size: 1.2rem;
+  }
+  .cat-wrapper {
+    padding: 1rem;
+    border: 1px solid #f4f2f2;
+    border-radius: 16px;
+    margin: 1rem;
+    box-shadow: 0px 8px 11px -8px #c2c2c2;
+  }
+  .cat-info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(5rem, 1fr));
+    gap: 1rem;
+
+    > div {
+      display: flex;
+      gap: 1rem;
+    }
+  }
+  .item-label {
+    color: var(--primary-color);
+  }
+
+  .expenses-items-list {
+    padding: 1rem;
+    border: 1px solid #f4f2f2;
+    border-radius: 16px;
+    margin: 1rem;
+    box-shadow: 0px 8px 11px -8px #c2c2c2;
+  }
+
+  .actions {
+    padding: 1rem;
+    justify-content: space-between;
+    button {
+      max-width: 200px;
+    }
+  }
+}

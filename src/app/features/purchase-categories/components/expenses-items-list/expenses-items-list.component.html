@@ -2,7 +2,18 @@
   [btnAddText]="'expensesItems.addNewItem' | translate"
   [disableAddBtn]="!permissionService.hasPermission('create:expenseItem')"
   [title]="'sideNav.expensesItems' | translate"
-(sideDrawerToggler)="addNewExpenseItem()"></app-list-header>
+  (sideDrawerToggler)="addNewExpenseItem()"></app-list-header>
+
+<div class="px-3">
+  <p-messages severity="success">
+    <ng-template pTemplate>
+      <div class="d-flex align-items-center gap-2">
+        <i class="pi pi-info-circle"> </i>
+        {{ 'expensesItems.description' | translate }}
+      </div>
+    </ng-template>
+  </p-messages>
+</div>
 
 <p-table
   #dt2
@@ -20,11 +31,6 @@
     <tr>
       <th></th>
 
-      <th pSortableColumn="category">
-        {{ 'expensesItems.expensesCategory' | translate }}
-        <p-sortIcon field="category" class="mr-12px"></p-sortIcon>
-      </th>
-
       <th pSortableColumn="item">
         {{ 'expensesItems.itemName' | translate }}
         <p-sortIcon field="item" class="mr-12px"></p-sortIcon>
@@ -34,14 +40,7 @@
     </tr>
     <tr>
       <th style="width: 20px"></th>
-      <th>
-        <app-input
-          [control]="$any(filterForm.get('category'))"
-          [controlName]="'category'"
-          inputType="text"
-          [placeholder]="'common.search' | translate">
-        </app-input>
-      </th>
+
       <th>
         <app-input
           [control]="$any(filterForm.get('item'))"
@@ -60,14 +59,6 @@
         <div style="width: fit-content"></div>
       </td>
 
-      <td>
-        {{
-        lang.lang === 'ar'
-        ? expenseItem.category.name_ar
-        : expenseItem.category.name
-        }}
-      </td>
-
       <td class="text-wrap">
         {{ lang.lang === 'ar' ? expenseItem.nameAr : expenseItem.name }}
       </td>
@@ -80,7 +71,7 @@
             id="dropdownBasic1"
             ngbDropdownToggle>
             <span
-            class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
+              class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
             {{ 'common.options' | translate }}
           </button>
           <div
@@ -133,4 +124,4 @@
   [visible]="showDeleteConfirmation"
   [message]="'expensesItems.deleteItemMessage' | translate"
   (confirm)="confirmDeleteExpenseItem()"
-(reject)="rejectDeleteExpenseItem()"></app-confirm-delete-popup>
+  (reject)="rejectDeleteExpenseItem()"></app-confirm-delete-popup>

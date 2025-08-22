@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {GaConfigService} from '@core/analytics/ga-config.service';
 import {GtagService} from '@core/analytics/gtag.service';
@@ -10,8 +10,8 @@ import {tap} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class PurchaseCategoriesService {
-  module = 'purchase-categories';
-  apiPurchaseCategoryUrl = this.apiConfigService.getApiBaseUrl(
+  private module = 'purchase-categories';
+  private apiPurchaseCategoryUrl = this.apiConfigService.getApiBaseUrl(
     this.module as any,
   );
 
@@ -58,6 +58,12 @@ export class PurchaseCategoriesService {
           ),
         ),
       );
+  }
+
+  getCategoryById(id: number) {
+    return this.http.get<PurchaseCategory>(
+      `${this.apiPurchaseCategoryUrl}/${id}`,
+    );
   }
 
   delete(id: number) {

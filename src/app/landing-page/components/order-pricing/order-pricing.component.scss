@@ -2,229 +2,244 @@
 @use 'mixins';
 
 .pricing {
-    background-color: #fff;
-    padding: 24px;
-    position: fixed;
-    inset: 0;
+  background-color: #fff;
+  padding: 24px;
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+
+  button.close {
+    position: absolute;
+    top: 24px;
+    inset-inline-end: 24px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: variables.$hall_secondary_color;
+  }
+
+  .content {
+    max-width: 940px;
     margin: auto;
-    z-index: 9999;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
 
-    button.close {
-        position: absolute;
-        top: 24px;
-        inset-inline-end: 24px;
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        background-color: variables.$hall_secondary_color;
+    .price-logo {
+      margin-bottom: 54px;
+      width: 170px;
+      height: 130px;
+      object-fit: contain;
+
+      @include mixins.sm(max) {
+        margin-bottom: 24px;
+      }
     }
 
-    .content {
-        max-width: 940px;
-        margin: auto;
+    h3 {
+      font-size: 36px;
+      font-weight: bold;
+      color: variables.$hall_main_color;
+      margin: 0 0 32px;
 
-        .price-logo {
-            margin-bottom: 54px;
-            width: 170px;
-            height: 130px;
-            object-fit: contain;
-
-            @include mixins.sm(max) {
-                margin-bottom: 24px;
-            }
-        }
-
-        h3 {
-            font-size: 36px;
-            font-weight: bold;
-            color: variables.$hall_main_color;
-            margin: 0 0 32px;
-
-            @include mixins.sm(max) {
-                font-size: 22px;
-                margin: 0 0 18px;
-            }
-        }
-
-        p {
-            font-size: 18px;
-            font-weight: bold;
-            line-height: 34px;
-            color: variables.$hall_dark_color;
-            margin: 0 0 54px;
-
-            @include mixins.md(max) {
-                font-size: 16px;
-                line-height: 28px;
-            }
-
-            @include mixins.sm(max) {
-                font-size: 14px;
-                font-weight: 400;
-                line-height: 22px;
-                margin: 0 0 24px;
-            }
-        }
+      @include mixins.sm(max) {
+        font-size: 22px;
+        margin: 0 0 18px;
+      }
     }
 
-    .check_group {
-        padding: 10px 16px;
+    p {
+      font-size: 18px;
+      font-weight: bold;
+      line-height: 34px;
+      color: variables.$hall_dark_color;
+      margin: 0 0 54px;
 
-        label {
-            margin-inline-start: 8px !important;
-        }
+      @include mixins.md(max) {
+        font-size: 16px;
+        line-height: 28px;
+      }
+
+      @include mixins.sm(max) {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 22px;
+        margin: 0 0 24px;
+      }
+    }
+  }
+
+  .check_group {
+    padding: 10px 16px;
+
+    label {
+      margin-inline-start: 8px !important;
+    }
+  }
+
+  .captcha-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .captcha-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
     }
 
-    .captcha-container {
-        display: flex;
-        align-items: center;
-        gap: 8px;
+    .refresh-button {
+      border: none;
+      background: transparent;
+      padding: 8px;
+      color: variables.$hall_main_color;
+    }
+  }
 
-        .captcha-image {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px;
-        }
+  .action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 32px;
 
-        .refresh-button {
-            border: none;
-            background: transparent;
-            padding: 8px;
-            color: variables.$hall_main_color;
-        }
+    button {
+      padding: 18px 33px;
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 20px;
+      border-radius: 50px;
+      height: 56px;
+      min-width: 160px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .action-buttons {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 16px;
-        margin-top: 32px;
-
-        button {
-            padding: 18px 33px;
-            font-size: 14px;
-            font-weight: bold;
-            line-height: 20px;
-            border-radius: 50px;
-            height: 56px;
-            min-width: 160px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-submit {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background-color: variables.$hall_main_color;
-            color: #fff;
-            border: none;
-        }
-
-        .btn-cancel {
-            background-color: transparent;
-            border: 1px solid variables.$hall_dark_color;
-            color: variables.$hall_dark_color;
-        }
-
-        @include mixins.sm(max) {
-            flex-direction: column;
-
-            button {
-                width: 100%;
-                min-width: 260px;
-            }
-        }
+    .btn-submit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background-color: variables.$hall_main_color;
+      color: #fff;
+      border: none;
     }
+
+    .btn-cancel {
+      background-color: transparent;
+      border: 1px solid variables.$hall_dark_color;
+      color: variables.$hall_dark_color;
+    }
+
+    @include mixins.sm(max) {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+        min-width: 260px;
+      }
+    }
+  }
 }
 
 ::ng-deep {
-    app-dropdown {
-        .errors {
-            top: 83px !important;
-        }
+  app-dropdown {
+    .errors {
+      top: 83px !important;
     }
-
-    .p-element.p-dropdown-label.p-inputtext {
-        display: flex !important;
-        align-items: center !important;
-        min-height: 47px !important;
+    .p-multiselect:hover {
+      border-color: variables.$hall_main_color !important;
     }
+  }
 
-    .p-dropdown-item {
-        min-height: 2.5rem;
+  .p-dropdown:not(.p-disabled):hover {
+    border-color: variables.$hall_main_color !important;
+  }
 
-        &:hover {
-            background: rgba(variables.$primary-color, 0.1);
-        }
+  .p-element.p-dropdown-label.p-inputtext {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 47px !important;
+  }
+
+  .p-dropdown-item {
+    min-height: 2.5rem;
+
+    &:hover {
+      background: rgba(variables.$primary-color, 0.1);
     }
+  }
 
-    app-date-picker {
-        .value {
-            display: flex !important;
-        }
-
-        .calendar-type-switch {
-            color: variables.$hall_main_color !important;
-
-            span {
-                &.selected {
-                    background-color: variables.$hall_main_color !important;
-                    color: white;
-                }
-            }
-        }
-    }
-
-    .p-checkbox .p-checkbox-box.p-highlight {
-        border-color: variables.$hall_main_color !important;
-        background: variables.$hall_main_color !important;
-        box-shadow: none !important;
+  app-date-picker {
+    .value {
+      display: flex !important;
     }
 
     .calendar-type-switch {
-        border: 1px solid variables.$hall_main_color !important;
-        color: variables.$hall_main_color !important;
-    }
+      color: variables.$hall_main_color !important;
 
-    .ngb-dp-navigation-chevron,
-    .ngb-dp-weekday {
-        color: variables.$hall_main_color !important;
+      span {
+        &.selected {
+          background-color: variables.$hall_main_color !important;
+          color: white;
+        }
+      }
     }
+  }
 
-    .ngb-dp-day:hover,
-    .ngb-dp-weekday:hover,
-    .ngb-dp-week-number:hover {
-        background-color: variables.$hall_main_color !important;
-    }
+  .p-checkbox .p-checkbox-box.p-highlight {
+    border-color: variables.$hall_main_color !important;
+    background: variables.$hall_main_color !important;
+    box-shadow: none !important;
+  }
 
-    .input-container .input-field:not(:disabled):focus,
-    .input-container .input-field:not(:disabled):hover {
-        border-color: variables.$hall_main_color !important;
-    }
+  .calendar-type-switch {
+    border: 1px solid variables.$hall_main_color !important;
+    color: variables.$hall_main_color !important;
+  }
 
+  .ngb-dp-navigation-chevron,
+  .ngb-dp-weekday {
+    color: variables.$hall_main_color !important;
+  }
+
+  .ngb-dp-day:hover,
+  .ngb-dp-weekday:hover,
+  .ngb-dp-week-number:hover {
+    background-color: variables.$hall_main_color !important;
+  }
+
+  .input-container .input-field:not(:disabled):focus,
+  .input-container .input-field:not(:disabled):hover {
+    border-color: variables.$hall_main_color !important;
+  }
+
+  .iti input.custom:hover {
+    border-color: variables.$hall_main_color !important;
+  }
 }
 
 ::ng-deep {
+  app-gregorian-date-picker .icon svg path,
+  app-islamic-date-picker .icon svg path {
+    fill: variables.$hall_main_color !important;
+  }
 
-    app-gregorian-date-picker .icon svg path,
-    app-islamic-date-picker .icon svg path {
-        fill: variables.$hall_main_color !important;
+  body:has(#pricing_popup) {
+    ngb-datepicker.dropdown-menu
+      .ngb-dp-content
+      .ngb-dp-month
+      ngb-datepicker-month
+      .ngb-dp-week
+      .ngb-dp-weekday {
+      color: variables.$hall_main_color !important;
     }
-
-    body:has(#pricing_popup){
-         ngb-datepicker.dropdown-menu .ngb-dp-content .ngb-dp-month ngb-datepicker-month .ngb-dp-week .ngb-dp-weekday {
-        color: variables.$hall_main_color !important;
+    [ngbDatepickerDayView]:hover:not(.bg-primary),
+    [ngbDatepickerDayView].active:not(.bg-primary) {
+      background-color: variables.$hall_main_color !important;
     }
-    [ngbDatepickerDayView]:hover:not(.bg-primary), [ngbDatepickerDayView].active:not(.bg-primary){
-        background-color: variables.$hall_main_color !important;
-    }
-}
+  }
 }

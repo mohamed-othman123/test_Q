@@ -1,0 +1,17 @@
+@use 'variables';
+@use 'sass:color';
+
+.main-path {
+  fill: variables.$hall_main_color;
+}
+.down-path {
+  fill-opacity: 0.5;
+  fill: variables.$hall_main_color;
+}
+.light-path {
+  fill-opacity: 0.1;
+  fill: variables.$hall_main_color;
+}
+#paint0_linear_447_4151 {
+  stop-color: variables.$hall_main_color;
+}

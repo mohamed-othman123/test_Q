@@ -25,21 +25,44 @@
           [label]="'pricing.form.name.label' | translate"
           [placeholder]="'pricing.form.name.placeholder' | translate"
           inputType="text">
-          <i class="pi pi-user" style="color: #bc9a53"></i>
+          <i class="pi pi-user" style="color: var(--hall-main-color)"></i>
         </app-input>
       </div>
 
       <div class="col-sm-6 mb-3">
-        <app-dropdown
-          [control]="$any(pricingForm.get('eventName'))"
-          [options]="eventTypes"
-          [controlName]="'eventName'"
-          [placeholder]="'pricing.form.eventType.placeholder' | translate"
-          [label]="'pricing.form.eventType.label' | translate"
-          [optionLabel]="'name'"
-          [optionValue]="'name'"
-          (onChange)="onEventTypeChange($event)">
-        </app-dropdown>
+        @if (!showOtherEventInput) {
+          <app-dropdown
+            [control]="$any(pricingForm.get('eventName'))"
+            [options]="eventTypes"
+            [controlName]="'eventName'"
+            [placeholder]="'pricing.form.eventType.placeholder' | translate"
+            [label]="'pricing.form.eventType.label' | translate"
+            [optionLabel]="'name'"
+            [optionValue]="'name'"
+            [addNewLabel]="'pricing.form.enterAnotherEvent' | translate"
+            [showAddNew]="true"
+            (onAddNew)="onAddNewEvent($event)">
+          </app-dropdown>
+        }
+
+        @if (showOtherEventInput) {
+          <div class="col-12 mb-3">
+            <app-input
+              [control]="$any(pricingForm.get('otherEventName'))"
+              [controlName]="'otherEventName'"
+              [label]="'pricing.form.otherEventType.label' | translate"
+              [placeholder]="
+                'pricing.form.otherEventType.placeholder' | translate
+              "
+              inputType="text"
+              [alwaysShowClear]="true"
+              (onClear)="onClearOtherEvent()">
+              <i
+                class="pi pi-calendar-plus"
+                style="color: var(--hall-main-color)"></i>
+            </app-input>
+          </div>
+        }
       </div>
       <div class="col-sm-6 mb-3">
         <app-dropdown
@@ -50,24 +73,9 @@
           [optionValue]="'value'"
           [placeholder]="'orders.selectEventTime' | translate"
           [label]="'orders.eventTime' | translate">
-          <i class="pi pi-clock" style="color: gray"></i>
+          <i class="pi pi-clock" style="color: var(--hall-main-color)"></i>
         </app-dropdown>
       </div>
-
-      @if (showOtherEventInput) {
-        <div class="col-12 mb-3">
-          <app-input
-            [control]="$any(pricingForm.get('otherEventName'))"
-            [controlName]="'otherEventName'"
-            [label]="'pricing.form.otherEventType.label' | translate"
-            [placeholder]="
-              'pricing.form.otherEventType.placeholder' | translate
-            "
-            inputType="text">
-            <i class="pi pi-calendar-plus" style="color: #bc9a53"></i>
-          </app-input>
-        </div>
-      }
 
       <!-- Email and Phone -->
       <div class="col-sm-6 mb-3">
@@ -77,7 +85,7 @@
           [label]="'pricing.form.email.label' | translate"
           [placeholder]="'pricing.form.email.placeholder' | translate"
           inputType="email">
-          <i class="pi pi-envelope" style="color: #bc9a53"></i>
+          <i class="pi pi-envelope" style="color: var(--hall-main-color)"></i>
         </app-input>
       </div>
 
@@ -123,7 +131,7 @@
           [label]="'pricing.form.message.label' | translate"
           [placeholder]="'pricing.form.message.placeholder' | translate"
           inputType="textarea">
-          <i class="pi pi-comments" style="color: #bc9a53"></i>
+          <i class="pi pi-comments" style="color: var(--hall-main-color)"></i>
         </app-input>
       </div>
 
@@ -135,7 +143,7 @@
           [label]="'pricing.form.captcha.label' | translate"
           [placeholder]="'pricing.form.captcha.placeholder' | translate"
           inputType="text">
-          <i class="pi pi-shield" style="color: #bc9a53"></i>
+          <i class="pi pi-shield" style="color: var(--hall-main-color)"></i>
         </app-input>
       </div>
       <div class="col-sm-6 mb-3">

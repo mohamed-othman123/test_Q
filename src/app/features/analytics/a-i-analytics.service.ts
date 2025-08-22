@@ -1,7 +1,6 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { ApiConfigService } from '@core/services/api-config.service';
 
 export interface Dashboard {
@@ -37,6 +36,29 @@ export interface Database {
   created_at: string;
 }
 
+export interface AIChatMessage {
+  id: string;
+  message: string;
+  hallIds: number[];
+  timestamp: Date;
+  type: 'user' | 'assistant';
+}
+
+export interface AIChatRequest {
+  message: string;
+  hallIds: number[];
+}
+
+export interface AIChatResponse {
+  explanation: string;
+  url: string;
+}
+
+export interface Hall {
+  id: number;
+  name: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -47,60 +69,68 @@ export class AIAnalyticsService {
   constructor(
     private http: HttpClient,
     private apiConfigService: ApiConfigService,
-  ) {
-  }
+  ) {}
 
   getAvailableDashboards(): Observable<Dashboard[]> {
     const url = `${this.apiAnalyticsUrl}/available-dashboards`;
-
-    return this.http.get<Dashboard[]>(url).pipe();
+    return this.http.get<Dashboard[]>(url);
   }
 
-  getDashboardUrl(dashboardId: number, parameters?: any): Observable<DashboardUrl> {
+  getDashboardUrl(
+    dashboardId: number,
+    hallIds: number[],
+    parameters?: any
+  ): Observable<DashboardUrl> {
     const url = `${this.apiAnalyticsUrl}/dashboard-url`;
     let params = new HttpParams().set('dashboardId', dashboardId.toString());
+
+    hallIds.forEach(hallId => {
+      params = params.append('hallIds', hallId.toString());
+    });
 
     if (parameters) {
       params = params.set('parameters', JSON.stringify(parameters));
     }
 
-
-    return this.http.get<DashboardUrl>(url, { params }).pipe(
-      tap((response) => {
-      })
-    );
+    return this.http.get<DashboardUrl>(url, { params });
   }
 
   getAvailableQuestions(): Observable<Question[]> {
     const url = `${this.apiAnalyticsUrl}/available-questions`;
-
-    return this.http.get<Question[]>(url).pipe(
-      tap((response) => {
-      })
-    );
+    return this.http.get<Question[]>(url);
   }
 
-  getQuestionUrl(questionId: number, parameters?: any): Observable<QuestionUrl> {
+  getQuestionUrl(
+    questionId: number,
+    hallIds: number[],
+    parameters?: any
+  ): Observable<QuestionUrl> {
     const url = `${this.apiAnalyticsUrl}/question-url`;
     let params = new HttpParams().set('questionId', questionId.toString());
+
+    hallIds.forEach(hallId => {
+      params = params.append('hallIds', hallId.toString());
+    });
 
     if (parameters) {
       params = params.set('parameters', JSON.stringify(parameters));
     }
 
+    return this.http.get<QuestionUrl>(url, { params });
+  }
 
-    return this.http.get<QuestionUrl>(url, { params }).pipe(
-      tap((response) => {
-      })
-    );
+  sendAIChatMessage(request: AIChatRequest): Observable<AIChatResponse> {
+    const url = `${this.apiAnalyticsUrl}/ai-chat`;
+
+    const headers = new HttpHeaders({
+      'X-Skip-Global-Loader': 'true'
+    });
+
+    return this.http.post<AIChatResponse>(url, request, { headers });
   }
 
   getDatabases(): Observable<Database[]> {
     const url = `${this.apiAnalyticsUrl}/databases`;
-
-    return this.http.get<Database[]>(url).pipe(
-      tap((response) => {
-      })
-    );
+    return this.http.get<Database[]>(url);
   }
 }

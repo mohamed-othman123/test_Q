@@ -24,10 +24,10 @@ interface EventType {
 }
 
 @Component({
-    selector: 'app-order-pricing',
-    imports: [SharedModule],
-    templateUrl: './order-pricing.component.html',
-    styleUrl: './order-pricing.component.scss'
+  selector: 'app-order-pricing',
+  imports: [SharedModule],
+  templateUrl: './order-pricing.component.html',
+  styleUrl: './order-pricing.component.scss',
 })
 export class OrderPricingComponent implements OnInit, OnDestroy {
   @Input() hallData: any;
@@ -113,18 +113,29 @@ export class OrderPricingComponent implements OnInit, OnDestroy {
     this.loadCaptcha();
   }
 
-  onEventTypeChange(event: any) {
-    this.showOtherEventInput = event === 'أخرى';
+  onAddNewEvent(event: any) {
+    this.showOtherEventInput = true;
 
-    if (this.showOtherEventInput) {
-      this.pricingForm
-        .get('otherEventName')
-        ?.setValidators([Validators.required, Validators.maxLength(30)]);
-    } else {
-      this.pricingForm.get('otherEventName')?.clearValidators();
-      this.pricingForm.get('otherEventName')?.setValue('');
-    }
+    this.pricingForm
+      .get('otherEventName')
+      ?.setValidators([Validators.required, Validators.maxLength(30)]);
     this.pricingForm.get('otherEventName')?.updateValueAndValidity();
+
+    this.pricingForm.get('eventName')?.clearValidators();
+    this.pricingForm.get('eventName')?.setValue('');
+    this.pricingForm.get('eventName')?.updateValueAndValidity();
+  }
+
+  onClearOtherEvent() {
+    this.showOtherEventInput = false;
+
+    this.pricingForm.get('otherEventName')?.clearValidators();
+    this.pricingForm.get('otherEventName')?.setValue('');
+    this.pricingForm.get('otherEventName')?.updateValueAndValidity();
+
+    this.pricingForm.get('eventName')?.setValue('');
+    this.pricingForm.get('eventName')?.addValidators(Validators.required);
+    this.pricingForm.get('eventName')?.updateValueAndValidity();
   }
 
   closePopup() {
@@ -147,6 +158,7 @@ export class OrderPricingComponent implements OnInit, OnDestroy {
   }
 
   orderNow() {
+    console.log(this.pricingForm);
     if (this.pricingForm.valid) {
       const formData = this.pricingForm.value;
       const requestData = {
@@ -157,12 +169,11 @@ export class OrderPricingComponent implements OnInit, OnDestroy {
           formData.phoneNumber?.internationalNumber ||
           formData.phoneNumber?.e164Number ||
           '',
-        eventName:
-          formData.eventName === 'أخرى'
-            ? formData.otherEventName
-            : formData.eventName,
+        eventName: this.showOtherEventInput
+          ? formData.otherEventName
+          : formData.eventName,
         eventDate: formData.eventDate
-          ? dateToGregorianIsoString(formData.eventDate)
+          ? dateToGregorianIsoString(formData.eventDate, 'short')
           : null,
         eventTime: formData.eventTime,
         isFlexibleDate: formData.isFlexibleDate,

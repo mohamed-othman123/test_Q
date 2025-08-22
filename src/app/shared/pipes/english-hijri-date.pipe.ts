@@ -3,11 +3,14 @@ import {dateToGregorianIsoString} from '@shared/components/date-picker/helper/da
 import moment from 'moment-hijri';
 
 @Pipe({
-    name: 'englishHijriDate',
-    standalone: false
+  name: 'englishHijriDate',
+  standalone: false,
 })
 export class EnglishHijriDatePipe implements PipeTransform {
-  transform(value: string | Date | null | undefined): string | null {
+  transform(
+    value: string | Date | null | undefined,
+    format: string = 'iDD iMMMM iYYYY',
+  ): string | null {
     if (!value) {
       return null;
     }
@@ -16,6 +19,6 @@ export class EnglishHijriDatePipe implements PipeTransform {
 
     moment.locale('en');
 
-    return moment(iso).locale('en').format('iDD iMMMM iYYYY');
+    return moment(iso).locale('en').format(format);
   }
 }

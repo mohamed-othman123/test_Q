@@ -13,6 +13,11 @@
     top: -190px;
     z-index: 0;
     inset-inline-start: 0;
+
+    path {
+      fill: variables.$hall_main_color;
+      opacity: 0.5;
+    }
   }
 
   .section_title {
@@ -20,7 +25,6 @@
     max-width: 100%;
   }
 }
-
 
 .feature_content {
   text-align: start;
@@ -86,7 +90,7 @@
 
   li {
     min-width: 25%;
-    border: solid #454E4D1A;
+    border: solid #454e4d1a;
     border-width: 0 0 1px 1px;
     font-size: 12px;
     font-weight: bold;
@@ -113,7 +117,7 @@
     @media all and (max-width: 767px) {
       min-width: 50%;
       padding: 12px 0;
-      border-bottom: 1px solid #454E4D1A !important;
+      border-bottom: 1px solid #454e4d1a !important;
 
       &:nth-child(even) {
         border-inline-end: 0;

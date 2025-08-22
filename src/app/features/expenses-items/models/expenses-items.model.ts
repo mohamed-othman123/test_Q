@@ -8,7 +8,7 @@ export interface ExpensesItem {
   created_by?: number;
   hallId?: number;
   category?: ExpensesCategory;
-  transferAccounts: TransferAccounts[];
+  transferAccounts?: TransferAccounts[];
 }
 
 export interface TransferAccounts {

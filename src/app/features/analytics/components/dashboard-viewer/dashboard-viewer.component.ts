@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';  // Added DomSanitizer
-import {Subject, takeUntil, switchMap, of, Observable, tap} from 'rxjs';
-import {AIAnalyticsService, Dashboard, DashboardUrl} from '../../a-i-analytics.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Subject, takeUntil, switchMap, of, Observable, tap } from 'rxjs';
+import { AIAnalyticsService, Dashboard, DashboardUrl } from '../../a-i-analytics.service';
+import { HallsService } from '@halls/services/halls.service';
 
 @Component({
   selector: 'app-dashboard-viewer',
@@ -27,6 +28,7 @@ export class DashboardViewerComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private analyticsService: AIAnalyticsService,
+    private hallsService: HallsService,
     private sanitizer: DomSanitizer
   ) {}
 
@@ -59,8 +61,9 @@ export class DashboardViewerComponent implements OnInit, OnDestroy {
     this.error = null;
     this.iframeLoading = true;
 
+    const hallIds = this.getEffectiveHallIds();
 
-    return this.analyticsService.getDashboardUrl(dashboardId)
+    return this.analyticsService.getDashboardUrl(dashboardId, hallIds)
       .pipe(
         takeUntil(this.destroy$),
         tap({
@@ -68,7 +71,6 @@ export class DashboardViewerComponent implements OnInit, OnDestroy {
             this.rawDashboardUrl = response.url;
             this.dashboardUrl = this.sanitizer.bypassSecurityTrustResourceUrl(response.url);
             this.loading = false;
-
             this.loadDashboardMetadata(dashboardId);
           },
           error: (error) => {
@@ -80,14 +82,45 @@ export class DashboardViewerComponent implements OnInit, OnDestroy {
       );
   }
 
+  private getEffectiveHallIds(): number[] {
+    const currentHall = this.hallsService.getCurrentHall();
+    const availableHalls = this.hallsService.halls;
+
+    if (currentHall) {
+      return [currentHall.id];
+    }
+
+    if (availableHalls.length > 0) {
+      return [availableHalls[0].id];
+    }
+
+    return [];
+  }
+
   private loadDashboardMetadata(dashboardId: number): void {
     this.analyticsService.getAvailableDashboards()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (dashboards) => {
           this.dashboard = dashboards.find(d => d.id === dashboardId) || null;
+          if (!this.dashboard) {
+            this.dashboard = {
+              id: dashboardId,
+              name: `Dashboard #${dashboardId}`,
+              description: 'Analytics dashboard with business insights',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            };
+          }
         },
         error: (error) => {
+          this.dashboard = {
+            id: dashboardId,
+            name: `Dashboard #${dashboardId}`,
+            description: 'Analytics dashboard with business insights',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          };
         }
       });
   }
@@ -129,5 +162,14 @@ export class DashboardViewerComponent implements OnInit, OnDestroy {
     } catch {
       return dateString;
     }
+  }
+
+  getCurrentHallInfo(): { name: string; id: number } | null {
+    const currentHall = this.hallsService.getCurrentHall();
+    return currentHall ? { name: currentHall.name, id: currentHall.id } : null;
+  }
+
+  isUsingHallContext(): boolean {
+    return this.getEffectiveHallIds().length > 0;
   }
 }

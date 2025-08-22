@@ -12,15 +12,20 @@
     padding: 60px 0 0;
     border-radius: 14px;
     overflow: hidden;
-    background: linear-gradient(180deg, #fefaf6 0%, #ffffff 87.64%);
+    background: linear-gradient(
+      180deg,
+      variables.$hall_secondary_color 0%,
+      #ffffff 87.64%
+    );
   }
 }
 
 .depart_item {
   padding: 24px;
   border-radius: 20px;
-  border: 1px solid variables.$hall_dark_color;
+  border: 1px solid #e6e6e6;
   transition: 0.4s linear transform;
+  box-shadow: 0px 4px 5px 0px #f2f2f2;
 
   &:hover {
     transform: translateY(-10px);

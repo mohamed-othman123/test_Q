@@ -6,6 +6,11 @@
     scroll-behavior: smooth;
   }
 
+  ::-webkit-scrollbar-thumb {
+    background: variables.$hall_main_color;
+    border-radius: 10px;
+  }
+
   body:has(app-landing) .new-design {
     margin: 0 !important;
   }

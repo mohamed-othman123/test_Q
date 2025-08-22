@@ -21,16 +21,16 @@ import {TranslateService} from '@ngx-translate/core';
 import {fromEvent, Subscription} from 'rxjs';
 
 @Component({
-    selector: 'app-input',
-    templateUrl: './input.component.html',
-    styleUrl: './input.component.scss',
-    providers: [
-        {
-            provide: SHAKEABLE_INPUT,
-            useExisting: forwardRef(() => InputComponent),
-        },
-    ],
-    standalone: false
+  selector: 'app-input',
+  templateUrl: './input.component.html',
+  styleUrl: './input.component.scss',
+  providers: [
+    {
+      provide: SHAKEABLE_INPUT,
+      useExisting: forwardRef(() => InputComponent),
+    },
+  ],
+  standalone: false,
 })
 export class InputComponent
   implements OnInit, OnDestroy, ShakeableInput, AfterViewInit
@@ -73,6 +73,7 @@ export class InputComponent
   @Input() toolTipText!: string;
   @Input() rowsNo = 5;
   @Input() showClear = false;
+  @Input() alwaysShowClear = false;
   @Input() textAlign = 'start';
 
   // Google analytics Inputs

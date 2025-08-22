@@ -24,10 +24,20 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const lang =
     queryLanguage || localStorage.getItem(StorageKeys.LOCALE) || 'ar';
 
-  loader.showLoader();
+  const skipGlobalLoader = req.headers.has('X-Skip-Global-Loader');
+
+  if (!skipGlobalLoader) {
+    loader.showLoader();
+  }
 
   const cloneRequestWithHeaders = (headers: Record<string, string>) => {
-    return req.clone({setHeaders: headers});
+    let clonedReq = req.clone({setHeaders: headers});
+    if (skipGlobalLoader) {
+      clonedReq = clonedReq.clone({
+        headers: clonedReq.headers.delete('X-Skip-Global-Loader')
+      });
+    }
+    return clonedReq;
   };
 
   let defaultHeaders: Record<string, string> = {};
@@ -66,7 +76,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       return event;
     }),
     finalize(() => {
-      loader.hideLoader();
+      if (!skipGlobalLoader) {
+        loader.hideLoader();
+      }
     }),
   );
 };

@@ -153,7 +153,7 @@ export class PurchasePaymentFormComponent implements OnInit, OnDestroy {
         startWith(this.paymentForm.get('itemTransferAccountId')?.value),
       )
       .subscribe((val) => {
-        const selectedExpenseAccount = this.expenseItem?.transferAccounts.find(
+        const selectedExpenseAccount = this.expenseItem?.transferAccounts?.find(
           (acc) => acc.id === val,
         )!;
         this.paymentForm

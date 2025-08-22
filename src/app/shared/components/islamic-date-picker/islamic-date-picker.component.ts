@@ -30,15 +30,39 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
   readonly DELIMITER = '/';
 
   parse(value: string): NgbDateStruct | null {
-    if (value) {
-      const date = value.split(this.DELIMITER);
-      return {
-        day: parseInt(date[0], 10),
-        month: parseInt(date[1], 10),
-        year: parseInt(date[2], 10),
-      };
+    if (!value) return null;
+
+    const parts = value
+      .trim()
+      .split(/[\/\-\.\s]/)
+      .filter(Boolean);
+
+    if (parts.length !== 3) return null;
+
+    let year: number, month: number, day: number;
+
+    if (parts[0].length === 4) {
+      // yyyy/mm/dd
+      year = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10);
+      day = parseInt(parts[2], 10);
+    } else {
+      // dd/mm/yyyy
+      day = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10);
+      year = parseInt(parts[2], 10);
+      if (year < 100) year += 2000; // optional century normalization
     }
-    return null;
+
+    if (
+      !Number.isFinite(year) ||
+      !Number.isFinite(month) ||
+      !Number.isFinite(day)
+    ) {
+      return null;
+    }
+
+    return {year, month, day};
   }
 
   format(date: NgbDateStruct | null): string {
@@ -49,15 +73,15 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
 }
 
 @Component({
-    selector: 'app-islamic-date-picker',
-    templateUrl: './islamic-date-picker.component.html',
-    styleUrl: './islamic-date-picker.component.scss',
-    providers: [
-        { provide: NgbCalendar, useClass: NgbCalendarIslamicUmalqura },
-        { provide: NgbDatepickerI18n, useClass: Islamic18nService },
-        { provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter },
-    ],
-    standalone: false
+  selector: 'app-islamic-date-picker',
+  templateUrl: './islamic-date-picker.component.html',
+  styleUrl: './islamic-date-picker.component.scss',
+  providers: [
+    {provide: NgbCalendar, useClass: NgbCalendarIslamicUmalqura},
+    {provide: NgbDatepickerI18n, useClass: Islamic18nService},
+    {provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter},
+  ],
+  standalone: false,
 })
 export class IslamicDatePickerComponent
   implements ShakeableInput, AfterViewInit, OnDestroy, OnInit
@@ -68,7 +92,10 @@ export class IslamicDatePickerComponent
   @Input() disabled = false;
   @Input({transform: (value: any) => convertDateTo(value, 'islamic')})
   minDate!: NgbDateStruct;
-  @Input() maxDate!: NgbDateStruct;
+  @Input({
+    transform: (value: any) => (value ? convertDateTo(value, 'islamic') : null),
+  })
+  maxDate!: NgbDateStruct;
   @Input() placement = 'bottom-end';
   @Input() label = '';
   @Input() inputFieldStyle: {[key: string]: string} | null = {};

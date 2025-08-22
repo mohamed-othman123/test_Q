@@ -21,6 +21,9 @@
     position: absolute;
     top: 0;
     inset-inline-end: 0;
+    path {
+      fill: variables.$hall_main_color;
+    }
 
     @include mixins.sm(max) {
       width: 74px;
@@ -53,7 +56,7 @@
       height: 46px;
 
       path {
-        fill: variables.$hall_dark_color;
+        fill: variables.$hall_main_color;
       }
     }
 
@@ -112,14 +115,15 @@
   .menu {
     position: relative;
     display: flex;
-    border: 1px solid variables.$hall_dark_color;
+    border: 1px solid #e6e6e6;
     border-radius: 50px;
-    padding: 12px 0;
+    padding: 12px 4px;
     max-width: 640px;
     margin: auto auto 55px;
     background-color: #fff;
     gap: 10px;
     width: fit-content;
+    box-shadow: 0px 4px 5px 0px #f2f2f2;
 
     li {
       a {
@@ -128,7 +132,7 @@
         font-weight: bold;
         line-height: 20px;
         border-radius: 50px;
-        color: variables.$hall_dark_color;
+        color: variables.$hall_main_color !important;
         transition: all 0.3s ease;
 
         @media all and (max-width: 767px) {
@@ -161,6 +165,7 @@
         color: #fff;
         border-radius: 50px;
         height: 56px;
+        box-shadow: 0px 4px 5px 0px #f2f2f2;
 
         svg {
           margin-inline-start: 12px;
@@ -172,8 +177,9 @@
 
         a {
           background-color: transparent;
-          border: 1px solid variables.$hall_dark_color;
-          color: variables.$hall_dark_color;
+          border: 1px solid #e6e6e6;
+          color: variables.$hall_main_color;
+          box-shadow: 0px 4px 5px 0px #f2f2f2;
 
           svg {
             margin-inline-start: 0;

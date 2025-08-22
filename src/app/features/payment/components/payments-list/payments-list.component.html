@@ -49,7 +49,15 @@
       </td>
 
       <td>
-        {{ payment.beneficiaryName }}
+        @if (payment.paymentType === 'Income') {
+          {{
+            payment.beneficiaryName
+              ? payment.beneficiaryName
+              : payment.user.name
+          }}
+        } @else {
+          {{ lang.lang === 'ar' ? payment.hall.name_ar : payment.hall.name }}
+        }
       </td>
 
       <td>

@@ -47,6 +47,7 @@ export interface RefundRequest {
     id: number;
     name: string;
     isVIB: boolean;
+    phone: string;
   };
   paymentMethod: {
     id: number;
@@ -54,6 +55,7 @@ export interface RefundRequest {
     name_ar: string;
   };
   booking: {bookingReference: string; id: number};
+  rejectReason?: string;
   created_by: number;
   updated_by: number;
   deleted_by: number;

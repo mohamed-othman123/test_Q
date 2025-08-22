@@ -1,15 +1,9 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {ExpensesItemsComponent} from './pages/expenses-items/expenses-items.component';
 import {ExpenseItemFormComponent} from './components/expense-item-form/expense-item-form.component';
 import {expensesItemsResolver} from './resolvers/expenses-items.resolver';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: ExpensesItemsComponent,
-    data: {title: 'pageTitles.expenseItem'},
-  },
   {
     path: 'add',
     component: ExpenseItemFormComponent,

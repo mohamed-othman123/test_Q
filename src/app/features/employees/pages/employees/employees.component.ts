@@ -10,13 +10,14 @@ import {TranslateService} from '@ngx-translate/core';
 import {HallsService} from '@halls/services/halls.service';
 import {stringifyDate} from '@shared/components/date-picker/helper/date-helper';
 import {Table} from 'primeng/table';
+import moment from 'moment';
 
 @Component({
-    selector: 'app-employees',
-    templateUrl: './employees.component.html',
-    styleUrl: './employees.component.scss',
-    providers: [EmployeesService],
-    standalone: false
+  selector: 'app-employees',
+  templateUrl: './employees.component.html',
+  styleUrl: './employees.component.scss',
+  providers: [EmployeesService],
+  standalone: false,
 })
 export class EmployeesComponent extends Filter implements OnInit {
   @ViewChild('dt2')
@@ -65,15 +66,13 @@ export class EmployeesComponent extends Filter implements OnInit {
       return;
     }
 
-    const formattedFilters = {...filters};
+    const {creationDate, ...formattedFilters} = {...filters};
 
-    if (
-      formattedFilters['creationDate'] &&
-      typeof formattedFilters['creationDate'] !== 'string'
-    ) {
-      formattedFilters['creationDate'] = stringifyDate(
-        formattedFilters['creationDate'],
-      );
+    if (creationDate) {
+      const date = stringifyDate(creationDate);
+
+      if (!moment(date).isValid()) return;
+      formattedFilters['creationDate'] = date;
     }
 
     this.employeesService

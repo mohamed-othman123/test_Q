@@ -13,6 +13,10 @@
     top: -30px;
     z-index: 0;
     inset-inline-end: 0;
+    path {
+      fill: variables.$hall_main_color;
+      opacity: 0.5;
+    }
   }
 }
 

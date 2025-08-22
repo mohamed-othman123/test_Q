@@ -9,7 +9,7 @@
   }
 }
 
-.shape {
+.shape-small {
   display: flex;
   max-width: 1024px;
   position: absolute;
@@ -26,7 +26,7 @@
     height: 28px;
 
     path {
-      fill: variables.$hall_dark_color;
+      fill: variables.$hall_main_color !important;
     }
   }
 
@@ -38,7 +38,7 @@
 .why_item {
   padding: 40px 20px;
   transition: 0.4s linear transform;
-  cursor: pointer;
+
   position: relative;
   z-index: 99;
 

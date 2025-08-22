@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {GaConfigService} from '@core/analytics/ga-config.service';
 import {GtagService} from '@core/analytics/gtag.service';
@@ -12,8 +12,10 @@ import {tap} from 'rxjs';
   providedIn: 'root',
 })
 export class ExpensesItemsService {
-  module = 'expenses-items';
-  apiExpensesItemsUrl = this.apiConfigService.getApiBaseUrl(this.module as any);
+  private module = 'expenses-items';
+  private apiExpensesItemsUrl = this.apiConfigService.getApiBaseUrl(
+    this.module as any,
+  );
 
   constructor(
     private http: HttpClient,

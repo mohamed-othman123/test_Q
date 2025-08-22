@@ -1,7 +1,10 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {PermissionTypes} from '@auth/models';
 import {BANKS_DATA, E_WALLETS} from '@core/constants';
 import {Item} from '@core/models';
+import {AuthService} from '@core/services';
+import {PermissionsService} from '@core/services/permissions.service';
 import {TranslateService} from '@ngx-translate/core';
 import {
   RefundRequest,
@@ -38,6 +41,8 @@ export class ViewRefundRequestComponent {
     private route: ActivatedRoute,
     private router: Router,
     public translateService: TranslateService,
+    private auth: AuthService,
+    private permissionsService: PermissionsService,
   ) {}
 
   ngOnInit(): void {
@@ -70,7 +75,7 @@ export class ViewRefundRequestComponent {
       [RefundStatus.COMPLETED]: this.lang === 'en' ? 'Completed' : 'مكتمل',
       [RefundStatus.REJECTED]: this.lang === 'en' ? 'Rejected' : 'مرفوض',
       [RefundStatus.IN_PROGRESS]:
-        this.lang === 'en' ? 'In Progress' : 'قيد المراجعة',
+        this.lang === 'en' ? 'In Progress' : 'قيد الإجراء',
     };
 
     return (
@@ -151,5 +156,23 @@ export class ViewRefundRequestComponent {
         ? eWallet.label.en
         : eWallet.label.ar
       : '';
+  }
+
+  hasPermissionTo(action: 'update', refundRequest: RefundRequest): boolean {
+    const isOwner =
+      refundRequest.created_by === this.auth.userData?.user?.userId;
+    const canEdit =
+      isOwner ||
+      this.auth.userData?.user.permissionType === PermissionTypes.GENERAL;
+
+    switch (action) {
+      case 'update':
+        return (
+          this.permissionsService.hasPermission('update:refund request') &&
+          canEdit
+        );
+      default:
+        return false;
+    }
   }
 }

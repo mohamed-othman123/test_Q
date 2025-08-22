@@ -20,6 +20,7 @@ import {Table} from 'primeng/table';
 import {ExpensesType} from '@purchases/constants/purchase.constants';
 import {PermissionsService} from '@core/services/permissions.service';
 import {PermissionTypes} from '@auth/models';
+import moment from 'moment';
 
 @Component({
   selector: 'app-purchases',
@@ -94,21 +95,19 @@ export class PurchasesComponent extends Filter implements OnInit, OnDestroy {
   protected override loadDataTable(filters: DataTableFilter): void {
     this.loading = true;
 
-    const formattedFilters = {...filters};
-    if (
-      formattedFilters['purchaseDate'] &&
-      typeof formattedFilters['purchaseDate'] !== 'string'
-    ) {
-      formattedFilters['purchaseDate'] = stringifyDate(
-        formattedFilters['purchaseDate'],
-      );
+    const {dueDate, purchaseDate, ...formattedFilters} = {...filters};
+    if (purchaseDate) {
+      const date = stringifyDate(purchaseDate);
+      if (!moment(date).isValid()) return;
+
+      formattedFilters['purchaseDate'] = date;
     }
 
-    if (
-      formattedFilters['dueDate'] &&
-      typeof formattedFilters['dueDate'] !== 'string'
-    ) {
-      formattedFilters['dueDate'] = stringifyDate(formattedFilters['dueDate']);
+    if (dueDate) {
+      const date = stringifyDate(dueDate);
+      if (!moment(date).isValid()) return;
+
+      formattedFilters['dueDate'] = date;
     }
 
     const sub = this.purchasesService.getPurchases(formattedFilters).subscribe(

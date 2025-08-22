@@ -12,11 +12,11 @@ import {TranslateModule} from '@ngx-translate/core';
 import {DialogModule} from 'primeng/dialog';
 
 @Component({
-    selector: 'app-gallery',
-    imports: [TranslateModule, DialogModule],
-    templateUrl: './gallery.component.html',
-    styleUrl: './gallery.component.scss',
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  selector: 'app-gallery',
+  imports: [TranslateModule, DialogModule],
+  templateUrl: './gallery.component.html',
+  styleUrl: './gallery.component.scss',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class GalleryComponent implements OnInit, AfterViewInit {
   @Input() section: LandingPageSection | null = null;
@@ -60,14 +60,14 @@ export class GalleryComponent implements OnInit, AfterViewInit {
       const style = document.createElement('style');
       style.textContent = `
             .swiper-pagination-bullet {
-              background-color: #C09156 !important;
+              background-color: var(--hall-main-color) !important;
               border-radius: 50% !important;
               width: 8px !important;
               height: 8px !important;
             }
             .swiper-pagination-bullet-active {
               border-radius: 30px !important;
-              background-color: #C09156 !important;  background-color: #C09156 !important;
+              background-color: var(--hall-main-color) !important;  
               width:24px !important;
             }
           `;

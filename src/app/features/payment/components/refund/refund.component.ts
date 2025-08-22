@@ -24,6 +24,8 @@ export class RefundComponent {
 
   @Input() form!: FormGroup;
 
+  maxDate: Date = new Date();
+
   subs = new Subscription();
 
   constructor(

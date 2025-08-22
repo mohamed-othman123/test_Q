@@ -30,6 +30,7 @@
 
     <div class="date">
       <app-date-picker
+        [maxDate]="maxDate"
         [inputFieldStyle]="lang === 'en' ? {'text-indent': '25px'} : null"
         placement="top-end"
         [controlName]="'requestDate'"
@@ -97,8 +98,8 @@
 
         <app-phone-input
           [control]="$any(form.controls['beneficiary_mobile'])"
-          [label]="'payment.receiverMobile' | translate"
-          [placeholder]="'payment.receiverMobile' | translate"
+          [label]="'fields.mobileNo' | translate"
+          [placeholder]="'fields.mobileNoPlaceholder' | translate"
           [phoneNumber]="this.refundRequest.beneficiaryMobile">
         </app-phone-input>
       </div>
@@ -111,9 +112,9 @@
       <!-- Payment Method Type Selection -->
       <app-dropdown
         [control]="form.controls['clientPaymentType']"
-        [options]="clientPaymentMethodTypes"
+        [options]="paymentMethodTypes"
         [optionValue]="'value'"
-        [optionLabel]="lang === 'en' ? 'label' : 'label_ar'"
+        [optionLabel]="lang === 'en' ? 'label.en' : 'label.ar'"
         [controlName]="'clientPaymentType'"
         [placeholder]="'refunds.selectPaymentMethodType' | translate"
         [label]="'refunds.paymentMethodType' | translate">
@@ -169,8 +170,8 @@
 
           <app-phone-input
             [control]="$any(form.controls['ewallet_mobile'])"
-            [label]="'refunds.mobile' | translate"
-            [placeholder]="'refunds.mobile' | translate"
+            [label]="'fields.mobileNo' | translate"
+            [placeholder]="'fields.mobileNoPlaceholder' | translate"
             [phoneNumber]="
               this.refundRequest.clientPaymentMethod.ewallet_mobile
             ">
@@ -186,6 +187,18 @@
       [label]="'payment.notes' | translate"
       [placeholder]="'payment.notes' | translate">
     </app-input>
+
+    @if (form.get('status')?.value === 'rejected') {
+      <div class="reject-reason">
+        <app-input
+          [control]="form.controls['rejectReason']"
+          [controlName]="'rejectReason'"
+          inputType="textarea"
+          [label]="'refunds.rejectReason' | translate"
+          [placeholder]="'refunds.rejectReason' | translate">
+        </app-input>
+      </div>
+    }
   </div>
 
   <div class="form-actions">

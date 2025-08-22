@@ -7,9 +7,8 @@
           <i class="pi pi-users"></i>
         </div>
         <div class="hall-metrics-item-content">
-          <strong>{{ section.capacity }}</strong>
           <p>
-            {{ 'landing.sectionCapacity' | translate }}
+            {{ 'landing.section' | translate }}
             {{ lang.lang === 'ar' ? section.name_ar : section.name }}
           </p>
         </div>
@@ -23,9 +22,7 @@
     <h3 class="section-title">{{ 'landing.hallEvents' | translate }}</h3>
     <div class="hall-events-list">
       @for (event of landingPageData?.hall?.hallEvents; track event) {
-        <div
-          class="hall-event-item"
-          >
+        <div class="hall-event-item">
           <div class="hall-event-content">
             <div class="icon-container">
               <i class="pi pi-calendar"></i>

@@ -12,12 +12,13 @@ import {stringifyDate} from '@shared/components/date-picker/helper/date-helper';
 import {Table} from 'primeng/table';
 import {PermissionsService} from '@core/services/permissions.service';
 import {PermissionTypes} from '@auth/models';
+import moment from 'moment';
 
 @Component({
-    selector: 'app-events',
-    templateUrl: './events.component.html',
-    styleUrl: './events.component.scss',
-    standalone: false
+  selector: 'app-events',
+  templateUrl: './events.component.html',
+  styleUrl: './events.component.scss',
+  standalone: false,
 })
 export class EventsComponent extends Filter implements OnInit {
   @ViewChild('dt2')
@@ -61,15 +62,13 @@ export class EventsComponent extends Filter implements OnInit {
   protected override loadDataTable(filters: DataTableFilter) {
     if (!this.currentHall?.id) return;
 
-    const formattedFilters = {...filters};
+    const {creationDate, ...formattedFilters} = {...filters};
 
-    if (
-      formattedFilters['creationDate'] &&
-      typeof formattedFilters['creationDate'] !== 'string'
-    ) {
-      formattedFilters['creationDate'] = stringifyDate(
-        formattedFilters['creationDate'],
-      );
+    if (creationDate) {
+      const date = stringifyDate(creationDate);
+
+      if (!moment(date).isValid()) return;
+      formattedFilters['creationDate'] = date;
     }
 
     const hallFilters = {

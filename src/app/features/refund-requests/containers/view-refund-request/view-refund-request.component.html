@@ -21,6 +21,13 @@
       <h2>{{ 'refunds.refundInformation' | translate }}</h2>
       <div class="info-grid">
         <div class="info-item">
+          <span class="label">{{ 'refunds.orderNumber' | translate }}</span>
+          <div class="value">
+            {{ refundRequest.id }}
+          </div>
+        </div>
+
+        <div class="info-item">
           <span class="label">{{ 'orders.orderNumber' | translate }}</span>
           <div class="value">
             {{ refundRequest.booking.bookingReference }}
@@ -41,11 +48,15 @@
         <div class="info-item">
           <span class="label">{{ 'refunds.requestDate' | translate }}</span>
           @if (translateService.currentLang === 'en') {
-            {{ refundRequest.request_date | date: 'MMM d, y' : 'UTC' }}
+            {{
+              refundRequest.request_date
+                | englishMonthDate: false : 'DD MMMM YYYY'
+            }}
           }
           @if (translateService.currentLang === 'ar') {
             {{
-              refundRequest.request_date | formatDateLang: 'ar' : 'MMM d, y'
+              refundRequest.request_date
+                | arabicMonthDate: false : 'DD MMMM YYYY'
             }}م
           }
         </div>
@@ -57,6 +68,12 @@
           <div class="info-item full-width">
             <span class="label">{{ 'payment.notes' | translate }}</span>
             <span class="value notes">{{ refundRequest.notes }}</span>
+          </div>
+        }
+        @if (refundRequest.rejectReason) {
+          <div class="info-item full-width">
+            <span class="label">{{ 'refunds.rejectReason' | translate }}</span>
+            <span class="value notes">{{ refundRequest.rejectReason }}</span>
           </div>
         }
       </div>
@@ -79,7 +96,9 @@
         </div>
         <div class="info-item">
           <span class="label">{{ 'payment.receiverMobile' | translate }}</span>
-          <span class="value">{{ refundRequest.beneficiaryMobile }}</span>
+          <span class="value"
+            ><bdi>{{ refundRequest.beneficiaryMobile }}</bdi></span
+          >
         </div>
       </div>
     </div>
@@ -148,9 +167,11 @@
           @if (refundRequest.clientPaymentMethod.ewallet_mobile) {
             <div class="info-item">
               <span class="label">{{ 'refunds.mobile' | translate }}</span>
-              <span class="value">{{
-                refundRequest.clientPaymentMethod.ewallet_mobile
-              }}</span>
+              <span class="value">
+                <bdi>{{
+                  refundRequest.clientPaymentMethod.ewallet_mobile
+                }}</bdi>
+              </span>
             </div>
           }
         }
@@ -166,7 +187,9 @@
         (click)="navigateBack()"></button>
 
       @if (
-        refundRequest.status === 'new' || refundRequest.status === 'in_progress'
+        (refundRequest.status === 'new' ||
+          refundRequest.status === 'in_progress') &&
+        hasPermissionTo('update', refundRequest)
       ) {
         <button
           *appHasPermission="'update:refund request'"

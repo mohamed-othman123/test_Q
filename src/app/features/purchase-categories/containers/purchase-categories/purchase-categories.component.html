@@ -2,7 +2,7 @@
   [btnAddText]="'categories.addNewCategory' | translate"
   [disableAddBtn]="!permissionsService.hasPermission('create:expense category')"
   [title]="'sideNav.expensesCategory' | translate"
-(sideDrawerToggler)="openPurchaseCategoryForm('add')"></app-list-header>
+  (sideDrawerToggler)="openPurchaseCategoryForm('add')"></app-list-header>
 
 <p-table
   #dt2
@@ -74,17 +74,17 @@
     <tr>
       <td>
         {{
-        category.type === 'Purchases'
-        ? ('purchases.purchasesExpenses' | translate)
-        : ('purchases.generalExpenses' | translate)
+          category.type === 'Purchases'
+            ? ('purchases.purchasesExpenses' | translate)
+            : ('purchases.generalExpenses' | translate)
         }}
       </td>
 
       <td style="text-wrap: auto">
         {{
-        translate.currentLang === 'ar' && category?.name_ar
-        ? category?.name_ar
-        : category?.name
+          translate.currentLang === 'ar' && category?.name_ar
+            ? category?.name_ar
+            : category?.name
         }}
       </td>
 
@@ -94,32 +94,59 @@
 
       <td>
         <div class="actions">
-          @if (hasPermissionTo('view', category)) {
+          <div ngbDropdown container="body" class="d-inline-block">
+            <button
+              type="button"
+              class="options-button"
+              id="dropdownBasic1"
+              ngbDropdownToggle>
+              <span
+                class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
+              {{ 'common.options' | translate }}
+            </button>
             <div
-              class="action-button"
-              (click)="view(category)">
-              <i class="pi pi-eye"></i>
-              <span>{{ 'common.view' | translate }}</span>
+              ngbDropdownMenu
+              aria-labelledby="dropdownBasic1"
+              class="p-menu p-menu-overlay">
+              @if (hasPermissionTo('edit', category)) {
+                <button
+                  ngbDropdownItem
+                  (click)="openPurchaseCategoryForm('edit', $event, category)"
+                  class="d-flex gap-3">
+                  <i class="pi pi-pencil"></i>
+                  <span>{{ 'common.edit' | translate }}</span>
+                </button>
+              }
+
+              <button
+                ngbDropdownItem
+                (click)="view(category)"
+                class="d-flex gap-3">
+                <i class="pi pi-eye"></i>
+                <span>{{ 'common.view' | translate }}</span>
+              </button>
+
+              @if (category.type !== 'Purchases') {
+                <button
+                  ngbDropdownItem
+                  (click)="addExpenseItem(category)"
+                  class="d-flex gap-3">
+                  <i class="pi pi-plus"></i>
+                  <span>{{ 'categories.addExpenseItem' | translate }}</span>
+                </button>
+              }
+
+              @if (hasPermissionTo('delete', category)) {
+                <button
+                  (click)="openDeleteConfirmation(category.id)"
+                  ngbDropdownItem
+                  class="d-flex gap-3">
+                  <i class="pi pi-times-circle"></i>
+                  <span>{{ 'common.delete' | translate }}</span>
+                </button>
+              }
             </div>
-          }
-          @if (hasPermissionTo('edit', category)) {
-            <div
-              class="action-button"
-              (click)="openPurchaseCategoryForm('edit', $event, category)">
-              <i class="pi pi-file-edit"></i>
-              <span>{{ 'common.edit' | translate }}</span>
-            </div>
-          }
-          @if (hasPermissionTo('delete', category)) {
-            <div
-              appConfirmDeleteDialog
-              (acceptDelete)="deletePurchaseCategory(category)"
-              [deletedItem]="'categories.purchaseCategory' | translate"
-              class="action-button delete">
-              <i class="pi pi-trash"></i>
-              <span>{{ 'common.delete' | translate }}</span>
-            </div>
-          }
+          </div>
         </div>
       </td>
     </tr>
@@ -134,4 +161,10 @@
 </p-table>
 
 <purchase-categories-form
-(refreshDataTable)="refreshDataTable()"></purchase-categories-form>
+  (refreshDataTable)="refreshDataTable()"></purchase-categories-form>
+
+<app-confirm-delete-popup
+  [visible]="showDeleteConfirmation"
+  [message]="'categories.deleteCategory' | translate"
+  (confirm)="confirmDeleteCategory()"
+  (reject)="rejectDeleteCategory()"></app-confirm-delete-popup>

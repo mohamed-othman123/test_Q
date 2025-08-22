@@ -1,0 +1,53 @@
+<app-list-header
+  [title]="'categories.expenseCategory' | translate"></app-list-header>
+
+<div class="px-3">
+  <p-messages severity="success">
+    <ng-template pTemplate>
+      <div class="d-flex align-items-center gap-2">
+        <i class="pi pi-info-circle"> </i>
+        {{ 'categories.description' | translate }}
+      </div>
+    </ng-template>
+  </p-messages>
+</div>
+
+<div class="cat-wrapper">
+  <div class="cat-info">
+    <div>
+      <strong class="item-label">{{
+        'categories.expenseCategory' | translate
+      }}</strong>
+      {{ lang.lang === 'ar' ? category?.name_ar : category?.name }}
+    </div>
+    <div>
+      <strong class="item-label">{{
+        'purchases.expenseType' | translate
+      }}</strong>
+      {{ 'categories.' + category?.type | translate }}
+    </div>
+
+    <div>
+      <strong class="item-label">{{
+        'categories.expenseDescription' | translate
+      }}</strong>
+      {{ category?.description }}
+    </div>
+  </div>
+</div>
+
+@if (category?.type !== 'Purchases') {
+  <div class="expenses-items-list">
+    <app-expenses-items-list></app-expenses-items-list>
+  </div>
+}
+
+<div class="actions">
+  <button
+    pButton
+    type="button"
+    [icon]="lang.lang === 'ar' ? 'pi pi-arrow-right' : 'pi pi-arrow-left'"
+    label="{{ 'common.cancel' | translate }}"
+    class="p-button-secondary action-btn"
+    (click)="navigateBack()"></button>
+</div>

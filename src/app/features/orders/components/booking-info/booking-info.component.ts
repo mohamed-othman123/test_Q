@@ -35,10 +35,10 @@ import {dateToGregorianIsoString} from '@shared/components/date-picker/helper/da
 import {ShakeableService} from '@core/services/shakeable.service';
 
 @Component({
-    selector: 'app-booking-info',
-    templateUrl: './booking-info.component.html',
-    styleUrl: './booking-info.component.scss',
-    standalone: false
+  selector: 'app-booking-info',
+  templateUrl: './booking-info.component.html',
+  styleUrl: './booking-info.component.scss',
+  standalone: false,
 })
 export class BookingInfoComponent implements OnDestroy, OnInit {
   @Input({required: true}) currentStep!: number;

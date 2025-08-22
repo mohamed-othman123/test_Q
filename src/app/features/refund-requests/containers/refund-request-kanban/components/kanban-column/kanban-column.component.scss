@@ -6,7 +6,7 @@
   margin-bottom: 1rem;
   overflow: hidden;
   .col-header {
-    background-color: #2eb096;
+    background-color: var(--primary-color);
     padding: 14px 14px;
     border-radius: 8px;
     display: flex;
@@ -50,7 +50,7 @@
     flex: 0 0 auto; // Prevent columns from shrinking
     min-width: 250px;
     overflow-y: auto;
-    scrollbar-width: none;
+    // scrollbar-width: none;
 
     .kanban-card {
       padding: 0.5rem;

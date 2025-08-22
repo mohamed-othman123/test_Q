@@ -18,10 +18,7 @@
         [cdkDropListData]="getEnabledSections()"
         (cdkDropListDropped)="onDrop($event)">
         @for (template of getEnabledSections(); track template) {
-          <div
-            class="section-card enabled"
-            cdkDrag
-            [cdkDragData]="template">
+          <div class="section-card enabled" cdkDrag [cdkDragData]="template">
             <div class="drag-handle" cdkDragHandle>
               <i class="pi pi-bars"></i>
             </div>
@@ -32,13 +29,15 @@
                 </div>
                 <div class="section-details">
                   <h6>
-                    {{ lang.lang === 'ar' ? template.label.ar : template.label.en }}
+                    {{
+                      lang.lang === 'ar' ? template.label.ar : template.label.en
+                    }}
                   </h6>
                   <p>
                     {{
-                    lang.lang === 'ar'
-                    ? template.description.ar
-                    : template.description.en
+                      lang.lang === 'ar'
+                        ? template.description.ar
+                        : template.description.en
                     }}
                   </p>
                 </div>
@@ -50,15 +49,15 @@
                   class="action-btn expand-btn"
                   [class.active]="template.isExpanded"
                   (click)="onSectionExpand(template)"
-              [title]="
-                template.isExpanded
-                  ? ('common.collapse' | translate)
-                  : ('common.expand' | translate)
-              ">
+                  [title]="
+                    template.isExpanded
+                      ? ('common.collapse' | translate)
+                      : ('common.expand' | translate)
+                  ">
                   <i
                     class="pi"
                     [class.pi-chevron-up]="template.isExpanded"
-                  [class.pi-chevron-down]="!template.isExpanded"></i>
+                    [class.pi-chevron-down]="!template.isExpanded"></i>
                 </button>
                 <p-inputSwitch
                   [(ngModel)]="template.isEnabled"
@@ -68,38 +67,32 @@
               </div>
             </div>
             @if (template.isExpanded) {
-              <div
-                class="card-content"
-                [class.expanded]="template.isExpanded"
-                >
+              <div class="card-content" [class.expanded]="template.isExpanded">
                 @if (!template.isEditing && template.data) {
-                  <div
-                    class="content-header"
-                    >
+                  <div class="content-header">
                     <div class="section-preview">
                       @if (template.data.title_en || template.data.title_ar) {
-                        <div
-                          class="preview-item"
-                          >
+                        <div class="preview-item">
                           <strong>{{ 'common.title' | translate }}:</strong>
                           <span>{{
                             lang.lang === 'ar'
-                            ? template.data.title_ar
-                            : template.data.title_en
+                              ? template.data.title_ar
+                              : template.data.title_en
                           }}</span>
                         </div>
                       }
                       @if (
-                        template.data.description_en || template.data.description_ar
-                        ) {
-                        <div
-                          class="preview-item"
+                        template.data.description_en ||
+                        template.data.description_ar
+                      ) {
+                        <div class="preview-item">
+                          <strong
+                            >{{ 'common.description' | translate }}:</strong
                           >
-                          <strong>{{ 'common.description' | translate }}:</strong>
                           <span>{{
                             lang.lang === 'ar'
-                            ? template.data.description_ar
-                            : template.data.description_en
+                              ? template.data.description_ar
+                              : template.data.description_en
                           }}</span>
                         </div>
                       }
@@ -120,126 +113,137 @@
                     (ngSubmit)="onSectionSave(template)">
                     <div class="form-grid">
                       <div class="form-group">
-                        <label>{{ 'landing.sectionTitle' | translate }} (EN)</label>
+                        <label
+                          >{{ 'landing.sectionTitle' | translate }} (EN)</label
+                        >
                         <input
                           type="text"
                           pInputText
                           formControlName="title_en"
-                  [placeholder]="
-                    'landing.sectionTitlePlaceholder' | translate
-                  " />
+                          [placeholder]="
+                            'landing.sectionTitlePlaceholder' | translate
+                          " />
                       </div>
                       <div class="form-group">
-                        <label>{{ 'landing.sectionTitleAr' | translate }} (AR)</label>
+                        <label
+                          >{{
+                            'landing.sectionTitleAr' | translate
+                          }}
+                          (AR)</label
+                        >
                         <input
                           type="text"
                           pInputText
                           formControlName="title_ar"
-                  [placeholder]="
-                    'landing.sectionTitleArPlaceholder' | translate
-                  " />
+                          [placeholder]="
+                            'landing.sectionTitleArPlaceholder' | translate
+                          " />
                       </div>
                       <div class="form-group full-width">
                         <label
-                          >{{ 'landing.sectionDescription' | translate }} (EN)</label
-                          >
-                          <textarea
-                            pInputTextarea
-                            formControlName="description_en"
-                  [placeholder]="
-                    'landing.sectionDescriptionPlaceholder' | translate
-                  "
-                            rows="3">
-                          </textarea>
-                        </div>
-                        <div class="form-group full-width">
-                          <label
-                            >{{ 'landing.sectionDescriptionAr' | translate }} (AR)</label
-                            >
-                            <textarea
-                              pInputTextarea
-                              formControlName="description_ar"
-                  [placeholder]="
-                    'landing.sectionDescriptionArPlaceholder' | translate
-                  "
-                              rows="3">
-                            </textarea>
-                          </div>
-                        </div>
-                        <div class="form-actions">
-                          <button
-                            type="button"
-                            pButton
-                            class="p-button-secondary"
-                            icon="pi pi-times"
-                            [label]="'common.cancel' | translate"
-                          (click)="onSectionCancel(template)"></button>
-                          <button
-                            type="submit"
-                            pButton
-                            icon="pi pi-check"
-                            [label]="'common.save' | translate"
-                            [loading]="isLoading"
-                          [disabled]="!template.form?.valid"></button>
-                        </div>
-                      </form>
-                    }
-                  </div>
+                          >{{ 'landing.sectionDescription' | translate }} (EN)
+                          ({{ 'common.optional' | translate }})</label
+                        >
+                        <textarea
+                          pInputTextarea
+                          formControlName="description_en"
+                          [placeholder]="
+                            'landing.sectionDescriptionPlaceholder' | translate
+                          "
+                          rows="3">
+                        </textarea>
+                      </div>
+                      <div class="form-group full-width">
+                        <label
+                          >{{ 'landing.sectionDescriptionAr' | translate }} (AR)
+                          ({{ 'common.optional' | translate }})</label
+                        >
+                        <textarea
+                          pInputTextarea
+                          formControlName="description_ar"
+                          [placeholder]="
+                            'landing.sectionDescriptionArPlaceholder'
+                              | translate
+                          "
+                          rows="3">
+                        </textarea>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button
+                        type="button"
+                        pButton
+                        class="p-button-secondary"
+                        icon="pi pi-times"
+                        [label]="'common.cancel' | translate"
+                        (click)="onSectionCancel(template)"></button>
+                      <button
+                        type="submit"
+                        pButton
+                        icon="pi pi-check"
+                        [label]="'common.save' | translate"
+                        [loading]="isLoading"
+                        [disabled]="!template.form?.valid"></button>
+                    </div>
+                  </form>
                 }
               </div>
             }
           </div>
-        </div>
-      }
+        }
+      </div>
+    </div>
+  }
 
-      <div class="disabled-sections">
-        <h5 class="subsection-title">
-          <i class="pi pi-circle"></i>
-          {{ 'landing.availableSections' | translate }}
-        </h5>
+  <div class="disabled-sections">
+    <h5 class="subsection-title">
+      <i class="pi pi-circle"></i>
+      {{ 'landing.availableSections' | translate }}
+    </h5>
 
-        <div class="section-grid">
-          @for (template of getDisabledSections(); track template) {
-            <div
-              class="section-card disabled">
-              <div class="card-header">
-                <div class="section-info">
-                  <div class="section-icon">
-                    <i [class]="template.icon"></i>
-                  </div>
-                  <div class="section-details">
-                    <h6>
-                      {{ lang.lang === 'ar' ? template.label.ar : template.label.en }}
-                    </h6>
-                    <p>
-                      {{
-                      lang.lang === 'ar'
+    <div class="section-grid">
+      @for (template of getDisabledSections(); track template) {
+        <div class="section-card disabled">
+          <div class="card-header">
+            <div class="section-info">
+              <div class="section-icon">
+                <i [class]="template.icon"></i>
+              </div>
+              <div class="section-details">
+                <h6>
+                  {{
+                    lang.lang === 'ar' ? template.label.ar : template.label.en
+                  }}
+                </h6>
+                <p>
+                  {{
+                    lang.lang === 'ar'
                       ? template.description.ar
                       : template.description.en
-                      }}
-                    </p>
-                  </div>
-                </div>
-                <div class="section-actions">
-                  <p-inputSwitch
-                    [(ngModel)]="template.isEnabled"
-                    (ngModelChange)="onSectionToggle(template, $event)"
-                    [disabled]="isLoading">
-                  </p-inputSwitch>
-                </div>
+                  }}
+                </p>
               </div>
             </div>
-          }
-        </div>
-      </div>
-
-      @if (getEnabledSections().length === 0) {
-        <div class="empty-state">
-          <div class="empty-content">
-            <i class="pi pi-list"></i>
-            <h5>{{ 'landing.noActiveSections' | translate }}</h5>
-            <p>{{ 'landing.noActiveSectionsDescription' | translate }}</p>
+            <div class="section-actions">
+              <p-inputSwitch
+                [(ngModel)]="template.isEnabled"
+                (ngModelChange)="onSectionToggle(template, $event)"
+                [disabled]="isLoading">
+              </p-inputSwitch>
+            </div>
           </div>
         </div>
       }
     </div>
+  </div>
+
+  @if (getEnabledSections().length === 0) {
+    <div class="empty-state">
+      <div class="empty-content">
+        <i class="pi pi-list"></i>
+        <h5>{{ 'landing.noActiveSections' | translate }}</h5>
+        <p>{{ 'landing.noActiveSectionsDescription' | translate }}</p>
+      </div>
+    </div>
+  }
+</div>

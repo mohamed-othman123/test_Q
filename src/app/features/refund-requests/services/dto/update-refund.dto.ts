@@ -14,4 +14,5 @@ export interface UpdateRefundRequestDto {
   notes?: string;
   amount?: number;
   clientPaymentMethod?: UpdateClientPaymentMethodDto;
+  rejectReason?: string;
 }

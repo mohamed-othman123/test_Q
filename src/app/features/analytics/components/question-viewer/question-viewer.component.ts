@@ -7,6 +7,7 @@ import {
   Question,
   QuestionUrl,
 } from '../../a-i-analytics.service';
+import { HallsService } from '@halls/services/halls.service';
 
 @Component({
   selector: 'app-question-viewer',
@@ -31,6 +32,7 @@ export class QuestionViewerComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private analyticsService: AIAnalyticsService,
+    private hallsService: HallsService,
     private sanitizer: DomSanitizer
   ) {}
 
@@ -52,8 +54,7 @@ export class QuestionViewerComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe({
-        next: () => {
-        },
+        next: () => {},
         error: (error) => {
           this.error = 'Failed to load question. Please try again.';
           this.loading = false;
@@ -71,10 +72,10 @@ export class QuestionViewerComponent implements OnInit, OnDestroy {
     this.error = null;
     this.iframeLoading = true;
 
-    this.analyticsService.getQuestionUrl(questionId)
-      .pipe(
-        takeUntil(this.destroy$)
-      )
+    const hallIds = this.getEffectiveHallIds();
+
+    this.analyticsService.getQuestionUrl(questionId, hallIds)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: QuestionUrl) => {
           this.rawQuestionUrl = response.url;
@@ -90,6 +91,21 @@ export class QuestionViewerComponent implements OnInit, OnDestroy {
       });
   }
 
+  private getEffectiveHallIds(): number[] {
+    const currentHall = this.hallsService.getCurrentHall();
+    const availableHalls = this.hallsService.halls;
+
+    if (currentHall) {
+      return [currentHall.id];
+    }
+
+    if (availableHalls.length > 0) {
+      return [availableHalls[0].id];
+    }
+
+    return [];
+  }
+
   private loadQuestionMetadata(questionId: number): void {
     this.analyticsService.getAvailableQuestions()
       .pipe(takeUntil(this.destroy$))
@@ -101,19 +117,18 @@ export class QuestionViewerComponent implements OnInit, OnDestroy {
               id: questionId,
               name: `Question #${questionId}`,
               description: 'Data visualization and chart with specific business insights',
-              created_at: undefined as any,
-              updated_at: undefined as any
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
             };
           }
         },
         error: (error) => {
-          console.warn('⚠️ Could not load question metadata:', error);
           this.question = {
             id: questionId,
             name: `Question #${questionId}`,
             description: 'Data visualization and chart with specific business insights',
-            created_at: undefined as any,
-            updated_at: undefined as any
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
           };
         }
       });
