@@ -12,6 +12,7 @@ import {
 import { HallsService } from '@halls/services/halls.service';
 import { TranslateService } from '@ngx-translate/core';
 import { chatAnimations } from '../chat-animations';
+import { LanguageService } from '@core/services/language.service';
 
 interface ChatDisplayMessage extends AIChatMessage {
   isLoading?: boolean;
@@ -51,6 +52,7 @@ export class AiChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     private hallsService: HallsService,
     private sanitizer: DomSanitizer,
     private translate: TranslateService,
+    private languageService: LanguageService,
     private cdr: ChangeDetectorRef
   ) {
     this.chatForm = this.fb.group({
@@ -61,6 +63,23 @@ export class AiChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   ngOnInit(): void {
     this.initializeChat();
     this.addWelcomeMessage();
+
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.updateWelcomeMessage();
+      });
+  }
+
+  private updateWelcomeMessage(): void {
+    const welcomeIndex = this.messages.findIndex(m =>
+      m.type === 'assistant' && m.message.includes('👋')
+    );
+
+    if (welcomeIndex !== -1) {
+      this.messages[welcomeIndex].message = this.translate.instant('analytics.aiChat.welcome');
+      this.cdr.detectChanges();
+    }
   }
 
   ngOnDestroy(): void {
@@ -89,7 +108,7 @@ export class AiChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         next: (halls) => {
           this.availableHalls = halls.map(hall => ({
             id: hall.id,
-            name: this.translate.currentLang === 'ar' && hall.name_ar
+            name: this.languageService.getCurrentLanguage() === 'ar' && hall.name_ar
               ? hall.name_ar
               : hall.name
           }));
@@ -154,16 +173,6 @@ export class AiChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.cdr.detectChanges();
   }
 
-  getSamplePrompts(): string[] {
-    return [
-      this.translate.instant('analytics.aiChat.prompts.examples.0'),
-      this.translate.instant('analytics.aiChat.prompts.examples.1'),
-      this.translate.instant('analytics.aiChat.prompts.examples.2'),
-      this.translate.instant('analytics.aiChat.prompts.examples.3'),
-      this.translate.instant('analytics.aiChat.prompts.examples.4')
-    ];
-  }
-
   onSubmit(): void {
     if (this.chatForm.invalid || this.isLoading) {
       return;
@@ -175,15 +184,6 @@ export class AiChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     this.sendMessage(messageText);
-  }
-
-  onSamplePromptClick(prompt: string): void {
-    this.chatForm.patchValue({ message: prompt });
-    this.messageInput.nativeElement.focus();
-  }
-
-  onHallSelectionChange(hallIds: number[]): void {
-    this.selectedHallIds = hallIds;
   }
 
   private sendMessage(messageText: string): void {
@@ -384,5 +384,16 @@ export class AiChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     this.chatForm.patchValue({ message });
     this.messageInput.nativeElement.focus();
+  }
+
+  getCurrentHallName(): string {
+    const currentHall = this.hallsService.getCurrentHall();
+    if (!currentHall) {
+      return '';
+    }
+
+    return this.translate.currentLang === 'ar' && currentHall.name_ar
+      ? currentHall.name_ar
+      : currentHall.name;
   }
 }

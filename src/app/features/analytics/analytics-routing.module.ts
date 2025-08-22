@@ -5,31 +5,37 @@ import { DashboardListComponent } from './components/dashboard-list/dashboard-li
 import { DashboardViewerComponent } from './components/dashboard-viewer/dashboard-viewer.component';
 import { QuestionViewerComponent } from './components/question-viewer/question-viewer.component';
 import {AiChatComponent} from './components/ai-chat/ai-chat.component';
+import {AnalyticsGuard} from '@core/guards/analytics.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: AnalyticsOverviewComponent,
+    canActivate: [AnalyticsGuard],
     data: { title: 'pageTitles.analytics' }
   },
   {
     path: 'dashboards',
     component: DashboardListComponent,
+    canActivate: [AnalyticsGuard],
     data: { title: 'pageTitles.dashboards' }
   },
   {
     path: 'dashboard/:id',
     component: DashboardViewerComponent,
+    canActivate: [AnalyticsGuard],
     data: { title: 'pageTitles.analyticsDashboard' }
   },
   {
     path: 'question/:id',
     component: QuestionViewerComponent,
+    canActivate: [AnalyticsGuard],
     data: { title: 'pageTitles.analyticsQuestion' }
   },
   {
     path: 'ai-chat',
     component: AiChatComponent,
+    canActivate: [AnalyticsGuard],
     data: { title: 'pageTitles.aiChat' }
   }
 ];

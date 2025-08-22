@@ -26,6 +26,7 @@ import {UserData} from '@auth/models';
 import {PermissionsService} from '@core/services/permissions.service';
 import {APP_ENVIRONMENT} from '@core/constants';
 import {Environment} from '@core/models';
+import {TokenHelper} from '@core/utils/token-helper';
 
 @Component({
     selector: 'app-side-nave',
@@ -146,6 +147,10 @@ export class SideNaveComponent implements OnInit, OnDestroy {
 
   clickSubItem(e: any) {
     e.stopPropagation();
+  }
+
+  get hasAiFeature(): boolean {
+    return TokenHelper.hasAiFeature();
   }
 
   ngOnDestroy(): void {

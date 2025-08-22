@@ -11,8 +11,11 @@
           <p class="subtitle">{{ 'analytics.aiChat.subtitle' | translate }}</p>
         </div>
       </div>
-
-      <div class="context-selector" *ngIf="availableHalls.length > 0">
+      <!--TODO: Temp Hidden-->
+      <div
+        [hidden]="true"
+        class="context-selector"
+        *ngIf="availableHalls.length > 0">
         <button
           class="context-toggle-btn"
           [class.active]="showHallSelector"
@@ -127,18 +130,18 @@
     </div>
 
     <div class="chat-messages" *ngIf="!isInitializing">
-<!--      <div class="sample-prompts" *ngIf="messages.length <= 1">-->
-<!--        <h3>{{ 'analytics.aiChat.prompts.title' | translate }}</h3>-->
-<!--        <div class="prompt-cards">-->
-<!--          <div-->
-<!--            class="prompt-card"-->
-<!--            *ngFor="let prompt of getSamplePrompts()"-->
-<!--            (click)="onSamplePromptClick(prompt)">-->
-<!--            <i class="pi pi-lightbulb"></i>-->
-<!--            <span>{{ prompt }}</span>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--      <div class="sample-prompts" *ngIf="messages.length <= 1">-->
+      <!--        <h3>{{ 'analytics.aiChat.prompts.title' | translate }}</h3>-->
+      <!--        <div class="prompt-cards">-->
+      <!--          <div-->
+      <!--            class="prompt-card"-->
+      <!--            *ngFor="let prompt of getSamplePrompts()"-->
+      <!--            (click)="onSamplePromptClick(prompt)">-->
+      <!--            <i class="pi pi-lightbulb"></i>-->
+      <!--            <span>{{ prompt }}</span>-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
 
       <div
         class="message-wrapper"
@@ -245,11 +248,10 @@
   <div class="chat-input-container">
     <form [formGroup]="chatForm" (ngSubmit)="onSubmit()" class="chat-form">
       <div class="input-wrapper">
-        <div class="context-indicator" *ngIf="selectedHallIds.length > 0">
+        <div class="context-indicator" *ngIf="getCurrentHallName()">
           <i class="pi pi-building"></i>
-          <span>{{ selectedHallIds.length }} halls</span>
+          <span>{{ getCurrentHallName() }}</span>
         </div>
-
         <div class="message-input-group">
           <textarea
             #messageInput

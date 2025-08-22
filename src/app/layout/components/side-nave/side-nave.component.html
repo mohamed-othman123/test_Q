@@ -34,19 +34,21 @@
         <img src="assets/icons/dashboard.icon.svg" alt="dashboard icon" />
         <span>{{ 'sideNav.dashboard' | translate }}</span>
       </li>
-      <li
-        [routerLink]="['/analytics']"
-        routerLinkActive="router-link-active"
-        [routerLinkActiveOptions]="{exact: true}">
-        <img src="assets/icons/analytics.icon.svg" alt="analytics icon" />
-        <span>{{ 'sideNav.analytics' | translate }}</span>
-      </li>
-      <li
-        [routerLink]="['/analytics/ai-chat']"
-        routerLinkActive="router-link-active">
-        <span class="ai-badge">AI</span>
-        <span>{{ 'sideNav.aiChat' | translate }}</span>
-      </li>
+      @if (hasAiFeature) {
+        <li
+          [routerLink]="['/analytics']"
+          routerLinkActive="router-link-active"
+          [routerLinkActiveOptions]="{exact: true}">
+          <img src="assets/icons/analytics.icon.svg" alt="analytics icon" />
+          <span>{{ 'sideNav.analytics' | translate }}</span>
+        </li>
+        <li
+          [routerLink]="['/analytics/ai-chat']"
+          routerLinkActive="router-link-active">
+          <span class="ai-badge">AI</span>
+          <span>{{ 'sideNav.aiChat' | translate }}</span>
+        </li>
+      }
       <li
         *appHasPermission="['read:bookings']"
         [routerLink]="['/home']"
