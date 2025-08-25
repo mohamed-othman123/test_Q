@@ -19,16 +19,17 @@ import {finalize, forkJoin, map, Observable, switchMap} from 'rxjs';
 import {
   LandingGeneralInformationDto,
   MediaItem,
+  MediaOrderItem,
   MediaUploadResponse,
 } from '@admin-landing-page/models/landing-page.model';
 import {LandingPageSection} from '@admin-landing-page/models/section.model';
 
 @Component({
-    selector: 'app-hall-media',
-    templateUrl: './hall-media.component.html',
-    styleUrls: ['./hall-media.component.scss'],
-    viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
-    standalone: false
+  selector: 'app-hall-media',
+  templateUrl: './hall-media.component.html',
+  styleUrls: ['./hall-media.component.scss'],
+  viewProviders: [{provide: ControlContainer, useExisting: FormGroupDirective}],
+  standalone: false,
 })
 export class HallMediaComponent implements OnChanges {
   @Input() landingPageData: LandingGeneralInformationDto | null = null;
@@ -134,96 +135,47 @@ export class HallMediaComponent implements OnChanges {
         error: undefined,
       };
 
-      this.updateFormArrays();
+      this.landingPageService
+        .uploadMedia(this.section?.id!, [file], type)
+        .subscribe((res) => {
+          const serverItems = res.map((serverItem) => ({
+            id: serverItem.id,
+            url: serverItem.path,
+            file: null,
+            order: serverItem.order,
+            mimetype: serverItem.mimetype,
+          }));
+
+          if (type === 'banners') {
+            this.banners = [...serverItems];
+          } else {
+            this.images = [...serverItems];
+          }
+        });
+
+      // this.updateFormArrays();
     }
   }
 
-  onOrderChange(event: any, type: 'banners' | 'images', index: number) {
-    const scrollPosition = window.scrollY;
-    const focusedElement = document.activeElement as HTMLElement;
-
+  onOrderChange(event: any, type: 'banners' | 'images', id: number) {
     const newOrder = event.value;
-    const items = type === 'banners' ? this.banners : this.images;
-    const item = items[index];
-
-    if (!this.landingPageData?.id || !item.id) return;
-
-    this.loading = true;
-
-    const updatedItems = [...items].map((i) => ({...i}));
-    if (newOrder > item.order!) {
-      updatedItems.forEach((i) => {
-        if (i.order! > item.order! && i.order! <= newOrder) {
-          i.order = i.order! - 1;
-        }
-      });
-    } else if (newOrder < item.order!) {
-      updatedItems.forEach((i) => {
-        if (i.order! >= newOrder && i.order! < item.order!) {
-          i.order = i.order! + 1;
-        }
-      });
-    }
-    item.order = newOrder;
-
-    if (type === 'banners') {
-      this.banners = updatedItems.sort(
-        (a, b) => (a.order || 0) - (b.order || 0),
-      );
-    } else {
-      this.images = updatedItems.sort(
-        (a, b) => (a.order || 0) - (b.order || 0),
-      );
-    }
-    this.updateFormArrays();
-    this.cdr.detectChanges();
 
     this.landingPageService
-      .updateMediaOrder(type, item.id, newOrder)
-      .pipe(
-        map((response: any) => {
-          if (Array.isArray(response)) {
-            const serverItems = response.map((serverItem) => ({
-              id: serverItem.id,
-              url: serverItem.path,
-              file: null,
-              order: serverItem.order,
-              mimetype: serverItem.mimetype,
-            }));
+      .updateMediaOrder(type, id, newOrder)
+      .subscribe((res) => {
+        const serverItems = res.map((serverItem) => ({
+          id: serverItem.id,
+          url: serverItem.path,
+          file: null,
+          order: serverItem.order,
+          mimetype: serverItem.mimetype,
+        }));
 
-            if (type === 'banners') {
-              this.banners = [...serverItems];
-            } else {
-              this.images = [...serverItems];
-            }
-            this.updateFormArrays();
-            return response;
-          }
-          return response.data;
-        }),
-        switchMap(() => {
-          return this.landingPageService.getLandingPageInformation(
-            this.landingPageData!.id!,
-          );
-        }),
-        finalize(() => {
-          this.loading = false;
-        }),
-      )
-      .subscribe({
-        next: (landingPageData: any) => {
-          this.section = landingPageData;
-          this.updateWithNewData(landingPageData);
-          this.mediaUpdated.emit(landingPageData);
-          this.cdr.detectChanges();
-          requestAnimationFrame(() => {
-            window.scrollTo(0, scrollPosition);
-            focusedElement?.focus();
-          });
-        },
-        error: (err) => {
-          this.refreshAndUpdateData();
-        },
+        if (type === 'banners') {
+          this.banners = [...serverItems];
+        } else {
+          this.images = [...serverItems];
+        }
       });
   }
 
@@ -245,7 +197,7 @@ export class HallMediaComponent implements OnChanges {
     }
 
     this.loading = true;
-    const uploads: Observable<MediaUploadResponse | null>[] = [];
+    const uploads: Observable<MediaOrderItem[] | null>[] = [];
 
     if (bannersToUpload.length) {
       uploads.push(

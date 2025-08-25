@@ -10,12 +10,11 @@ export class AnalyticsGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(): boolean {
-    return true;
-  //   if (TokenHelper.hasAiFeature()) {
-  //     return true;
-  //   }
-  //
-  //   this.router.navigate(['/dashboard']);
-  //   return false;
+    if (TokenHelper.hasAiFeature()) {
+      return true;
+    }
+
+    this.router.navigate(['/dashboard']);
+    return false;
   }
 }

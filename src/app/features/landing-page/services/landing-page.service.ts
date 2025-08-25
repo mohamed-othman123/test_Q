@@ -3,15 +3,15 @@ import {
   CreateQuestionDto,
   LandingGeneralInformationDto,
   LandingPageResponse,
+  MediaOrderItem,
   MediaOrderResponse,
-  MediaUploadResponse,
   UpdateImagesDto,
   UpdateLandingGeneralInformationsDto,
   UpdateLocationsDto,
   UpdateQuestionDto,
   UpdateSocialLinksDto,
 } from '@admin-landing-page/models/landing-page.model';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable, tap} from 'rxjs';
 import {
   CreateFeatureDto,
@@ -96,7 +96,7 @@ export class LandingPageService {
     sectionId: number,
     files: File[],
     type: 'banners' | 'images',
-  ): Observable<MediaUploadResponse> {
+  ): Observable<MediaOrderItem[]> {
     const formData = new FormData();
 
     formData.append('sectionId', sectionId.toString());
@@ -105,7 +105,7 @@ export class LandingPageService {
       formData.append('images', file);
     });
 
-    return this.http.post<MediaUploadResponse>(
+    return this.http.post<MediaOrderItem[]>(
       `${this.apiLandingPagesUrl}/${type}`,
       formData,
     );

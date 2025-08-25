@@ -98,7 +98,7 @@ export class ViewRefundRequestComponent {
         this.lang === 'en' ? 'Bank Account' : 'حساب بنكي',
       [PaymentMethodType.E_WALLET]:
         this.lang === 'en' ? 'E-Wallet' : 'محفظة إلكترونية',
-      [PaymentMethodType.POS]: this.lang === 'en' ? 'POS' : 'نقاط البيع',
+      [PaymentMethodType.POS]: this.lang === 'en' ? 'POS' : 'نقطة بيع',
     };
 
     return (

@@ -1,11 +1,4 @@
-import {
-  Component,
-  input,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {PermissionTypes} from '@auth/models';
@@ -16,13 +9,12 @@ import {PurchaseCategory} from '@purchase-categories/models/purchase-category.mo
 import {ExpensesType} from '@purchases/models/purchase-model';
 import {Service} from '@services/models';
 import {Supplier, SupplierProduct} from '@suppliers/models/supplier';
-import {SelectItemGroup} from 'primeng/api';
 
 @Component({
-    selector: 'app-supplier-products-services',
-    templateUrl: './supplier-products-services.component.html',
-    styleUrl: './supplier-products-services.component.scss',
-    standalone: false
+  selector: 'app-supplier-products-services',
+  templateUrl: './supplier-products-services.component.html',
+  styleUrl: './supplier-products-services.component.scss',
+  standalone: false,
 })
 export class SupplierProductsServicesComponent implements OnInit {
   @Input() form!: FormGroup;
@@ -31,7 +23,6 @@ export class SupplierProductsServicesComponent implements OnInit {
   @Input() products!: SupplierProduct[];
   @Input() services!: Service[];
 
-  isViewMode = false;
   isEditMode = false;
 
   ExpensesType = ExpensesType;
@@ -63,7 +54,9 @@ export class SupplierProductsServicesComponent implements OnInit {
     private fb: FormBuilder,
     private rote: ActivatedRoute,
     private authService: AuthService,
-  ) {}
+  ) {
+    this.isEditMode = rote.snapshot.data['mode'] === 'edit';
+  }
 
   ngOnInit(): void {}
 

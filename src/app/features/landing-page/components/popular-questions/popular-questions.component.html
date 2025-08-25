@@ -4,19 +4,13 @@
       <h4>{{ 'landing.popularQuestions' | translate }}</h4>
       <div class="header-actions">
         @if (!isEditMode && questions.length > 0) {
-          <button
-            type="button"
-            class="edit-button"
-            (click)="toggleEditMode()">
+          <button type="button" class="edit-button" (click)="toggleEditMode()">
             <i class="pi pi-pencil"></i>
             {{ 'common.edit' | translate }}
           </button>
         }
         @if (!isEditMode && questions.length === 0) {
-          <button
-            type="button"
-            class="add-button"
-            (click)="addQuestion()">
+          <button type="button" class="add-button" (click)="addQuestion()">
             <i class="pi pi-plus"></i>
             {{ 'landing.addQuestion' | translate }}
           </button>
@@ -39,14 +33,18 @@
         icon="pi pi-question-circle"
         [title]="'landing.noQuestions'"
         [description]="'landing.addFirstQuestion'"
-      [disabled]="questions.length >= maxQuestions"></app-empty-data>
+        [disabled]="questions.length >= maxQuestions"></app-empty-data>
     }
     <div
       class="questions-list"
       cdkDropList
       (cdkDropListDropped)="onDrop($event)"
       [cdkDropListDisabled]="!isEditMode">
-      @for (questionGroup of questions.controls; track questionGroup; let i = $index) {
+      @for (
+        questionGroup of questions.controls;
+        track questionGroup;
+        let i = $index
+      ) {
         <div class="question-item" cdkDrag [formGroup]="$any(questionGroup)">
           <!-- View Mode -->
           @if (!isEditMode) {
@@ -59,17 +57,17 @@
                 <h5>{{ questionGroup.get('question')?.value }}</h5>
                 <i
                   class="pi"
-              [ngClass]="{
-                'pi-chevron-down': !expandedQuestions.has(i),
-                'pi-chevron-up': expandedQuestions.has(i),
-              }"></i>
+                  [ngClass]="{
+                    'pi-chevron-down': !expandedQuestions.has(i),
+                    'pi-chevron-up': expandedQuestions.has(i),
+                  }"></i>
               </div>
               @if (expandedQuestions.has(i)) {
                 <div class="answer-content">
                   <div
-              [innerHTML]="
-                getSafeHtml(questionGroup.get('answer')?.value)
-              "></div>
+                    [innerHTML]="
+                      getSafeHtml(questionGroup.get('answer')?.value)
+                    "></div>
                 </div>
               }
             </div>
@@ -90,8 +88,8 @@
                 <span class="question-number">{{ i + 1 }}</span>
                 <div class="question-title">
                   {{
-                  questionGroup.get('question')?.value || 'landing.newQuestion'
-                  | translate
+                    questionGroup.get('question')?.value ||
+                      'landing.newQuestion' | translate
                   }}
                 </div>
                 <button
@@ -102,10 +100,10 @@
                 </button>
                 <i
                   class="pi"
-              [ngClass]="{
-                'pi-chevron-down': !expandedQuestions.has(i),
-                'pi-chevron-up': expandedQuestions.has(i),
-              }"></i>
+                  [ngClass]="{
+                    'pi-chevron-down': !expandedQuestions.has(i),
+                    'pi-chevron-up': expandedQuestions.has(i),
+                  }"></i>
               </div>
               @if (expandedQuestions.has(i)) {
                 <div class="question-edit-form">
@@ -117,6 +115,7 @@
                     [placeholder]="'landing.questionPlaceholder' | translate">
                   </app-input>
                   <app-rich-text-editor
+                    [isSimple]="true"
                     [formControl]="$any(questionGroup.get('answer'))"
                     [placeholder]="'landing.answerPlaceholder' | translate"
                     [label]="'landing.answer' | translate"
@@ -139,14 +138,14 @@
           class="p-button-secondary"
           [label]="'common.cancel' | translate"
           icon="pi pi-times"
-        (click)="cancelEdit()"></button>
+          (click)="cancelEdit()"></button>
         <button
           type="button"
           pButton
           icon="pi pi-save"
           [label]="'common.save' | translate"
           (click)="saveQuestions()"
-        [disabled]="questions.invalid || isSaving"></button>
+          [disabled]="questions.invalid || isSaving"></button>
       </div>
     }
   </div>

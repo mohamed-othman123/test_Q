@@ -4,7 +4,6 @@ import { AnalyticsOverviewComponent } from './components/analytics-overview/anal
 import { DashboardListComponent } from './components/dashboard-list/dashboard-list.component';
 import { DashboardViewerComponent } from './components/dashboard-viewer/dashboard-viewer.component';
 import { QuestionViewerComponent } from './components/question-viewer/question-viewer.component';
-import {AiChatComponent} from './components/ai-chat/ai-chat.component';
 import {AnalyticsGuard} from '@core/guards/analytics.guard';
 
 const routes: Routes = [
@@ -31,12 +30,6 @@ const routes: Routes = [
     component: QuestionViewerComponent,
     canActivate: [AnalyticsGuard],
     data: { title: 'pageTitles.analyticsQuestion' }
-  },
-  {
-    path: 'ai-chat',
-    component: AiChatComponent,
-    canActivate: [AnalyticsGuard],
-    data: { title: 'pageTitles.aiChat' }
   }
 ];
 

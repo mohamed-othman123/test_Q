@@ -166,6 +166,7 @@
       }
 
       <app-dropdown
+        [dataKey]="'id'"
         [control]="formControls.client"
         [options]="bookingFacadeService.clients"
         [optionLabel]="'name'"

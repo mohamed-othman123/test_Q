@@ -33,7 +33,8 @@ export class ApiConfigService {
     'version': 'v1',
     'refund-requests': 'v1',
     'contract': 'v1',
-    'analytics': 'v1'
+    'analytics': 'v1',
+    'chat': 'v1'
   };
 
   constructor(@Inject(APP_ENVIRONMENT) private env: Environment) {}

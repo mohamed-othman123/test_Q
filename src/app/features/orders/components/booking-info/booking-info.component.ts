@@ -137,13 +137,11 @@ export class BookingInfoComponent implements OnDestroy, OnInit {
   private handleNewlyAddedClient(newClient: any) {
     const currentHall = this.hallsService.getCurrentHall();
     if (currentHall) {
-      const currentClient = this.formControls.client.value;
-      if (!currentClient || newClient) {
-        setTimeout(() => {
-          this.formControls.client.setValue(newClient);
+      this.bookingFacadeService.getClients().subscribe(() => {
+        this.form.patchValue({
+          client: newClient,
         });
-      }
-      this.bookingFacadeService.getClients().subscribe(noop);
+      });
     }
   }
 

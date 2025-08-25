@@ -8,8 +8,7 @@
         [optionLabel]="lang.lang === 'ar' ? 'name_ar' : 'name'"
         [optionValue]="'id'"
         [placeholder]="'purchases.expensesCategoryPlaceholder' | translate"
-        [label]="'purchases.expensesCategory' | translate"
-        [disabled]="isViewMode">
+        [label]="'purchases.expensesCategory' | translate">
         <i class="pi pi-list" style="color: gray"></i>
       </app-dropdown>
     </div>
@@ -18,8 +17,7 @@
         [control]="$any(form.get('expensesDescription'))"
         controlName="expensesDescription"
         [label]="'purchases.expensesDescription' | translate"
-        [placeholder]="'purchases.enterExpensesDescription' | translate"
-        [disabled]="isViewMode || isEditMode">
+        [placeholder]="'purchases.enterExpensesDescription' | translate">
       </app-input>
     </div>
   </div>
@@ -38,7 +36,7 @@
           [inert]="isEditMode">
         </app-dropdown>
       </div>
-      @if (!isEditMode && !isViewMode) {
+      @if (!isEditMode) {
         <span
           *appHasPermission="['create:suppliers']"
           class="col-md-1"
@@ -133,7 +131,6 @@
                       ? ('purchases.enterSupplierService' | translate)
                       : ('purchases.enterSupplierProduct' | translate)
                   "
-                  [disabled]="isViewMode"
                   [showClear]="true"
                   (onClear)="clearItemValues(i, false)">
                 </app-input>
@@ -153,7 +150,6 @@
                       ? ('purchases.enterSupplierService' | translate)
                       : ('purchases.enterSupplierProduct' | translate)
                   "
-                  [disabled]="isViewMode"
                   [showClear]="
                     form.get('expensesType')?.value ===
                     ExpensesType.generalExpenses
@@ -179,7 +175,7 @@
                   ? ('purchases.enterPrice' | translate)
                   : ('purchases.cost' | translate)
               "
-              [disabled]="isViewMode || item.get('id')?.value">
+              [disabled]="item.get('id')?.value">
             </app-input>
           </div>
           <div class="col-md-2 col-12">
@@ -241,8 +237,7 @@
         pButton
         icon="pi pi-plus"
         [label]="'purchases.addNewItem' | translate"
-        (click)="addNewItem()"
-        [disabled]="isViewMode"></button>
+        (click)="addNewItem()"></button>
     </div>
   }
 </div>

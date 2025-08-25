@@ -10,18 +10,21 @@ import {Router} from '@angular/router';
 import {noDoubleSpaceValidator} from '@core/validators';
 
 @Component({
-    selector: 'app-landing-page',
-    templateUrl: './landing-page.component.html',
-    styleUrls: ['./landing-page.component.scss'],
-    animations: [
-        trigger('fadeSlide', [
-            transition(':enter', [
-                style({ opacity: 0, transform: 'translateY(-20px)' }),
-                animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
-            ]),
-        ]),
-    ],
-    standalone: false
+  selector: 'app-landing-page',
+  templateUrl: './landing-page.component.html',
+  styleUrls: ['./landing-page.component.scss'],
+  animations: [
+    trigger('fadeSlide', [
+      transition(':enter', [
+        style({opacity: 0, transform: 'translateY(-20px)'}),
+        animate(
+          '400ms ease-out',
+          style({opacity: 1, transform: 'translateY(0)'}),
+        ),
+      ]),
+    ]),
+  ],
+  standalone: false,
 })
 export class LandingPageComponent implements OnInit, OnDestroy {
   form!: FormGroup;
@@ -115,7 +118,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
       ],
       email: ['', [Validators.email, Validators.required]],
       phoneNumber: ['', Validators.required],
-      aboutHall: ['', [Validators.maxLength(500), noDoubleSpaceValidator()]],
+      aboutHall: ['', [Validators.maxLength(750), noDoubleSpaceValidator()]],
 
       hallBanner: this.fb.array([]),
       hallClients: this.fb.array([]),

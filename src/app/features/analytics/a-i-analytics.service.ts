@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiConfigService } from '@core/services/api-config.service';
@@ -34,14 +34,6 @@ export interface Database {
   name: string;
   engine: string;
   created_at: string;
-}
-
-export interface AIChatMessage {
-  id: string;
-  message: string;
-  hallIds: number[];
-  timestamp: Date;
-  type: 'user' | 'assistant';
 }
 
 export interface AIChatRequest {
@@ -117,16 +109,6 @@ export class AIAnalyticsService {
     }
 
     return this.http.get<QuestionUrl>(url, { params });
-  }
-
-  sendAIChatMessage(request: AIChatRequest): Observable<AIChatResponse> {
-    const url = `${this.apiAnalyticsUrl}/ai-chat`;
-
-    const headers = new HttpHeaders({
-      'X-Skip-Global-Loader': 'true'
-    });
-
-    return this.http.post<AIChatResponse>(url, request, { headers });
   }
 
   getDatabases(): Observable<Database[]> {

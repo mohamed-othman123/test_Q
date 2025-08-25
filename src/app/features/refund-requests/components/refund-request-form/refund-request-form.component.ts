@@ -94,7 +94,7 @@ export class RefundRequestFormComponent implements OnInit, OnDestroy {
       clientPaymentMethod,
       beneficiaryType: formValue.beneficiary_type,
       beneficiaryName: formValue.beneficiary_name,
-      beneficiaryMobile: formValue.beneficiary_mobile.internationalNumber,
+      beneficiaryMobile: formValue.beneficiary_mobile?.internationalNumber,
       status: formValue.status,
       rejectReason: formValue.rejectReason,
     };

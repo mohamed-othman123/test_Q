@@ -10,7 +10,7 @@
         [optionValue]="'id'"
         [placeholder]="'purchases.expensesCategoryPlaceholder' | translate"
         [label]="'purchases.expensesCategory' | translate"
-        [disabled]="isViewMode">
+        [disabled]="isEditMode">
         <i class="pi pi-list" style="color: gray"></i>
       </app-dropdown>
     </div>
@@ -54,7 +54,6 @@
     }
     @if (
       !isEditMode &&
-      !isViewMode &&
       form.get('expensesType')?.value === ExpensesType.generalExpenses
     ) {
       <span
@@ -101,7 +100,6 @@
                 [optionLabel]="lang.lang === 'ar' ? 'nameAr' : 'name'"
                 [placeholder]="'purchases.selectExpenseElement' | translate"
                 (onChange)="onElementSelect($event, i)"
-                [disabled]="isViewMode"
                 [showClear]="!!item.get('name')?.value"
                 (onClear)="clearElementValues(i, false)"
                 [showAddNew]="canAddExpenseElement()"
@@ -132,7 +130,6 @@
                       ? ('purchases.addExpenseElement' | translate)
                       : ('purchases.enterPurchaseItemName' | translate)
                   "
-                  [disabled]="isViewMode"
                   [showClear]="
                     form.get('expensesType')?.value ===
                     ExpensesType.generalExpenses
@@ -162,7 +159,6 @@
                       ? ('purchases.addExpenseElement' | translate)
                       : ('purchases.enterPurchaseItemName' | translate)
                   "
-                  [disabled]="isViewMode"
                   [showClear]="
                     form.get('expensesType')?.value ===
                     ExpensesType.generalExpenses
@@ -188,7 +184,7 @@
                   ? ('purchases.enterPrice' | translate)
                   : ('purchases.cost' | translate)
               "
-              [disabled]="isViewMode || item.get('id')?.value">
+              [disabled]="item.get('id')?.value">
             </app-input>
           </div>
           <div class="col-md-2 col-12">
@@ -255,8 +251,7 @@
             ? ('purchases.addNewElement' | translate)
             : ('purchases.addNewGeneralItem' | translate)
         "
-        (click)="addNewItem()"
-        [disabled]="isViewMode"></button>
+        (click)="addNewItem()"></button>
     </div>
   }
 </div>

@@ -35,7 +35,7 @@
     "clients": "Clients",
     "services": "Services",
     "expenses": "Expenses",
-    "expensesCategory": "Expense Category",
+    "expensesCategory": "Expenses categories and items",
     "suppliers": "Suppliers",
     "website": "Website",
     "permissions": "Occupations",
@@ -51,7 +51,8 @@
     "expensesItems": "Expenses Items",
     "discounts": "Discounts",
     "refundRequests": "Refund Requests",
-    "analytics": "Analytics"
+    "analytics": "Analytics",
+    "aiChat": "AI Assistant"
   },
   "pageTitles": {
     "appName": "Qaatk Online",
@@ -96,7 +97,7 @@
     "viewJob": "View Job Details",
     "employees": "Employees",
     "paymentMethods": "Payment Methods",
-    "expenseCategories": "Expense Categories",
+    "expenseCategories": "Expenses categories and items",
     "expenseItem": "Expense Items",
     "addNewExpenseItem": "Add New Expense Item",
     "editExpenseItem": "Edit Expense Item",
@@ -105,7 +106,8 @@
     "analytics": "Analytics",
     "dashboards": "Dashboards",
     "analyticsDashboard": "Dashboard View",
-    "analyticsQuestion": "Question View"
+    "analyticsQuestion": "Question View",
+    "aiChat": "AI Analytics Assistant"
   },
   "clients": {
     "mobileNo": "Mobile Number",
@@ -507,7 +509,8 @@
     "section_deleted": "Hall section deleted successfully",
     "team_member_added": "Team member added successfully",
     "team_member_updated": "Team member updated successfully",
-    "team_member_deleted": "Team member deleted successfully"
+    "team_member_deleted": "Team member deleted successfully",
+    "brandColorsDescription": "Brand colors are the primary colors that represent your hall website. You must first choose the logo image to analyze its primary and secondary colors in order to customize the hall website’s appearance."
   },
   "events": {
     "name": "Event name in Arabic",
@@ -1107,7 +1110,12 @@
     "expensesTypePlaceholder": "Select the expense type",
     "purchaseCategoryAdded": "Purchase category has been created",
     "purchaseCategoryUpdated": "Purchase category has been updated",
-    "purchaseCategory": "Purchase Category"
+    "purchaseCategory": "Purchase Category",
+    "deleteCategory": "Do you want to delete the expense category?",
+    "addExpenseItem": "Add Expense Item",
+    "General": "General Expenses",
+    "Purchases": "Purchases",
+    "description": "A category is a broad group used to classify expenses according to their type or purpose."
   },
   "refunds": {
     "title": "Refund Requests",
@@ -1143,7 +1151,8 @@
       "in_progress": "Requests Under Review",
       "completed": "Cannot edit a completed request",
       "rejected": "Cannot edit rejected requests"
-    }
+    },
+    "orderNumber": "Order Number"
   },
   "dashboard": {
     "totalBookings": "Total Bookings",
@@ -1374,7 +1383,10 @@
     "sectionCapacity": "Section Capacity",
     "sectionsDescription": "Configure which sections appear on your landing page",
     "activeSections": "Active Sections",
-    "availableSections": "Available Sections"
+    "availableSections": "Inactive sections",
+    "noActiveSections": "No active sections available",
+    "noActiveSectionsDescription": "You can activate sections to display them on your landing page",
+    "section": "Section"
   },
   "errors": {
     "required": "{{fieldName}} Required",
@@ -1530,7 +1542,8 @@
       "correspondsTo": "Corresponds to",
       "hijriShort": "H",
       "gregorianShort": "G"
-    }
+    },
+    "orderDate": "Order Date"
   },
   "MONTHS_SHORT": {
     "1": "Jan",
@@ -1829,7 +1842,8 @@
     "notesPlaceholder": "Enter notes",
     "addExpenseAccount": "Add Another Account",
     "expenseAccount": "Expense Account",
-    "addNewExpenseItem": "Add New Expense Item"
+    "addNewExpenseItem": "Add New Expense Item",
+    "description": "An item is a specific expense entry that belongs to a category. It describes the actual transaction."
   },
   "discounts": {
     "title": "Discounts",
@@ -1919,6 +1933,62 @@
     "signaturePlaceholder": "Enter Full signature name"
   },
   "analytics": {
+    "aiChat": {
+      "title": "AI Analytics Assistant",
+      "subtitle": "Ask questions about your data and get instant visualizations",
+      "welcome": "👋 Hi! I'm your AI Analytics Assistant. Ask me anything about your data and I'll create beautiful visualizations for you!",
+      "placeholder": "Ask me anything about your data...",
+      "hallsContext": "Halls Context",
+      "selectHalls": "Select Halls for Analysis Context",
+      "selectAll": "Select All",
+      "clearAll": "Clear All",
+      "hallsSelected": "{{count}} halls selected",
+      "quickActions": {
+        "revenue": "Revenue Analysis",
+        "bookings": "Booking Trends",
+        "customers": "Customer Insights"
+      },
+      "prompts": {
+        "title": "Try asking me:",
+        "examples": [
+          "Show me booking trends for the last 3 months",
+          "What's the revenue by hall type?",
+          "Display customer satisfaction scores",
+          "Show me peak booking hours",
+          "Compare this month's performance to last month"
+        ]
+      },
+      "states": {
+        "initializing": "Initializing AI Assistant...",
+        "processing": "Analyzing your request and generating visualization...",
+        "generating": "Creating your visualization...",
+        "error": "I apologize, but I encountered an error while processing your request. Please try again or rephrase your question.",
+        "retry": "Retry"
+      },
+      "chart": {
+        "title": "Generated Visualization",
+        "fullscreen": "View Fullscreen",
+        "types": {
+          "bar": "Bar Chart",
+          "line": "Line Chart",
+          "pie": "Pie Chart",
+          "table": "Data Table",
+          "metric": "Metrics",
+          "scatter": "Scatter Plot"
+        }
+      },
+      "validation": {
+        "required": "Please enter a message",
+        "minLength": "Message must be at least 3 characters long"
+      },
+      "context": {
+        "indicator": "{{count}} halls in context",
+        "withCurrent": "{{count}} halls (including current)",
+        "noHalls": "No halls selected",
+        "currentHallOnly": "Current hall only",
+        "currentHallIncluded": "Current hall included"
+      }
+    },
     "title": "Analytics Dashboard",
     "subtitle": "View comprehensive reports, dashboards, and data visualizations for your business insights",
     "defaultDashboardDescription": "Interactive dashboard with key business metrics and insights",

@@ -412,7 +412,9 @@ export class OrderFormService {
       subtotalAfterDisc: this.paymentForm.controls.amountAfterDiscount.value!,
       vat: this.paymentForm.controls.vat.value!,
       totalPayable: this.paymentForm.controls.totalPayable.value,
-      attachments: this.attachmentsForm.controls.attachments.value,
+      attachments: this.updatedBookingId
+        ? null
+        : this.attachmentsForm.controls.attachments.value,
     };
     const paidAmount = +this.paymentForm.controls.paidAmount.value!;
 

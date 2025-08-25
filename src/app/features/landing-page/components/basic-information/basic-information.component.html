@@ -9,7 +9,7 @@
           class="lp-btn"
           icon="pi pi-pencil"
           [label]="'common.edit' | translate"
-        (click)="toggleEditMode()"></button>
+          (click)="toggleEditMode()"></button>
       }
       @if (isEditMode) {
         <button
@@ -18,7 +18,7 @@
           class="lp-btn"
           [label]="'common.cancel' | translate"
           icon="pi pi-times"
-        (click)="cancelEdit()"></button>
+          (click)="cancelEdit()"></button>
       }
     </div>
   </div>
@@ -58,37 +58,44 @@
 
     <!-- Edit Mode -->
     @if (isEditMode) {
-      <app-input
-        [control]="hallNameControl"
-        [controlName]="'hallName'"
-        [inputType]="'text'"
-        [placeholder]="'landing.hallDomainNamePlaceholder' | translate"
-        [label]="'landing.hallDomainName' | translate"
-        [disabled]="!isEditMode">
-      </app-input>
-      <app-input
-        [control]="emailControl"
-        [controlName]="'email'"
-        [inputType]="'email'"
-        [placeholder]="'landing.emailPlaceholder' | translate"
-        [label]="'landing.email' | translate"
-        [disabled]="!isEditMode">
-      </app-input>
-      <app-phone-input
-        [control]="phoneNumberControl"
-        [label]="'landing.phoneNumber' | translate"
-        [placeholder]="'landing.phoneNumberPlaceholder' | translate"
-        [phoneNumber]="formattedPhoneNumber"
-        [isViewOnly]="!isEditMode">
-      </app-phone-input>
-      <app-rich-text-editor
-        [formControl]="aboutHallControl"
-        [placeholder]="'landing.aboutHallPlaceholder' | translate"
-        [label]="'landing.aboutHall' | translate"
-        [required]="false"
-        [maxLength]="500"
-        [disabled]="!isEditMode">
-      </app-rich-text-editor>
+      <div class="row span-2">
+        <app-input
+          class="col-md-6"
+          [control]="hallNameControl"
+          [controlName]="'hallName'"
+          [inputType]="'text'"
+          [placeholder]="'landing.hallDomainNamePlaceholder' | translate"
+          [label]="'landing.hallDomainName' | translate"
+          [disabled]="!isEditMode">
+        </app-input>
+        <app-input
+          class="col-md-6"
+          [control]="emailControl"
+          [controlName]="'email'"
+          [inputType]="'email'"
+          [placeholder]="'landing.emailPlaceholder' | translate"
+          [label]="'landing.email' | translate"
+          [disabled]="!isEditMode">
+        </app-input>
+        <app-phone-input
+          class="col-md-6"
+          [control]="phoneNumberControl"
+          [label]="'landing.phoneNumber' | translate"
+          [placeholder]="'landing.phoneNumberPlaceholder' | translate"
+          [phoneNumber]="formattedPhoneNumber"
+          [isViewOnly]="!isEditMode">
+        </app-phone-input>
+        <app-rich-text-editor
+          class="col-md-6"
+          [isSimple]="true"
+          [formControl]="aboutHallControl"
+          [placeholder]="'landing.aboutHallPlaceholder' | translate"
+          [label]="'landing.aboutHall' | translate"
+          [required]="false"
+          [maxLength]="500"
+          [disabled]="!isEditMode">
+        </app-rich-text-editor>
+      </div>
     }
 
     <div class="form-actions">
@@ -97,7 +104,7 @@
           type="submit"
           pButton
           icon="pi pi-save"
-        [label]="'common.save' | translate"></button>
+          [label]="'common.save' | translate"></button>
       }
     </div>
   </form>

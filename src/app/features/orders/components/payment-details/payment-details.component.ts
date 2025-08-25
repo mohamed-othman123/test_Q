@@ -29,10 +29,10 @@ import {Service} from '@services/models';
 import {startWith, Subject, Subscription, takeUntil} from 'rxjs';
 
 @Component({
-    selector: 'app-payment-details',
-    templateUrl: './payment-details.component.html',
-    styleUrl: './payment-details.component.scss',
-    standalone: false
+  selector: 'app-payment-details',
+  templateUrl: './payment-details.component.html',
+  styleUrl: './payment-details.component.scss',
+  standalone: false,
 })
 export class PaymentDetailsComponent implements OnInit, OnDestroy {
   paymentTypes!: Item[];
@@ -268,6 +268,8 @@ export class PaymentDetailsComponent implements OnInit, OnDestroy {
         return;
       }
 
+      this.formControls.pricingType.setValue(this.bookingPrices.pricingType);
+
       if (
         this.bookingPrices.priceCalculationType ===
         HallPriceCalculationType.BOOKING_TIME
@@ -282,8 +284,6 @@ export class PaymentDetailsComponent implements OnInit, OnDestroy {
         this.isMatchedPriceCalculation = true;
         return;
       }
-
-      this.formControls.pricingType.setValue(this.bookingPrices.pricingType);
 
       if (this.bookingPrices.priceCalculationType === 'FIXED_PRICE') {
         this.formControls.fixedBookingPrice.setValue(

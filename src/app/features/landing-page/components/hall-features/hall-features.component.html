@@ -4,19 +4,13 @@
       <h4>{{ 'landing.hallFeatures' | translate }}</h4>
       <div class="header-actions">
         @if (!isEditMode && hallFeatures.length > 0) {
-          <button
-            type="button"
-            class="edit-button"
-            (click)="toggleEditMode()">
+          <button type="button" class="edit-button" (click)="toggleEditMode()">
             <i class="pi pi-pencil"></i>
             {{ 'common.edit' | translate }}
           </button>
         }
         @if (!isEditMode && hallFeatures.length === 0) {
-          <button
-            type="button"
-            class="add-button"
-            (click)="addFeature()">
+          <button type="button" class="add-button" (click)="addFeature()">
             <i class="pi pi-plus"></i>
             {{ 'landing.addFeature' | translate }}
           </button>
@@ -26,11 +20,11 @@
             type="button"
             class="add-button"
             (click)="addFeature()"
-        [disabled]="
-          hallFeatures.length >= maxFeatures ||
-          hasInvalidFeature() ||
-          !!activeFeature
-        ">
+            [disabled]="
+              hallFeatures.length >= maxFeatures ||
+              hasInvalidFeature() ||
+              !!activeFeature
+            ">
             <i class="pi pi-plus"></i>
             {{ 'landing.addFeature' | translate }}
           </button>
@@ -43,7 +37,7 @@
           icon="pi pi-list"
           [title]="'landing.noFeatures'"
           [description]="'landing.addFirstFeature'"
-        [disabled]="hallFeatures.length >= maxFeatures"></app-empty-data>
+          [disabled]="hallFeatures.length >= maxFeatures"></app-empty-data>
       </div>
     }
     <div
@@ -58,8 +52,7 @@
           [cdkDragDisabled]="!isEditMode || !!activeFeature">
           <!-- View Mode -->
           @if (!isEditMode || feature !== activeFeature) {
-            <div
-              class="feature-content">
+            <div class="feature-content">
               <div class="feature-icon">
                 <fa-icon [icon]="feature.get('icon')?.value | faIcon"></fa-icon>
               </div>
@@ -128,13 +121,13 @@
                     pButton
                     icon="pi pi-times"
                     label="{{ 'common.cancel' | translate }}"
-                  (click)="cancelEdit()"></button>
+                    (click)="cancelEdit()"></button>
                   <button
                     type="submit"
                     pButton
                     icon="pi pi-check"
                     label="{{ 'common.save' | translate }}"
-                  [disabled]="feature.invalid"></button>
+                    [disabled]="feature.invalid"></button>
                 </div>
               </div>
             </form>
@@ -148,8 +141,8 @@
           type="button"
           pButton
           class="p-button-secondary"
-          [label]="'common.done' | translate"
-        (click)="toggleEditMode()"></button>
+          [label]="'common.save' | translate"
+          (click)="toggleEditMode()"></button>
       </div>
     }
   </div>

@@ -41,6 +41,7 @@ export class RefundListComponent extends Filter {
   protected override loadDataTable(filters: DataTableFilter) {
     this.refundRequestsService.getAll(filters).subscribe((response) => {
       this.refunds = response.items;
+      this.totalRecords = response.totalItems;
     });
   }
 

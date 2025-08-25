@@ -23,11 +23,11 @@ import {Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({
-    selector: 'app-basic-information',
-    templateUrl: './basic-information.component.html',
-    styleUrls: ['./basic-information.component.scss'],
-    viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
-    standalone: false
+  selector: 'app-basic-information',
+  templateUrl: './basic-information.component.html',
+  styleUrls: ['./basic-information.component.scss'],
+  viewProviders: [{provide: ControlContainer, useExisting: FormGroupDirective}],
+  standalone: false,
 })
 export class BasicInformationComponent implements OnChanges, OnInit, OnDestroy {
   @Output() landingPageCreated =
@@ -134,8 +134,17 @@ export class BasicInformationComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
+  isValidForm(): boolean {
+    return (
+      this.hallNameControl.valid &&
+      this.emailControl.valid &&
+      this.phoneNumberControl.valid &&
+      this.aboutHallControl.valid
+    );
+  }
+
   onSaveBasicInformation() {
-    if (!this.form.valid) {
+    if (!this.isValidForm()) {
       this.form.markAllAsTouched();
       return;
     }

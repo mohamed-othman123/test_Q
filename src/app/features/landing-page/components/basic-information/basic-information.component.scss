@@ -33,8 +33,9 @@
       grid-template-columns: repeat(2, 1fr);
       gap: variables.$space-2xl;
 
-      @include mixins.sm(max) {
-        grid-template-columns: 1fr;
+      @include mixins.md(max) {
+        // grid-template-columns: 1fr;
+        display: block;
       }
     }
 
@@ -63,5 +64,8 @@
       max-width: fit-content;
       margin-top: 2rem;
     }
+  }
+  .span-2 {
+    grid-column: span 2;
   }
 }

@@ -9,6 +9,7 @@
   selectionMode="multiple"
   [lazy]="true"
   [first]="first"
+  [totalRecords]="totalRecords"
   (onLazyLoad)="onLazyLoad($event)"
   [rowsPerPageOptions]="rowsPerPageOptions"
   [paginator]="refunds.length > 0 ? true : false">

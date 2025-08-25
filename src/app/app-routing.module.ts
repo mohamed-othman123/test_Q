@@ -223,6 +223,11 @@ const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'ai-chat',
+    loadChildren: () => import('./features/chat/chat.module').then((m) => m.ChatModule),
+    canActivate: [authGuard],
+  },
+  {
     path: 'customer-signature',
     loadChildren: () =>
       import('./features/customer-signature/customer-signature.module').then(

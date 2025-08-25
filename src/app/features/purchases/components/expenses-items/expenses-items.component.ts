@@ -1,5 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
 import {PermissionTypes} from '@auth/models';
 import {AuthService, LanguageService} from '@core/services';
 import {DrawerService} from '@core/services/drawer.service';
@@ -11,10 +12,10 @@ import {ExpensesType} from '@purchases/models/purchase-model';
 import {Subject, takeUntil} from 'rxjs';
 
 @Component({
-    selector: 'app-expenses-items',
-    templateUrl: './expenses-items.component.html',
-    styleUrl: './expenses-items.component.scss',
-    standalone: false
+  selector: 'app-expenses-items',
+  templateUrl: './expenses-items.component.html',
+  styleUrl: './expenses-items.component.scss',
+  standalone: false,
 })
 export class ExpensesItemsComponent implements OnInit, OnDestroy {
   @Input() form!: FormGroup;
@@ -24,7 +25,6 @@ export class ExpensesItemsComponent implements OnInit, OnDestroy {
 
   ExpensesType = ExpensesType;
 
-  isViewMode = false;
   isEditMode = false;
 
   destroy$ = new Subject<void>();
@@ -37,11 +37,17 @@ export class ExpensesItemsComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private authService: AuthService,
     private drawerService: DrawerService,
-  ) {}
+    private route: ActivatedRoute,
+  ) {
+    this.isEditMode = route.snapshot.data['mode'] === 'edit';
+  }
 
   ngOnInit(): void {
     this.addFirstItemIfNotExist();
     this.handelExpenseTypeChange();
+    if (this.isEditMode) {
+      this.form.get('expenseItemId')?.disable({emitEvent: false});
+    }
   }
 
   handelExpenseTypeChange() {

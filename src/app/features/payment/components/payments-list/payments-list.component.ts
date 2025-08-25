@@ -47,6 +47,7 @@ export class PaymentsListComponent extends Filter {
   protected override loadDataTable(filters: DataTableFilter) {
     this.paymentService.getPayments(filters).subscribe((response) => {
       this.payments = response.items;
+      this.totalRecords = response.totalItems;
     });
   }
 

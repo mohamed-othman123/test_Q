@@ -14,17 +14,17 @@ import Quill from 'quill';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
 @Component({
-    selector: 'app-rich-text-editor',
-    templateUrl: './rich-text-editor.component.html',
-    styleUrls: ['./rich-text-editor.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => RichTextEditorComponent),
-            multi: true,
-        },
-    ],
-    standalone: false
+  selector: 'app-rich-text-editor',
+  templateUrl: './rich-text-editor.component.html',
+  styleUrls: ['./rich-text-editor.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => RichTextEditorComponent),
+      multi: true,
+    },
+  ],
+  standalone: false,
 })
 export class RichTextEditorComponent
   implements ControlValueAccessor, OnChanges, OnDestroy, AfterViewInit
@@ -36,6 +36,7 @@ export class RichTextEditorComponent
   @Input() label: string = '';
   @Input() required: boolean = false;
   @Input() maxLength: number = 0;
+  @Input() isSimple: boolean = false;
 
   isEditMode: boolean = false;
   currentValue: string = '';
@@ -105,16 +106,18 @@ export class RichTextEditorComponent
   }
 
   private initializeQuill() {
+    const tools = !this.isSimple
+      ? [
+          [{'direction': 'rtl'}],
+          [{'align': []}],
+          [{'size': ['small', false, 'large', 'huge']}],
+          [{'list': 'ordered'}, {'list': 'bullet'}],
+          [{'color': []}, {'background': []}],
+        ]
+      : [];
+
     const toolbarOptions = {
-      container: [
-        ['bold', 'italic', 'underline', 'strike'],
-        [{'align': []}],
-        [{'direction': 'rtl'}],
-        [{'size': ['small', false, 'large', 'huge']}],
-        [{'list': 'ordered'}, {'list': 'bullet'}],
-        [{'color': []}, {'background': []}],
-        ['clean'],
-      ],
+      container: [['bold', 'underline', 'strike'], ...tools, ['clean']],
     };
 
     this.quill = new Quill(this.editorElement.nativeElement, {
