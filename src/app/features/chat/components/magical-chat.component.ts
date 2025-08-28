@@ -9,7 +9,9 @@ import {
   signal,
   computed,
   effect,
-  inject
+  inject,
+  Injector,
+  runInInjectionContext
 } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -56,6 +58,7 @@ export class MagicalChatComponent
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
   // private notificationService = inject(NotificationService); // Optional
+  private injector = inject(Injector);
 
   // Form
   chatForm: FormGroup = this.fb.group({
@@ -120,18 +123,21 @@ export class MagicalChatComponent
   });
 
   canSendMessage = computed(() => {
-    return (
-      this.chatForm.valid &&
-      !this.isLoading() &&
-      this.messageText().trim().length > 0 &&
-      this.connectionStatus() === 'connected'
-    );
+    const formValid = this.chatForm.valid;
+    const notLoading = !this.isLoading();
+    const hasContent = this.messageText().trim().length > 0;
+    const isConnected = this.connectionStatus() === 'connected';
+    const messageControl = this.chatForm.get('message');
+    const controlEnabled = messageControl?.enabled ?? true;
+
+    return formValid && notLoading && hasContent && isConnected && controlEnabled;
   });
 
   // Constructor and lifecycle
   constructor() {
     this.setupEffects();
     this.setupKeyboardShortcuts();
+    this.setupConversationEffects();
   }
 
   ngOnInit(): void {
@@ -179,6 +185,18 @@ export class MagicalChatComponent
       localStorage.setItem('ai-chat-sidebar', collapsed.toString());
     });
 
+    // Form control disabled state management
+    effect(() => {
+      const shouldDisable = this.isLoading() || this.connectionStatus() !== 'connected';
+      const messageControl = this.chatForm.get('message');
+
+      if (shouldDisable && messageControl?.enabled) {
+        messageControl.disable({ emitEvent: false });
+      } else if (!shouldDisable && messageControl?.disabled) {
+        messageControl.enable({ emitEvent: false });
+      }
+    });
+
     // Form value synchronization
     this.chatForm
       .get('message')
@@ -193,6 +211,27 @@ export class MagicalChatComponent
       if (messages.length > 0) {
         this.shouldScrollToBottom = true;
       }
+    });
+  }
+
+  private setupConversationEffects(): void {
+    // Effect for conversation loading
+    effect(() => {
+      const conversations = this.aiChatService.conversations();
+      this.conversations.set(conversations);
+
+      // Auto-select first conversation if none selected and conversations exist
+      if (conversations.length > 0 && !this.currentConversationId()) {
+        // Don't auto-select to allow new conversation
+        // this.selectConversation(conversations[0].id);
+      }
+    });
+
+    // Effect for message loading
+    effect(() => {
+      const messages = this.aiChatService.messages();
+      this.messages.set(messages);
+      this.shouldScrollToBottom = true;
     });
   }
 
@@ -271,18 +310,7 @@ export class MagicalChatComponent
   loadConversations(): void {
     const currentHall = this.hallsService.getCurrentHall();
     this.aiChatService.loadConversations(currentHall?.id);
-
-    // Subscribe to resource changes using effect
-    effect(() => {
-      const conversations = this.aiChatService.conversations();
-      this.conversations.set(conversations);
-
-      // Auto-select first conversation if none selected and conversations exist
-      if (conversations.length > 0 && !this.currentConversationId()) {
-        // Don't auto-select to allow new conversation
-        // this.selectConversation(conversations[0].id);
-      }
-    });
+    // Effect is now handled in setupConversationEffects()
   }
 
   selectConversation(conversationId: number): void {
@@ -299,13 +327,7 @@ export class MagicalChatComponent
 
   private loadMessagesForConversation(conversationId: number): void {
     this.aiChatService.loadMessages(conversationId);
-
-    // Subscribe to resource changes using effect
-    effect(() => {
-      const messages = this.aiChatService.messages();
-      this.messages.set(messages);
-      this.shouldScrollToBottom = true;
-    });
+    // Effect is now handled in setupConversationEffects()
   }
 
   startNewConversation(): void {

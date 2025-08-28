@@ -293,7 +293,6 @@
                           (input)="onInputChange($event)"
                           (focus)="isInputFocused.set(true)"
                           (blur)="isInputFocused.set(false)"
-                          [disabled]="isLoading() || connectionStatus() !== 'connected'"
                           maxlength="2000"></textarea>
 
             <div class="input-actions">

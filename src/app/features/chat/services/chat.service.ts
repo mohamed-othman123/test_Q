@@ -1,6 +1,7 @@
 import { Injectable, signal, computed, resource, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable, map, catchError, throwError, BehaviorSubject } from 'rxjs';
+import { Observable, map, catchError, throwError } from 'rxjs';
+import { ApiConfigService } from '@core/services/api-config.service';
 import {
   AIChatRequest,
   ApiMessage,
@@ -14,7 +15,8 @@ import {
 @Injectable({ providedIn: 'root' })
 export class AiChatService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:3001/ai-agent';
+  private apiConfigService = inject(ApiConfigService);
+  private baseUrl = this.apiConfigService.getApiBaseUrl('ai-agent');
 
   // Reactive state management with signals
   private conversationFilters = signal<{
@@ -33,32 +35,35 @@ export class AiChatService {
   private conversationsLoading = signal(false);
   private messagesLoading = signal(false);
 
-  // Fixed resource implementation for Angular 19
+  // Fixed resource implementation for Angular 19 with proper HttpClient usage
   conversationsResource = resource({
     loader: async ({ abortSignal }) => {
       this.conversationsLoading.set(true);
       const filters = this.conversationFilters();
 
       try {
-        let url = `${this.baseUrl}/conversations?page=${filters.page}&limit=${filters.limit}`;
-        if (filters.hallId) {
-          url += `&hallId=${filters.hallId}`;
+        // Ensure hallId is provided as it's required by the API
+        if (!filters.hallId) {
+          console.warn('hallId is required for conversations endpoint');
+          return [];
         }
 
-        const response = await fetch(url, {
-          signal: abortSignal,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Skip-Global-Loader': 'true'
-          }
-        });
+        const params = {
+          page: filters.page.toString(),
+          limit: filters.limit.toString(),
+          hallId: filters.hallId.toString()
+        };
 
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
+        const response = await this.http.get<ConversationResponse>(`${this.baseUrl}/conversations`, {
+          params,
+          headers: { 'X-Skip-Global-Loader': 'true' },
+          context: new AbortController().signal === abortSignal ? undefined : undefined
+        }).toPromise();
 
-        const data: ConversationResponse = await response.json();
-        return data.data || [];
+        return response?.data || [];
+      } catch (error) {
+        console.warn('AI service error for conversations:', error);
+        return [];
       } finally {
         this.conversationsLoading.set(false);
       }
@@ -73,37 +78,49 @@ export class AiChatService {
       this.messagesLoading.set(true);
 
       try {
-        const url = `${this.baseUrl}/conversations/${messageFilters.conversationId}/messages?page=${messageFilters.page}&limit=${messageFilters.limit}`;
+        const params = {
+          page: messageFilters.page.toString(),
+          limit: messageFilters.limit.toString()
+        };
 
-        const response = await fetch(url, {
-          signal: abortSignal,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Skip-Global-Loader': 'true'
+        const response = await this.http.get<MessagesResponse>(
+          `${this.baseUrl}/conversations/${messageFilters.conversationId}/messages`,
+          {
+            params,
+            headers: { 'X-Skip-Global-Loader': 'true' },
+            context: new AbortController().signal === abortSignal ? undefined : undefined
           }
-        });
+        ).toPromise();
 
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const data: MessagesResponse = await response.json();
-        return this.transformApiMessages(data.data || []);
+        return this.transformApiMessages(response?.data || []);
+      } catch (error) {
+        console.warn('AI service error for messages:', error);
+        return [];
       } finally {
         this.messagesLoading.set(false);
       }
     }
   });
 
-  // Computed signals for easy access
+  // Computed signals for easy access with error handling
   conversations = computed(() => {
-    const value = this.conversationsResource.value();
-    return Array.isArray(value) ? value : [];
+    try {
+      const value = this.conversationsResource.value();
+      return Array.isArray(value) ? value : [];
+    } catch (error) {
+      console.warn('Error accessing conversations resource:', error);
+      return [];
+    }
   });
 
   messages = computed(() => {
-    const value = this.messagesResource.value();
-    return Array.isArray(value) ? value : [];
+    try {
+      const value = this.messagesResource.value();
+      return Array.isArray(value) ? value : [];
+    } catch (error) {
+      console.warn('Error accessing messages resource:', error);
+      return [];
+    }
   });
 
   isLoadingConversations = computed(() => this.conversationsLoading());
