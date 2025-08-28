@@ -224,8 +224,11 @@ const routes: Routes = [
   },
   {
     path: 'ai-chat',
-    loadChildren: () => import('./features/chat/chat.module').then((m) => m.ChatModule),
+    loadChildren: () => import('./features/chat/chat-routing.module').then(m => m.ChatRoutingModule),
     canActivate: [authGuard],
+    data: {
+      title: 'AI Assistant',
+    }
   },
   {
     path: 'customer-signature',

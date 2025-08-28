@@ -1,84 +1,107 @@
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 
-export const chatAnimations = [
-  // Fade in and slide up animation for messages
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+  keyframes,
+  query,
+  stagger,
+  group
+} from '@angular/animations';
+
+export const magicalChatAnimations = [
   trigger('fadeInUp', [
     transition(':enter', [
-      style({
-        opacity: 0,
-        transform: 'translateY(20px) scale(0.95)'
-      }),
-      animate('300ms cubic-bezier(0.4, 0, 0.2, 1)', style({
-        opacity: 1,
-        transform: 'translateY(0) scale(1)'
-      }))
-    ])
-  ]),
-
-  // Slide down animation for dropdowns
-  trigger('slideDown', [
-    transition(':enter', [
-      style({
-        opacity: 0,
-        transform: 'translateY(-10px)'
-      }),
-      animate('200ms ease-out', style({
-        opacity: 1,
-        transform: 'translateY(0)'
-      }))
+      style({ opacity: 0, transform: 'translateY(30px)' }),
+      animate('400ms cubic-bezier(0.25, 0.8, 0.25, 1)',
+        style({ opacity: 1, transform: 'translateY(0)' })
+      )
     ]),
     transition(':leave', [
-      animate('200ms ease-in', style({
-        opacity: 0,
-        transform: 'translateY(-10px)'
-      }))
-    ])
-  ]),
-
-  // Pulse animation for loading states
-  trigger('pulse', [
-    state('in', style({ transform: 'scale(1)' })),
-    transition('* => *', [
-      animate('1s ease-in-out', keyframes([
-        style({ transform: 'scale(1)', opacity: 1, offset: 0 }),
-        style({ transform: 'scale(1.05)', opacity: 0.8, offset: 0.5 }),
-        style({ transform: 'scale(1)', opacity: 1, offset: 1 })
-      ]))
-    ])
-  ]),
-
-  // Bounce animation for buttons
-  trigger('bounce', [
-    transition(':enter', [
-      style({ transform: 'scale(0)' }),
-      animate('400ms cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-        style({ transform: 'scale(1)' })
+      animate('300ms cubic-bezier(0.25, 0.8, 0.25, 1)',
+        style({ opacity: 0, transform: 'translateY(-20px)' })
       )
     ])
   ]),
 
-  // Shake animation for errors
-  trigger('shake', [
-    transition('* => *', [
-      animate('500ms ease-in-out', keyframes([
-        style({ transform: 'translateX(0)', offset: 0 }),
-        style({ transform: 'translateX(-10px)', offset: 0.1 }),
-        style({ transform: 'translateX(10px)', offset: 0.2 }),
-        style({ transform: 'translateX(-10px)', offset: 0.3 }),
-        style({ transform: 'translateX(10px)', offset: 0.4 }),
-        style({ transform: 'translateX(-10px)', offset: 0.5 }),
-        style({ transform: 'translateX(10px)', offset: 0.6 }),
-        style({ transform: 'translateX(-10px)', offset: 0.7 }),
-        style({ transform: 'translateX(10px)', offset: 0.8 }),
-        style({ transform: 'translateX(0)', offset: 1 })
-      ]))
+  trigger('slideIn', [
+    transition(':enter', [
+      style({ opacity: 0, transform: 'translateX(-20px)' }),
+      animate('300ms ease-out',
+        style({ opacity: 1, transform: 'translateX(0)' })
+      )
     ])
   ]),
 
-  // Typing indicator animation
-  trigger('typing', [
-    state('active', style({ opacity: 1 })),
-    state('inactive', style({ opacity: 0.3 })),
-    transition('active <=> inactive', animate('600ms ease-in-out'))
+  trigger('messageAnimation', [
+    transition(':enter', [
+      style({
+        opacity: 0,
+        transform: 'translateY(20px) scale(0.95)',
+        filter: 'blur(4px)'
+      }),
+      animate('500ms cubic-bezier(0.25, 0.8, 0.25, 1)',
+        style({
+          opacity: 1,
+          transform: 'translateY(0) scale(1)',
+          filter: 'blur(0px)'
+        })
+      )
+    ])
+  ]),
+
+  trigger('sidebarSlide', [
+    state('expanded', style({
+      width: '320px',
+      opacity: 1
+    })),
+    state('collapsed', style({
+      width: '70px',
+      opacity: 0.9
+    })),
+    transition('expanded <=> collapsed', [
+      animate('400ms cubic-bezier(0.4, 0, 0.2, 1)')
+    ])
+  ]),
+
+  trigger('magicalAppear', [
+    transition(':enter', [
+      style({
+        opacity: 0,
+        transform: 'scale(0.8) rotateY(20deg)',
+        filter: 'blur(8px)'
+      }),
+      animate('600ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+        style({
+          opacity: 1,
+          transform: 'scale(1) rotateY(0deg)',
+          filter: 'blur(0px)'
+        })
+      )
+    ])
+  ]),
+
+  trigger('streamingText', [
+    state('streaming', style({
+      borderRight: '2px solid var(--chat-primary, #667eea)'
+    })),
+    transition('* => streaming', [
+      animate('0ms', style({ borderRight: '2px solid var(--chat-primary, #667eea)' }))
+    ])
+  ]),
+
+  trigger('listStagger', [
+    transition(':enter', [
+      query('.stagger-item', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        stagger('100ms', [
+          animate('400ms cubic-bezier(0.25, 0.8, 0.25, 1)',
+            style({ opacity: 1, transform: 'translateY(0)' })
+          )
+        ])
+      ], { optional: true })
+    ])
   ])
 ];
