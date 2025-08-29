@@ -2,7 +2,6 @@
   class="magical-chat-container"
   [attr.data-theme]="theme()"
   [class.sidebar-collapsed]="sidebarCollapsed()">
-  <!-- Enhanced Sidebar -->
   <aside
     class="chat-sidebar"
     [class.collapsed]="sidebarCollapsed()"
@@ -88,9 +87,7 @@
     </div>
   </aside>
 
-  <!-- Main Chat Area -->
   <main class="main-chat-area">
-    <!-- Enhanced Header -->
     <header class="chat-header">
       <div class="header-content">
         <div class="chat-title">
@@ -129,11 +126,9 @@
       </div>
     </header>
 
-    <!-- Messages Container -->
     <section class="messages-container">
       <div class="messages-area" #messagesContainer>
         <div class="messages-wrapper">
-          <!-- Welcome Section -->
           <div
             class="welcome-section"
             *ngIf="messages().length === 0 && !isLoading()"
@@ -179,12 +174,10 @@
             </div>
           </div>
 
-          <!-- Messages Thread -->
           <div
             class="message-wrapper"
             *ngFor="let message of messages(); trackBy: trackMessage"
             [@messageAnimation]>
-            <!-- User Message -->
             <div class="message user-message" *ngIf="message.type === 'user'">
               <div class="message-content">
                 <div class="message-bubble">
@@ -222,7 +215,6 @@
               </div>
             </div>
 
-            <!-- Assistant Message -->
             <div
               class="message assistant-message"
               *ngIf="message.type === 'assistant'">
@@ -258,7 +250,6 @@
                     <span class="typing-text">AI is thinking...</span>
                   </div>
 
-                  <!-- Streaming Content -->
                   <div
                     class="message-text streaming-text"
                     *ngIf="
@@ -271,7 +262,6 @@
                       )
                     "></div>
 
-                  <!-- Final Content -->
                   <div
                     class="message-text"
                     *ngIf="
@@ -282,7 +272,6 @@
                     "
                     [innerHTML]="renderMarkdown(message.message)"></div>
 
-                  <!-- Chart/Visualization -->
                   <div
                     class="chart-container"
                     *ngIf="message.chartUrl && !message.error"
@@ -294,7 +283,6 @@
                     </iframe>
                   </div>
 
-                  <!-- Error State -->
                   <div class="error-content" *ngIf="message.error" [@fadeInUp]>
                     <i class="pi pi-exclamation-triangle"></i>
                     <span>{{ message.error }}</span>
@@ -306,7 +294,6 @@
                   </div>
                 </div>
 
-                <!-- Message Actions -->
                 <div
                   class="message-meta"
                   *ngIf="
@@ -337,14 +324,12 @@
         </div>
       </div>
     </section>
-    <!-- Enhanced Input Area -->
     <footer class="chat-input-container">
       <form [formGroup]="chatForm" (ngSubmit)="onSubmit()" class="chat-form">
         <div
           class="input-wrapper"
           [class.focused]="isInputFocused()"
           [class.has-content]="messageText().length > 0">
-          <!-- Context Indicators -->
           <div
             class="context-indicators"
             *ngIf="getCurrentHallName() || currentConversationId()">
@@ -393,7 +378,6 @@
             </div>
           </div>
 
-          <!-- Character Counter -->
           <div class="input-meta" *ngIf="messageText().length > 0">
             <div class="char-counter">
               <span
@@ -414,7 +398,6 @@
         </div>
       </form>
 
-      <!-- Quick Actions -->
       <div
         class="quick-actions"
         *ngIf="!isLoading() && messages().length === 0"
@@ -445,7 +428,6 @@
         </button>
       </div>
 
-      <!-- Smart Suggestions -->
       <div
         class="smart-suggestions"
         *ngIf="smartSuggestions().length > 0 && !isLoading()"

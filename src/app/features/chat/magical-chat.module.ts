@@ -21,9 +21,13 @@ import { MenuModule } from 'primeng/menu';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 // Components and Services
-import { MagicalChatComponent } from './components/magical-chat.component';
+import { MagicalChatComponent } from './pages/magical-chat.component';
 import { SharedModule } from '@shared/shared.module';
 import { AiChatService } from './services/chat.service';
+import {ConversationsSidebarComponent} from './components/conversations-sidebar.ng';
+import {ChatHeaderComponent} from './components/chat-header.ng';
+import {MessageListComponent} from './components/message-list.ng';
+import {MessageInputComponent} from './components/message-input.ng';
 
 const routes = [
   {
@@ -34,7 +38,11 @@ const routes = [
 ];
 
 @NgModule({
-  declarations: [MagicalChatComponent],
+  declarations: [    MagicalChatComponent,
+    ConversationsSidebarComponent,
+    ChatHeaderComponent,
+    MessageListComponent,
+    MessageInputComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,

@@ -18,7 +18,6 @@ export class AiChatService {
   private apiConfigService = inject(ApiConfigService);
   private baseUrl = this.apiConfigService.getApiBaseUrl('ai-agent');
 
-  // Reactive state management with signals
   private conversationFilters = signal<{
     page: number;
     limit: number;
@@ -31,11 +30,8 @@ export class AiChatService {
     limit: number;
   } | null>(null);
 
-  // Loading states
   private conversationsLoading = signal(false);
   private messagesLoading = signal(false);
-
-// In your chat.service.ts - Replace the response handling section with this:
 
   conversationsResource = resource({
     loader: async ({ abortSignal }) => {
@@ -54,17 +50,16 @@ export class AiChatService {
           hallId: filters.hallId.toString()
         };
 
-        const response = await this.http.get<any>(`${this.baseUrl}/conversations`, {
+        const response = await this.http.get<ConversationResponse>(`${this.baseUrl}/conversations`, {
           params,
           headers: { 'X-Skip-Global-Loader': 'true' }
         }).toPromise();
 
-        console.log('API Response:', response);
+        console.log('Conversations API Response:', response);
 
-        // FIX: Your API returns response.items directly, not response.data.items
-        if (response?.items && Array.isArray(response.items)) {
-          console.log(`Found ${response.items.length} conversations`);
-          return response.items;
+        if (response?.data?.items && Array.isArray(response.data.items)) {
+          console.log(`Found ${response.data.items.length} conversations`);
+          return response.data.items;
         }
 
         console.log('No conversations found in response');
@@ -78,7 +73,6 @@ export class AiChatService {
       }
     }
   });
-
 
   messagesResource = resource({
     loader: async ({ abortSignal }) => {
@@ -97,14 +91,19 @@ export class AiChatService {
           `${this.baseUrl}/conversations/${messageFilters.conversationId}/messages`,
           {
             params,
-            headers: { 'X-Skip-Global-Loader': 'true' },
-            context: new AbortController().signal === abortSignal ? undefined : undefined
+            headers: { 'X-Skip-Global-Loader': 'true' }
           }
         ).toPromise();
 
-        return this.transformApiMessages(response?.data || []);
+        console.log('Messages API Response:', response);
+
+        if (response?.data?.items && Array.isArray(response.data.items)) {
+          return this.transformApiMessages(response.data.items);
+        }
+
+        return [];
       } catch (error) {
-        console.warn('AI service error for messages:', error);
+        console.error('Error loading messages:', error);
         return [];
       } finally {
         this.messagesLoading.set(false);
@@ -112,7 +111,6 @@ export class AiChatService {
     }
   });
 
-  // Computed signals for easy access with error handling
   conversations = computed(() => {
     try {
       const value = this.conversationsResource.value();
@@ -136,12 +134,8 @@ export class AiChatService {
   isLoadingConversations = computed(() => this.conversationsLoading());
   isLoadingMessages = computed(() => this.messagesLoading());
 
-  // Traditional Observable methods for backward compatibility
   getConversations(page: number = 1, limit: number = 20, hallId?: number): Observable<Conversation[]> {
-    // Update resource parameters to trigger fetch
     this.conversationFilters.set({ page, limit, hallId });
-
-    // Return current value or fetch fresh data
     return this.createObservableFromResource(this.conversationsResource);
   }
 
@@ -150,7 +144,6 @@ export class AiChatService {
     return this.createObservableFromResource(this.messagesResource);
   }
 
-  // Enhanced streaming method with proper error handling
   sendMessageStreaming(request: AIChatRequest): Observable<EnhancedAIChatResponse> {
     const url = `${this.baseUrl}/chat`;
     const headers = new HttpHeaders({
@@ -159,7 +152,6 @@ export class AiChatService {
       'Content-Type': 'application/json'
     });
 
-    // Format request based on conversation state
     const payload = request.conversationId
       ? {
         message: request.message,
@@ -174,19 +166,17 @@ export class AiChatService {
     return this.http.post<EnhancedAIChatResponse>(url, payload, { headers }).pipe(
       map(response => ({
         ...response,
-        streamUrl: response.streamUrl || this.createMockStreamUrl() // Fallback for testing
+        streamUrl: response.streamUrl || this.createMockStreamUrl()
       })),
       catchError(this.handleError)
     );
   }
 
-  // Reactive loading methods
   loadConversations(hallId?: number): void {
     this.conversationFilters.update(current => ({
       ...current,
       hallId
     }));
-    // Trigger resource reload
     this.conversationsResource.reload();
   }
 
@@ -196,7 +186,6 @@ export class AiChatService {
       page: 1,
       limit: 50
     });
-    // Trigger resource reload
     this.messagesResource.reload();
   }
 
@@ -208,7 +197,6 @@ export class AiChatService {
     this.messagesResource.reload();
   }
 
-  // Utility methods
   private createObservableFromResource<T>(resource: any): Observable<T> {
     return new Observable(subscriber => {
       const value = resource.value();
@@ -220,7 +208,6 @@ export class AiChatService {
         subscriber.next(value);
         subscriber.complete();
       } else {
-        // Resource is still loading, wait for value
         const checkForValue = () => {
           const newValue = resource.value();
           const newError = resource.error();
@@ -231,7 +218,6 @@ export class AiChatService {
             subscriber.next(newValue);
             subscriber.complete();
           } else {
-            // Still loading, check again
             setTimeout(checkForValue, 100);
           }
         };
@@ -241,7 +227,6 @@ export class AiChatService {
   }
 
   private createMockStreamUrl(): string {
-    // Create a mock stream URL for development/testing
     return `${this.baseUrl}/stream/${Date.now()}`;
   }
 
@@ -249,7 +234,6 @@ export class AiChatService {
     const displayMessages: ChatDisplayMessage[] = [];
 
     apiMessages.forEach(apiMsg => {
-      // Add user message
       if (apiMsg.user?.trim()) {
         displayMessages.push({
           id: `user_${apiMsg.id}`,
@@ -261,7 +245,6 @@ export class AiChatService {
         });
       }
 
-      // Add assistant message
       if (apiMsg.assistant?.trim()) {
         displayMessages.push({
           id: `assistant_${apiMsg.id}`,
@@ -285,17 +268,11 @@ export class AiChatService {
     let userFriendlyMessage = 'An unexpected error occurred';
 
     if (error.status === 0) {
-      userFriendlyMessage = 'Unable to connect to the AI service. Please check your connection.';
-    } else if (error.status === 401) {
-      userFriendlyMessage = 'Authentication required. Please log in again.';
-    } else if (error.status === 403) {
-      userFriendlyMessage = 'You don\'t have permission to perform this action.';
+      userFriendlyMessage = 'Unable to connect to the AI service.';
     } else if (error.status === 404) {
-      userFriendlyMessage = 'The requested conversation or message was not found.';
-    } else if (error.status === 429) {
-      userFriendlyMessage = 'Too many requests. Please wait a moment and try again.';
+      userFriendlyMessage = 'The requested resource was not found.';
     } else if (error.status >= 500) {
-      userFriendlyMessage = 'Server error. Our team has been notified.';
+      userFriendlyMessage = 'The AI service is temporarily unavailable.';
     } else if (error.error?.message) {
       userFriendlyMessage = error.error.message;
     }

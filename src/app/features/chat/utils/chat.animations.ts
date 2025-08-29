@@ -5,10 +5,8 @@ import {
   style,
   transition,
   animate,
-  keyframes,
   query,
   stagger,
-  group
 } from '@angular/animations';
 
 export const magicalChatAnimations = [

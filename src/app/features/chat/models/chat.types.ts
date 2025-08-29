@@ -1,4 +1,3 @@
-
 export interface AIChatMessage {
   id: string;
   message: string;
@@ -27,7 +26,12 @@ export interface EnhancedAIChatResponse extends AIChatResponse {
 export interface Hall {
   id: number;
   name: string;
-  description?: string;
+  name_ar: string;
+  logo_url: string;
+  primary_color: string;
+  secondary_color: string;
+  senderEmail?: string;
+  smsSenderId?: string;
 }
 
 export interface ChatDisplayMessage extends AIChatMessage {
@@ -41,42 +45,38 @@ export interface ChatDisplayMessage extends AIChatMessage {
 
 export interface Conversation {
   id: number;
+  created_by: number;
   created_at: string;
+  updated_by: number;
+  updated_at: string;
   topic: string;
   lastMessageAt: string;
-  hall?: Hall;
-  created_by: {
-    id: number;
-    name: string;
-  };
-  updated_by: {
-    id: number;
-    name: string;
-  };
-  updated_at: string;
+  hall: Hall;
 }
 
 export interface ApiMessage {
   id: number;
+  created_by: number;
   created_at: string;
   updated_at: string;
   user: string;
   assistant: string;
 }
 
-export interface ConversationResponse {
-  data: Conversation[];
-  total: number;
-  page: number;
-  limit: number;
+export interface ApiResponse<T> {
+  statusCode: number;
+  message: string;
+  data: {
+    items: T[];
+    totalItems: number;
+    currentPage: number;
+    totalPages: number;
+  };
 }
 
-export interface MessagesResponse {
-  data: ApiMessage[];
-  total: number;
-  page: number;
-  limit: number;
-}
+export interface ConversationResponse extends ApiResponse<Conversation> {}
+
+export interface MessagesResponse extends ApiResponse<ApiMessage> {}
 
 export interface StreamingEventData {
   type: 'content' | 'delta' | 'done' | 'complete' | 'error';
