@@ -40,7 +40,6 @@ const routes = [
     ReactiveFormsModule,
     RouterModule.forChild(routes),
 
-    // Translation
     TranslateModule,
 
     SharedModule,

@@ -143,8 +143,24 @@ export class MagicalChatComponent
   ngOnInit(): void {
     this.initializeChat();
     this.loadUserPreferences();
-    this.loadConversations();
     this.setupRealtimeConnection();
+
+    // FIX: Wait for hall to be available, then auto-load conversations
+    setTimeout(() => {
+      const currentHall = this.hallsService.getCurrentHall();
+      if (currentHall?.id) {
+        console.log('Auto-loading conversations on page load');
+        this.loadConversations();
+      }
+    }, 100); // Small delay to ensure hall is loaded
+
+    // Also listen for hall changes
+    this.hallsService.currentHall$.pipe(takeUntil(this.destroy$)).subscribe(hall => {
+      if (hall?.id) {
+        console.log(`Hall changed to: ${hall.name} (${hall.id})`);
+        this.loadConversations();
+      }
+    });
   }
 
   ngAfterViewChecked(): void {
@@ -309,14 +325,25 @@ export class MagicalChatComponent
 
   loadConversations(): void {
     const currentHall = this.hallsService.getCurrentHall();
-    this.aiChatService.loadConversations(currentHall?.id);
-    // Effect is now handled in setupConversationEffects()
+
+    console.log('Loading conversations - Current hall:', currentHall);
+
+    if (!currentHall?.id) {
+      console.warn('No hall ID available - cannot load conversations');
+      return;
+    }
+
+    console.log(`Loading conversations for hall ID: ${currentHall.id}`);
+    this.aiChatService.loadConversations(currentHall.id);
   }
 
   selectConversation(conversationId: number): void {
     if (this.currentConversationId() === conversationId) return;
 
     this.currentConversationId.set(conversationId);
+
+    // FIX: Actually load the messages
+    console.log(`Loading messages for conversation: ${conversationId}`);
     this.loadMessagesForConversation(conversationId);
 
     // Auto-collapse sidebar on mobile
@@ -326,8 +353,8 @@ export class MagicalChatComponent
   }
 
   private loadMessagesForConversation(conversationId: number): void {
+    // FIX: Call the service to load messages
     this.aiChatService.loadMessages(conversationId);
-    // Effect is now handled in setupConversationEffects()
   }
 
   startNewConversation(): void {
@@ -530,12 +557,12 @@ export class MagicalChatComponent
       msgs.map((msg) =>
         msg.id === messageId
           ? {
-              ...msg,
-              message: content,
-              streamingContent: '',
-              isStreaming: false,
-              status: 'delivered' as MessageStatus,
-            }
+            ...msg,
+            message: content,
+            streamingContent: '',
+            isStreaming: false,
+            status: 'delivered' as MessageStatus,
+          }
           : msg,
       ),
     );
@@ -554,11 +581,11 @@ export class MagicalChatComponent
       msgs.map((msg) =>
         msg.id === messageId
           ? {
-              ...msg,
-              message: content,
-              isStreaming: false,
-              status: 'delivered' as MessageStatus,
-            }
+            ...msg,
+            message: content,
+            isStreaming: false,
+            status: 'delivered' as MessageStatus,
+          }
           : msg,
       ),
     );
@@ -569,9 +596,9 @@ export class MagicalChatComponent
       msgs.map((msg) =>
         msg.id === messageId
           ? {
-              ...msg,
-              chartUrl: this.sanitizer.bypassSecurityTrustResourceUrl(chartUrl),
-            }
+            ...msg,
+            chartUrl: this.sanitizer.bypassSecurityTrustResourceUrl(chartUrl),
+          }
           : msg,
       ),
     );
@@ -590,11 +617,11 @@ export class MagicalChatComponent
       msgs.map((msg) =>
         msg.id === assistantMessageId
           ? {
-              ...msg,
-              error: error.message || 'Failed to send message',
-              isStreaming: false,
-              status: 'failed' as MessageStatus,
-            }
+            ...msg,
+            error: error.message || 'Failed to send message',
+            isStreaming: false,
+            status: 'failed' as MessageStatus,
+          }
           : msg,
       ),
     );
@@ -607,11 +634,11 @@ export class MagicalChatComponent
       msgs.map((msg) =>
         msg.id === messageId
           ? {
-              ...msg,
-              error,
-              isStreaming: false,
-              status: 'failed' as MessageStatus,
-            }
+            ...msg,
+            error,
+            isStreaming: false,
+            status: 'failed' as MessageStatus,
+          }
           : msg,
       ),
     );

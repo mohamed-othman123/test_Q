@@ -14,7 +14,7 @@
             <i class="pi pi-sparkles"></i>
           </div>
           <span class="logo-text" *ngIf="!sidebarCollapsed()" [@fadeInUp]
-            >AI Assistant</span
+          >AI Assistant</span
           >
         </div>
         <button
@@ -47,6 +47,13 @@
           [class.loading]="isLoadingConversations">
           <i class="pi pi-refresh" [class.pi-spin]="isLoadingConversations"></i>
         </button>
+
+        <div class="conversations-loader" *ngIf="isLoadingConversations">
+          <div class="gear-loader">
+            <i class="pi pi-cog loader-gear"></i>
+            <span>Loading conversations...</span>
+          </div>
+        </div>
       </div>
 
       <div [@listStagger]>
@@ -184,8 +191,8 @@
                   <div class="message-text">{{ message.message }}</div>
                   <div class="message-meta">
                     <span class="timestamp">{{
-                      formatTime(message.timestamp)
-                    }}</span>
+                        formatTime(message.timestamp)
+                      }}</span>
                     <span
                       class="hall-context"
                       *ngIf="message.hallIds && message.hallIds.length > 0">
@@ -306,8 +313,8 @@
                     !message.isLoading && !message.isStreaming && !message.error
                   ">
                   <span class="timestamp">{{
-                    formatTime(message.timestamp)
-                  }}</span>
+                      formatTime(message.timestamp)
+                    }}</span>
                   <div class="message-actions">
                     <button
                       class="action-btn btn-magical"

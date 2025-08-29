@@ -35,14 +35,14 @@ export class AiChatService {
   private conversationsLoading = signal(false);
   private messagesLoading = signal(false);
 
-  // Fixed resource implementation for Angular 19 with proper HttpClient usage
+// In your chat.service.ts - Replace the response handling section with this:
+
   conversationsResource = resource({
     loader: async ({ abortSignal }) => {
       this.conversationsLoading.set(true);
       const filters = this.conversationFilters();
 
       try {
-        // Ensure hallId is provided as it's required by the API
         if (!filters.hallId) {
           console.warn('hallId is required for conversations endpoint');
           return [];
@@ -54,21 +54,31 @@ export class AiChatService {
           hallId: filters.hallId.toString()
         };
 
-        const response = await this.http.get<ConversationResponse>(`${this.baseUrl}/conversations`, {
+        const response = await this.http.get<any>(`${this.baseUrl}/conversations`, {
           params,
-          headers: { 'X-Skip-Global-Loader': 'true' },
-          context: new AbortController().signal === abortSignal ? undefined : undefined
+          headers: { 'X-Skip-Global-Loader': 'true' }
         }).toPromise();
 
-        return response?.data || [];
+        console.log('API Response:', response);
+
+        // FIX: Your API returns response.items directly, not response.data.items
+        if (response?.items && Array.isArray(response.items)) {
+          console.log(`Found ${response.items.length} conversations`);
+          return response.items;
+        }
+
+        console.log('No conversations found in response');
+        return [];
+
       } catch (error) {
-        console.warn('AI service error for conversations:', error);
+        console.error('Error loading conversations:', error);
         return [];
       } finally {
         this.conversationsLoading.set(false);
       }
     }
   });
+
 
   messagesResource = resource({
     loader: async ({ abortSignal }) => {
