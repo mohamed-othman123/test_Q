@@ -1,4 +1,15 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+  AfterViewChecked,
+  inject,
+} from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { HallsService } from '@halls/services/halls.service';
 import { ChatDisplayMessage } from '../models/chat.types';
 
 @Component({
@@ -12,21 +23,21 @@ import { ChatDisplayMessage } from '../models/chat.types';
             <div class="welcome-icon">
               <i class="pi pi-sparkles"></i>
             </div>
-            <h3>Welcome to AI Assistant</h3>
-            <p>Ask me anything! I'm here to help with your questions and tasks.</p>
+            <h3>{{ 'chat.welcomeTitle' | translate }}</h3>
+            <p>{{ 'chat.welcomeMessage' | translate }}</p>
 
             <div class="quick-suggestions">
-              <button class="suggestion-chip" (click)="onQuickMessage('Explain quantum computing')">
-                <i class="pi pi-lightbulb"></i>
-                Explain quantum computing
+              <button class="suggestion-chip" (click)="onQuickMessage(getTranslatedMessage('chat.quickMessage1'))">
+                <i class="pi pi-calendar"></i>
+                {{ 'chat.quickMessage1' | translate }}
               </button>
-              <button class="suggestion-chip" (click)="onQuickMessage('Write a Python function')">
-                <i class="pi pi-code"></i>
-                Write a Python function
+              <button class="suggestion-chip" (click)="onQuickMessage(getTranslatedMessage('chat.quickMessage2'))">
+                <i class="pi pi-megaphone"></i>
+                {{ 'chat.quickMessage2' | translate }}
               </button>
-              <button class="suggestion-chip" (click)="onQuickMessage('Help me brainstorm ideas')">
-                <i class="pi pi-bolt"></i>
-                Help me brainstorm ideas
+              <button class="suggestion-chip" (click)="onQuickMessage(getTranslatedMessage('chat.quickMessage3'))">
+                <i class="pi pi-heart"></i>
+                {{ 'chat.quickMessage3' | translate }}
               </button>
             </div>
           </div>
@@ -41,13 +52,20 @@ import { ChatDisplayMessage } from '../models/chat.types';
 
           <div class="message-avatar">
             <div class="avatar" [class.user-avatar]="message.type === 'user'" [class.ai-avatar]="message.type === 'assistant'">
-              <i class="pi" [class.pi-user]="message.type === 'user'" [class.pi-sparkles]="message.type === 'assistant'"></i>
+              <img
+                *ngIf="message.type === 'user' && getCurrentHallIcon(); else defaultIcon"
+                [src]="getCurrentHallIcon()"
+                [alt]="'User avatar'"
+                class="hall-icon">
+              <ng-template #defaultIcon>
+                <i class="pi" [class.pi-user]="message.type === 'user'" [class.pi-sparkles]="message.type === 'assistant'"></i>
+              </ng-template>
             </div>
           </div>
 
           <div class="message-content">
             <div class="message-header">
-              <span class="message-role">{{ message.type === 'user' ? 'You' : 'AI Assistant' }}</span>
+              <span class="message-role">{{ message.type === 'user' ? ('chat.you' | translate) : ('chat.aiAssistant' | translate) }}</span>
               <span class="message-time">{{ formatTime(message.timestamp) }}</span>
             </div>
 
@@ -79,6 +97,16 @@ import { ChatDisplayMessage } from '../models/chat.types';
               </div>
               <span class="typing-text">AI is thinking...</span>
             </div>
+          </div>
+        </div>
+
+        <!-- Conversation loading indicator -->
+        <div class="conversation-loading" *ngIf="isLoadingConversation">
+          <div class="loading-content">
+            <div class="loading-spinner">
+              <i class="pi pi-spin pi-spinner"></i>
+            </div>
+            <p>{{ 'chat.loadingMessages' | translate }}</p>
           </div>
         </div>
       </div>
@@ -192,6 +220,24 @@ import { ChatDisplayMessage } from '../models/chat.types';
 
     .ai-avatar {
       background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+      /* Ensure icon is visible in both light and dark modes */
+      color: white !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+    }
+
+    .ai-avatar i {
+      color: white !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      font-weight: bold;
+    }
+
+    .hall-icon {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
     }
 
     .message-content {
@@ -291,6 +337,33 @@ import { ChatDisplayMessage } from '../models/chat.types';
       font-style: italic;
     }
 
+    /* Conversation loading indicator */
+    .conversation-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      padding: 2rem;
+    }
+
+    .loading-content {
+      text-align: center;
+    }
+
+    .loading-spinner {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 1rem;
+      color: var(--primary-color);
+      font-size: 2rem;
+    }
+
+    .loading-content p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin: 0;
+    }
+
     @keyframes messageSlideIn {
       from {
         opacity: 0;
@@ -332,14 +405,17 @@ import { ChatDisplayMessage } from '../models/chat.types';
   `]
 })
 export class MessageListComponent implements AfterViewChecked {
-  @ViewChild('messagesContainer') messagesContainer!: ElementRef;
+  @ViewChild('messagesContainer', { static: false }) messagesContainer!: ElementRef<HTMLDivElement>;
 
   @Input() messages: ChatDisplayMessage[] = [];
   @Input() isLoading = false;
+  @Input() isLoadingConversation = false;
 
   @Output() quickMessage = new EventEmitter<string>();
 
   private shouldScrollToBottom = false;
+  private translateService = inject(TranslateService);
+  private hallsService = inject(HallsService);
 
   ngAfterViewChecked(): void {
     if (this.shouldScrollToBottom) {
@@ -350,6 +426,10 @@ export class MessageListComponent implements AfterViewChecked {
 
   onQuickMessage(message: string): void {
     this.quickMessage.emit(message);
+  }
+
+  getTranslatedMessage(key: string): string {
+    return this.translateService.instant(key);
   }
 
   trackMessage(index: number, message: ChatDisplayMessage): string {
@@ -365,10 +445,44 @@ export class MessageListComponent implements AfterViewChecked {
     return message.replace(/\n/g, '<br>');
   }
 
+  getCurrentHallIcon(): string | null {
+    const currentHall = this.hallsService.getCurrentHall();
+    return currentHall?.logo_url || null;
+  }
+
   copyMessage(message: string): void {
     navigator.clipboard.writeText(message).then(() => {
-      console.log('Message copied to clipboard');
+      this.showCopyNotification();
     });
+  }
+
+  private showCopyNotification(): void {
+    const notification = document.createElement('div');
+    notification.className = 'copy-notification';
+    notification.textContent = this.translateService.instant('chat.messageCopied');
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--success-color);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 10000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      animation: slideInRight 0.3s ease-out;
+    `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.style.animation = 'slideOutRight 0.3s ease-out';
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 3000);
   }
 
   private scrollToBottom(): void {

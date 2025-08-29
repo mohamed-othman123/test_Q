@@ -135,7 +135,7 @@
       padding: 12px;
       border-radius: 8px;
       gap: 0.5rem;
-      z-index: 3;
+      z-index: 9999999;
       @include mixins.rtl() {
         left: 0;
       }

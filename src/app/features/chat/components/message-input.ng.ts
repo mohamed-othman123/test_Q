@@ -12,26 +12,23 @@ import { FormGroup } from '@angular/forms';
             #messageInput
             class="message-input"
             formControlName="message"
-            placeholder="Type your message here... (Ctrl/Cmd + Enter to send)"
+            [placeholder]="'chat.messagePlaceholder' | translate"
             rows="1"
             (keydown)="onKeyDown($event)"
-            (input)="adjustTextareaHeight()"
-            [disabled]="!canSend || isLoading">
+            (input)="adjustTextareaHeight()">
           </textarea>
 
           <div class="input-actions">
             <button
               type="button"
               class="attach-btn"
-              title="Attach file"
-              [disabled]="isLoading">
+              [title]="'chat.attachFile' | translate">
               <i class="pi pi-paperclip"></i>
             </button>
 
             <button
               type="submit"
               class="send-btn"
-              [disabled]="!canSend || isLoading"
               [title]="getSubmitButtonTitle()">
               <i class="pi" [class.pi-send]="!isLoading" [class.pi-spin]="isLoading" [class.pi-spinner]="isLoading"></i>
             </button>
@@ -43,33 +40,30 @@ import { FormGroup } from '@angular/forms';
             <span class="char-count" [class.warning]="getCharCount() > 1800">
               {{ getCharCount() }}/2000
             </span>
-            <span class="shortcuts">Press Ctrl+Enter to send</span>
+            <span class="shortcuts">{{ 'chat.pressEnterToSend' | translate }}</span>
           </div>
 
           <div class="quick-actions" *ngIf="showQuickActions">
             <button
               type="button"
               class="quick-action"
-              (click)="quickMessage.emit('Summarize this for me')"
-              [disabled]="isLoading">
+              (click)="quickMessage.emit('Summarize this for me')">
               <i class="pi pi-file-text"></i>
-              Summarize
+              {{ 'chat.summarize' | translate }}
             </button>
             <button
               type="button"
               class="quick-action"
-              (click)="quickMessage.emit('Explain this step by step')"
-              [disabled]="isLoading">
+              (click)="quickMessage.emit('Explain this step by step')">
               <i class="pi pi-list"></i>
-              Explain
+              {{ 'chat.explain' | translate }}
             </button>
             <button
               type="button"
               class="quick-action"
-              (click)="quickMessage.emit('Help me improve this')"
-              [disabled]="isLoading">
+              (click)="quickMessage.emit('Help me improve this')">
               <i class="pi pi-wrench"></i>
-              Improve
+              {{ 'chat.improve' | translate }}
             </button>
           </div>
         </div>
@@ -196,6 +190,7 @@ import { FormGroup } from '@angular/forms';
       margin-top: 0.75rem;
       padding-top: 0.75rem;
       border-top: 1px solid var(--border-light);
+      min-height: 2rem; /* Ensure footer always has minimum height */
     }
 
     .input-info {
@@ -204,6 +199,7 @@ import { FormGroup } from '@angular/forms';
       gap: 1rem;
       font-size: 0.75rem;
       color: var(--text-secondary);
+      flex: 1; /* Take available space */
     }
 
     .char-count.warning {
@@ -269,7 +265,7 @@ import { FormGroup } from '@angular/forms';
   `]
 })
 export class MessageInputComponent {
-  @ViewChild('messageInput') messageInput!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('messageInput', { static: false }) messageInput!: ElementRef<HTMLTextAreaElement>;
 
   @Input() form!: FormGroup;
   @Input() canSend = false;
@@ -289,7 +285,7 @@ export class MessageInputComponent {
   }
 
   onKeyDown(event: KeyboardEvent): void {
-    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+    if (event.key === 'Enter' && !event.ctrlKey && !event.metaKey) {
       event.preventDefault();
       this.onSubmit();
     }

@@ -4,13 +4,13 @@
 * It uses the moment-hijri library to perform date manipulations and calculations,
 * supporting both the Hijri and Gregorian calendars.
 * The class allows setting the locale and calendar type and provides methods to add/subtract time units,
-* calculate differences, and get/set various date components.
+* calculate differences, and get/set various date pages.
 
 * Key Features
 *   Locale and Calendar Type Management: Easily switch between locales and calendar types.
 *   Date Manipulation: Add or subtract days, hours, minutes, seconds, weeks, and months.
 *   Date Comparison: Check if two dates are the same day, month, or second.
-*   Date Retrieval and Setting: Get or set date components such as day, month, and year.
+*   Date Retrieval and Setting: Get or set date pages such as day, month, and year.
 *   Timezone Offset Calculation: Retrieve the timezone offset for a given date.
 * */
 

@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { LanguageService } from '@core/services/language.service';
 import { Conversation } from '../models/chat.types';
 
 @Component({
@@ -7,26 +8,29 @@ import { Conversation } from '../models/chat.types';
   template: `
     <aside
       class="conversations-sidebar"
-      [class.collapsed]="collapsed">
+      [class.collapsed]="collapsed"
+      [class.rtl]="isRTL">
 
       <div class="sidebar-header">
         <button
           class="toggle-btn"
           (click)="toggle.emit()"
           [title]="collapsed ? 'Expand Conversations' : 'Hide Conversations'">
-          <i class="pi" [class.pi-chevron-right]="!collapsed" [class.pi-chevron-left]="collapsed"></i>
+          <i class="pi" 
+             [class.pi-chevron-left]="(!collapsed && isRTL) || (collapsed && !isRTL)" 
+             [class.pi-chevron-right]="(!collapsed && !isRTL) || (collapsed && isRTL)"></i>
         </button>
 
         <div class="sidebar-title" *ngIf="!collapsed">
           <i class="pi pi-comments"></i>
-          <span>Conversations</span>
+          <span>{{ 'chat.conversations' | translate }}</span>
         </div>
 
         <button
           class="new-chat-btn"
           (click)="newChat.emit()"
           *ngIf="!collapsed"
-          title="New Chat">
+          [title]="'chat.newChat' | translate">
           <i class="pi pi-plus"></i>
         </button>
       </div>
@@ -38,7 +42,7 @@ import { Conversation } from '../models/chat.types';
             (click)="loadConversations.emit()"
             [class.loading]="isLoading">
             <i class="pi pi-refresh" [class.pi-spin]="isLoading"></i>
-            <span>Refresh</span>
+            <span>{{ 'chat.refresh' | translate }}</span>
           </button>
         </div>
 
@@ -51,7 +55,7 @@ import { Conversation } from '../models/chat.types';
 
             <div class="conversation-preview">
               <div class="conversation-topic">
-                {{ conv.topic || 'General Chat' }}
+                {{ conv.topic || ('chat.generalChat' | translate) }}
               </div>
               <div class="conversation-time">
                 {{ formatTime(conv.lastMessageAt) }}
@@ -68,30 +72,42 @@ import { Conversation } from '../models/chat.types';
 
         <div class="conversations-empty" *ngIf="conversations.length === 0 && !isLoading">
           <i class="pi pi-comment"></i>
-          <p>No conversations yet</p>
-          <small>Start a new chat to begin</small>
+          <p>{{ 'chat.noConversationsYet' | translate }}</p>
+          <small>{{ 'chat.startNewChatToBegin' | translate }}</small>
         </div>
 
         <div class="conversations-loading" *ngIf="isLoading">
           <i class="pi pi-spin pi-spinner"></i>
-          <span>Loading conversations...</span>
+          <span>{{ 'chat.loadingConversations' | translate }}</span>
         </div>
       </div>
     </aside>
   `,
   styles: [`
     .conversations-sidebar {
-      position: fixed;
+      position: absolute;
       top: 0;
-      right: 0;
       width: 320px;
-      height: 100vh;
+      height: 100%;
       background: var(--bg-surface);
-      border-left: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
       transition: width 0.3s ease, transform 0.3s ease;
-      z-index: 1000;
+      z-index: 10;
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* RTL positioning */
+    .conversations-sidebar.rtl {
+      left: 0;
+      border-right: 1px solid var(--border-color);
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* LTR positioning */
+    .conversations-sidebar:not(.rtl) {
+      right: 0;
+      border-left: 1px solid var(--border-color);
       box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
     }
 
@@ -105,7 +121,7 @@ import { Conversation } from '../models/chat.types';
       padding: 1rem;
       border-bottom: 1px solid var(--border-color);
       gap: 0.75rem;
-      min-height: 70px;
+      min-height: 82px;
     }
 
     .toggle-btn {
@@ -139,7 +155,7 @@ import { Conversation } from '../models/chat.types';
     .new-chat-btn {
       width: 36px;
       height: 36px;
-      background: var(--primary-color);
+      background: #667eea;
       border: none;
       border-radius: 8px;
       color: white;
@@ -148,11 +164,18 @@ import { Conversation } from '../models/chat.types';
       justify-content: center;
       cursor: pointer;
       transition: all 0.2s ease;
+      font-size: 1rem;
     }
 
     .new-chat-btn:hover {
-      background: var(--primary-dark);
+      background: #5a6fd8;
       transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .new-chat-btn i {
+      color: white !important;
+      font-weight: bold;
     }
 
     .conversations-content {
@@ -282,6 +305,12 @@ export class ConversationsSidebarComponent {
   @Output() newChat = new EventEmitter<void>();
   @Output() selectConversation = new EventEmitter<number>();
   @Output() loadConversations = new EventEmitter<void>();
+
+  constructor(private languageService: LanguageService) {}
+
+  get isRTL(): boolean {
+    return this.languageService.getCurrentLanguage() === 'ar';
+  }
 
   trackConversation(index: number, conversation: Conversation): number {
     return conversation.id;

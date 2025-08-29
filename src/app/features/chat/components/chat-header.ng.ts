@@ -25,7 +25,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
           (click)="sidebarToggle.emit()"
           [title]="sidebarCollapsed ? 'Show Conversations' : 'Hide Conversations'">
           <i class="pi pi-comments"></i>
-          <span class="badge" *ngIf="sidebarCollapsed">3</span>
+          <span class="badge" *ngIf="sidebarCollapsed && conversationCount > 0">{{ conversationCount }}</span>
         </button>
       </div>
     </div>
@@ -149,6 +149,7 @@ export class ChatHeaderComponent {
   @Input() subtitle = 'Powered by advanced AI';
   @Input() theme: 'light' | 'dark' = 'dark';
   @Input() sidebarCollapsed = false;
+  @Input() conversationCount = 0;
 
   @Output() themeChange = new EventEmitter<void>();
   @Output() sidebarToggle = new EventEmitter<void>();

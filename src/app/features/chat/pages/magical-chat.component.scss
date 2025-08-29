@@ -68,26 +68,51 @@
 .magical-chat-container {
   display: flex;
   height: 100vh;
+  position: relative;
   background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  transition: var(--transition-normal);
+
+  &.rtl {
+    &:not(.sidebar-collapsed) {
+      .chat-main {
+        margin-left: 320px;
+        margin-right: 0;
+      }
+    }
+
+    &.sidebar-collapsed {
+      .chat-main {
+        margin-left: 60px;
+        margin-right: 0;
+      }
+    }
+  }
+
+  /* LTR Layout */
+  &:not(.rtl) {
+    &:not(.sidebar-collapsed) {
+      .chat-main {
+        margin-right: 320px;
+        margin-left: 0;
+      }
+    }
+
+    &.sidebar-collapsed {
+      .chat-main {
+        margin-right: 60px;
+        margin-left: 0;
+      }
+    }
+  }
 }
 
 .chat-main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-width: 0;
-  transition: margin-right var(--transition-slow);
-}
-
-.magical-chat-container.sidebar-collapsed .chat-main {
-  margin-right: 60px;
-}
-
-.magical-chat-container:not(.sidebar-collapsed) .chat-main {
-  margin-right: 320px;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  transition: margin-right 0.3s ease, margin-left 0.3s ease; // Smooth transition for both directions
 }
 
 *,
@@ -138,22 +163,47 @@ p {
 }
 
 @media (max-width: 1024px) {
-  .magical-chat-container.sidebar-collapsed .chat-main {
-    margin-right: 0;
-  }
+  .magical-chat-container {
+    &.rtl {
+      .sidebar-collapsed .chat-main {
+        margin-left: 0;
+      }
 
-  .magical-chat-container:not(.sidebar-collapsed) .chat-main {
-    margin-right: 0;
-  }
+      &:not(.sidebar-collapsed) .chat-main {
+        margin-left: 0;
+      }
+    }
 
-  .conversations-sidebar {
-    position: fixed !important;
-    transform: translateX(100%);
-    transition: transform var(--transition-slow) !important;
-  }
+    &:not(.rtl) {
+      .sidebar-collapsed .chat-main {
+        margin-right: 0;
+      }
 
-  .magical-chat-container:not(.sidebar-collapsed) .conversations-sidebar {
-    transform: translateX(0);
+      &:not(.sidebar-collapsed) .chat-main {
+        margin-right: 0;
+      }
+    }
+
+    .conversations-sidebar {
+      position: fixed !important;
+      transition: transform var(--transition-slow) !important;
+    }
+
+    &.rtl .conversations-sidebar {
+      transform: translateX(-100%);
+      
+      &:not(.sidebar-collapsed) {
+        transform: translateX(0);
+      }
+    }
+
+    &:not(.rtl) .conversations-sidebar {
+      transform: translateX(100%);
+      
+      &:not(.sidebar-collapsed) {
+        transform: translateX(0);
+      }
+    }
   }
 }
 
@@ -219,4 +269,26 @@ p {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
 }
