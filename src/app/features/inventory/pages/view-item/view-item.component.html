@@ -1,0 +1,106 @@
+@if (inventoryItem) {
+  <div>
+    <info-tooltip
+      [createdBy]="inventoryItem.created_by"
+      [createdAt]="inventoryItem.created_at"
+      [updatedBy]="inventoryItem.updated_by"
+      [updatedAt]="inventoryItem.updated_at"
+      [deletedBy]="inventoryItem.deleted_by"
+      [deletedAt]="inventoryItem.deleted_at">
+    </info-tooltip>
+  </div>
+}
+
+<app-list-header
+  [title]="'inventory.itemDetails' | translate"></app-list-header>
+
+<div class="info-wrapper">
+  <div class="info-item span-2">
+    <span class="label">{{ 'inventory.itemId' | translate }}:</span>
+    <span class="value">
+      {{ inventoryItem?.id }}
+
+      @if (inventoryItem?.deleted) {
+        <span class="badge bg-danger">
+          {{ 'common.canceled' | translate }}
+        </span>
+      } @else {
+        <span class="badge bg-success">
+          {{ 'common.active' | translate }}
+        </span>
+      }
+    </span>
+  </div>
+
+  <div class="info-item">
+    <span class="label">{{ 'inventory.creationDate' | translate }}:</span>
+    <span class="value">
+      @if (lang.lang === 'en') {
+        {{ inventoryItem?.created_at | englishMonthDate: false : 'DD-MM-YYYY' }}
+      }
+      @if (lang.lang === 'ar') {
+        {{ inventoryItem?.created_at | arabicMonthDate: false : 'DD-MM-YYYY' }}
+      }
+    </span>
+  </div>
+
+  <div class="info-item">
+    <span class="label">{{ 'inventory.updatedDate' | translate }}:</span>
+    <span class="value">
+      @if (lang.lang === 'en') {
+        {{ inventoryItem?.updated_at | englishMonthDate: false : 'DD-MM-YYYY' }}
+      }
+      @if (lang.lang === 'ar') {
+        {{ inventoryItem?.updated_at | arabicMonthDate: false : 'DD-MM-YYYY' }}
+      }
+    </span>
+  </div>
+
+  <div class="info-item">
+    <span class="label">{{ 'inventory.quantity' | translate }}:</span>
+    <span class="value">{{ inventoryItem?.quantity }}</span>
+  </div>
+  <div class="info-item">
+    <span class="label">{{ 'inventory.unitPrice' | translate }}:</span>
+    <span class="value">
+      <span class="price-with-symbol">
+        <sar-symbol />
+        <span>
+          {{ inventoryItem?.unitPrice | number: '1.2-2' }}
+        </span>
+      </span>
+    </span>
+  </div>
+
+  <div class="info-item">
+    <span class="label">{{ 'inventory.reorderLevel' | translate }}:</span>
+    <span class="value">{{ inventoryItem?.reorderLevel }}</span>
+  </div>
+
+  <div class="info-item">
+    <span class="label">{{ 'inventory.description' | translate }}:</span>
+    <span class="value">{{ inventoryItem?.description || '-' }}</span>
+  </div>
+</div>
+
+<app-audit-transactions-list
+  [source]="source"
+  [sourceId]="itemId!"
+  [hallId]="hallId">
+</app-audit-transactions-list>
+
+<div class="form-actions">
+  <button
+    type="button"
+    pButton
+    class="p-button-secondary btn-back"
+    [label]="'common.back' | translate"
+    (click)="goBack()">
+    <i
+      [class]="
+        lang.lang === 'en' ? 'pi pi-arrow-left mb-0' : 'pi pi-arrow-right mb-0'
+      "></i>
+  </button>
+</div>
+
+<comments [entityId]="+itemId!" [type]="commentType.INVENTORY"></comments>

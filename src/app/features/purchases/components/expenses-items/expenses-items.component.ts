@@ -153,13 +153,19 @@ export class ExpensesItemsComponent implements OnInit, OnDestroy {
 
   clearElementValues(index: number, isNew: boolean) {
     this.itemsArray.controls[index].patchValue({
+      id: null,
       name: '',
       nameAr: '',
       value: null,
+      quantity: 1,
       isNew,
       saved: false,
     });
     this.itemsArray.controls[index].get('value')?.enable();
+    this.itemsArray.controls[index].get('nameAr')?.enable();
+    this.itemsArray.controls[index].get('name')?.enable();
+    this.updateTotals();
+    this.calculateTotalAmount();
   }
 
   addNewExpenseElement(index: number) {

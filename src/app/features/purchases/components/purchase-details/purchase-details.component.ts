@@ -43,6 +43,10 @@ import {ExpensesItemsService} from '@expenses-items/services/expenses-items.serv
 import {Service} from '@services/models';
 import {discountValidator} from '@core/validators/discount-validators';
 import {duplicateItemValidator} from '@purchases/validators/duplicate-item.validator';
+import {
+  TYPE_PRODUCT,
+  TYPE_SERVICE,
+} from '@purchases/constants/purchase.constants';
 
 @Component({
   selector: 'app-purchase-details',
@@ -171,7 +175,7 @@ export class PurchaseDetailsComponent implements OnInit, OnDestroy {
           this.handleCategoryChanged(catId);
 
           this.itemsArray.clear();
-          this.itemsArray.push(this.createItem('element'));
+          this.itemsArray.push(this.createItem('product'));
           this.form.patchValue({expenseItemId: null}, {emitEvent: false});
           this.expensesItems = this.expenseElements = [];
         }),
@@ -244,7 +248,7 @@ export class PurchaseDetailsComponent implements OnInit, OnDestroy {
             {emitEvent: false},
           );
 
-          if (!this.isEditMode) this.itemsArray.clear();
+          // if (!this.isEditMode) this.itemsArray.clear();
         }),
         filter(([inv, type]) => {
           return (
@@ -319,6 +323,11 @@ export class PurchaseDetailsComponent implements OnInit, OnDestroy {
       const description =
         this.lang.lang === 'ar' ? category?.description : category?.description;
       this.form.get('expensesDescription')?.patchValue(description);
+      if (category?.categoryType === 'inventory') {
+        this.purchasesService.itemTypes.next([TYPE_PRODUCT]);
+      } else {
+        this.purchasesService.itemTypes.next([TYPE_PRODUCT, TYPE_SERVICE]);
+      }
     }
   }
 
@@ -380,6 +389,12 @@ export class PurchaseDetailsComponent implements OnInit, OnDestroy {
       expensesType: purchase.category?.type || purchase.expensesType,
       supplierId: purchase.supplier ? purchase.supplier.id : null,
     });
+
+    if (purchase.category?.categoryType === 'inventory') {
+      this.purchasesService.itemTypes.next([TYPE_PRODUCT]);
+    } else {
+      this.purchasesService.itemTypes.next([TYPE_PRODUCT, TYPE_SERVICE]);
+    }
 
     setTimeout(() => {
       this.form.patchValue({
@@ -557,7 +572,7 @@ export class PurchaseDetailsComponent implements OnInit, OnDestroy {
         value: [null, [Validators.required, Validators.min(1)]],
         quantity: [1, [Validators.required, Validators.min(1)]],
         total: [{value: 0, disabled: true}], // total is calculated so disable editing
-        type: [type],
+        type: [type, Validators.required],
         isNew: [null],
       },
       {validators: requireOneOf(['name', 'nameAr'])},
@@ -568,11 +583,21 @@ export class PurchaseDetailsComponent implements OnInit, OnDestroy {
     const itemGroup = this.fb.group(
       {
         id: [item?.id || null],
-        name: [item?.name?.['name'] || item?.name, Validators.required],
+        name: [
+          {
+            value: item?.name?.['name'] || item?.name,
+            disabled: true,
+          },
+          Validators.required,
+        ],
         nameAr: [
-          typeof item?.nameAr === 'object'
-            ? item?.nameAr['nameAr']
-            : item?.nameAr,
+          {
+            value:
+              typeof item?.nameAr === 'object'
+                ? item?.nameAr['nameAr']
+                : item?.nameAr,
+            disabled: true,
+          },
           Validators.required,
         ],
         value: [

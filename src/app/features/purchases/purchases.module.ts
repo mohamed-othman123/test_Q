@@ -16,6 +16,7 @@ import {SupplierProductsServicesComponent} from './components/supplier-products-
 import {ViewPurchaseComponent} from './pages/view-purchase/view-purchase.component';
 import {AddNewExpenseItemComponent} from './components/add-new-expense-item/add-new-expense-item.component';
 import {CommentsModule} from '@shared/components/comments/comments.module';
+import { SimplifiedInvoiceItemsComponent } from './components/simplified-invoice-items/simplified-invoice-items.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import {CommentsModule} from '@shared/components/comments/comments.module';
     SupplierProductsServicesComponent,
     ViewPurchaseComponent,
     AddNewExpenseItemComponent,
+    SimplifiedInvoiceItemsComponent,
   ],
   imports: [
     SharedModule,

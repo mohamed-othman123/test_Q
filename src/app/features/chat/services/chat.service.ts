@@ -56,12 +56,18 @@ export class AiChatService {
           headers: { 'X-Skip-Global-Loader': 'true' }
         }).toPromise();
 
-        console.log('Conversations API Response:', response);
 
         const items = response?.data?.items || response?.items;
         if (items && Array.isArray(items)) {
           console.log(`Found ${items.length} conversations`);
-          return items;
+          
+          const sortedItems = items.sort((a, b) => {
+            const dateA = new Date(a.updated_at || a.lastMessageAt || a.created_at);
+            const dateB = new Date(b.updated_at || b.lastMessageAt || b.created_at);
+            return dateB.getTime() - dateA.getTime();
+          });
+          
+          return sortedItems;
         }
 
         console.log('No conversations found in response');
@@ -93,7 +99,6 @@ export class AiChatService {
           `${this.baseUrl}/conversations/${messageFilters.conversationId}/messages`,
           {
             params,
-            headers: { 'X-Skip-Global-Loader': 'true' }
           }
         ).toPromise();
 
@@ -151,8 +156,9 @@ export class AiChatService {
     const url = `${this.baseUrl}/chat`;
     const headers = new HttpHeaders({
       'X-Skip-Global-Loader': 'true',
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Accept': 'text/event-stream',
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache'
     });
 
     const payload = request.conversationId
@@ -166,13 +172,106 @@ export class AiChatService {
         hallIds: request.hallIds
       };
 
-    return this.http.post<EnhancedAIChatResponse>(url, payload, { headers }).pipe(
-      map(response => ({
-        ...response,
-        streamUrl: response.streamUrl || this.createMockStreamUrl()
-      })),
-      catchError(this.handleError)
+    return this.http.post(url, payload, { 
+      headers, 
+      responseType: 'text',
+      observe: 'response'
+    }).pipe(
+      map(response => {
+        if (response.status >= 200 && response.status < 300) {
+          const responseText = response.body || '';
+          const streamedContent = this.parseSSEResponse(responseText);
+          
+                      if (streamedContent) {
+              let conversationId = request.conversationId;
+              
+              const headerConversationId = response.headers.get('X-Conversation-Id');
+              if (headerConversationId) {
+                conversationId = parseInt(headerConversationId, 10);
+              }
+              
+              try {
+                const responseData = JSON.parse(responseText);
+                if (responseData.conversationId) {
+                  conversationId = responseData.conversationId;
+                }
+              } catch (e) {
+              }
+              
+              return {
+                explanation: streamedContent,
+                url: '',
+                conversationId: conversationId,
+                streamUrl: ''
+              } as EnhancedAIChatResponse;
+          } else {
+            console.warn('Received empty content from streaming response');
+            throw new Error('No content received from AI service');
+          }
+        } else {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+      }),
+      catchError((error) => {
+        console.error('Error in streaming request:', error);
+        
+        if (error.error && typeof error.error === 'string') {
+          const streamedContent = this.parseSSEResponse(error.error);
+          if (streamedContent) {
+            console.log('Found valid content in error response, treating as success');
+            return [{
+              explanation: streamedContent,
+              url: '',
+              conversationId: request.conversationId,
+              streamUrl: ''
+            } as EnhancedAIChatResponse];
+          }
+        }
+        
+        return this.handleError(error);
+      })
     );
+  }
+
+  private parseSSEResponse(responseText: string): string {
+    if (!responseText) {
+      console.warn('Empty response received from streaming endpoint');
+      return '';
+    }
+    
+    const lines = responseText.split('\n');
+    let content = '';
+    let hasValidData = false;
+    
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      
+      if (!trimmedLine) continue;
+      
+      if (trimmedLine.startsWith('data: ')) {
+        const dataContent = trimmedLine.substring(6); 
+        
+        if (dataContent === '[DONE]') {
+          hasValidData = true;
+          continue;
+        }
+        
+        if (dataContent.trim()) {
+          content += dataContent;
+          hasValidData = true;
+        }
+      }
+    }
+    
+    const finalContent = content.trim();
+    
+    if (hasValidData) {
+      console.log('Successfully parsed SSE response:', finalContent.substring(0, 100) + (finalContent.length > 100 ? '...' : ''));
+    } else {
+      console.warn('No valid data found in SSE response. Raw response:', responseText.substring(0, 200));
+    }
+    
+    return finalContent;
   }
 
   loadConversations(hallId?: number): void {
@@ -212,6 +311,16 @@ export class AiChatService {
 
   refreshMessages(): void {
     this.messagesResource.reload();
+  }
+
+  refreshConversationsAfterResponse(): void {
+    setTimeout(() => {
+      this.conversationsResource.reload();
+    }, 100);
+  }
+
+  refreshConversationsAndSelectLatest(): void {
+    this.conversationsResource.reload();
   }
 
   clearMessages(): void {

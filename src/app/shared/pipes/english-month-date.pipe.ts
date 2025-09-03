@@ -14,7 +14,7 @@ export class EnglishMonthDatePipe implements PipeTransform {
     ...args: unknown[]
   ): unknown {
     if (!value) return;
-    const newValue = dateToGregorianIsoString(value as string);
+    const newValue = dateToGregorianIsoString(value as string, 'short');
     moment.locale('en'); // Set moment to Arabic locale
     if (includeTime) {
       return moment(newValue)

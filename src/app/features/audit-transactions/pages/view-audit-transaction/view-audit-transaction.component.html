@@ -1,0 +1,102 @@
+@if (transaction) {
+  <div>
+    <info-tooltip
+      [createdBy]="transaction.created_by"
+      [createdAt]="transaction.created_at">
+    </info-tooltip>
+  </div>
+}
+
+<app-list-header
+  [title]="'auditTransactions.viewTransaction' | translate"></app-list-header>
+
+<div class="view-container">
+  <div class="info-wrapper">
+    <div class="info-item">
+      <span class="label">{{ 'auditTransactions.id' | translate }}:</span>
+      <span class="value">{{ transaction?.id }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="label"
+        >{{ 'auditTransactions.creationDate' | translate }}:</span
+      >
+      <span class="value">
+        @if (lang.lang === 'en') {
+          {{ transaction?.created_at | englishMonthDate: false : 'DD-MM-YYYY' }}
+        }
+        @if (lang.lang === 'ar') {
+          {{ transaction?.created_at | arabicMonthDate: false : 'DD-MM-YYYY' }}
+        }
+      </span>
+    </div>
+
+    @if (transaction?.inventory) {
+      <div class="info-item">
+        <span class="label"
+          >{{ 'auditTransactions.itemName' | translate }}:</span
+        >
+        <span class="value">
+          @if (lang.lang === 'en') {
+            {{ transaction?.inventory?.name }}
+          }
+          @if (lang.lang === 'ar') {
+            {{ transaction?.inventory?.name_ar }}
+          }
+        </span>
+      </div>
+    }
+
+    <div class="info-item">
+      <span class="label">{{ 'auditTransactions.source' | translate }}:</span>
+      <span class="value">{{
+        'inventory.transactionSource.' + transaction?.source | translate
+      }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="label"
+        >{{ 'auditTransactions.transactionType' | translate }}:</span
+      >
+      <span class="value">{{
+        'inventory.transactionTypeEnum.' + transaction?.transactionType
+          | translate
+      }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="label"
+        >{{ 'auditTransactions.oldQuantity' | translate }}:</span
+      >
+      <span class="value">{{ transaction?.oldQuantity }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="label">{{ 'auditTransactions.quantity' | translate }}:</span>
+      <span class="value">{{ transaction?.quantity }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="label"
+        >{{ 'auditTransactions.currentQuantity' | translate }}:</span
+      >
+      <span class="value">{{ transaction?.currentQuantity }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="label">{{ 'auditTransactions.reason' | translate }}:</span>
+      <span class="value">{{ transaction?.reason || '-' }}</span>
+    </div>
+  </div>
+
+  <div class="action mt-4">
+    <button
+      type="button"
+      pButton
+      class="p-button-secondary"
+      [label]="'common.back' | translate"
+      (click)="goBack()"></button>
+  </div>
+</div>
+
+<comments [entityId]="+id!" [type]="commentType.TRANSACTION"></comments>

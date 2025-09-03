@@ -35,4 +35,36 @@
     [label]="'purchases.expenseType' | translate">
     <i class="pi pi-wallet" style="color: gray"></i>
   </app-dropdown>
+
+  @if (isPurchases) {
+    @if (showCategoryTypeDropdown) {
+      <app-dropdown
+        [control]="f['categoryType']"
+        [options]="categoryTypes"
+        [optionLabel]="translate.currentLang === 'ar' ? 'label.ar' : 'label.en'"
+        optionValue="value"
+        controlName="categoryType"
+        [placeholder]="'categories.selectCategoryType' | translate"
+        [label]="'categories.categoryType' | translate">
+        <i class="pi pi-wallet" style="color: gray"></i>
+      </app-dropdown>
+    } @else if (showCategoryTypeReadonly) {
+      <div class="d-flex align-items-center gap-2">
+        <strong>{{ 'categories.categoryType' | translate }}: </strong>
+        {{
+          'categories.categoryTypeValues.' + purchaseCategory?.categoryType
+            | translate
+        }}
+        <button
+          appConfirmDeleteDialog
+          [message]="'categories.categoryTypeChange' | translate"
+          (acceptDelete)="confirmChangeCategoryType()"
+          type="button"
+          class="change-btn"
+          pButton>
+          {{ 'common.change' | translate }}
+        </button>
+      </div>
+    }
+  }
 </app-drawer-form-wrapper>

@@ -100,9 +100,9 @@
         </td>
         <td>
           {{
-          supplier.active
-          ? ('suppliers.active' | translate)
-          : ('suppliers.inactive' | translate)
+            supplier.active
+              ? ('suppliers.active' | translate)
+              : ('suppliers.inactive' | translate)
           }}
         </td>
         <td>{{ supplier.activity }}</td>
@@ -114,7 +114,7 @@
               id="dropdownBasic1"
               ngbDropdownToggle>
               <span
-              class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
+                class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
               {{ 'common.options' | translate }}
             </button>
             <div
@@ -163,8 +163,8 @@
   </p-table>
 }
 
-<app-confirm-delete-popup
+<app-confirm-popup
   [visible]="showDeleteConfirmation"
   [message]="getDeleteMessage()"
   (confirm)="confirmDeleteSupplier()"
-(reject)="rejectDeleteSupplier()"></app-confirm-delete-popup>
+  (reject)="rejectDeleteSupplier()"></app-confirm-popup>

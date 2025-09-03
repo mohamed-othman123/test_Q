@@ -17,4 +17,5 @@ export enum GaCustomEvents {
   CREATE_EXPENSE_CATEGORY = 'create_expense_category',
   CREATE_EXPENSE_ITEM = 'create_expense_item',
   CREATE_DISCOUNT = 'create_discount',
+  CREATE_INVENTORY_ITEM = 'create_inventory_item',
 }

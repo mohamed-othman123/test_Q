@@ -9,12 +9,12 @@ import {TranslateService} from '@ngx-translate/core';
 import {ConfirmationService} from 'primeng/api';
 
 @Directive({
-    selector: '[appConfirmDeleteDialog]',
-    standalone: false
+  selector: '[appConfirmDeleteDialog]',
+  standalone: false,
 })
 export class ConfirmDeleteDialogDirective {
   @Output() acceptDelete = new EventEmitter<boolean>();
-  @Input({required: true}) deletedItem!: string;
+  @Input() deletedItem!: string;
   @Input() message?: string;
 
   @HostListener('click', ['$event'])

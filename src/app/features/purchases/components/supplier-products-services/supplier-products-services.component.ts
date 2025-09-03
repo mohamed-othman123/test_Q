@@ -5,8 +5,8 @@ import {PermissionTypes} from '@auth/models';
 import {AuthService, LanguageService} from '@core/services';
 import {DrawerService} from '@core/services/drawer.service';
 import {noDoubleSpaceValidator, requireOneOf} from '@core/validators';
-import {PurchaseCategory} from '@purchase-categories/models/purchase-category.model';
 import {ExpensesType} from '@purchases/models/purchase-model';
+import {PurchasesService} from '@purchases/services/purchases.service';
 import {Service} from '@services/models';
 import {Supplier, SupplierProduct} from '@suppliers/models/supplier';
 
@@ -18,7 +18,6 @@ import {Supplier, SupplierProduct} from '@suppliers/models/supplier';
 })
 export class SupplierProductsServicesComponent implements OnInit {
   @Input() form!: FormGroup;
-  @Input() purchaseCategoryList!: PurchaseCategory[];
   @Input() suppliers!: Supplier[];
   @Input() products!: SupplierProduct[];
   @Input() services!: Service[];
@@ -27,22 +26,7 @@ export class SupplierProductsServicesComponent implements OnInit {
 
   ExpensesType = ExpensesType;
 
-  supplierItemsType = [
-    {
-      'value': 'product',
-      'label': {
-        'ar': 'منتج',
-        'en': 'Product',
-      },
-    },
-    {
-      'value': 'service',
-      'label': {
-        'ar': 'خدمة',
-        'en': 'Service',
-      },
-    },
-  ];
+  itemsType$ = this.purchasesService.itemTypes;
 
   get itemsArray(): FormArray {
     return this.form.get('items') as FormArray;
@@ -54,6 +38,7 @@ export class SupplierProductsServicesComponent implements OnInit {
     private fb: FormBuilder,
     private rote: ActivatedRoute,
     private authService: AuthService,
+    private purchasesService: PurchasesService,
   ) {
     this.isEditMode = rote.snapshot.data['mode'] === 'edit';
   }
@@ -103,13 +88,20 @@ export class SupplierProductsServicesComponent implements OnInit {
 
   clearItemValues(index: number, isNew: boolean) {
     this.itemsArray.controls[index].patchValue({
+      id: null,
       name: '',
       nameAr: '',
       value: null,
       isNew,
+      quantity: 1,
       saved: false,
     });
     this.itemsArray.controls[index].get('value')?.enable();
+
+    this.itemsArray.controls[index].get('nameAr')?.enable();
+    this.itemsArray.controls[index].get('name')?.enable();
+    this.updateTotals();
+    this.calculateTotalAmount();
   }
 
   addNewExpenseItem(index: number) {
@@ -118,6 +110,7 @@ export class SupplierProductsServicesComponent implements OnInit {
       name: '',
       nameAr: '',
       value: null,
+      quantity: 1,
       isNew: true,
     });
     this.itemsArray.controls[index].get('value')?.enable();

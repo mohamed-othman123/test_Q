@@ -1,0 +1,32 @@
+:host {
+  .view-container {
+    padding: 24px;
+    background-color: white;
+
+    .info-wrapper {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(5rem, 1fr));
+      gap: 1rem;
+
+      .info-item {
+        display: flex;
+        gap: 0.25rem;
+
+        .label {
+          font-weight: 600;
+          color: var(--primary-color);
+        }
+
+        .value {
+          font-size: 1rem;
+          color: #333;
+        }
+      }
+    }
+  }
+  .action {
+    button {
+      max-width: 90px;
+    }
+  }
+}

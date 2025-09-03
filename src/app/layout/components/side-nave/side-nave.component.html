@@ -42,9 +42,7 @@
           <img src="assets/icons/analytics.icon.svg" alt="analytics icon" />
           <span>{{ 'sideNav.analytics' | translate }}</span>
         </li>
-        <li
-          [routerLink]="['/ai-chat']"
-          routerLinkActive="router-link-active">
+        <li [routerLink]="['/ai-chat']" routerLinkActive="router-link-active">
           <span class="ai-badge">AI</span>
           <span>{{ 'sideNav.aiChat' | translate }}</span>
         </li>
@@ -90,6 +88,13 @@
         routerLinkActive="router-link-active">
         <img src="assets/icons/suppliers.icon.svg" alt="suppliers icon" />
         <span>{{ 'sideNav.suppliers' | translate }}</span>
+      </li>
+      <li
+        *appHasPermission="['read:inventory']"
+        [routerLink]="['/inventory']"
+        routerLinkActive="router-link-active">
+        <img src="assets/icons/shop-window.svg" alt="inventory icon" />
+        <span>{{ 'sideNav.inventory' | translate }}</span>
       </li>
       <li
         *appHasPermission="['read:refund requests']"

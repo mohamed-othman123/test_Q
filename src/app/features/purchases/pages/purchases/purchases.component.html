@@ -102,9 +102,9 @@
     <tr>
       <td>
         {{
-        purchase.category.type === 'Purchases'
-        ? ('purchases.purchasesExpenses' | translate)
-        : ('purchases.generalExpenses' | translate)
+          purchase.category.type === 'Purchases'
+            ? ('purchases.purchasesExpenses' | translate)
+            : ('purchases.generalExpenses' | translate)
         }}
       </td>
 
@@ -124,13 +124,9 @@
           </span>
           <i
             class="pi pi-question icon-question"
-          (click)="onClickStatus(purchase, $event)"></i>
-          @if (
-            statusTooltipVisible && selectedStatusItem?.id === purchase.id
-            ) {
-            <div
-              class="status-tooltip"
-              >
+            (click)="onClickStatus(purchase, $event)"></i>
+          @if (statusTooltipVisible && selectedStatusItem?.id === purchase.id) {
+            <div class="status-tooltip">
               <div class="status-tooltip__content">
                 <div class="item">
                   <div class="item__label">
@@ -167,8 +163,8 @@
                       <sar-symbol />
                       <span>
                         {{
-                        (purchase.totalPayable || 0) -
-                        (purchase.paidAmount || 0) | number: '1.2-2'
+                          (purchase.totalPayable || 0) -
+                            (purchase.paidAmount || 0) | number: '1.2-2'
                         }}
                       </span>
                     </span>
@@ -191,7 +187,7 @@
               id="dropdownBasic1"
               ngbDropdownToggle>
               <span
-              class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
+                class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
               {{ 'common.options' | translate }}
             </button>
             <div
@@ -222,8 +218,7 @@
                 <button
                   ngbDropdownItem
                   (click)="navigateToPayments(purchase)"
-                  class="d-flex gap-3"
-                  >
+                  class="d-flex gap-3">
                   <i class="pi pi-money-bill"></i>
                   <span>{{ 'purchases.Pay' | translate }}</span>
                 </button>
@@ -265,8 +260,8 @@
 </p-table>
 
 <!-- Delete Confirmation Dialog -->
-<app-confirm-delete-popup
+<app-confirm-popup
   [visible]="showDeleteConfirmation"
   [message]="'purchases.confirmDelete' | translate"
   (confirm)="confirmDeletePurchase()"
-(reject)="rejectDeletePurchase()"></app-confirm-delete-popup>
+  (reject)="rejectDeletePurchase()"></app-confirm-popup>

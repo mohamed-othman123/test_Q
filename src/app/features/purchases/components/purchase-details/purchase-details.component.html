@@ -3,22 +3,18 @@
   <div class="page-header">
     <h2>
       {{
-      isViewMode
-      ? ('purchases.viewPurchase' | translate)
-      : isEditMode
-      ? ('purchases.editPurchase' | translate)
-      : ('purchases.addNewPurchase' | translate)
+        isViewMode
+          ? ('purchases.viewPurchase' | translate)
+          : isEditMode
+            ? ('purchases.editPurchase' | translate)
+            : ('purchases.addNewPurchase' | translate)
       }}
     </h2>
   </div>
 
   <!--details form-->
   @if (form && !isPatchingForm) {
-    <form
-      [formGroup]="form"
-      appShakeable
-      (ngSubmit)="nextStep()"
-      >
+    <form [formGroup]="form" appShakeable (ngSubmit)="nextStep()">
       <div class="form-section mb-lg-6">
         <!--expense type-->
         <div class="invoice-type d-flex flex-wrap gap-4 mb-1">
@@ -48,403 +44,432 @@
             <div class="readonly-invoice-type">
               <span class="label"
                 >{{ 'purchases.expenseType' | translate }}:</span
+              >
+              <span class="value">
+                {{
+                  (form.get('expensesType')?.value ===
+                  ExpensesType.purchasesExpenses
+                    ? 'purchases.purchasesExpenses'
+                    : 'purchases.generalExpenses'
+                  ) | translate
+                }}
+              </span>
+            </div>
+          }
+        </div>
+        <!-- Invoice Type Selection -->
+        @if (
+          form.get('expensesType')?.value === ExpensesType.purchasesExpenses
+        ) {
+          <div class="invoice-type d-flex flex-wrap gap-4 mb-5">
+            @if (!isViewMode && !isEditMode) {
+              <div class="d-flex align-items-center gap-2">
+                <p-radioButton
+                  [inputId]="'simplified'"
+                  name="invoiceType"
+                  [formControl]="$any(form.get('invoiceType'))"
+                  value="simplified" />
+                <label [for]="'simplified'" class="mb-0">
+                  {{ 'purchases.simplifiedInvoice' | translate }}
+                </label>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <p-radioButton
+                  [disabled]="true"
+                  [inputId]="'tax'"
+                  name="invoiceType"
+                  [formControl]="$any(form.get('invoiceType'))"
+                  value="tax" />
+                <label [for]="'tax'" class="mb-0">
+                  {{ 'purchases.taxInvoice' | translate }}
+                </label>
+              </div>
+            }
+            @if (isViewMode || isEditMode) {
+              <div class="readonly-invoice-type">
+                <span class="label"
+                  >{{ 'purchases.invoiceType' | translate }}:</span
                 >
                 <span class="value">
                   {{
-                  (form.get('expensesType')?.value ===
-                  ExpensesType.purchasesExpenses
-                  ? 'purchases.purchasesExpenses'
-                  : 'purchases.generalExpenses'
-                  ) | translate
+                    (form.get('invoiceType')?.value === 'tax'
+                      ? 'purchases.invoiceTypes.Tax Invoice'
+                      : 'purchases.invoiceTypes.Simplified Invoice'
+                    ) | translate
                   }}
                 </span>
               </div>
             }
           </div>
-          <!-- Invoice Type Selection -->
-          @if (
-            form.get('expensesType')?.value === ExpensesType.purchasesExpenses
+        }
+        <!-- Basic Info -->
+        <div class="d-flex flex-wrap gap-4 mb-5 col-md-6">
+          <div class="flex-grow-1 min-width-300">
+            @if (
+              form.get('expensesType')?.value !== ExpensesType.generalExpenses
             ) {
-            <div
-              class="invoice-type d-flex flex-wrap gap-4 mb-5"
-              >
-              @if (!isViewMode && !isEditMode) {
-                <div class="d-flex align-items-center gap-2">
-                  <p-radioButton
-                    [inputId]="'simplified'"
-                    name="invoiceType"
-                    [formControl]="$any(form.get('invoiceType'))"
-                    value="simplified" />
-                  <label [for]="'simplified'" class="mb-0">
-                    {{ 'purchases.simplifiedInvoice' | translate }}
-                  </label>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                  <p-radioButton
-                    [disabled]="true"
-                    [inputId]="'tax'"
-                    name="invoiceType"
-                    [formControl]="$any(form.get('invoiceType'))"
-                    value="tax" />
-                  <label [for]="'tax'" class="mb-0">
-                    {{ 'purchases.taxInvoice' | translate }}
-                  </label>
-                </div>
-              }
-              @if (isViewMode || isEditMode) {
-                <div class="readonly-invoice-type">
-                  <span class="label"
-                    >{{ 'purchases.invoiceType' | translate }}:</span
-                    >
-                    <span class="value">
-                      {{
-                      (form.get('invoiceType')?.value === 'tax'
-                      ? 'purchases.invoiceTypes.Tax Invoice'
-                      : 'purchases.invoiceTypes.Simplified Invoice'
-                      ) | translate
-                      }}
-                    </span>
-                  </div>
-                }
-              </div>
+              <app-input
+                [control]="$any(form.get('invoiceReference'))"
+                controlName="invoiceReference"
+                [label]="'purchases.invoiceReference' | translate"
+                [placeholder]="'purchases.enterInvoiceReference' | translate"
+                [disabled]="isViewMode || isEditMode">
+              </app-input>
             }
-            <!-- Basic Info -->
-            <div class="d-flex flex-wrap gap-4 mb-5 col-md-6">
-              <div class="flex-grow-1 min-width-300">
-                @if (
-                  form.get('expensesType')?.value !== ExpensesType.generalExpenses
-                  ) {
-                  <app-input
-                    [control]="$any(form.get('invoiceReference'))"
-                    controlName="invoiceReference"
-                    [label]="'purchases.invoiceReference' | translate"
-                    [placeholder]="'purchases.enterInvoiceReference' | translate"
-                    [disabled]="isViewMode || isEditMode">
-                  </app-input>
-                }
-              </div>
-            </div>
-            <!-- Dates -->
-            <div class="d-flex flex-wrap gap-4">
-              <div class="flex-grow-1 min-width-300">
-                <app-gregorian-date-picker
-                  [control]="$any(form.get('purchaseDate'))"
-                  controlName="purchaseDate"
-                  [showClear]="false"
-                  [label]="'purchases.purchaseDate' | translate"
-                  [placeholder]="'purchases.purchaseDatePlaceholder' | translate"
-                  [disabled]="isViewMode">
-                </app-gregorian-date-picker>
-              </div>
-              <div class="flex-grow-1 min-width-300">
-                <app-gregorian-date-picker
-                  [control]="$any(form.get('payingDate'))"
-                  controlName="payingDate"
-                  [label]="'purchases.payingDate' | translate"
-                  [placeholder]="'purchases.payingDatePlaceholder' | translate"
-                  [disabled]="isViewMode">
-                </app-gregorian-date-picker>
-              </div>
-              @if (
-                form.get('invoiceType')?.value === 'tax' &&
-                form.get('expensesType')?.value === ExpensesType.purchasesExpenses
-                ) {
-                <div
-                  class="flex-grow-1 min-width-300"
-                  >
-                  <app-gregorian-date-picker
-                    [control]="$any(form.get('supplyDate'))"
-                    controlName="supplyDate"
-                    [label]="'purchases.supplyDate' | translate"
-                    [placeholder]="'purchases.supplyDatePlaceholder' | translate"
-                    [disabled]="isViewMode">
-                  </app-gregorian-date-picker>
-                </div>
-              }
-            </div>
           </div>
-          <!--expense items-->
-          @if (
-            form.get('expensesType')?.value === ExpensesType.generalExpenses ||
-            form.get('invoiceType')?.value !== 'tax'
-            ) {
-            <app-expenses-items
-              [form]="form"
-              [purchaseCategoryList]="purchaseCategoryList"
-              [expensesItems]="expensesItems"
-              [expenseElements]="expenseElements">
-            </app-expenses-items>
-          }
-          <!--supplier  items-->
+        </div>
+        <!-- Dates -->
+        <div class="d-flex flex-wrap gap-4">
+          <div class="flex-grow-1 min-width-300">
+            <app-gregorian-date-picker
+              [control]="$any(form.get('purchaseDate'))"
+              controlName="purchaseDate"
+              [showClear]="false"
+              [label]="'purchases.purchaseDate' | translate"
+              [placeholder]="'purchases.purchaseDatePlaceholder' | translate"
+              [disabled]="isViewMode">
+            </app-gregorian-date-picker>
+          </div>
+          <div class="flex-grow-1 min-width-300">
+            <app-gregorian-date-picker
+              [control]="$any(form.get('payingDate'))"
+              controlName="payingDate"
+              [label]="'purchases.payingDate' | translate"
+              [placeholder]="'purchases.payingDatePlaceholder' | translate"
+              [disabled]="isViewMode">
+            </app-gregorian-date-picker>
+          </div>
           @if (
             form.get('invoiceType')?.value === 'tax' &&
             form.get('expensesType')?.value === ExpensesType.purchasesExpenses
-            ) {
-            <app-supplier-products-services
-              [form]="form"
-              [purchaseCategoryList]="purchaseCategoryList"
-              [suppliers]="suppliers"
-              [products]="products"
-              [services]="services">
-            </app-supplier-products-services>
+          ) {
+            <div class="flex-grow-1 min-width-300">
+              <app-gregorian-date-picker
+                [control]="$any(form.get('supplyDate'))"
+                controlName="supplyDate"
+                [label]="'purchases.supplyDate' | translate"
+                [placeholder]="'purchases.supplyDatePlaceholder' | translate"
+                [disabled]="isViewMode">
+              </app-gregorian-date-picker>
+            </div>
           }
-          <!-- Add Payment Section -->
-          @if (!isViewMode && !isEditMode) {
-            <div class="form-section">
-              <button
-                class="w-25 mb-4"
-                type="button"
-                pButton
-                icon="pi pi-plus"
-                [label]="'purchases.addPayment' | translate"
-                (click)="openAddPaymentForm()"
-              [disabled]="isViewMode || isEditMode"></button>
+        </div>
+      </div>
+      <!--category-->
+      <div class="row d-flex align-items-baseline position-relative mb-4">
+        <div class="col-md-6">
+          <app-dropdown
+            [control]="form.get('category')!"
+            [options]="purchaseCategoryList || []"
+            [controlName]="'thirdParty'"
+            [optionLabel]="lang.lang === 'ar' ? 'name_ar' : 'name'"
+            [optionValue]="'id'"
+            [placeholder]="'purchases.expensesCategoryPlaceholder' | translate"
+            [label]="'purchases.expensesCategory' | translate"
+            [disabled]="isEditMode">
+            <i class="pi pi-list" style="color: gray"></i>
+          </app-dropdown>
+        </div>
+        <div class="flex-grow-1 col-md-6">
+          <app-input
+            [disabled]="true"
+            [control]="$any(form.get('expensesDescription'))"
+            controlName="expensesDescription"
+            [label]="'purchases.expensesDescription' | translate"
+            [placeholder]="'purchases.enterExpensesDescription' | translate">
+          </app-input>
+        </div>
+      </div>
+      <!--simple invoice items-->
+      @if (
+        form.get('invoiceType')?.value !== 'tax' &&
+        form.get('expensesType')?.value === ExpensesType.purchasesExpenses
+      ) {
+        <app-simplified-invoice-items [form]="form">
+        </app-simplified-invoice-items>
+      }
+      <!--tax & supplier  items-->
+      @else if (
+        form.get('invoiceType')?.value === 'tax' &&
+        form.get('expensesType')?.value === ExpensesType.purchasesExpenses
+      ) {
+        <app-supplier-products-services
+          [form]="form"
+          [suppliers]="suppliers"
+          [products]="products"
+          [services]="services">
+        </app-supplier-products-services>
+      }
+      <!--general expense items-->
+      @else if (
+        form.get('expensesType')?.value === ExpensesType.generalExpenses ||
+        form.get('invoiceType')?.value !== 'tax'
+      ) {
+        <app-expenses-items
+          [form]="form"
+          [purchaseCategoryList]="purchaseCategoryList"
+          [expensesItems]="expensesItems"
+          [expenseElements]="expenseElements">
+        </app-expenses-items>
+      }
+
+      <!-- Add Payment Section -->
+      @if (!isViewMode && !isEditMode) {
+        <div class="form-section">
+          <button
+            class="w-25 mb-4"
+            type="button"
+            pButton
+            icon="pi pi-plus"
+            [label]="'purchases.addPayment' | translate"
+            (click)="openAddPaymentForm()"
+            [disabled]="isViewMode || isEditMode"></button>
+          @if (showAddPaymentForm) {
+            <div>
+              <h3 class="section-header">
+                {{ 'purchases.addPayment' | translate }}
+              </h3>
               @if (showAddPaymentForm) {
-                <div>
-                  <h3 class="section-header">
-                    {{ 'purchases.addPayment' | translate }}
-                  </h3>
-                  @if (showAddPaymentForm) {
-                    <app-purchase-payment-form
-                      [parentForm]="form"
-                      [isEditMode]="isEditMode"
-                      [purchase]="purchase"
-                      [supplier]="selectedSupplier!"
-                      [expenseItem]="selectedExpenseItem!"
-                      [paymentForm]="$any(form.get('payment'))"
-                      [paymentMethods]="paymentMethods"
-                      (onCancel)="cancelAddPayment()">
-                    </app-purchase-payment-form>
-                  }
-                </div>
+                <app-purchase-payment-form
+                  [parentForm]="form"
+                  [isEditMode]="isEditMode"
+                  [purchase]="purchase"
+                  [supplier]="selectedSupplier!"
+                  [expenseItem]="selectedExpenseItem!"
+                  [paymentForm]="$any(form.get('payment'))"
+                  [paymentMethods]="paymentMethods"
+                  (onCancel)="cancelAddPayment()">
+                </app-purchase-payment-form>
               }
             </div>
           }
-          <div class="row">
-            <div class="col-md-6">
-              <!--add discount Btn-->
-              <button pButton type="button" class="apply-btn mt-4">
-                <i class="pi pi-plus-circle"></i>
-                {{ 'purchases.addDiscount' | translate }}
-              </button>
-              <!--add discount card-->
-              <div>
-                <div class="discount-wrapper">
-                  <h6 class="discount-type">
-                    {{ 'orders.discountType' | translate }}
-                  </h6>
-                  <div class="radio-buttons">
-                    <div class="custom-radio">
-                      <p-radioButton
-                        [inputId]="'percent'"
-                        [value]="'percentage'"
-                        class="el-radio"
-                        name="discountType"
-                        [formControl]="$any(form.get('discountType'))" />
-                      <label [for]="'percent'">
-                        <img
-                          src="assets/svg/ratio.svg"
-                          alt="net profit icon"
-                          width="22" />
-                        <span>{{ 'orders.percent' | translate }}</span>
-                      </label>
-                    </div>
-                    <div class="custom-radio">
-                      <p-radioButton
-                        [inputId]="'fixed'"
-                        name="discountType"
-                        class="el-radio"
-                        [formControl]="$any(form.get('discountType'))"
-                        [value]="'amount'" />
-                      <label [for]="'fixed'">
-                        <img
-                          src="assets/svg/money.svg"
-                          alt="net profit icon"
-                          width="22" />
-                        <span>{{ 'orders.fixed' | translate }}</span>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="discount-value">
-                    <app-input
-                      [disabled]="isViewMode"
-                      [percent]="form.get('discountType')?.value === 'percentage'"
-                      [placeholder]="'orders.discountValue' | translate"
-                      [label]="'orders.discountValue' | translate"
-                      [control]="$any(form.get('discountValue'))"
-                      [controlName]="'discountValue'"
-                      inputType="number">
-                    </app-input>
-                    <button
-                      pButton
-                      type="button"
-                      class="apply-btn"
-                      (click)="onDiscountChange()">
-                      <i class="pi pi-plus"></i>
-                      {{ 'common.apply' | translate }}
-                    </button>
-                    <button
-                      (click)="cancelAddDiscount()"
-                      pButton
-                      type="button"
-                      class="apply-btn"
-                      severity="secondary">
-                      <i class="pi pi-times-circle"></i>
-                      {{ 'common.cancel' | translate }}
-                    </button>
-                  </div>
-                  @if (form.getError('discountInvalid')) {
-                    <p class="discount-error">
-                      {{ 'orders.discountInvalid' | translate }}
-                    </p>
-                  }
+        </div>
+      }
+      <div class="row">
+        <div class="col-md-6">
+          <!--add discount Btn-->
+          <button pButton type="button" class="apply-btn mt-4">
+            <i class="pi pi-plus-circle"></i>
+            {{ 'purchases.addDiscount' | translate }}
+          </button>
+          <!--add discount card-->
+          <div>
+            <div class="discount-wrapper">
+              <h6 class="discount-type">
+                {{ 'orders.discountType' | translate }}
+              </h6>
+              <div class="radio-buttons">
+                <div class="custom-radio">
+                  <p-radioButton
+                    [inputId]="'percent'"
+                    [value]="'percentage'"
+                    class="el-radio"
+                    name="discountType"
+                    [formControl]="$any(form.get('discountType'))" />
+                  <label [for]="'percent'">
+                    <img
+                      src="assets/svg/ratio.svg"
+                      alt="net profit icon"
+                      width="22" />
+                    <span>{{ 'orders.percent' | translate }}</span>
+                  </label>
+                </div>
+                <div class="custom-radio">
+                  <p-radioButton
+                    [inputId]="'fixed'"
+                    name="discountType"
+                    class="el-radio"
+                    [formControl]="$any(form.get('discountType'))"
+                    [value]="'amount'" />
+                  <label [for]="'fixed'">
+                    <img
+                      src="assets/svg/money.svg"
+                      alt="net profit icon"
+                      width="22" />
+                    <span>{{ 'orders.fixed' | translate }}</span>
+                  </label>
                 </div>
               </div>
-            </div>
-            <!--payment summary-->
-            <div class="col-md-6">
-              <div class="summery mt-4">
-                <table>
-                  <tr>
-                    <td class="label">
-                      <i class="pi pi-check-circle"></i>
-                      {{ 'orders.totalValue' | translate }}
-                    </td>
-                    <td class="value">
-                      <span class="price-with-symbol">
-                        <sar-symbol />
-                        <span> {{ form.get('totalAmount')?.value || 0 }} </span>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="label">
-                      <i class="pi pi-check-circle"></i>
-                      {{ 'orders.vat' | translate }} ({{ '15' }}%)
-                    </td>
-                    <td class="value">
-                      <span class="price-with-symbol">
-                        <sar-symbol />
-                        <span>
-                          {{ form.get('vat')?.value | number: '1.2-2' }}
-                        </span>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="label">
-                      <i class="pi pi-check-circle"></i>
-                      {{ 'orders.discountPercent' | translate }}
-                      (
-                      @if (form.controls['discountType'].value === 'percentage') {
-                        {{ form.controls['discountValue'].value || 0 }}%
-                      }
-                      @if (form.controls['discountType'].value !== 'percentage') {
-                        <span class="price-with-symbol">
-                          <sar-symbol class="currency-icon"></sar-symbol>
-                          <span>{{ form.controls['discountValue'].value || 0 }}</span>
-                        </span>
-                      }
-                      )
-                    </td>
-                    <td class="value">
-                      @if (form.controls['discountValue'].value != 0) {
-                        <span
-                          class="sign"
-                          >
-                          -
-                        </span>
-                      }
-                      @if (form.controls['discountType'].value === 'percentage') {
-                        <span class="price-with-symbol">
-                          <sar-symbol class="currency-icon"></sar-symbol>
-                          <span>{{
-                            (form.controls['discountValue'].value *
-                            form.get('totalAmount')?.value) /
-                            100 || 0
-                          }}</span>
-                        </span>
-                      }
-                      @if (form.controls['discountType'].value !== 'percentage') {
-                        <span class="price-with-symbol">
-                          <sar-symbol class="currency-icon"></sar-symbol>
-                          <span>{{ form.controls['discountValue'].value || 0 }}</span>
-                        </span>
-                      }
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="label">
-                      <i class="pi pi-check-circle"></i>
-                      {{ 'orders.paidAmount' | translate }}
-                    </td>
-                    <td class="value">
-                      <span class="price-with-symbol">
-                        <sar-symbol />
-                        <span>
-                          {{
-                          form.get('payment.amount')?.value || 0 | number: '1.2-2'
-                          }}
-                          -
-                        </span>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr class="total-price">
-                    <td class="label">
-                      <i
-                  [class]="
-                    lang.dir === 'rtl'
-                      ? 'pi pi-arrow-left'
-                      : 'pi pi-arrow-right'
-                  "></i>
-                      {{ 'orders.remainingAmount' | translate }}
-                    </td>
-                    <td class="value">
-                      <span class="price-with-symbol">
-                        <sar-symbol />
-                        <span>
-                          {{
-                          form.controls['remainingAmount'].value | number: '1.2-2'
-                          }}
-                        </span>
-                      </span>
-                    </td>
-                  </tr>
-                </table>
+              <div class="discount-value">
+                <app-input
+                  [disabled]="isViewMode"
+                  [percent]="form.get('discountType')?.value === 'percentage'"
+                  [placeholder]="'orders.discountValue' | translate"
+                  [label]="'orders.discountValue' | translate"
+                  [control]="$any(form.get('discountValue'))"
+                  [controlName]="'discountValue'"
+                  inputType="number">
+                </app-input>
+                <button
+                  pButton
+                  type="button"
+                  class="apply-btn"
+                  (click)="onDiscountChange()">
+                  <i class="pi pi-plus"></i>
+                  {{ 'common.apply' | translate }}
+                </button>
+                <button
+                  (click)="cancelAddDiscount()"
+                  pButton
+                  type="button"
+                  class="apply-btn"
+                  severity="secondary">
+                  <i class="pi pi-times-circle"></i>
+                  {{ 'common.cancel' | translate }}
+                </button>
               </div>
+              @if (form.getError('discountInvalid')) {
+                <p class="discount-error">
+                  {{ 'orders.discountInvalid' | translate }}
+                </p>
+              }
             </div>
           </div>
-          <div class="form-section mt-4">
-            <app-input
-              [control]="$any(form.get('notes'))"
-              controlName="notes"
-              inputType="textarea"
-              [label]="'purchases.notes' | translate"
-              [placeholder]="'purchases.enterPurchaseNotes' | translate"
-              [disabled]="isViewMode">
-            </app-input>
+        </div>
+        <!--payment summary-->
+        <div class="col-md-6">
+          <div class="summery mt-4">
+            <table>
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.totalValue' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span> {{ form.get('totalAmount')?.value || 0 }} </span>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.vat' | translate }} ({{ '15' }}%)
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{ form.get('vat')?.value | number: '1.2-2' }}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.discountPercent' | translate }}
+                  (
+                  @if (form.controls['discountType'].value === 'percentage') {
+                    {{ form.controls['discountValue'].value || 0 }}%
+                  }
+                  @if (form.controls['discountType'].value !== 'percentage') {
+                    <span class="price-with-symbol">
+                      <sar-symbol class="currency-icon"></sar-symbol>
+                      <span>{{
+                        form.controls['discountValue'].value || 0
+                      }}</span>
+                    </span>
+                  }
+                  )
+                </td>
+                <td class="value">
+                  @if (form.controls['discountValue'].value != 0) {
+                    <span class="sign"> - </span>
+                  }
+                  @if (form.controls['discountType'].value === 'percentage') {
+                    <span class="price-with-symbol">
+                      <sar-symbol class="currency-icon"></sar-symbol>
+                      <span>{{
+                        (form.controls['discountValue'].value *
+                          form.get('totalAmount')?.value) /
+                          100 || 0
+                      }}</span>
+                    </span>
+                  }
+                  @if (form.controls['discountType'].value !== 'percentage') {
+                    <span class="price-with-symbol">
+                      <sar-symbol class="currency-icon"></sar-symbol>
+                      <span>{{
+                        form.controls['discountValue'].value || 0
+                      }}</span>
+                    </span>
+                  }
+                </td>
+              </tr>
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.paidAmount' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{
+                        form.get('payment.amount')?.value || 0 | number: '1.2-2'
+                      }}
+                      -
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <tr class="total-price">
+                <td class="label">
+                  <i
+                    [class]="
+                      lang.dir === 'rtl'
+                        ? 'pi pi-arrow-left'
+                        : 'pi pi-arrow-right'
+                    "></i>
+                  {{ 'orders.remainingAmount' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{
+                        form.controls['remainingAmount'].value | number: '1.2-2'
+                      }}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+            </table>
           </div>
-          <!--action buttons-->
-          <div class="form-actions">
-            <button
-              type="button"
-              pButton
-              class="p-button-secondary"
-              [label]="'common.cancel' | translate"
-              icon="pi pi-times"
-            (click)="cancel()"></button>
-            <button type="submit" pButton>
-              {{ 'common.next' | translate }}
-              <i
-          [ngClass]="
-            lang.lang === 'en' ? 'pi pi-arrow-right' : 'pi pi-arrow-left'
-          "></i>
-            </button>
-          </div>
-        </form>
-      }
-    </div>
+        </div>
+      </div>
+      <div class="form-section mt-4">
+        <app-input
+          [control]="$any(form.get('notes'))"
+          controlName="notes"
+          inputType="textarea"
+          [label]="'purchases.notes' | translate"
+          [placeholder]="'purchases.enterPurchaseNotes' | translate"
+          [disabled]="isViewMode">
+        </app-input>
+      </div>
+      <!--action buttons-->
+      <div class="form-actions">
+        <button
+          type="button"
+          pButton
+          class="p-button-secondary"
+          [label]="'common.cancel' | translate"
+          icon="pi pi-times"
+          (click)="cancel()"></button>
+        <button type="submit" pButton>
+          {{ 'common.next' | translate }}
+          <i
+            [ngClass]="
+              lang.lang === 'en' ? 'pi pi-arrow-right' : 'pi pi-arrow-left'
+            "></i>
+        </button>
+      </div>
+    </form>
+  }
+</div>
 
-    <app-add-new-supplier
-    (createdSupplier)="onCreateSupplier($event)"></app-add-new-supplier>
+<app-add-new-supplier
+  (createdSupplier)="onCreateSupplier($event)"></app-add-new-supplier>

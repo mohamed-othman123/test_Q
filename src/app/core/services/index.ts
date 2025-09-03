@@ -5,3 +5,4 @@ export * from './loader.service';
 export * from './localization-init.service';
 export * from './notification.service';
 export * from './filter.service';
+export * from './audit-transactions.service';

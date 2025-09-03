@@ -163,8 +163,8 @@
 <purchase-categories-form
   (refreshDataTable)="refreshDataTable()"></purchase-categories-form>
 
-<app-confirm-delete-popup
+<app-confirm-popup
   [visible]="showDeleteConfirmation"
   [message]="'categories.deleteCategory' | translate"
   (confirm)="confirmDeleteCategory()"
-  (reject)="rejectDeleteCategory()"></app-confirm-delete-popup>
+  (reject)="rejectDeleteCategory()"></app-confirm-popup>

@@ -225,8 +225,8 @@
   </ng-template>
 </p-table>
 <!-- Delete Confirmation Dialog -->
-<app-confirm-delete-popup
+<app-confirm-popup
   [visible]="showDeleteConfirmation"
   [message]="'services.deleteService' | translate"
   (confirm)="confirmDeletePriceRequest()"
-  (reject)="rejectDeletePriceRequest()"></app-confirm-delete-popup>
+  (reject)="rejectDeletePriceRequest()"></app-confirm-popup>

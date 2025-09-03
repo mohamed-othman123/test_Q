@@ -4,6 +4,8 @@ export enum CommentType {
   CUSTOMER = 'customer',
   SUPPLIER = 'supplier',
   REFUND_REQUEST = 'refundRequest',
+  TRANSACTION = 'transaction',
+  INVENTORY = 'inventory',
 }
 
 export interface Comment {

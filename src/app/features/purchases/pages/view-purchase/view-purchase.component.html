@@ -139,14 +139,10 @@
       <div class="wrapper">
         <div class="section-header">
           <h3>
-            @if (purchase.invoiceType === 'Tax Invoice') {
-              {{ 'purchases.productsAndServices' | translate }}
-            } @else if (
-              purchase.category?.type === ExpensesType.generalExpenses
-            ) {
+            @if (purchase.category?.type === ExpensesType.generalExpenses) {
               {{ 'purchases.expenseElements' | translate }}
             } @else {
-              {{ 'purchases.expenseItems' | translate }}
+              {{ 'purchases.productsAndServices' | translate }}
             }
           </h3>
         </div>
@@ -159,7 +155,7 @@
           <ng-template pTemplate="header">
             @if (purchase.items.length > 0) {
               <tr>
-                @if (purchase.supplier) {
+                @if (purchase.category?.type !== ExpensesType.generalExpenses) {
                   <th>
                     {{ 'purchases.supplierItemType' | translate }}
                   </th>
@@ -172,7 +168,7 @@
                   ) {
                     {{ 'purchases.expenseElement' | translate }}
                   } @else {
-                    {{ 'purchases.purchaseItemName' | translate }}
+                    {{ 'purchases.theName' | translate }}
                   }
                 </th>
                 <th>{{ 'purchases.thePrice' | translate }}</th>
@@ -183,7 +179,7 @@
           </ng-template>
           <ng-template pTemplate="body" let-item>
             <tr>
-              @if (purchase.supplier) {
+              @if (purchase.category?.type !== ExpensesType.generalExpenses) {
                 <td>
                   {{ 'purchases.' + item.type | translate }}
                 </td>

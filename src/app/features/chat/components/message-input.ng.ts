@@ -15,7 +15,7 @@ import { FormGroup } from '@angular/forms';
             [placeholder]="'chat.messagePlaceholder' | translate"
             rows="1"
             (keydown)="onKeyDown($event)"
-            (input)="adjustTextareaHeight()">
+            (input)="onInput($event)">
           </textarea>
 
           <div class="input-actions">
@@ -37,7 +37,7 @@ import { FormGroup } from '@angular/forms';
 
         <div class="input-footer">
           <div class="input-info">
-            <span class="char-count" [class.warning]="getCharCount() > 1800">
+            <span class="char-count" [class.warning]="getCharCount() > 1800" [class.error]="getCharCount() > 2000">
               {{ getCharCount() }}/2000
             </span>
             <span class="shortcuts">{{ 'chat.pressEnterToSend' | translate }}</span>
@@ -77,8 +77,13 @@ import { FormGroup } from '@angular/forms';
       padding: 1rem 1.5rem;
       position: sticky;
       bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
       backdrop-filter: blur(10px);
       background: var(--bg-surface-alpha);
+      flex-shrink: 0;
+      min-height: 80px;
     }
 
     .message-form {
@@ -207,6 +212,11 @@ import { FormGroup } from '@angular/forms';
       font-weight: 600;
     }
 
+    .char-count.error {
+      color: var(--error-color);
+      font-weight: 600;
+    }
+
     .quick-actions {
       display: flex;
       gap: 0.5rem;
@@ -294,6 +304,18 @@ export class MessageInputComponent {
       this.form.get('message')?.setValue('');
       this.adjustTextareaHeight();
     }
+  }
+
+  onInput(event: Event): void {
+    const textarea = event.target as HTMLTextAreaElement;
+    const value = textarea.value;
+    
+    if (value.length > 2000) {
+      textarea.value = value.substring(0, 2000);
+      this.form.get('message')?.setValue(textarea.value);
+    }
+    
+    this.adjustTextareaHeight();
   }
 
   adjustTextareaHeight(): void {

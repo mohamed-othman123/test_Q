@@ -34,7 +34,10 @@ export class ApiConfigService {
     'refund-requests': 'v1',
     'contract': 'v1',
     'analytics': 'v1',
-    'ai-agent': 'v1'
+    'chat': 'v1',
+    'inventory': 'v1',
+    'ai-agent': 'v1',
+    'audit-transactions': 'v1',
   };
 
   constructor(@Inject(APP_ENVIRONMENT) private env: Environment) {}

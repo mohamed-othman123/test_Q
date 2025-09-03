@@ -1,0 +1,169 @@
+<app-list-header
+  [title]="'inventory.transactionsList' | translate"></app-list-header>
+
+<p-table
+  #dt2
+  [scrollable]="true"
+  [value]="transactionsList"
+  dataKey="id"
+  [rows]="rows"
+  [lazy]="true"
+  [totalRecords]="totalRecords"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [first]="first"
+  [paginator]="true"
+  (onLazyLoad)="onLazyLoad($event)">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>
+        {{ 'inventory.transactionId' | translate }}
+      </th>
+      <th>
+        {{ 'inventory.source' | translate }}
+      </th>
+      <th>
+        {{ 'inventory.transactionType' | translate }}
+      </th>
+      <th pSortableColumn="oldQuantity">
+        {{ 'inventory.oldQuantity' | translate }}
+        <p-sortIcon field="oldQuantity" class="mr-12px" />
+      </th>
+      <th pSortableColumn="quantity">
+        {{ 'inventory.quantity' | translate }}
+        <p-sortIcon field="quantity" class="mr-12px" />
+      </th>
+      <th pSortableColumn="currentQuantity">
+        {{ 'inventory.currentQuantity' | translate }}
+        <p-sortIcon field="currentQuantity" class="mr-12px" />
+      </th>
+      <th pSortableColumn="created_at">
+        {{ 'inventory.creationDate' | translate }}
+        <p-sortIcon field="created_at" class="mr-12px" />
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <app-input
+          [control]="filterForm.get('transactionId')!"
+          [controlName]="'transactionId'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-dropdown
+          appendTo="body"
+          [control]="filterForm.get('transactionSource')!"
+          [options]="transactionSource"
+          [controlName]="'transactionSource'"
+          [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+          [optionValue]="'value'"
+          [placeholder]="'common.select' | translate"
+          [showClear]="true">
+        </app-dropdown>
+      </th>
+      <th>
+        <app-dropdown
+          appendTo="body"
+          [control]="filterForm.get('transactionType')!"
+          [options]="transactionType"
+          [controlName]="'transactionType'"
+          [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+          [optionValue]="'value'"
+          [placeholder]="'common.select' | translate"
+          [showClear]="true">
+        </app-dropdown>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('oldQuantity')!"
+          [controlName]="'oldQuantity'"
+          inputType="number"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('quantity')!"
+          [controlName]="'quantity'"
+          inputType="number"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+      <th>
+        <app-input
+          [control]="filterForm.get('currentQuantity')!"
+          [controlName]="'currentQuantity'"
+          inputType="number"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
+      </th>
+
+      <th style="min-width: 180px">
+        <app-gregorian-date-picker
+          [control]="$any(filterForm.get('creationDate'))"
+          controlName="creationDate"
+          [showClear]="true"
+          [placeholder]="'common.selectDate' | translate">
+        </app-gregorian-date-picker>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-transaction>
+    <tr>
+      <td>
+        {{ transaction.id }}
+      </td>
+      <td>
+        {{ 'inventory.transactionSource.' + transaction.source | translate }}
+      </td>
+      <td>
+        {{
+          'inventory.transactionTypeEnum.' + transaction.transactionType
+            | translate
+        }}
+      </td>
+      <td>
+        {{ transaction.oldQuantity }}
+      </td>
+      <td>
+        {{ transaction.quantity }}
+      </td>
+      <td>
+        {{ transaction.currentQuantity }}
+      </td>
+      <td>
+        @if (lang.lang === 'en') {
+          {{ transaction.created_at | englishMonthDate: false : 'DD-MM-YYYY' }}
+        }
+        @if (lang.lang === 'ar') {
+          {{ transaction.created_at | arabicMonthDate: false : 'DD-MM-YYYY' }}
+        }
+      </td>
+
+      <td>
+        <div class="actions">
+          <div (click)="viewTransaction(transaction.id)" class="action-button">
+            <i class="pi pi-eye"></i>
+            <span>{{ 'common.view' | translate }}</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="8">
+        <app-empty-state></app-empty-state>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

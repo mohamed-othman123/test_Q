@@ -1,0 +1,30 @@
+@use 'variables';
+@use 'mixins';
+
+:host {
+  .item-container {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(5rem, 1fr));
+    gap: 1rem;
+    background-color: white;
+
+    @include mixins.sm(variables.$max) {
+      grid-template-columns: repeat(1, minmax(5rem, 1fr));
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 0.75rem;
+
+    button {
+      max-width: 275px;
+    }
+  }
+}

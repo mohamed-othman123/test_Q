@@ -120,8 +120,8 @@
 </p-table>
 
 <!-- Delete Confirmation Dialog -->
-<app-confirm-delete-popup
+<app-confirm-popup
   [visible]="showDeleteConfirmation"
   [message]="'expensesItems.deleteItemMessage' | translate"
   (confirm)="confirmDeleteExpenseItem()"
-  (reject)="rejectDeleteExpenseItem()"></app-confirm-delete-popup>
+  (reject)="rejectDeleteExpenseItem()"></app-confirm-popup>

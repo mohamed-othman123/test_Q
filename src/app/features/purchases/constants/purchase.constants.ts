@@ -22,3 +22,18 @@ export const PAYMENT_TYPES = [
     },
   },
 ];
+
+export const TYPE_PRODUCT = {
+  value: 'product',
+  label: {
+    ar: 'منتج',
+    en: 'Product',
+  },
+};
+export const TYPE_SERVICE = {
+  value: 'service',
+  label: {
+    ar: 'خدمة',
+    en: 'Service',
+  },
+};

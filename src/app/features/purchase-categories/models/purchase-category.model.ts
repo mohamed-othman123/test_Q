@@ -6,5 +6,6 @@ export interface PurchaseCategory {
   description?: string;
   id: number;
   type?: ExpensesType;
+  categoryType?: string;
   created_by?: number;
 }

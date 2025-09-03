@@ -64,7 +64,7 @@ import {StepperModule} from 'primeng/stepper';
 import {HasPermissionDirective} from './directives/has-permission.directive';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import {ConfirmDeletePopupComponent} from './components/confirm-delete-popup/confirm-delete-popup.component';
+import {ConfirmPopupComponent} from './components/confirm-popup/confirm-popup.component';
 import {InputSwitchModule} from 'primeng/inputswitch';
 import {ArabicMonthDatePipe} from './pipes/arabic-month-date.pipe';
 import {AddNewSupplierComponent} from './components/add-new-supplier/add-new-supplier.component';
@@ -143,7 +143,7 @@ const components: any[] = [
   MapPickerComponent,
   DashboardSkeletonComponent,
   SarSymbolComponent,
-  ConfirmDeletePopupComponent,
+  ConfirmPopupComponent,
   AddNewSupplierComponent,
   SignaturePadComponent,
   ColorExtractorComponent,

@@ -1,0 +1,38 @@
+:host {
+  .info-wrapper {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(5rem, 1fr));
+    gap: 1rem;
+
+    .info-item {
+      display: flex;
+      gap: 0.25rem;
+
+      .label {
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .value {
+        font-size: 1rem;
+        color: #333;
+      }
+    }
+  }
+  .span-2 {
+    grid-column: span 2;
+  }
+  .item-state {
+    background-color: #ff5346;
+    padding: 5px;
+    border-radius: 5px;
+    margin-right: 10px;
+    color: white;
+  }
+  .btn-back {
+    max-width: 150px;
+    margin-top: 20px;
+    margin-inline-start: 20px;
+  }
+}

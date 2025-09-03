@@ -330,8 +330,8 @@
   </ng-template>
 </p-table>
 
-<app-confirm-delete-popup
+<app-confirm-popup
   [visible]="showDeleteConfirmation"
   [message]="'orders.cancelOrderMessage' | translate"
   (confirm)="confirmDeleteOrder()"
-  (reject)="rejectDeleteOrder()"></app-confirm-delete-popup>
+  (reject)="rejectDeleteOrder()"></app-confirm-popup>

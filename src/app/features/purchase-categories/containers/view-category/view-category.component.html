@@ -27,6 +27,17 @@
       {{ 'categories.' + category?.type | translate }}
     </div>
 
+    @if (category?.categoryType) {
+      <div>
+        <strong class="item-label">{{
+          'categories.categoryType' | translate
+        }}</strong>
+        {{
+          'categories.categoryTypeValues.' + category?.categoryType | translate
+        }}
+      </div>
+    }
+
     <div>
       <strong class="item-label">{{
         'categories.expenseDescription' | translate

@@ -1,27 +1,4 @@
 <div class="form-section">
-  <div class="row d-flex align-items-baseline position-relative mb-4">
-    <div class="col-md-6">
-      <app-dropdown
-        [control]="form.get('category')!"
-        [options]="purchaseCategoryList || []"
-        [controlName]="'thirdParty'"
-        [optionLabel]="lang.lang === 'ar' ? 'name_ar' : 'name'"
-        [optionValue]="'id'"
-        [placeholder]="'purchases.expensesCategoryPlaceholder' | translate"
-        [label]="'purchases.expensesCategory' | translate">
-        <i class="pi pi-list" style="color: gray"></i>
-      </app-dropdown>
-    </div>
-    <div class="flex-grow-1 col-md-6">
-      <app-input
-        [control]="$any(form.get('expensesDescription'))"
-        controlName="expensesDescription"
-        [label]="'purchases.expensesDescription' | translate"
-        [placeholder]="'purchases.enterExpensesDescription' | translate">
-      </app-input>
-    </div>
-  </div>
-
   @if (form.get('invoiceType')?.value === 'tax') {
     <div class="row supplier">
       <div class="col-md-5">
@@ -75,7 +52,7 @@
               [control]="$any(item.get('type'))"
               [controlName]="'type'"
               [optionValue]="'value'"
-              [options]="supplierItemsType"
+              [options]="(itemsType$ | async) || []"
               [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
               [placeholder]="'purchases.selectSupplierItemType' | translate"
               (onChange)="itemTypeChange($event, i)"

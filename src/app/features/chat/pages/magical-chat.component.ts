@@ -6,16 +6,21 @@ import {
   computed,
   effect,
   ViewChild,
-  ElementRef
+  ElementRef,
+  AfterViewChecked,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
-import { AiChatService } from '../services/chat.service';
-import { HallsService } from '@halls/services/halls.service';
-import { LanguageService } from '@core/services/language.service';
-import { ChatDisplayMessage, Conversation, AIChatRequest } from '../models/chat.types';
-import { Hall } from '@halls/models/halls.model';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Subject, takeUntil} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
+import {AiChatService} from '../services/chat.service';
+import {HallsService} from '@halls/services/halls.service';
+import {LanguageService} from '@core/services/language.service';
+import {
+  ChatDisplayMessage,
+  Conversation,
+  AIChatRequest,
+} from '../models/chat.types';
+import {Hall} from '@halls/models/halls.model';
 
 @Component({
   selector: 'app-magical-chat',
@@ -26,7 +31,6 @@ import { Hall } from '@halls/models/halls.model';
       [attr.data-theme]="theme()"
       [class.sidebar-collapsed]="sidebarCollapsed()"
       [class.rtl]="isRTL">
-
       <div class="chat-main">
         <app-chat-header
           [title]="getCurrentConversationTitle()"
@@ -67,32 +71,42 @@ import { Hall } from '@halls/models/halls.model';
       </app-conversations-sidebar>
     </div>
   `,
-  styleUrls: ['./magical-chat.component.scss']
+  styleUrls: ['./magical-chat.component.scss'],
 })
-export class MagicalChatComponent implements OnInit, OnDestroy {
+export class MagicalChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private destroy$ = new Subject<void>();
 
-  @ViewChild('messageList', { static: false }) messageListComponent!: ElementRef;
+  @ViewChild('messageList', {static: false}) messageListComponent!: ElementRef;
 
   chatForm: FormGroup;
+  private shouldScrollToBottom = false;
+  private previousMessageCount = 0;
 
   constructor(
     private fb: FormBuilder,
     private aiChatService: AiChatService,
     private hallsService: HallsService,
     private languageService: LanguageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
   ) {
     this.chatForm = this.fb.group({
-      message: [{value: '', disabled: false}, [Validators.required, Validators.minLength(1), Validators.maxLength(2000)]]
+      message: [
+        {value: '', disabled: false},
+        [
+          Validators.required,
+          Validators.minLength(1),
+          Validators.maxLength(2000),
+        ],
+      ],
     });
 
     effect(() => {
       const messages = this.messages();
-      if (messages.length > 0) {
-        requestAnimationFrame(() => {
-          setTimeout(() => this.scrollToBottom(), 50);
-        });
+      const currentCount = messages.length;
+
+      if (currentCount > this.previousMessageCount) {
+        this.shouldScrollToBottom = true;
+        this.previousMessageCount = currentCount;
       }
     });
   }
@@ -103,11 +117,15 @@ export class MagicalChatComponent implements OnInit, OnDestroy {
   isLoadingConversation = signal(false);
   currentConversationId = signal<number | null>(null);
   messages = signal<ChatDisplayMessage[]>([]);
-  connectionStatus = signal<'connected' | 'connecting' | 'disconnected'>('connected');
+  connectionStatus = signal<'connected' | 'connecting' | 'disconnected'>(
+    'connected',
+  );
   currentHall = signal<Hall | null>(null);
 
   conversations = computed(() => this.aiChatService.conversations());
-  isLoadingConversations = computed(() => this.aiChatService.isLoadingConversations());
+  isLoadingConversations = computed(() =>
+    this.aiChatService.isLoadingConversations(),
+  );
 
   get isRTL(): boolean {
     return this.languageService.getCurrentLanguage() === 'ar';
@@ -142,6 +160,13 @@ export class MagicalChatComponent implements OnInit, OnDestroy {
     }
   });
 
+  ngAfterViewChecked(): void {
+    if (this.shouldScrollToBottom) {
+      this.scrollToBottom();
+      this.shouldScrollToBottom = false;
+    }
+  }
+
   private retryLoadConversations(): void {
     let retryCount = 0;
     const maxRetries = 5;
@@ -168,36 +193,43 @@ export class MagicalChatComponent implements OnInit, OnDestroy {
   getCurrentConversationTitle = computed(() => {
     const currentId = this.currentConversationId();
     if (!currentId) return this.translateService.instant('chat.newChat');
-    const conversation = this.conversations().find(c => c.id === currentId);
+    const conversation = this.conversations().find((c) => c.id === currentId);
     return conversation?.topic || this.translateService.instant('chat.newChat');
   });
 
   getSubtitleText = computed(() => {
     const currentId = this.currentConversationId();
     const messageCount = this.messages().length;
-    const hasStreaming = this.messages().some(m => m.isStreaming);
+    const hasStreaming = this.messages().some((m) => m.isStreaming);
     const status = this.connectionStatus();
 
     if (hasStreaming) return this.translateService.instant('chat.aiThinking');
     if (status !== 'connected') return `Connection status: ${status}`;
-    if (!currentId) return this.translateService.instant('chat.startConversation');
+    if (!currentId)
+      return this.translateService.instant('chat.startConversation');
     if (messageCount === 0) return 'Powered by advanced AI • Ready to help';
 
-    const userMessages = this.messages().filter(m => m.type === 'user').length;
-    const aiMessages = this.messages().filter(m => m.type === 'assistant').length;
-    
+    const userMessages = this.messages().filter(
+      (m) => m.type === 'user',
+    ).length;
+    const aiMessages = this.messages().filter(
+      (m) => m.type === 'assistant',
+    ).length;
+
     if (userMessages === 0) return 'Conversation loaded • Ready to chat';
-    
-    const messageText = userMessages === 1 
-      ? this.translateService.instant('chat.messageSent')
-      : this.translateService.instant('chat.messagesSent');
-    
-    const responseText = aiMessages === 1 
-      ? this.translateService.instant('chat.response')
-      : this.translateService.instant('chat.responses');
-    
+
+    const messageText =
+      userMessages === 1
+        ? this.translateService.instant('chat.messageSent')
+        : this.translateService.instant('chat.messagesSent');
+
+    const responseText =
+      aiMessages === 1
+        ? this.translateService.instant('chat.response')
+        : this.translateService.instant('chat.responses');
+
     const activeText = this.translateService.instant('chat.active');
-    
+
     return `${userMessages} ${messageText} • ${aiMessages} ${responseText} • ${activeText}`;
   });
 
@@ -210,22 +242,24 @@ export class MagicalChatComponent implements OnInit, OnDestroy {
     const notLoading = !this.isLoading();
     const isConnected = this.connectionStatus() === 'connected';
     const formValid = messageControl?.valid !== false;
-    
-      if (this.isLoading() && messageControl && !messageControl.disabled) {
+    const withinCharLimit = messageValue.length <= 2000;
+
+    if (this.isLoading() && messageControl && !messageControl.disabled) {
       messageControl.disable();
     } else if (!this.isLoading() && messageControl && messageControl.disabled) {
       messageControl.enable();
     }
-    
-    return hasContent && notLoading && isConnected && formValid;
+
+    return hasContent && notLoading && isConnected && formValid && withinCharLimit;
   });
 
   ngOnInit(): void {
     this.loadUserPreferences();
 
-    this.chatForm.get('message')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(value => {
+    this.chatForm
+      .get('message')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
         this.messageValue.set(value || '');
       });
 
@@ -239,7 +273,7 @@ export class MagicalChatComponent implements OnInit, OnDestroy {
 
     this.hallsService.currentHall$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(hall => {
+      .subscribe((hall) => {
         if (hall) {
           this.currentHall.set(hall);
           setTimeout(() => this.loadConversations(), 100);
@@ -253,7 +287,9 @@ export class MagicalChatComponent implements OnInit, OnDestroy {
   }
 
   private loadUserPreferences(): void {
-    const savedTheme = localStorage.getItem('ai-chat-theme') as 'light' | 'dark';
+    const savedTheme = localStorage.getItem('ai-chat-theme') as
+      | 'light'
+      | 'dark';
     if (savedTheme) {
       this.theme.set(savedTheme);
     } else {
@@ -284,20 +320,23 @@ export class MagicalChatComponent implements OnInit, OnDestroy {
 
     this.currentConversationId.set(conversationId);
     this.isLoadingConversation.set(true);
-    
+
     this.messages.set([]);
-    
+
     this.aiChatService.loadMessages(conversationId);
 
     const checkMessages = () => {
       const messages = this.aiChatService.messages();
       if (messages.length > 0 || !this.aiChatService.isLoadingMessages()) {
         this.isLoadingConversation.set(false);
+        setTimeout(() => {
+          this.shouldScrollToBottom = true;
+        }, 100);
       } else {
         setTimeout(checkMessages, 100);
       }
     };
-    
+
     setTimeout(checkMessages, 100);
 
     if (window.innerWidth <= 768) {
@@ -310,6 +349,7 @@ export class MagicalChatComponent implements OnInit, OnDestroy {
     this.messages.set([]);
     this.chatForm.reset();
     this.aiChatService.clearMessages();
+    this.previousMessageCount = 0;
   }
 
   sendMessage(messageText: string): void {
@@ -323,87 +363,114 @@ export class MagicalChatComponent implements OnInit, OnDestroy {
       hallIds: [],
       timestamp: new Date(),
       type: 'user',
-      status: 'delivered'
+      status: 'delivered',
     };
 
-    this.messages.update(messages => [...messages, userMessage]);
+    this.messages.update((messages) => [...messages, userMessage]);
 
     const request: AIChatRequest = {
       message: messageText,
       hallIds: this.currentHall()?.id ? [this.currentHall()!.id] : [],
-      conversationId: this.currentConversationId() || undefined
+      conversationId: this.currentConversationId() || undefined,
     };
 
     this.aiChatService.sendMessageStreaming(request).subscribe({
       next: (response: any) => {
         this.isLoading.set(false);
         this.chatForm.reset();
-        
+
         const aiResponse: ChatDisplayMessage = {
           id: `ai_${Date.now()}`,
-          message: response.explanation || response.message || this.translateService.instant('chat.couldNotProcess'),
+          message:
+            response.explanation ||
+            response.message ||
+            this.translateService.instant('chat.couldNotProcess'),
           hallIds: request.hallIds,
           timestamp: new Date(),
           type: 'assistant',
-          status: 'delivered'
+          status: 'delivered',
         };
-        
-        this.messages.update(messages => [...messages, aiResponse]);
+
+        console.log('User message:', userMessage);
+        console.log('AI request:', request);
+        console.log('AI response:', aiResponse);
+
+        this.messages.update((messages) => [...messages, aiResponse]);
+
+        if (!this.currentConversationId() && response.conversationId) {
+          console.log('New conversation created with ID:', response.conversationId);
+          this.currentConversationId.set(response.conversationId);
+        }
+
+        setTimeout(() => {
+          console.log('Refreshing conversations after response...');
+          this.aiChatService.refreshConversationsAndSelectLatest();
+        }, 300);
       },
       error: (error: any) => {
         console.error('Error sending message:', error);
         this.isLoading.set(false);
         this.chatForm.reset();
-        
+
         const errorResponse: ChatDisplayMessage = {
           id: `error_${Date.now()}`,
           message: this.translateService.instant('chat.errorProcessing'),
           hallIds: [],
           timestamp: new Date(),
           type: 'assistant',
-          status: 'failed'
+          status: 'failed',
         };
-        
-        this.messages.update(messages => [...messages, errorResponse]);
-      }
+
+        console.log('User message:', userMessage);
+        console.log('AI request:', request);
+        console.log('Error response message:', errorResponse);
+
+        this.messages.update((messages) => [...messages, errorResponse]);
+      },
     });
   }
 
   sendQuickMessage(message: string): void {
-    this.chatForm.patchValue({ message });
+    this.chatForm.patchValue({message});
     this.sendMessage(message);
   }
 
   private scrollToBottom(): void {
     try {
-      const messageListEl = this.messageListComponent?.nativeElement;
-      let container: Element | null = null;
-      
-      if (messageListEl) {
-        container = messageListEl.querySelector('.messages-container');
-      }
-      
-      if (!container) {
-        container = document.querySelector('.messages-container');
-      }
-      
-      if (!container) {
-        container = document.querySelector('.chat-main .messages-container');
-        if (!container) {
-          const messageEl = document.querySelector('[class*="message"]');
-          container = messageEl?.closest('[style*="overflow"]') || null;
+      if (this.messageListComponent?.nativeElement) {
+        const messagesContainer = this.messageListComponent.nativeElement.querySelector('.messages-container');
+        if (messagesContainer) {
+          messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: 'smooth',
+          });
+          return;
         }
       }
-      
-      if (container) {
-        container.scrollTo({
-          top: container.scrollHeight,
-          behavior: 'smooth'
+
+      const containers = [
+        '.messages-container',
+        '.chat-main .messages-container',
+        '[class*="messages-container"]'
+      ];
+
+      for (const selector of containers) {
+        const container = document.querySelector(selector) as HTMLElement;
+        if (container) {
+          container.scrollTo({
+            top: container.scrollHeight,
+            behavior: 'smooth',
+          });
+          return;
+        }
+      }
+
+      const chatMain = document.querySelector('.chat-main') as HTMLElement;
+      if (chatMain) {
+        chatMain.scrollTo({
+          top: chatMain.scrollHeight,
+          behavior: 'smooth',
         });
-        
-        container.scrollTop = container.scrollHeight;
-      } else {
-        console.warn('Could not find scroll container');
       }
     } catch (err) {
       console.error('Error scrolling to bottom:', err);

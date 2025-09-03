@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {TableData, DataTableFilter, GaCustomEvents} from '@core/models';
+import {TableData, DataTableFilter, GaCustomEvents, Item} from '@core/models';
 import {NotificationService} from '@core/services/notification.service';
 import {tap} from 'rxjs/operators';
 import {PurchaseModel} from '../models/purchase-model';
@@ -9,17 +9,25 @@ import {PurchaseCategory} from '@purchase-categories/models/purchase-category.mo
 import {ApiConfigService} from '@core/services/api-config.service';
 import {GtagService} from '@core/analytics/gtag.service';
 import {GaConfigService} from '@core/analytics/ga-config.service';
+import {
+  TYPE_PRODUCT,
+  TYPE_SERVICE,
+} from '@purchases/constants/purchase.constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PurchasesService {
-  module = 'expenses';
-  apiExpensesUrl = this.apiConfigService.getApiBaseUrl(this.module as any);
+  private module = 'expenses';
+  private apiExpensesUrl = this.apiConfigService.getApiBaseUrl(
+    this.module as any,
+  );
 
   currentStep$ = new BehaviorSubject<number>(0);
 
   currentPurchase$ = new BehaviorSubject<PurchaseModel | null>(null);
+
+  itemTypes = new BehaviorSubject<Item[]>([TYPE_PRODUCT, TYPE_SERVICE]);
 
   constructor(
     // @Inject(APP_ENVIRONMENT) private environment: Environment,

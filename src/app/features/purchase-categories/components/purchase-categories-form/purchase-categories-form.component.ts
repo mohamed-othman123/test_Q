@@ -6,21 +6,26 @@ import {noDoubleSpaceValidator, requireOneOf} from '@core/validators';
 import {Hall} from '@halls/models/halls.model';
 import {HallsService} from '@halls/services/halls.service';
 import {TranslateService} from '@ngx-translate/core';
+import {CATEGORY_TYPES_LIST} from '@purchase-categories/constants/purchase-category';
 import {PurchaseCategory} from '@purchase-categories/models/purchase-category.model';
 import {PurchaseCategoriesService} from '@purchase-categories/services/purchase-categories.service';
 import {ExpensesType} from '@purchases/constants/purchase.constants';
 
 @Component({
-    selector: 'purchase-categories-form',
-    templateUrl: './purchase-categories-form.component.html',
-    styleUrls: ['./purchase-categories-form.component.scss'],
-    standalone: false
+  selector: 'purchase-categories-form',
+  templateUrl: './purchase-categories-form.component.html',
+  styleUrls: ['./purchase-categories-form.component.scss'],
+  standalone: false,
 })
 export class PurchaseCategoriesFormComponent implements OnInit {
   purchaseCategory: PurchaseCategory | null = null;
   form!: FormGroup;
   expenseTypes: Item[] = ExpensesType;
   currentHall: Hall | null = null;
+
+  showCategoryType = false;
+
+  categoryTypes: Item[] = CATEGORY_TYPES_LIST;
 
   mode: FormMode = 'add';
   @Output() refreshDataTable = new EventEmitter();
@@ -37,6 +42,7 @@ export class PurchaseCategoriesFormComponent implements OnInit {
     this.initializeForm();
     this.setupDrawerSubscription();
     this.setupHallSubscription();
+    this.expenseTypesListener();
   }
 
   get f() {
@@ -60,7 +66,10 @@ export class PurchaseCategoriesFormComponent implements OnInit {
             name_ar: this.purchaseCategory.name_ar ?? null,
             description: this.purchaseCategory.description ?? null,
             type: this.purchaseCategory.type ?? null,
+            categoryType: this.purchaseCategory.categoryType ?? null,
           });
+
+          this.showCategoryType = false;
         }
       } else {
         this.cleanUp();
@@ -80,11 +89,23 @@ export class PurchaseCategoriesFormComponent implements OnInit {
         name_ar: [null, [noDoubleSpaceValidator]],
         description: [null, [Validators.required]],
         type: [null, Validators.required],
+        categoryType: [null],
       },
       {
         validators: requireOneOf(['name', 'name_ar']),
       },
     );
+  }
+  expenseTypesListener() {
+    this.form.get('type')?.valueChanges.subscribe((val) => {
+      if (val === 'Purchases') {
+        this.form.get('categoryType')?.setValidators(Validators.required);
+      } else {
+        this.form.get('categoryType')?.clearValidators();
+      }
+
+      this.form.get('categoryType')?.updateValueAndValidity();
+    });
   }
 
   submit(): void {
@@ -97,6 +118,10 @@ export class PurchaseCategoriesFormComponent implements OnInit {
       name_ar: this.form.get('name_ar')?.value || '',
       description: this.form.get('description')?.value || '',
       type: this.form.get('type')?.value || '',
+      categoryType:
+        this.form.get('type')?.value === 'Purchases'
+          ? this.form.get('categoryType')?.value
+          : null,
       halls: [
         {
           id: this.currentHall.id,
@@ -117,5 +142,32 @@ export class PurchaseCategoriesFormComponent implements OnInit {
       this.drawerService.close();
       this.refreshDataTable.emit();
     });
+  }
+
+  confirmChangeCategoryType() {
+    this.showCategoryType = true;
+  }
+
+  get isPurchases(): boolean {
+    return this.f['type']?.value === 'Purchases';
+  }
+
+  get showCategoryTypeDropdown(): boolean {
+    return (
+      this.isPurchases &&
+      (this.mode === 'add' ||
+        this.showCategoryType ||
+        this.purchaseCategory?.categoryType === null ||
+        this.purchaseCategory?.type !== 'Purchases')
+    );
+  }
+
+  get showCategoryTypeReadonly(): boolean {
+    return (
+      this.isPurchases &&
+      this.mode === 'edit' &&
+      !this.showCategoryType &&
+      this.purchaseCategory?.type === 'Purchases'
+    );
   }
 }

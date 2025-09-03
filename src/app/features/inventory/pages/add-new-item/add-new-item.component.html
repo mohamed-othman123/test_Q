@@ -1,0 +1,111 @@
+<app-list-header
+  [title]="
+    mode === 'add'
+      ? ('inventory.addNewItem' | translate)
+      : ('inventory.updateItem' | translate)
+  "></app-list-header>
+
+@if (mode === 'edit') {
+  <div class="px-3">
+    <p-messages severity="success">
+      <ng-template pTemplate>
+        <div class="d-flex align-items-center gap-2">
+          <i class="pi pi-info-circle"> </i>
+          {{ 'inventory.updateItemInfo' | translate }}
+        </div>
+      </ng-template>
+    </p-messages>
+  </div>
+}
+
+@if (!isLoading) {
+  <form [formGroup]="inventoryItemFrom" appShakeable (ngSubmit)="submit()">
+    <div class="item-container">
+      <app-input
+        [control]="getController('name_ar')"
+        [controlName]="'name_ar'"
+        inputType="text"
+        [label]="'inventory.itemNameAr' | translate"
+        [placeholder]="'inventory.enterItemNameAr' | translate">
+        <i class="pi pi-pencil" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getController('name')"
+        [controlName]="'name'"
+        inputType="text"
+        [label]="'inventory.itemNameEn' | translate"
+        [placeholder]="'inventory.enterItemNameEn' | translate">
+        <i class="pi pi-pencil" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getController('quantity')"
+        [controlName]="'quantity'"
+        inputType="number"
+        [label]="'inventory.quantity' | translate"
+        [placeholder]="'inventory.enterQuantity' | translate">
+        <i class="pi pi-box" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getController('unitPrice')"
+        [controlName]="'unitPrice'"
+        inputType="number"
+        [label]="'inventory.unitPrice' | translate"
+        [placeholder]="'inventory.enterUnitPrice' | translate">
+        <i class="sar-icon" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getController('reorderLevel')"
+        [controlName]="'reorderLevel'"
+        inputType="number"
+        [label]="'inventory.reorderLevel' | translate"
+        [placeholder]="'inventory.enterReorderLevel' | translate">
+        <i class="pi pi-truck" style="color: gray"></i>
+      </app-input>
+
+      <div></div>
+
+      <app-input
+        [control]="getController('description')"
+        [controlName]="'description'"
+        inputType="textarea"
+        [label]="'inventory.description' | translate"
+        [placeholder]="'inventory.enterDescription' | translate">
+      </app-input>
+
+      @if (mode === 'edit') {
+        <app-input
+          [control]="getController('reason')"
+          [controlName]="'reason'"
+          inputType="textarea"
+          [label]="'inventory.reason' | translate"
+          [placeholder]="'inventory.enterReason' | translate">
+        </app-input>
+      }
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button
+        type="button"
+        pButton
+        class="p-button-secondary"
+        [label]="'common.cancel' | translate"
+        icon="pi pi-times"
+        (click)="cancel()"></button>
+
+      <button
+        type="submit"
+        pButton
+        icon="pi pi-save"
+        [label]="
+          mode === 'edit'
+            ? ('common.update' | translate)
+            : ('common.save' | translate)
+        "></button>
+    </div>
+  </form>
+}

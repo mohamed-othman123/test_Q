@@ -2,7 +2,7 @@
   [btnAddText]="'services.addNewService' | translate"
   [disableAddBtn]="!permissionsService.hasPermission('create:service')"
   [title]="'sideNav.services' | translate"
-(sideDrawerToggler)="addNewService()"></app-list-header>
+  (sideDrawerToggler)="addNewService()"></app-list-header>
 
 <p-table
   #dt2
@@ -106,7 +106,7 @@
         <span class="price-with-symbol">
           <sar-symbol />
           {{
-          getServicePriceByHallId(service, filterForm.get('hallId')?.value)
+            getServicePriceByHallId(service, filterForm.get('hallId')?.value)
           }}
         </span>
       </td>
@@ -115,7 +115,7 @@
           <sar-symbol />
           <span>
             {{
-            getServiceCostByHallId(service, filterForm.get('hallId')?.value)
+              getServiceCostByHallId(service, filterForm.get('hallId')?.value)
             }}
           </span>
         </span>
@@ -132,7 +132,7 @@
             id="dropdownBasic1"
             ngbDropdownToggle>
             <span
-            class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
+              class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
             {{ 'common.options' | translate }}
           </button>
           <div
@@ -178,8 +178,8 @@
   </ng-template>
 </p-table>
 
-<app-confirm-delete-popup
+<app-confirm-popup
   [visible]="showDeleteConfirmation"
   [message]="'services.deleteService' | translate"
   (confirm)="confirmDeleteService()"
-(reject)="rejectDeleteService()"></app-confirm-delete-popup>
+  (reject)="rejectDeleteService()"></app-confirm-popup>

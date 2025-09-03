@@ -130,6 +130,15 @@ const routes: Routes = [
     },
   },
   {
+    path: 'inventory',
+    loadChildren: () =>
+      import('@inventory/inventory.module').then((m) => m.InventoryModule),
+    canActivate: [authGuard, permissionsGuard],
+    data: {
+      permissions: ['Inventory'],
+    },
+  },
+  {
     path: 'purchases',
     loadChildren: () =>
       import('@purchases/purchases.module').then((m) => m.PurchasesModule),
@@ -224,11 +233,14 @@ const routes: Routes = [
   },
   {
     path: 'ai-chat',
-    loadChildren: () => import('./features/chat/chat-routing.module').then(m => m.ChatRoutingModule),
+    loadChildren: () =>
+      import('./features/chat/magical-chat.module').then(
+        (m) => m.MagicalChatModule,
+      ),
     canActivate: [authGuard],
     data: {
       title: 'AI Assistant',
-    }
+    },
   },
   {
     path: 'customer-signature',
@@ -236,6 +248,14 @@ const routes: Routes = [
       import('./features/customer-signature/customer-signature.module').then(
         (m) => m.CustomerSignatureModule,
       ),
+  },
+  {
+    path: 'audit-transactions',
+    loadChildren: () =>
+      import('@audit-transactions/audit-transactions.module').then(
+        (m) => m.AuditTransactionsModule,
+      ),
+    canActivate: [authGuard],
   },
   {
     path: 'forbidden',
