@@ -11,6 +11,8 @@ import {QuestionViewerComponent} from './components/question-viewer/question-vie
 
 import {AnalyticsRoutingModule} from './analytics-routing.module';
 import {SharedModule} from '@shared/shared.module';
+import {ReactiveFormsModule} from '@angular/forms';
+import {BookingFacadeService} from '@orders/services/booking-facade.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import {SharedModule} from '@shared/shared.module';
     AnalyticsRoutingModule,
     TranslatePipe,
     SharedModule,
+    ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [BookingFacadeService],
 })
 export class AnalyticsModule {}

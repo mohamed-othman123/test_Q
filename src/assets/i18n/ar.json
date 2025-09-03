@@ -616,6 +616,8 @@
   "orders": {
     "orderNumber": "رقم الحجز",
     "orders": "الحجوزات",
+    "bookingFilters": "تصفيات الحجوزات",
+    "clientType": "نوع العميل",
     "addNewOrder": "إضافة حجز جديد",
     "orderAddedSuccessfully": "تم اضافة عملية الحجز بنجاح",
     "orderEditedSuccessfully": "تم تعديل عملية الحجز بنجاح",
@@ -925,6 +927,11 @@
     "totalAmount": "المبلغ الإجمالى",
     "enterTotalAmount": "أدخل المبلغ الإجمالى",
     "purchaseStatus": "حالة الصرف",
+    "expenseStatus": "حالة الصرف",
+    "expenseType": "نوع الصرف",
+    "expenseFilters": "تصفيات المصروفات",
+    "expenseCategory": "فئة الصرف",
+    "expenseItem": "عنصر الصرف",
     "cancelPurchase": "إلغاء عملية الصرف",
     "selectDate": "اختر التاريخ",
     "status": "حالة الصرف",
@@ -1568,6 +1575,7 @@
     "error": "خطأ",
     "noData": "لا توجد بيانات متاحة",
     "filter": "تصفية",
+    "filters": "التصفيات",
     "back": "رجوع",
     "create": "إنشاء",
     "submit": "إرسال",
@@ -2030,6 +2038,11 @@
     "backToDashboards": "العودة للوحات",
     "lastUpdated": "آخر تحديث",
     "fullscreen": "ملء الشاشة",
+    "dashboardType": "نوع اللوحة",
+    "types": {
+      "bookings": "الحجوزات",
+      "expenses": "المصروفات"
+    },
     "tabs": {
       "all": "جميع العناصر",
       "dashboards": "اللوحات",

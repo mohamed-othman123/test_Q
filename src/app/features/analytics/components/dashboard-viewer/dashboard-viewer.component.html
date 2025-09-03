@@ -2,12 +2,12 @@
   <div class="viewer-header">
     <div class="header-content">
       <div class="navigation-section">
-        <p-button
-          icon="pi pi-arrow-left"
-          [label]="'analytics.backToDashboards' | translate"
+        <button
+          class="back-button-icon"
           (click)="onBackToDashboards()"
-          class="p-button-secondary back-button">
-        </p-button>
+          [attr.aria-label]="'analytics.backToDashboards' | translate">
+          <i class="pi" [class.pi-arrow-left]="lang.currentLang === 'en'" [class.pi-arrow-right]="lang.currentLang === 'ar'"></i>
+        </button>
       </div>
 
       <div class="dashboard-info" *ngIf="dashboard">
@@ -21,33 +21,266 @@
           </p>
           <div class="meta-items">
             <span class="meta-item">
-<!--              <i class="pi pi-calendar"></i>-->
-<!--              <span>{{ 'analytics.lastUpdated' | translate }}: {{ formatDate(dashboard.updated_at) }}</span>-->
-            </span>
-            <span class="meta-item">
               <i class="pi pi-hashtag"></i>
               <span>ID: {{ dashboard.id }}</span>
+            </span>
+            <span class="meta-item">
+              <i class="pi pi-tag"></i>
+              <span>{{ 'analytics.types.' + (dashboardType === dashboardTypes.Booking ? 'bookings' : 'expenses') | translate }}</span>
             </span>
           </div>
         </div>
       </div>
 
       <div class="header-actions">
-        <p-button
-          icon="pi pi-refresh"
-          [label]="'common.refresh' | translate"
+        <button
+          class="action-button-icon"
           (click)="onRefresh()"
-          [loading]="loading"
-          class="p-button-secondary">
-        </p-button>
-        <p-button
-          icon="pi pi-window-maximize"
-          [label]="'analytics.fullscreen' | translate"
+          [disabled]="loading"
+          [attr.aria-label]="'common.refresh' | translate">
+          <i class="pi pi-refresh" [class.pi-spin]="loading"></i>
+        </button>
+        <button
+          class="action-button-icon"
           (click)="onFullscreen()"
           [disabled]="!dashboardUrl || loading || !!error"
-          class="p-button-outlined">
-        </p-button>
+          [attr.aria-label]="'analytics.fullscreen' | translate">
+          <i class="pi pi-window-maximize"></i>
+        </button>
       </div>
+    </div>
+  </div>
+
+  <div class="filters-section" [class.collapsed]="!showFilters">
+    <div class="filters-header" (click)="toggleFilters()">
+      <div class="filters-title">
+        <i class="pi pi-filter"></i>
+        <h4>{{ 'common.filters' | translate }}</h4>
+      </div>
+      <div class="filters-toggle">
+        <i class="pi" [class.pi-chevron-down]="showFilters" [class.pi-chevron-right]="!showFilters"></i>
+      </div>
+    </div>
+
+    <div class="filters-content" *ngIf="showFilters">
+      <div class="filter-section">
+        <h5>{{ 'dashboard.durationBarTitle' | translate }}</h5>
+        <div class="duration-bar">
+          <span
+            [ngClass]="{active: currentSelectedFilterType$.value === '1'}"
+            (click)="onDurationSelect(1)">
+            {{ 'dashboard.filters.month' | translate }}</span
+            >
+            <span
+              [ngClass]="{active: currentSelectedFilterType$.value === '3'}"
+              (click)="onDurationSelect(3)"
+              >{{ 'dashboard.filters.3months' | translate }}</span
+              >
+              <span
+                [ngClass]="{active: currentSelectedFilterType$.value === '6'}"
+                (click)="onDurationSelect(6)"
+                >{{ 'dashboard.filters.6months' | translate }}</span
+                >
+                <span
+                  [ngClass]="{active: currentSelectedFilterType$.value === '12'}"
+                  (click)="onDurationSelect(12)"
+                  >{{ 'dashboard.filters.year' | translate }}</span
+                  >
+                  <span
+                    [ngClass]="{active: currentSelectedFilterType$.value === 'custom'}"
+                    (click)="toggleCustomDates()"
+                    >{{ 'dashboard.filters.customize' | translate }}
+                  </span>
+                </div>
+
+                @if (showCustomDates) {
+                  <div class="custom-dates-section">
+                    <div class="date-inputs">
+                      <div class="date-input">
+                        <app-gregorian-date-picker
+                          [control]="$any(customDatesForm.get('fromDate'))"
+                          controlName="fromDate"
+                          [showClear]="true"
+                          [label]="'dashboard.filters.fromDate' | translate"
+                          [placeholder]="'common.select' | translate">
+                        </app-gregorian-date-picker>
+                      </div>
+                      <div class="date-input">
+                        <app-gregorian-date-picker
+                          [control]="$any(customDatesForm.get('toDate'))"
+                          controlName="toDate"
+                          [showClear]="true"
+                          [label]="'dashboard.filters.toDate' | translate"
+                          [placeholder]="'common.select' | translate">
+                        </app-gregorian-date-picker>
+                      </div>
+                    </div>
+                    <div class="date-actions">
+                      <button
+                        class="custom-btn"
+                        type="button"
+                        pButton
+                        (click)="applyCustomDates()">
+                        {{ 'common.apply' | translate }}
+                      </button>
+                      <button
+                        type="button"
+                        pButton
+                        class="p-button-secondary custom-btn"
+                        [label]="'common.cancel' | translate"
+                        icon="pi pi-times"
+                      (click)="cancelCustomDates()"></button>
+                    </div>
+                    @if (customDatesForm.hasError('dateRange')) {
+                      <div class="date-error">
+                        {{ 'dashboard.dateRangeError' | translate }}
+                      </div>
+                    }
+                  </div>
+                }
+      </div>
+
+      @if (dashboardType === dashboardTypes.Booking) {
+        <div class="filter-section">
+          <h5>{{ 'orders.bookingFilters' | translate }}</h5>
+          <div class="filter-grid">
+            <div class="filter-group">
+              <label>{{ 'orders.eventType' | translate }}</label>
+              <app-dropdown
+                [control]="$any(filtersForm.get('eventTypeId'))"
+                [options]="eventTypes"
+                [optionLabel]="'name'"
+                [optionValue]="'id'"
+                [appendTo]="'body'"
+                [controlName]="'eventTypeId'"
+                [placeholder]="'common.select' | translate"
+                [showClear]="true">
+              </app-dropdown>
+            </div>
+
+            <div class="filter-group">
+              <label>{{ 'orders.eventTime' | translate }}</label>
+              <app-dropdown
+                [control]="$any(filtersForm.get('eventTime'))"
+                [options]="eventTimes"
+                [optionLabel]="'label.' + (lang?.currentLang || 'en')"
+                [optionValue]="'value'"
+                [appendTo]="'body'"
+                [controlName]="'eventTime'"
+                [placeholder]="'common.select' | translate"
+                [showClear]="true">
+              </app-dropdown>
+            </div>
+
+            <div class="filter-group">
+              <label>{{ 'orders.bookingStatus' | translate }}</label>
+              <app-dropdown
+                [control]="$any(filtersForm.get('bookingProcessStatus'))"
+                [options]="bookingStatuses"
+                [optionLabel]="'label.' + (lang?.currentLang || 'en')"
+                [optionValue]="'value'"
+                [appendTo]="'body'"
+                [controlName]="'bookingProcessStatus'"
+                [placeholder]="'common.select' | translate"
+                [showClear]="true">
+              </app-dropdown>
+            </div>
+
+            <div class="filter-group">
+              <label>{{ 'orders.attendeesType' | translate }}</label>
+              <app-dropdown
+                [control]="$any(filtersForm.get('attendeesType'))"
+                [options]="attendeesTypes"
+                [optionLabel]="'label.' + (lang?.currentLang || 'en')"
+                [optionValue]="'value'"
+                [appendTo]="'body'"
+                [controlName]="'attendeesType'"
+                [placeholder]="'common.select' | translate"
+                [showClear]="true">
+              </app-dropdown>
+            </div>
+
+            <div class="filter-group">
+              <label>{{ 'orders.clientType' | translate }}</label>
+              <app-dropdown
+                [control]="$any(filtersForm.get('clientType'))"
+                [options]="clientTypes"
+                [optionLabel]="'label.' + (lang?.currentLang || 'en')"
+                [optionValue]="'value'"
+                [appendTo]="'body'"
+                [controlName]="'clientType'"
+                [placeholder]="'common.select' | translate"
+                [showClear]="true">
+              </app-dropdown>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (dashboardType === dashboardTypes.Expense) {
+        <div class="filter-section">
+          <h5>{{ 'purchases.expenseFilters' | translate }}</h5>
+          <div class="filter-grid">
+            <div class="filter-group">
+              <label>{{ 'purchases.expenseStatus' | translate }}</label>
+              <app-dropdown
+                [control]="$any(filtersForm.get('expenseStatus'))"
+                [options]="expenseStatuses"
+                [optionLabel]="'label.' + (lang?.currentLang || 'en')"
+                [optionValue]="'value'"
+                [appendTo]="'body'"
+                [controlName]="'expenseStatus'"
+                [placeholder]="'common.select' | translate"
+                [showClear]="true">
+              </app-dropdown>
+            </div>
+
+            <div class="filter-group">
+              <label>{{ 'purchases.expenseType' | translate }}</label>
+              <app-dropdown
+                [control]="$any(filtersForm.get('expenseType'))"
+                [options]="expenseTypes"
+                [optionLabel]="'label.' + (lang?.currentLang || 'en')"
+                [optionValue]="'value'"
+                [appendTo]="'body'"
+                [controlName]="'expenseType'"
+                [placeholder]="'common.select' | translate"
+                [showClear]="true"
+                (onChange)="onExpenseTypeChange()">
+              </app-dropdown>
+            </div>
+
+            <div class="filter-group">
+              <label>{{ 'purchases.expenseCategory' | translate }}</label>
+              <app-dropdown
+                [control]="$any(filtersForm.get('expenseCategory'))"
+                [options]="expenseCategories"
+                [optionLabel]="'name'"
+                [optionValue]="'id'"
+                [appendTo]="'body'"
+                [controlName]="'expenseCategory'"
+                [placeholder]="'common.select' | translate"
+                [showClear]="true"
+                (onChange)="onExpenseCategoryChange()">
+              </app-dropdown>
+            </div>
+
+            <div class="filter-group">
+              <label>{{ 'purchases.expenseItem' | translate }}</label>
+              <app-dropdown
+                [control]="$any(filtersForm.get('expenseItem'))"
+                [options]="expenseItems"
+                [optionLabel]="'name'"
+                [appendTo]="'body'"
+                [optionValue]="'id'"
+                [controlName]="'expenseItem'"
+                [placeholder]="'common.select' | translate"
+                [showClear]="true">
+              </app-dropdown>
+            </div>
+          </div>
+        </div>
+      }
     </div>
   </div>
 
