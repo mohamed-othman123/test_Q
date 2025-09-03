@@ -1,0 +1,23 @@
+[
+  {
+    "value": "Men",
+    "label": {
+      "ar": "رجال",
+      "en": "Men"
+    }
+  },
+  {
+    "value": "Women",
+    "label": {
+      "ar": "نساء",
+      "en": "Women"
+    }
+  },
+  {
+    "value": "Men And Women",
+    "label": {
+      "ar": "رجال ونساء",
+      "en": "Men and Women"
+    }
+  }
+]

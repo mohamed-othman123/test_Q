@@ -1,0 +1,37 @@
+[
+  {
+    "value": "New",
+    "label": {
+      "ar": "جديد",
+      "en": "New"
+    }
+  },
+  {
+    "value": "In Progress",
+    "label": {
+      "ar": "قيد التنفيذ",
+      "en": "In Progress"
+    }
+  },
+  {
+    "value": "Not Answered",
+    "label": {
+      "ar": "لم يتم الرد",
+      "en": "Not Answered"
+    }
+  },
+  {
+    "value": "Completed",
+    "label": {
+      "ar": "مكتمل",
+      "en": "Completed"
+    }
+  },
+  {
+    "value": "Canceled",
+    "label": {
+      "ar": "ملغي",
+      "en": "Canceled"
+    }
+  }
+]

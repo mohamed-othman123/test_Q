@@ -1,0 +1,117 @@
+{
+  "invoiceTypes": [
+    {
+      "value": "Tax",
+      "label": {
+        "en": "Tax Invoice",
+        "ar": "فاتورة ضريبية"
+      }
+    },
+    {
+      "value": "Simplified",
+      "label": {
+        "en": "Simplified Invoice",
+        "ar": "فاتورة مبسطة"
+      }
+    }
+  ],
+  "purchaseStatuses": [
+    {
+      "value": "Fully Paid",
+      "label": {
+        "en": "Fully Paid",
+        "ar": "مدفوع كليا"
+      }
+    },
+    {
+      "value": "Partially Paid",
+      "label": {
+        "en": "Partially Paid",
+        "ar": "مدفوع جزئيا"
+      }
+    },
+    {
+      "value": "Completed",
+      "label": {
+        "en": "Completed",
+        "ar": "مكتمل"
+      }
+    },
+    {
+      "value": "Late",
+      "label": {
+        "en": "Late",
+        "ar": "متأخر"
+      }
+    },
+    {
+      "value": "Canceled",
+      "label": {
+        "en": "Canceled",
+        "ar": "ملغي"
+      }
+    },
+    {
+      "value": "New",
+      "label": {
+        "en": "New",
+        "ar": "جديد"
+      }
+    }
+  ],
+  "paymentTypes": [
+    {
+      "value": "Income",
+      "label": {
+        "en": "Income",
+        "ar": "دفع"
+      }
+    },
+    {
+      "value": "Refund",
+      "label": {
+        "en": "Refund",
+        "ar": "استرجاع"
+      }
+    }
+  ],
+  "bankTypes": [
+    {
+      "value": "Normal Bank",
+      "label": {
+        "en": "Normal Bank",
+        "ar": "بنك عادي"
+      }
+    },
+    {
+      "value": "EBANK",
+      "label": {
+        "en": "E-Bank",
+        "ar": "بنك إلكتروني"
+      }
+    }
+  ],
+  "normalBanks": [
+    {
+      "value": "AlRajhi",
+      "label": {
+        "en": "Al Rajhi Bank",
+        "ar": "مصرف الراجحي"
+      }
+    },
+    {
+      "value": "NCB",
+      "label": {
+        "en": "NCB",
+        "ar": "البنك الأهلي"
+      }
+    },
+    {
+      "value": "Alinma",
+      "label": {
+        "en": "Alinma Bank",
+        "ar": "مصرف الإنماء"
+      }
+    }
+  ]
+}

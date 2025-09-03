@@ -1,0 +1,16 @@
+[
+  {
+    "value": true,
+    "label": {
+      "ar": "حجز مؤكد",
+      "en": "Confirmed Booking"
+    }
+  },
+  {
+    "value": false,
+    "label": {
+      "ar": "حجز مؤقت",
+      "en": "Temporary Booking"
+    }
+  }
+]
