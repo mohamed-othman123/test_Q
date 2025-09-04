@@ -617,6 +617,8 @@
   "orders": {
     "orderNumber": "Booking number",
     "orders": "Bookings",
+    "bookingFilters": "Booking Filters",
+    "clientType": "Client Type",
     "addNewOrder": "Add new booking",
     "orderAddedSuccessfully": "Booking added successfully",
     "orderEditedSuccessfully": "Booking Edited successfully",
@@ -927,6 +929,11 @@
     "totalAmount": "Total Amount",
     "enterTotalAmount": "Enter total amount",
     "purchaseStatus": "Expense Status",
+    "expenseStatus": "Expense Status",
+    "expenseType": "Expense Type",
+    "expenseFilters": "Expense Filters",
+    "expenseCategory": "Expense Category",
+    "expenseItem": "Expense Item",
     "cancelPurchase": "Cancel expense",
     "selectDate": "Select date",
     "status": "Status",
@@ -1521,6 +1528,7 @@
     "error": "Error",
     "noData": "No data available",
     "filter": "Filter",
+    "filters": "Filters",
     "back": "Back",
     "create": "Create",
     "submit": "Submit",
@@ -1965,6 +1973,11 @@
     "backToDashboards": "Back to Dashboards",
     "lastUpdated": "Last Updated",
     "fullscreen": "Fullscreen",
+    "dashboardType": "Dashboard Type",
+    "types": {
+      "bookings": "Bookings",
+      "expenses": "Expenses"
+    },
     "tabs": {
       "all": "All Items",
       "dashboards": "Dashboards",
