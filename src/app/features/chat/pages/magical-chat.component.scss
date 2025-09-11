@@ -1,3 +1,6 @@
+@use 'mixins';
+@use 'variables';
+
 :root {
   --primary-color: #667eea;
   --primary-dark: #5a6fd8;
@@ -71,53 +74,22 @@
   position: relative;
   background: var(--bg-primary);
 
-  &.rtl {
-    &:not(.sidebar-collapsed) {
-      .chat-main {
-        margin-left: 320px;
-        margin-right: 0;
-      }
-    }
-
-    &.sidebar-collapsed {
-      .chat-main {
-        margin-left: 60px;
-        margin-right: 0;
-      }
-    }
-  }
-
-  /* LTR Layout */
-  &:not(.rtl) {
-    &:not(.sidebar-collapsed) {
-      .chat-main {
-        margin-right: 320px;
-        margin-left: 0;
-      }
-    }
-
-    &.sidebar-collapsed {
-      .chat-main {
-        margin-right: 60px;
-        margin-left: 0;
-      }
-    }
+  .chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
   }
 }
 
 .chat-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
   overflow: hidden;
   position: relative;
-  transition: margin-right 0.3s ease, margin-left 0.3s ease;
-  
+
   > * {
     flex-shrink: 0;
   }
-  
+
   app-message-list {
     flex: 1;
     overflow: hidden;
@@ -171,7 +143,7 @@ p {
   border: 0;
 }
 
-@media (max-width: 1024px) {
+@include mixins.lg(variables.$max) {
   .magical-chat-container {
     &.rtl {
       .sidebar-collapsed .chat-main {
@@ -196,11 +168,12 @@ p {
     .conversations-sidebar {
       position: fixed !important;
       transition: transform var(--transition-slow) !important;
+      z-index: 1 !important;
     }
 
     &.rtl .conversations-sidebar {
       transform: translateX(-100%);
-      
+
       &:not(.sidebar-collapsed) {
         transform: translateX(0);
       }
@@ -208,18 +181,35 @@ p {
 
     &:not(.rtl) .conversations-sidebar {
       transform: translateX(100%);
-      
+
       &:not(.sidebar-collapsed) {
         transform: translateX(0);
       }
     }
+
+    .chat-header {
+      z-index: 10 !important;
+    }
+
   }
 }
 
-@media (max-width: 768px) {
+@include mixins.md(variables.$max) {
   .magical-chat-container {
     height: 100vh;
     height: 100dvh;
+
+    &:not(.sidebar-collapsed)::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-overlay);
+      z-index: 0;
+      pointer-events: auto;
+    }
   }
 
   .conversations-sidebar {
@@ -229,6 +219,11 @@ p {
   .magical-chat-container.sidebar-collapsed .conversations-sidebar {
     width: 50px !important;
   }
+
+  .chat-header {
+    z-index: 10 !important;
+  }
+
 }
 
 @media (prefers-reduced-motion: reduce) {

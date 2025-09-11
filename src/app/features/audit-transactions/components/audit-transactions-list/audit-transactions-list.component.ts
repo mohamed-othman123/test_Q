@@ -30,6 +30,7 @@ export class AuditTransactionsListComponent extends Filter implements OnInit {
   @Input({required: true}) source!: Source;
   @Input({required: true}) sourceId!: string;
   @Input({required: true}) hallId!: string;
+  @Input() hideSourceColumn: boolean = false;
 
   transactionsList: AuditTransaction[] = [];
 
@@ -44,6 +45,7 @@ export class AuditTransactionsListComponent extends Filter implements OnInit {
     transactionId: [null],
     transactionSource: [null],
     transactionType: [null],
+    name: [null],
   };
 
   constructor(
@@ -91,5 +93,9 @@ export class AuditTransactionsListComponent extends Filter implements OnInit {
         hallId: this.hallId,
       },
     });
+  }
+
+  refreshData(): void {
+    this.loadDataTable(this.filters);
   }
 }

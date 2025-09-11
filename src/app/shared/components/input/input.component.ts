@@ -75,6 +75,9 @@ export class InputComponent
   @Input() showClear = false;
   @Input() alwaysShowClear = false;
   @Input() textAlign = 'start';
+  @Input() isIconPicker = false;
+  @Input() integerOnly = false;
+  integerPattern = '^\\d+$';
 
   // Google analytics Inputs
   @Input() formName = '';

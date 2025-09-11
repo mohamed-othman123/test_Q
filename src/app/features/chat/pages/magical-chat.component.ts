@@ -37,8 +37,7 @@ import {Hall} from '@halls/models/halls.model';
           [subtitle]="getSubtitleText()"
           [theme]="theme()"
           [sidebarCollapsed]="sidebarCollapsed()"
-          (themeChange)="toggleTheme()"
-          (sidebarToggle)="toggleSidebar()">
+          (themeChange)="toggleTheme()">
         </app-chat-header>
 
         <app-message-list

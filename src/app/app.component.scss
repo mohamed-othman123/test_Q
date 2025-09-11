@@ -1,5 +1,5 @@
-@use './styles/variables';
-@use './styles//mixins';
+@use 'variables';
+@use 'mixins';
 
 :host {
   display: flex;

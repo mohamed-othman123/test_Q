@@ -1,0 +1,132 @@
+@if (landingPageData?.id) {
+  <div class="media-section">
+    <div class="header-container">
+      <h4>{{ 'landing.hallMedia' | translate }}</h4>
+    </div>
+
+    <!-- Banners Section -->
+    @if (section?.type === 'banners') {
+      <ng-container [ngTemplateOutlet]="mediaTemplate" [ngTemplateOutletContext]="{
+        type: 'banners',
+        items: banners,
+        title: 'landing.hallBanners',
+        helperText: 'landing.bannersHelperText',
+        addButtonText: 'landing.addBanner',
+        cssClass: 'banners-grid'
+      }"></ng-container>
+    }
+
+    <!-- Images Section -->
+    @if (section?.type === 'images') {
+      <ng-container [ngTemplateOutlet]="mediaTemplate" [ngTemplateOutletContext]="{
+        type: 'images',
+        items: images,
+        title: 'landing.hallImages',
+        helperText: 'landing.imagesHelperText',
+        addButtonText: 'landing.addImage',
+        cssClass: 'images-grid'
+      }"></ng-container>
+    }
+  </div>
+}
+
+<!-- Reusable Media Template -->
+<ng-template #mediaTemplate let-type="type" let-items="items" let-title="title" let-helperText="helperText" let-addButtonText="addButtonText" let-cssClass="cssClass">
+  <div class="media-container">
+    <h5>{{ title | translate }}</h5>
+    <p class="helper-text">{{ helperText | translate }}</p>
+
+    <div class="media-grid" [ngClass]="cssClass">
+      @for (item of items; track item; let i = $index) {
+        <div class="media-item">
+          <div class="media-content">
+            <!-- Media Preview -->
+            <div class="media-preview">
+              @if (item.file || item.url) {
+                <img
+                  [src]="item.file ? (item.file | filePreview) : item.url"
+                  [alt]="type === 'banners' ? 'Banner Preview' : 'Image Preview'"
+                  class="preview-image" />
+              } @else {
+                <div class="empty-preview">
+                  <i class="pi pi-image"></i>
+                  <span>{{ 'landing.noImage' | translate }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- Media Actions -->
+            <div class="media-actions">
+              <button
+                type="button"
+                class="delete-button"
+                (click)="removeMediaItem(type, i)"
+                [disabled]="item.isUploading"
+                [title]="'common.delete' | translate">
+                <i class="pi pi-trash"></i>
+              </button>
+            </div>
+
+            <!-- Order Dropdown -->
+            <div class="order-select">
+              <p-dropdown
+                [options]="getOrderOptions(items.length)"
+                [(ngModel)]="item.order"
+                [ngModelOptions]="{standalone: true}"
+                (onChange)="onOrderChange($event, type, item.id!)"
+                [disabled]="$any(item.isUploading)"
+                styleClass="order-dropdown"
+                appendTo="body">
+              </p-dropdown>
+            </div>
+
+            <!-- Upload Box -->
+            <div class="upload-box" [class.has-file]="item.file || item.url">
+              <input
+                type="file"
+                accept="image/*"
+                [id]="type + '-' + i"
+                (change)="onFileSelected($event, type, i)"
+                [disabled]="item.isUploading" />
+              <label
+                [for]="type + '-' + i"
+                class="upload-label"
+                [inert]="true">
+                @if (!item.file && !item.url) {
+                  <i class="pi pi-upload"></i>
+                  <span>{{ 'landing.clickToUpload' | translate }}</span>
+                }
+              </label>
+              @if (item.isUploading) {
+                <div class="upload-overlay">
+                  <p-progressSpinner
+                    [style]="{width: '50px', height: '50px'}">
+                  </p-progressSpinner>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Add New Media Button -->
+      @if (canAddNewMedia(type)) {
+        <div class="media-item">
+          <input
+            type="file"
+            accept="image/*"
+            #fileInput
+            (change)="onDirectFileUpload($event, type)"
+            style="display: none" />
+          <button
+            type="button"
+            class="add-media-button"
+            (click)="fileInput.click()">
+            <i class="pi pi-plus"></i>
+            {{ addButtonText | translate }}
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</ng-template>

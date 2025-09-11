@@ -1,0 +1,73 @@
+<div class="page-wrapper">
+  <app-list-header [title]="'orders.bookingCost' | translate"></app-list-header>
+
+  <div class="cost-wrapper">
+    <!--booking costs-->
+    <div class="booking-cost">
+      <div>
+        {{ 'orders.totalServiceCost' | translate }} :
+        <span class="price-with-symbol">
+          <sar-symbol />
+          <span>
+            {{ serviceCost | number: '1.2-2' }}
+          </span>
+        </span>
+      </div>
+      <div>
+        {{ 'orders.totalProductCost' | translate }} :
+        <span class="price-with-symbol">
+          <sar-symbol />
+          <span>
+            {{ productCost | number: '1.2-2' }}
+          </span>
+        </span>
+      </div>
+      <div>
+        {{ 'orders.totalCost' | translate }} :
+        <span class="price-with-symbol">
+          <sar-symbol />
+          <span>
+            {{ productCost + serviceCost | number: '1.2-2' }}
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!--services-->
+    <app-services-cost (serviceCost)="assignTotalCost($event, 'service')">
+    </app-services-cost>
+
+    <!--products-->
+    <app-products-cost
+      (productsCost)="assignTotalCost($event, 'product')"
+      [lockCosts]="lockCosts">
+    </app-products-cost>
+
+    <div class="form-section">
+      <!-- Audit Transactions List -->
+      <app-audit-transactions-list
+        [source]="source"
+        [sourceId]="bookingId!"
+        [hallId]="hallId"
+        [hideSourceColumn]="true">
+      </app-audit-transactions-list>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="form-actions">
+    <button
+      type="button"
+      pButton
+      class="p-button-secondary btn-back"
+      [label]="'common.back' | translate"
+      (click)="goBack()">
+      <i
+        [class]="
+          lang.lang === 'en'
+            ? 'pi pi-arrow-left mb-0'
+            : 'pi pi-arrow-right mb-0'
+        "></i>
+    </button>
+  </div>
+</div>

@@ -79,7 +79,7 @@ import { FormGroup } from '@angular/forms';
       bottom: 0;
       left: 0;
       right: 0;
-      z-index: 10;
+      z-index: 8 !important;
       backdrop-filter: blur(10px);
       background: var(--bg-surface-alpha);
       flex-shrink: 0;
@@ -177,7 +177,6 @@ import { FormGroup } from '@angular/forms';
     }
 
     .send-btn:hover:not(:disabled) {
-      background: var(--primary-dark);
       transform: scale(1.05);
     }
 
@@ -195,7 +194,7 @@ import { FormGroup } from '@angular/forms';
       margin-top: 0.75rem;
       padding-top: 0.75rem;
       border-top: 1px solid var(--border-light);
-      min-height: 2rem; /* Ensure footer always has minimum height */
+      min-height: 2rem; 
     }
 
     .input-info {
@@ -204,7 +203,7 @@ import { FormGroup } from '@angular/forms';
       gap: 1rem;
       font-size: 0.75rem;
       color: var(--text-secondary);
-      flex: 1; /* Take available space */
+      flex: 1; 
     }
 
     .char-count.warning {

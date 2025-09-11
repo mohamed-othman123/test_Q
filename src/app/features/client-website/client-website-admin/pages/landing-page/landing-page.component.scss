@@ -1,0 +1,60 @@
+@use "sass:color";
+@use 'variables';
+
+.content {
+  padding: variables.$space-2xl;
+  background-color: white;
+  border-radius: variables.$rounded-md;
+  overflow: scroll;
+  max-height: 1123px;
+
+  .header {
+    margin-bottom: variables.$space-3xl;
+
+    h6 {
+      color: #333;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .p-button {
+      width: fit-content;
+    }
+  }
+}
+
+.no-landing-page {
+  background: white;
+  border-radius: variables.$rounded-md;
+  padding: variables.$space-3xl;
+  margin-bottom: variables.$space-3xl;
+  border: 2px dashed color.adjust(variables.$primary-color, $lightness: 30%);
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    i {
+      font-size: 2.5rem;
+      color: variables.$primary-color;
+      margin-bottom: variables.$space-xl;
+    }
+
+    p {
+      color: #374151;
+      font-size: 1.1rem;
+      margin-bottom: variables.$space-2xl;
+    }
+
+    .add-btn {
+      transition: transform 0.2s ease;
+      width: fit-content;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {map} from 'rxjs';
-import {LandingGeneralInformationDto} from '@admin-landing-page/models/landing-page.model';
+import {LandingGeneralInformationDto} from '@client-website-admin/models/landing-page.model';
 import {ApiConfigService} from './api-config.service';
 
 @Injectable({

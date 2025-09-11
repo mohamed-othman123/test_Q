@@ -6,6 +6,10 @@
   --bs-info: #1eaa8f;
 }
 
+.ngb-dp-arrow-btn:focus {
+  outline: none !important;
+}
+
 @include mixins.rtl-no-host() {
   .ngb-dp-arrow-btn {
     rotate: 180deg;
@@ -150,4 +154,50 @@ ngb-datepicker-navigation-select > .form-select {
 .dropdown-item:active {
   background-color: variables.$primary-color !important;
   color: white !important;
+}
+
+// It is so important, Please don't remove it
+// Hall-specific theming for order pricing date picker
+body:has(#pricing_popup) {
+  .ngb-dp-navigation-chevron {
+    color: var(--hall-main-color) !important;
+  }
+
+  .ngb-dp-weekday {
+    color: var(--hall-main-color) !important;
+    
+    &:hover {
+      background-color: transparent !important;
+      color: var(--hall-main-color) !important;
+    }
+  }
+
+  .custom-day:hover:not(.bg-primary),
+  .custom-day.active:not(.bg-primary),
+  .custom-day-today {
+    background-color: var(--hall-main-color) !important;
+    color: white !important;
+  }
+
+  .ngb-dp-day:hover:not(.bg-primary),
+  .ngb-dp-day.active:not(.bg-primary) {
+    background-color: var(--hall-main-color) !important;
+    color: white !important;
+  }
+
+  [ngbDatepickerDayView]:hover:not(.bg-primary),
+  [ngbDatepickerDayView].active:not(.bg-primary) {
+    background-color: var(--hall-main-color) !important;
+    color: white !important;
+  }
+
+  .ngb-dp-day .bg-primary {
+    background-color: var(--hall-main-color) !important;
+    color: white !important;
+  }
+
+  .custom-day-focused {
+    background-color: var(--hall-main-color) !important;
+    color: white !important;
+  }
 }

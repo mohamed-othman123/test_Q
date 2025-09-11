@@ -276,7 +276,16 @@
                 <span>{{ 'purchases.paymentTypes.Refund' | translate }}</span>
               </button>
             }
-
+            <!--booking cost-->
+            @if (hasPermissionTo('bookingCost', order)) {
+              <button
+                ngbDropdownItem
+                (click)="navigateToBookingCosts(order)"
+                class="d-flex align-items-center gap-3">
+                <i class="sar-icon" style="background-color: #212529"></i>
+                <span>{{ 'orders.bookingCost' | translate }}</span>
+              </button>
+            }
             @if (hasPermissionTo('update', order)) {
               <button
                 ngbDropdownItem

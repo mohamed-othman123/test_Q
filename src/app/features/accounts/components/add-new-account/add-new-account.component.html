@@ -1,0 +1,104 @@
+<app-drawer-form-wrapper [form]="form" (onSubmit)="submit()">
+  <app-dropdown
+    [inert]="mode === 'edit'"
+    [control]="getControl('parentAccountId')"
+    [controlName]="'parentAccountId'"
+    [options]="parentsList"
+    [optionLabel]="'name'"
+    [dataKey]="'id'"
+    [placeholder]="'chartOfAccounts.parentAccountPlaceholder' | translate"
+    [label]="'chartOfAccounts.parentAccount' | translate">
+    <i class="pi pi-list" style="color: gray"></i>
+  </app-dropdown>
+
+  <app-input
+    [control]="getControl('name_ar')"
+    [controlName]="'name_ar'"
+    inputType="text"
+    [placeholder]="'chartOfAccounts.nameArPlaceholder' | translate"
+    [label]="'chartOfAccounts.nameAr' | translate">
+    <i class="pi pi-pencil" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="getControl('name')"
+    [controlName]="'name'"
+    inputType="text"
+    [label]="'chartOfAccounts.nameEn' | translate"
+    [placeholder]="'chartOfAccounts.nameEnPlaceholder' | translate">
+    <i class="pi pi-pencil" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [inert]="mode === 'edit'"
+    [control]="getControl('accountCode')"
+    [controlName]="'accountCode'"
+    inputType="number"
+    [label]="'chartOfAccounts.accountCode' | translate"
+    [placeholder]="'chartOfAccounts.accountCodePlaceholder' | translate">
+    <i class="pi pi-barcode" style="color: gray"></i>
+  </app-input>
+
+  <!--is parent account-->
+  <div>
+    <label class="mb-0">
+      {{ 'chartOfAccounts.isParentAccount' | translate }}
+      @if (getControl('isParent').hasError('required')) {
+        <span style="color: red">&nbsp;*</span>
+      }
+    </label>
+    <div class="d-flex gap-3 align-items-center mt-3">
+      <div class="d-flex align-items-center gap-2">
+        <p-radioButton
+          [inputId]="'parentAcount'"
+          name="isParent"
+          [formControl]="getControl('isParent')"
+          [value]="true" />
+        <label [for]="'parentAcount'" class="mb-0">
+          {{ 'chartOfAccounts.yes' | translate }}
+        </label>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <p-radioButton
+          [inputId]="'subAcount'"
+          name="isParent"
+          [formControl]="getControl('isParent')"
+          [value]="false" />
+        <label [for]="'subAcount'" class="mb-0">
+          {{ 'chartOfAccounts.no' | translate }}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!--debit and credit-->
+  @if (!form.get('isParent')?.value) {
+    <div class="d-flex gap-3 align-items-center mt-3">
+      <app-input
+        [control]="getControl('openingDebit')"
+        [controlName]="'openingDebit'"
+        inputType="number"
+        [label]="'chartOfAccounts.debitBalance' | translate"
+        [placeholder]="'chartOfAccounts.debitBalancePlaceholder' | translate">
+        <i class="sar-icon" style="color: gray"></i>
+      </app-input>
+
+      <app-input
+        [control]="getControl('openingCredit')"
+        [controlName]="'openingCredit'"
+        inputType="number"
+        [label]="'chartOfAccounts.creditBalance' | translate"
+        [placeholder]="'chartOfAccounts.creditBalancePlaceholder' | translate">
+        <i class="sar-icon" style="color: gray"></i>
+      </app-input>
+    </div>
+  }
+  <app-input
+    [control]="getControl('description')"
+    [controlName]="'description'"
+    inputType="textarea"
+    [label]="'chartOfAccounts.description' | translate"
+    [placeholder]="'chartOfAccounts.descriptionPlaceholder' | translate">
+    <i class="pi pi-calendar-plus" style="color: gray"></i>
+  </app-input>
+</app-drawer-form-wrapper>

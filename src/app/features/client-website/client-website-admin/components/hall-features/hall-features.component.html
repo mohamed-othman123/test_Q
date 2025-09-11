@@ -1,0 +1,125 @@
+@if (landingPageData?.id) {
+  <div class="features-section">
+    <div class="section-header">
+      <h4>{{ 'landing.hallFeatures' | translate }}</h4>
+      <div class="header-actions">
+        <button
+          type="button"
+          class="add-button"
+          (click)="addFeature()"
+          [disabled]="hallFeatures.length >= maxFeatures || activeFeature">
+          <i class="pi pi-plus"></i>
+          {{ 'landing.addFeature' | translate }}
+        </button>
+      </div>
+    </div>
+    @if (!activeFeature && hallFeatures.length < 1) {
+      <div>
+        <app-empty-data
+          icon="pi pi-list"
+          [title]="'landing.noFeatures'"
+          [description]="'landing.addFirstFeature'"
+          [disabled]="hallFeatures.length >= maxFeatures"></app-empty-data>
+      </div>
+    }
+
+    @if (!activeFeature && hallFeatures.length > 0) {
+      <div #featuresList class="features-list">
+        @for (feature of hallFeatures.controls; track feature; let i = $index) {
+          <div class="feature-item">
+            <div class="feature-content">
+              <div class="feature-icon">
+                <fa-icon [icon]="feature.get('icon')?.value | faIcon"></fa-icon>
+              </div>
+              <div class="feature-info">
+                <h5>{{ feature.get('title')?.value }}</h5>
+                <p>{{ feature.get('description')?.value }}</p>
+              </div>
+              <div class="icon-action-buttons">
+                <button
+                  type="button"
+                  class="edit-button"
+                  (click)="editFeature(feature)">
+                  <i class="pi pi-pencil"></i>
+                </button>
+                <button
+                  type="button"
+                  class="delete-button"
+                  (click)="removeFeature(i)">
+                  <i class="pi pi-trash"></i>
+                </button>
+                <div class="feature-drag-handle">
+                  <div class="drag-handle-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+      @if (activeFeature) {
+        <form
+          [formGroup]="$any(activeFeature)"
+          class="feature-form"
+          (ngSubmit)="saveFeature()"
+          appShakeable>
+        <div class="form-content">
+          <h5>{{ isEditingExisting ? ('landing.editFeature' | translate) : ('landing.addNewFeature' | translate) }}</h5>
+          <div class="form-grid">
+            <div class="icon-field">
+              <app-input
+                [control]="activeFeature.get('icon')!"
+                [controlName]="'icon'"
+                [placeholder]="'landing.iconPlaceholder' | translate"
+                [isIconPicker]="true"
+                appIconPicker
+                label="{{ 'landing.featureIcon' | translate }}"
+                (iconSelected)="handleIconChange($event)">
+              </app-input>
+            </div>
+            <div class="title-field">
+              <app-input
+                [control]="activeFeature.get('title')!"
+                [controlName]="'title'"
+                label="{{ 'landing.featureTitle' | translate }}"
+                [placeholder]="'landing.titlePlaceholder' | translate">
+              </app-input>
+            </div>
+            <div class="description-field">
+              <app-input
+                [control]="activeFeature.get('description')!"
+                [controlName]="'description'"
+                label="{{ 'landing.featureDescription' | translate }}"
+                [placeholder]="'landing.descriptionPlaceholder' | translate"
+                [inputType]="'text'">
+              </app-input>
+            </div>
+            <div class="form-action-buttons">
+              <button
+                type="button"
+                class="cancel-button"
+                (click)="cancelEdit()">
+                <i class="pi pi-times"></i>
+                {{ 'common.cancel' | translate }}
+              </button>
+              <button
+                type="submit"
+                class="save-button">
+                <i class="pi pi-check"></i>
+                {{ 'common.save' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    }
+  </div>
+}

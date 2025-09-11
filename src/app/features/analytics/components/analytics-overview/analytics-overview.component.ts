@@ -7,12 +7,21 @@ import {
   Question,
 } from '../../a-i-analytics.service';
 import {TranslateService, LangChangeEvent} from '@ngx-translate/core';
+import {
+  fadeInUp,
+  slideInFromLeft,
+  slideInFromRight,
+  scaleIn,
+  staggerCards,
+  cardHover,
+  pulseGlow,
+  rotateIn,
+} from '@core/animations/angular-animation';
 
-export interface AnalyticsItem {
+export interface DashboardItem {
   id: number;
   name: string;
   description?: string;
-  type: 'dashboard' | 'question';
   created_at?: string;
   updated_at?: string;
 }
@@ -22,23 +31,30 @@ export interface AnalyticsItem {
   templateUrl: './analytics-overview.component.html',
   styleUrls: ['./analytics-overview.component.scss'],
   standalone: false,
+  animations: [
+    fadeInUp,
+    slideInFromLeft,
+    slideInFromRight,
+    scaleIn,
+    staggerCards,
+    cardHover,
+    pulseGlow,
+    rotateIn,
+  ],
 })
 export class AnalyticsOverviewComponent implements OnInit, OnDestroy {
   dashboards: Dashboard[] = [];
   questions: Question[] = [];
 
-  allItems: AnalyticsItem[] = [];
-  filteredItems: AnalyticsItem[] = [];
+  allDashboards: DashboardItem[] = [];
+  filteredItems: DashboardItem[] = [];
 
   loading = true;
   error: string | null = null;
-  activeTab: 'all' | 'dashboards' | 'questions' = 'all';
-  searchQuery = '';
+  hoveredItem: number | null = null;
 
   stats = {
     totalDashboards: 0,
-    totalQuestions: 0,
-    totalItems: 0,
   };
 
   private destroy$ = new Subject<void>();
@@ -98,88 +114,29 @@ export class AnalyticsOverviewComponent implements OnInit, OnDestroy {
     const defaultDashboardDesc = this.translate.instant(
       'analytics.defaultDashboardDescription',
     );
-    const defaultQuestionDesc = this.translate.instant(
-      'analytics.defaultQuestionDescription',
-    );
 
-    const dashboardItems: AnalyticsItem[] = this.dashboards.map(
-      (dashboard) => ({
-        ...dashboard,
-        type: 'dashboard' as const,
-        description: dashboard.description || defaultDashboardDesc,
-      }),
-    );
-
-    const questionItems: AnalyticsItem[] = this.questions.map((question) => ({
-      ...question,
-      type: 'question' as const,
-      description: question.description || defaultQuestionDesc,
+    this.allDashboards = this.dashboards.map((dashboard) => ({
+      ...dashboard,
+      description: dashboard.description || defaultDashboardDesc,
     }));
-
-    this.allItems = [...dashboardItems, ...questionItems];
   }
 
   private updateStats(): void {
     this.stats = {
       totalDashboards: this.dashboards.length,
-      totalQuestions: this.questions.length,
-      totalItems: this.dashboards.length + this.questions.length,
     };
   }
 
   filterItems(): void {
-    let items = [...this.allItems];
-
-    if (this.activeTab === 'dashboards') {
-      items = items.filter((item) => item.type === 'dashboard');
-    } else if (this.activeTab === 'questions') {
-      items = items.filter((item) => item.type === 'question');
-    }
-
-    if (this.searchQuery.trim()) {
-      const query = this.searchQuery.toLowerCase().trim();
-      items = items.filter(
-        (item) =>
-          item.name.toLowerCase().includes(query) ||
-          (item.description && item.description.toLowerCase().includes(query)),
-      );
-    }
-
-    this.filteredItems = items;
+    this.filteredItems = [...this.allDashboards];
   }
 
-  onTabChange(tab: 'all' | 'dashboards' | 'questions'): void {
-    this.activeTab = tab;
-    this.filterItems();
-  }
-
-  onSearchChange(query: string): void {
-    this.searchQuery = query;
-    this.filterItems();
-  }
-
-  onItemClick(item: AnalyticsItem): void {
-    if (item.type === 'dashboard') {
-      this.router.navigate(['/analytics/dashboard', item.id]);
-    } else {
-      this.router.navigate(['/analytics/question', item.id]);
-    }
+  onItemClick(dashboard: DashboardItem): void {
+    this.router.navigate(['/analytics/dashboard', dashboard.id]);
   }
 
   onRetry(): void {
     this.loadAnalyticsData();
-  }
-
-  getItemIcon(type: 'dashboard' | 'question'): string {
-    return type === 'dashboard' ? 'pi pi-chart-line' : 'pi pi-chart-bar';
-  }
-
-  getItemTypeLabel(type: 'dashboard' | 'question'): string {
-    const key =
-      type === 'dashboard'
-        ? 'analytics.type.dashboard'
-        : 'analytics.type.question';
-    return this.translate.instant(key);
   }
 
   formatDate(dateString?: string): string {
@@ -196,7 +153,7 @@ export class AnalyticsOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  trackByItemId(index: number, item: AnalyticsItem): number {
+  trackByItemId(index: number, item: DashboardItem): number {
     return item.id;
   }
 }

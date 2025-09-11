@@ -10,6 +10,7 @@ export const NAV_ITEMS: NavItem[] = [
   {path: '/clients', permission: 'read:hallsClients'},
   {path: '/services', permission: 'read:services'},
   {path: '/purchases', permission: 'read:expenses'},
+  {path: '/chart-of-accounts', permission: 'read:accounts'},
   {path: '/suppliers', permission: 'read:suppliers'},
   {path: '/refund-requests', permission: 'read:refund requests'},
   {path: '/price-requests', permission: 'read:price-requests'},

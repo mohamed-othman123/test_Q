@@ -1,210 +1,158 @@
 <div class="analytics-container">
-  <div class="analytics-header">
-    <div class="header-content">
-      <div class="title-section">
+  <div class="analytics-hero" [@fadeInUp]>
+    <div class="hero-background">
+      <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+      </div>
+    </div>
+
+    <div class="hero-content">
+      <div class="title-section" [@slideInFromLeft]>
         <h1 class="page-title">
-          <i class="pi pi-chart-bar"></i>
+          <i class="pi pi-chart-bar title-icon animate-glow"></i>
           {{ 'analytics.title' | translate }}
         </h1>
         <p class="page-subtitle">
           {{ 'analytics.subtitle' | translate }}
         </p>
+        <div class="title-decoration"></div>
       </div>
 
-      <div class="stats-cards" *ngIf="!loading && !error">
-        <div class="stat-card">
-          <div class="stat-icon dashboards">
-            <i class="pi pi-chart-line"></i>
+      <div class="hero-stats" *ngIf="!loading && !error" [@slideInFromRight]>
+        <div class="stats-info">
+          <div class="stat-number animate-heartbeat">
+            {{ stats.totalDashboards }}
           </div>
-          <div class="stat-content">
-            <span class="stat-number">{{ stats.totalDashboards }}</span>
-            <span class="stat-label">{{ 'analytics.dashboards' | translate }}</span>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon questions">
-            <i class="pi pi-chart-bar"></i>
-          </div>
-          <div class="stat-content">
-            <span class="stat-number">{{ stats.totalQuestions }}</span>
-            <span class="stat-label">{{ 'analytics.questions' | translate }}</span>
+          <div class="stat-label">
+            {{ 'analytics.dashboards' | translate }}
           </div>
         </div>
-
-        <div class="stat-card">
-          <div class="stat-icon total">
-            <i class="pi pi-objects-column"></i>
-          </div>
-          <div class="stat-content">
-            <span class="stat-number">{{ stats.totalItems }}</span>
-            <span class="stat-label">{{ 'analytics.totalItems' | translate }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="header-actions">
-        <p-button
-          icon="pi pi-refresh"
-          [label]="'common.refresh' | translate"
-          (click)="onRetry()"
-          [loading]="loading"
-          class="p-button-secondary">
-        </p-button>
       </div>
     </div>
   </div>
 
-  <div *ngIf="loading" class="loading-container">
+  <div *ngIf="loading" class="loading-container" [@fadeInUp]>
     <div class="loading-content">
-      <div class="loading-spinner">
+      <div class="loading-spinner animate-pulse">
         <i class="pi pi-spin pi-spinner"></i>
+        <div class="loading-rings">
+          <div class="ring ring-1"></div>
+          <div class="ring ring-2"></div>
+          <div class="ring ring-3"></div>
+        </div>
       </div>
       <h3>{{ 'analytics.loading.title' | translate }}</h3>
       <p>{{ 'analytics.loading.message' | translate }}</p>
+      <div class="loading-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </div>
 
-  <div *ngIf="error && !loading" class="error-container">
+  <div *ngIf="error && !loading" class="error-container" [@fadeInUp]>
     <div class="error-content">
-      <i class="pi pi-exclamation-triangle error-icon"></i>
+      <i class="pi pi-exclamation-triangle error-icon animate-wave"></i>
       <h3>{{ 'analytics.error.title' | translate }}</h3>
-<!--      <p>{{ error }}</p>-->
+      <p>{{ 'analytics.error.message' | translate }}</p>
       <p-button
         icon="pi pi-refresh"
         [label]="'common.retry' | translate"
-        (click)="onRetry()">
+        (click)="onRetry()"
+        class="error-retry-btn">
       </p-button>
     </div>
   </div>
 
-  <div *ngIf="!loading && !error" class="analytics-content">
+  <div *ngIf="!loading && !error" class="analytics-content" [@fadeInUp]>
 
-    <div class="filters-section">
-      <div class="filters-content">
-
-        <div class="tab-navigation">
-          <button
-            type="button"
-            class="tab-button"
-            [class.active]="activeTab === 'all'"
-            (click)="onTabChange('all')">
-            <i class="pi pi-objects-column"></i>
-            <span>{{ 'analytics.tabs.all' | translate }}</span>
-            <span class="badge">{{ stats.totalItems }}</span>
-          </button>
-
-          <button
-            type="button"
-            class="tab-button"
-            [class.active]="activeTab === 'dashboards'"
-            (click)="onTabChange('dashboards')">
-            <i class="pi pi-chart-line"></i>
-            <span>{{ 'analytics.tabs.dashboards' | translate }}</span>
-            <span class="badge">{{ stats.totalDashboards }}</span>
-          </button>
-
-          <button
-            type="button"
-            class="tab-button"
-            [class.active]="activeTab === 'questions'"
-            (click)="onTabChange('questions')">
-            <i class="pi pi-chart-bar"></i>
-            <span>{{ 'analytics.tabs.questions' | translate }}</span>
-            <span class="badge">{{ stats.totalQuestions }}</span>
-          </button>
-        </div>
-
-        <div class="search-section">
-          <div class="search-input-wrapper">
-            <i class="pi pi-search search-icon"></i>
-            <input
-              type="text"
-              class="search-input"
-              [placeholder]="'analytics.search.placeholder' | translate"
-              [value]="searchQuery"
-              (input)="onSearchChange($any($event.target).value)">
-            <button
-              *ngIf="searchQuery"
-              type="button"
-              class="clear-search-btn"
-              (click)="onSearchChange('')">
-              <i class="pi pi-times"></i>
-            </button>
+    <div class="results-section" [@fadeInUp]>
+      <div *ngIf="filteredItems.length === 0" class="empty-state" [@rotateIn]>
+        <div class="empty-icon-container">
+          <i class="pi pi-chart-line empty-icon animate-float"></i>
+          <div class="empty-particles">
+            <div class="particle particle-1"></div>
+            <div class="particle particle-2"></div>
+            <div class="particle particle-3"></div>
           </div>
         </div>
-
-      </div>
-    </div>
-
-    <div class="results-section">
-
-      <div *ngIf="filteredItems.length === 0" class="empty-state">
-        <i class="pi pi-search empty-icon"></i>
-        <h3>{{ 'analytics.empty.noResults.title' | translate }}</h3>
-        <p>
-          <ng-container *ngIf="searchQuery; else noItemsTemplate">
-            {{ 'analytics.empty.noResults.message' | translate }}
-            <strong>"{{ searchQuery }}"</strong>
-          </ng-container>
-          <ng-template #noItemsTemplate>
-            {{ 'analytics.empty.noItems.message' | translate }}
-          </ng-template>
-        </p>
-        <p-button
-          *ngIf="searchQuery"
-          icon="pi pi-times"
-          [label]="'analytics.clearSearch' | translate"
-          (click)="onSearchChange('')"
-          class="p-button-secondary">
-        </p-button>
+        <h3>{{ 'analytics.empty.noDashboards.title' | translate }}</h3>
+        <p>{{ 'analytics.empty.noDashboards.message' | translate }}</p>
       </div>
 
-      <div *ngIf="filteredItems.length > 0" class="items-grid">
+      <div
+        *ngIf="filteredItems.length > 0"
+        class="dashboards-grid"
+        [@staggerCards]>
         <div
-          *ngFor="let item of filteredItems; trackBy: trackByItemId"
-          class="analytics-card"
-          [attr.data-type]="item.type"
-          (click)="onItemClick(item)">
+          *ngFor="
+            let dashboard of filteredItems;
+            trackBy: trackByItemId;
+            let i = index
+          "
+          class="dashboard-card"
+          [@cardHover]="hoveredItem === dashboard.id ? 'hover' : 'default'"
+          (click)="onItemClick(dashboard)"
+          (mouseenter)="hoveredItem = dashboard.id"
+          (mouseleave)="hoveredItem = null"
+          [style.animation-delay]="i * 100 + 'ms'">
+          <div class="card-background">
+            <div class="gradient-overlay"></div>
+            <div class="data-flow" *ngIf="hoveredItem === dashboard.id">
+              <div class="flow-line"></div>
+              <div class="flow-line"></div>
+              <div class="flow-line"></div>
+            </div>
+          </div>
 
           <div class="card-header">
-            <div class="item-icon" [attr.data-type]="item.type">
-              <i [class]="getItemIcon(item.type)"></i>
+            <div class="dashboard-icon">
+              <i
+                class="pi pi-chart-line"
+                [class.animate-wave]="hoveredItem === dashboard.id"></i>
+              <div
+                class="icon-pulse"
+                *ngIf="hoveredItem === dashboard.id"></div>
             </div>
             <div class="card-actions">
-              <span class="item-type-badge" [attr.data-type]="item.type">
-                {{ getItemTypeLabel(item.type) }}
+              <span class="dashboard-badge">
+                Dashboard
               </span>
             </div>
           </div>
 
           <div class="card-content">
-            <h3 class="item-title">{{ item.name }}</h3>
-            <p class="item-description">{{ item.description }}</p>
+            <h3 class="dashboard-title">{{ dashboard.name }}</h3>
           </div>
 
           <div class="card-footer">
-            <div class="item-meta">
-              <span class="meta-item" *ngIf="item.updated_at">
+            <div class="dashboard-meta">
+              <span class="meta-item" *ngIf="dashboard.updated_at">
                 <i class="pi pi-calendar"></i>
-                <span>{{ formatDate(item.updated_at) }}</span>
+                <span>{{ formatDate(dashboard.updated_at) }}</span>
               </span>
               <span class="meta-item">
                 <i class="pi pi-hashtag"></i>
-                <span>ID: {{ item.id }}</span>
+                <span>ID: {{ dashboard.id }}</span>
               </span>
             </div>
-            <div class="view-button">
-              <span>{{ 'analytics.viewItem' | translate }}</span>
+            <div
+              class="view-button"
+              [class.visible]="hoveredItem === dashboard.id">
+              <span>{{ 'analytics.viewDashboard' | translate }}</span>
               <i class="pi pi-arrow-right"></i>
             </div>
           </div>
 
           <div class="card-overlay"></div>
+
+          <div class="card-shine" *ngIf="hoveredItem === dashboard.id"></div>
         </div>
       </div>
-
     </div>
-
   </div>
 </div>

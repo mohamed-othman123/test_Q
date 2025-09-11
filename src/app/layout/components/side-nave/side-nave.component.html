@@ -82,6 +82,16 @@
         <img src="assets/icons/purchase.icon.svg" alt="purchases icon" />
         <span>{{ 'sideNav.expenses' | translate }}</span>
       </li>
+
+      <li
+        [routerLink]="['/chart-of-accounts']"
+        routerLinkActive="router-link-active">
+        <img
+          src="assets/icons/permissions.icon.svg"
+          alt="chart of accounts icon" />
+        <span>{{ 'sideNav.accounts' | translate }}</span>
+      </li>
+
       <li
         *appHasPermission="['read:suppliers']"
         [routerLink]="['/suppliers']"
@@ -152,7 +162,7 @@
               [routerLink]="['/permissions']"
               routerLinkActive="router-link-active">
               <img
-                src="assets/icons/permissions.icon.svg"
+                src="assets/icons/person-workspace.svg"
                 alt="permissions icon" />
               <span>{{ 'sideNav.permissions' | translate }}</span>
             </li>

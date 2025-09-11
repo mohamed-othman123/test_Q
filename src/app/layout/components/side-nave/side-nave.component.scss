@@ -28,7 +28,7 @@
 
     &.overly {
       position: fixed;
-      z-index: 4;
+      z-index: 20;
       height: auto;
       min-height: 100%;
 
@@ -206,7 +206,7 @@
     cursor: pointer;
     bottom: 0;
     background: white;
-
+    position: absolute;
     padding-bottom: 10px;
   }
 

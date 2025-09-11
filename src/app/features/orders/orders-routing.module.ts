@@ -4,6 +4,7 @@ import {OrdersComponent} from './pages/orders/orders.component';
 import {AddNewOrderComponent} from './pages/add-new-order/add-new-order.component';
 import {ordersResolver} from './resolvers/orders.resolver';
 import {canDeactivateOrder} from '@core/guards/can-deactivate-order.guard';
+import {BookingCostsComponent} from './pages/booking-costs/booking-costs.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,11 @@ const routes: Routes = [
     resolve: {resolvedData: ordersResolver},
     canDeactivate: [canDeactivateOrder],
     data: {mode: 'edit', title: 'pageTitles.editOrder'},
+  },
+  {
+    path: 'booking-costs/:id',
+    component: BookingCostsComponent,
+    data: {title: 'pageTitles.bookingCosts'},
   },
 ];
 

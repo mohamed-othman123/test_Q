@@ -10,6 +10,7 @@
 
 @use './generic.scss';
 @use './components/data-table';
+@use './landing-page';
 
 /* Import layers Files */
 @layer reset, thirdparty, overrides;

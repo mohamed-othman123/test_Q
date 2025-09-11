@@ -198,3 +198,27 @@ export interface BookingOverlap {
   sectionIds: string;
   bookingId?: number;
 }
+
+export interface bookingItem {
+  id?: number;
+  created_at?: string;
+  updated_at?: string;
+  created_by?: string;
+  updated_by?: string;
+  type?: 'service' | 'inventory';
+  name?: string;
+  name_ar?: string;
+  price?: number;
+  cost?: number;
+  quantity?: number;
+  note?: string;
+  service?: {
+    id?: number;
+  };
+  editing?: boolean;
+  inventory?: {
+    id: number;
+    quantity: number;
+    reorderLevel: number;
+  };
+}

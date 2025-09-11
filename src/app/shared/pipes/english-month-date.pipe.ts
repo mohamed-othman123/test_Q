@@ -11,10 +11,11 @@ export class EnglishMonthDatePipe implements PipeTransform {
     value: string | Date | null | undefined,
     includeTime: boolean = false,
     format: string = 'dddd DD MMMM YYYY',
+    formatType: 'short' | 'full' = 'full',
     ...args: unknown[]
   ): unknown {
     if (!value) return;
-    const newValue = dateToGregorianIsoString(value as string, 'short');
+    const newValue = dateToGregorianIsoString(value as string, formatType);
     moment.locale('en'); // Set moment to Arabic locale
     if (includeTime) {
       return moment(newValue)

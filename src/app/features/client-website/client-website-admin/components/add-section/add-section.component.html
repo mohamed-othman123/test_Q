@@ -1,0 +1,350 @@
+<div class="enhanced-sections">
+  <div class="section-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h4>{{ 'landing.websiteSections' | translate }}</h4>
+        <p class="header-description">
+          {{ 'landing.sectionsDescription' | translate }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  @if (getEnabledSections().length > 0) {
+    <div class="enabled-sections">
+      @if (getEnabledSections().length > 0) {
+      <h5 class="subsection-title" [dir]="lang.lang === 'ar' ? 'rtl' : 'ltr'">
+        <i class="pi pi-check-circle"></i>
+        {{ 'landing.activeSections' | translate }}
+      </h5>
+      }
+      <div
+        #sectionsList
+        class="section-list"
+        cdkDropList
+        [cdkDropListData]="getEnabledSections()"
+        (cdkDropListDropped)="onSectionDropped($event)">
+        @for (template of getEnabledSections(); track template) {
+            <div 
+              class="section-card enabled" 
+              [dir]="lang.lang === 'ar' ? 'rtl' : 'ltr'" 
+              [attr.data-section-type]="template.type"
+              cdkDrag
+              [cdkDragData]="template"
+              [cdkDragDisabled]="isLoading || hasExpandedSection()">
+            <div class="card-header">
+              <div class="section-info">
+                <div class="section-icon">
+                  <i [class]="template.icon"></i>
+                </div>
+                <div class="section-details">
+                  <h6>
+                    {{
+                      lang.lang === 'ar' ? template.label.ar : template.label.en
+                    }}
+                  </h6>
+                  <p>
+                    {{
+                      lang.lang === 'ar'
+                        ? template.description.ar
+                        : template.description.en
+                    }}
+                  </p>
+                </div>
+              </div>
+              <div class="section-actions" [dir]="lang.lang === 'ar' ? 'rtl' : 'ltr'">
+                @if (template.data) {
+                  <button
+                    type="button"
+                    class="creative-expand-btn"
+                    (click)="onSectionExpand(template)"
+                    [class.expanded]="template.isExpanded"
+                    [title]="template.isExpanded ? ('common.collapse' | translate) : ('common.expand' | translate)">
+                    <div class="btn-content">
+                      <span class="btn-text">{{ template.isExpanded ? ('common.collapse' | translate) : ('common.expand' | translate) }}</span>
+                      <div class="btn-icon">
+                        <i [class]="template.isExpanded ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"></i>
+                      </div>
+                    </div>
+                    <div class="btn-ripple"></div>
+                  </button>
+                }
+                <div class="creative-switch-container">
+                  <input
+                    type="checkbox"
+                    class="creative-switch"
+                    [checked]="template.isEnabled"
+                    (change)="onSectionToggle(template, $event)"
+                    [disabled]="isLoading"
+                    [id]="'switch-' + template.type">
+                  <label [for]="'switch-' + template.type" class="creative-switch-label">
+                    <div class="switch-track">
+                      <div class="switch-thumb">
+                        <div class="switch-icon">
+                          <i class="pi pi-check"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="section-drag-handle" [dir]="lang.lang === 'ar' ? 'rtl' : 'ltr'">
+              <div class="drag-handle-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
+            </div>
+            @if (template.data) {
+              <div class="collapsible-content" [class.expanded]="template.isExpanded">
+                <div class="collapsible-body">
+                  <div class="basic-details-section">
+                    <div class="basic-details-header" (click)="toggleBasicDetails(template)">
+                      <div class="header-content">
+                        <h6>{{ 'landing.basicDetails' | translate }}</h6>
+                        <div class="header-actions">
+                          @if (!template.isBasicDetailsExpanded) {
+                            <button
+                              type="button"
+                              class="edit-basic-btn"
+                              (click)="editBasicDetails(template, $event)"
+                              [title]="'common.edit' | translate">
+                              <i class="pi pi-pencil"></i>
+                            </button>
+                          }
+                        </div>
+                      </div>
+                      <div class="expand-icon" [class.expanded]="template.isBasicDetailsExpanded">
+                        <i class="pi pi-chevron-down"></i>
+                      </div>
+                    </div>
+
+                    <div class="basic-details-content" [class.expanded]="template.isBasicDetailsExpanded">
+                      <div class="basic-details-body">
+                        @if (!template.isEditingBasicDetails) {
+                          <div class="basic-details-view">
+                            <div class="view-row">
+                              <div class="view-group">
+                                <label>{{ 'landing.sectionTitle' | translate }} (EN)</label>
+                                <div class="view-value">{{ template.form?.get('title_en')?.value || '—' }}</div>
+                              </div>
+                              <div class="view-group">
+                                <label>{{ 'landing.sectionTitleAr' | translate }} (AR)</label>
+                                <div class="view-value">{{ template.form?.get('title_ar')?.value || '—' }}</div>
+                              </div>
+                            </div>
+                            <div class="view-row">
+                              <div class="view-group">
+                                <label>{{ 'landing.sectionDescription' | translate }} (EN)</label>
+                                <div class="view-value">{{ template.form?.get('description_en')?.value || '—' }}</div>
+                              </div>
+                              <div class="view-group">
+                                <label>{{ 'landing.sectionDescriptionAr' | translate }} (AR)</label>
+                                <div class="view-value">{{ template.form?.get('description_ar')?.value || '—' }}</div>
+                              </div>
+                            </div>
+                            <div class="view-actions">
+                              <button
+                                type="button"
+                                class="edit-basic-btn"
+                                (click)="editBasicDetails(template)">
+                                <i class="pi pi-pencil"></i>
+                                {{ 'common.edit' | translate }}
+                              </button>
+                            </div>
+                          </div>
+                        } @else {
+                          <form
+                            [formGroup]="template.form!"
+                            class="basic-details-form"
+                            (ngSubmit)="saveBasicDetails(template)"
+                            appShakeable>
+                            <div class="form-row">
+                              <div class="form-group">
+                                <label>{{ 'landing.sectionTitle' | translate }} (EN)</label>
+                                <input
+                                  type="text"
+                                  pInputText
+                                  formControlName="title_en"
+                                  [placeholder]="'landing.sectionTitlePlaceholder' | translate" />
+                              </div>
+                              <div class="form-group">
+                                <label>{{ 'landing.sectionTitleAr' | translate }} (AR)</label>
+                                <input
+                                  type="text"
+                                  pInputText
+                                  formControlName="title_ar"
+                                  [placeholder]="'landing.sectionTitleArPlaceholder' | translate" />
+                              </div>
+                            </div>
+
+                            <div class="form-row">
+                              <div class="form-group">
+                                <label>{{ 'landing.sectionDescription' | translate }} (EN)</label>
+                                <textarea
+                                  pInputTextarea
+                                  formControlName="description_en"
+                                  [placeholder]="'landing.sectionDescriptionPlaceholder' | translate"
+                                  rows="3">
+                                </textarea>
+                              </div>
+                              <div class="form-group">
+                                <label>{{ 'landing.sectionDescriptionAr' | translate }} (AR)</label>
+                                <textarea
+                                  pInputTextarea
+                                  formControlName="description_ar"
+                                  [placeholder]="'landing.sectionDescriptionArPlaceholder' | translate"
+                                  rows="3">
+                                </textarea>
+                              </div>
+                            </div>
+
+                            <div class="form-action-buttons">
+                              <button
+                                type="button"
+                                class="cancel-button"
+                                (click)="cancelEditBasicDetails(template)">
+                                <i class="pi pi-times"></i>
+                                {{ 'common.cancel' | translate }}
+                              </button>
+                              <button
+                                type="submit"
+                                class="save-button">
+                                <i class="pi pi-check"></i>
+                                {{ 'common.save' | translate }}
+                              </button>
+                            </div>
+                          </form>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Section Content -->
+                  <div class="section-content">
+                    <h6>{{ 'landing.sectionContent' | translate }}</h6>
+                    <p class="content-description">{{ 'landing.sectionContentDescription' | translate }}</p>
+
+                    @if (template.type === 'services') {
+                      <app-hall-services
+                        [landingPageData]="landingPageData"
+                        [section]="template.data">
+                      </app-hall-services>
+                    }
+
+                    @if (template.type === 'features') {
+                      <app-hall-features
+                        [landingPageData]="landingPageData"
+                        [section]="template.data">
+                      </app-hall-features>
+                    }
+
+                    @if (template.type === 'customers') {
+                      <app-hall-clients
+                        [landingPageData]="landingPageData"
+                        [currentHall]="currentHall"
+                        [section]="template.data">
+                      </app-hall-clients>
+                    }
+
+                    @if (template.type === 'popularQuestions') {
+                      <app-popular-questions
+                        [landingPageData]="landingPageData"
+                        [section]="template.data">
+                      </app-popular-questions>
+                    }
+
+                    @if (['banners', 'images'].includes(template.type)) {
+                      <app-hall-media
+                        [landingPageData]="landingPageData"
+                        [section]="template.data"
+                        (mediaUpdated)="onMediaUpdated($event)">
+                      </app-hall-media>
+                    }
+
+                    @if (template.type === 'socialLinks') {
+                      <app-social-media
+                        [landingPageData]="landingPageData"
+                        [section]="template.data">
+                      </app-social-media>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <div class="disabled-sections">
+    @if (getDisabledSections().length > 0) {
+    <h5 class="subsection-title" [dir]="lang.lang === 'ar' ? 'rtl' : 'ltr'">
+      <i class="pi pi-circle"></i>
+      {{ 'landing.availableSections' | translate }}
+    </h5>
+    }
+    <div class="section-grid">
+      @for (template of getDisabledSections(); track template) {
+        <div class="section-card disabled" [dir]="lang.lang === 'ar' ? 'rtl' : 'ltr'">
+          <div class="card-header">
+            <div class="section-info">
+              <div class="section-icon">
+                <i [class]="template.icon"></i>
+              </div>
+              <div class="section-details">
+                <h6>
+                  {{
+                    lang.lang === 'ar' ? template.label.ar : template.label.en
+                  }}
+                </h6>
+                <p>
+                  {{
+                    lang.lang === 'ar'
+                      ? template.description.ar
+                      : template.description.en
+                  }}
+                </p>
+              </div>
+            </div>
+            <div class="section-actions" [dir]="lang.lang === 'ar' ? 'rtl' : 'ltr'">
+              <div class="creative-switch-container">
+                <input
+                  type="checkbox"
+                  class="creative-switch"
+                  [checked]="template.isEnabled"
+                  (change)="onSectionToggle(template, $event)"
+                  [disabled]="isLoading"
+                  [id]="'switch-inactive-' + template.type">
+                <label [for]="'switch-inactive-' + template.type" class="creative-switch-label">
+                  <div class="switch-track">
+                    <div class="switch-thumb">
+                      <div class="switch-icon">
+                        <i class="pi pi-check"></i>
+                      </div>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (getEnabledSections().length === 0) {
+    <div class="empty-state">
+      <div class="empty-content">
+        <i class="pi pi-list"></i>
+        <h5>{{ 'landing.noActiveSections' | translate }}</h5>
+        <p>{{ 'landing.noActiveSectionsDescription' | translate }}</p>
+      </div>
+    </div>
+  }
+</div>

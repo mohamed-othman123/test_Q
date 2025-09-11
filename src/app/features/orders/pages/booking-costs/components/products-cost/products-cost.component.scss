@@ -1,0 +1,88 @@
+@use 'variables';
+
+.product-wrapper {
+  padding: 15px;
+  border: 1px solid #1eaa8f;
+  border-radius: 12px;
+
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    justify-content: end;
+    margin-top: 12px;
+
+    button {
+      max-width: 110px;
+    }
+  }
+}
+
+.product-form {
+  flex: 1;
+}
+
+.summery {
+  grid-column-end: span 2;
+  border-radius: variables.$rounded-md;
+  overflow: hidden;
+
+  table {
+    width: 100%;
+
+    .total-price {
+      border-top: 1px solid variables.$border-color;
+
+      .value {
+        font-weight: bold;
+      }
+    }
+
+    .label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 1rem;
+      background-color: variables.$light-gray;
+
+      i {
+        color: variables.$primary-color;
+      }
+    }
+
+    .value {
+      background-color: variables.$primary-color;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      width: 190px;
+      font-weight: bold;
+    }
+  }
+}
+
+.quantity-column {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+  height: 65px;
+
+  .quantity-field {
+    width: 100px;
+  }
+
+  .available-quantity {
+    background-color: #f2f2f2;
+    padding: 9px;
+    border-radius: 5px;
+  }
+
+  .quantity-warning {
+    font-size: 20px;
+    color: #ff6363;
+    margin-inline-start: 4px;
+    cursor: pointer;
+    animation: pulse 1s infinite;
+  }
+}

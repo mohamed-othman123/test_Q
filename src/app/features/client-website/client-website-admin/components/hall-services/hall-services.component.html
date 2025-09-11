@@ -1,0 +1,93 @@
+@if (landingPageData?.id) {
+  <div class="services-section">
+    <div class="section-header">
+      <h4>{{ 'landing.hallServices' | translate }}</h4>
+      <div class="header-actions">
+        <button
+          type="button"
+          class="add-button"
+          (click)="addService()"
+          [disabled]="hallServices.length >= maxServices || hasEmptyService()">
+          <i class="pi pi-plus"></i>
+          {{ 'landing.addService' | translate }}
+        </button>
+      </div>
+    </div>
+    @if (!activeService && hallServices.length < 1) {
+      <app-empty-data
+        icon="pi pi-check-circle"
+        [title]="'landing.noServices'"
+        [description]="'landing.addFirstService'"
+        [disabled]="hallServices.length >= maxServices"></app-empty-data>
+    }
+
+    @if (!activeService && hallServices.length > 0) {
+      <div #servicesList class="services-list">
+        @for (service of hallServices.controls; track service; let i = $index) {
+          <div class="service-item">
+            <div class="service-content">
+              <div class="service-info">
+                <i class="pi pi-check-circle"></i>
+                <span class="service-text">{{ service.value }}</span>
+              </div>
+              <div class="icon-action-buttons">
+                <button
+                  type="button"
+                  class="edit-button"
+                  (click)="editService(service)">
+                  <i class="pi pi-pencil"></i>
+                </button>
+                <button
+                  type="button"
+                  class="remove-button"
+                  (click)="removeService(i)">
+                  <i class="pi pi-trash"></i>
+                </button>
+                <div class="service-drag-handle">
+                  <div class="drag-handle-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+      @if (activeService) {
+        <form class="service-form" (ngSubmit)="saveService()" appShakeable [formGroup]="activeService">
+        <div class="form-content">
+          <h5>{{ isEditingExisting ? ('landing.editService' | translate) : ('landing.addNewService' | translate) }}</h5>
+          <app-input
+            [control]="activeService"
+            [controlName]="'service'"
+            [inputType]="'text'"
+            [label]="'landing.serviceName' | translate"
+            [placeholder]="'landing.serviceNamePlaceholder' | translate">
+          </app-input>
+          <div class="form-action-buttons">
+            <button
+              type="button"
+              class="cancel-button"
+              (click)="cancelEdit()">
+              <i class="pi pi-times"></i>
+              {{ 'common.cancel' | translate }}
+            </button>
+            <button
+              type="submit"
+              class="save-button">
+              <i class="pi pi-check"></i>
+              {{ 'common.save' | translate }}
+            </button>
+          </div>
+        </div>
+      </form>
+    }
+  </div>
+}

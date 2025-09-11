@@ -34,8 +34,8 @@ const routes: Routes = [
   {
     path: 'lp/:hallName',
     loadChildren: () =>
-      import('./landing-page/landing-page.module').then(
-        (m) => m.LandingPageModule,
+      import('./features/client-website/client-website-public/client-website-public.module').then(
+        (m) => m.ClientWebsitePublicModule,
       ),
   },
   {
@@ -190,8 +190,8 @@ const routes: Routes = [
   {
     path: 'admin-lp',
     loadChildren: () =>
-      import('@admin-landing-page/admin-landing-page.module').then(
-        (m) => m.AdminLandingPageModule,
+      import('@client-website-admin/client-website-admin.module').then(
+        (m) => m.ClientWebsiteAdminModule,
       ),
     canActivate: [authGuard],
   },
@@ -255,6 +255,12 @@ const routes: Routes = [
       import('@audit-transactions/audit-transactions.module').then(
         (m) => m.AuditTransactionsModule,
       ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'chart-of-accounts',
+    loadChildren: () =>
+      import('@accounts/accounts.module').then((m) => m.AccountsModule),
     canActivate: [authGuard],
   },
   {

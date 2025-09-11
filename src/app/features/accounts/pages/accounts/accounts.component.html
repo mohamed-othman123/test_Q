@@ -1,0 +1,194 @@
+<app-list-header
+  [btnAddText]="'chartOfAccounts.addNewAccount' | translate"
+  [disableAddBtn]="!permissionsService.hasPermission('create:accounts')"
+  [title]="'sideNav.accounts' | translate"
+  (sideDrawerToggler)="addNewAccount()">
+  <button class="view-tree" (click)="viewTree()">
+    <i class="pi pi-eye"></i> {{ 'chartOfAccounts.viewTree' | translate }}
+  </button>
+</app-list-header>
+
+<div class="table-container">
+  <!--filters-->
+  <div class="filters">
+    <app-input
+      [control]="filterForm.get('name')!"
+      [controlName]="'name'"
+      inputType="text"
+      [showLabel]="false"
+      [placeholder]="'chartOfAccounts.accountName' | translate">
+      <i class="pi pi-search" style="color: #667085"></i>
+    </app-input>
+
+    <app-input
+      [control]="filterForm.get('accountCode')!"
+      [controlName]="'accountCode'"
+      inputType="text"
+      [showLabel]="false"
+      [placeholder]="'chartOfAccounts.code' | translate">
+      <i class="pi pi-search" style="color: #667085"></i>
+    </app-input>
+
+    <app-input
+      [control]="filterForm.get('accountLevel')!"
+      [controlName]="'accountLevel'"
+      inputType="text"
+      [showLabel]="false"
+      [placeholder]="'chartOfAccounts.theLevel' | translate">
+      <i class="pi pi-search" style="color: #667085"></i>
+    </app-input>
+
+    <div class="btn">
+      <button
+        (click)="searchTheTree()"
+        pButton
+        type="button"
+        class="p-button"
+        label="{{ 'common.search' | translate }}"></button>
+
+      <button
+        (click)="clearFilters()"
+        pButton
+        type="button"
+        class="p-button-outlined p-button-secondary"
+        label="{{ 'common.reset' | translate }}"></button>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <p-treeTable
+      #treeTable
+      [rowHover]="true"
+      [value]="accountsList"
+      [scrollable]="true"
+      [tableStyle]="{'min-width': '50rem', 'max-height': '70vh'}">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="table-head">
+            {{ 'chartOfAccounts.accountName' | translate }}
+          </th>
+          <th class="q-bg-primary text-white" style="width: 100px">
+            {{ 'chartOfAccounts.debit' | translate }}
+          </th>
+          <th class="q-bg-primary text-white" style="width: 100px">
+            {{ 'chartOfAccounts.credit' | translate }}
+          </th>
+          <th class="q-bg-primary text-white text-center" style="width: 300px">
+            {{ 'chartOfAccounts.actions' | translate }}
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+        <tr [ttRow]="rowNode">
+          <td class="data-cell">
+            <p-treeTableToggler
+              [rowNode]="rowNode"
+              [style.marginInlineStart]="rowNode.level * 16 + 'px'" />
+
+            @if (!rowData?.isParent) {
+              <i class="pi pi-database" style="color: var(--primary-color)"></i>
+            }
+
+            <div
+              class="d-flex align-items-center gap-1"
+              (click)="toggleRow(rowNode)">
+              <div class="code">
+                {{ rowData.accountCode }}
+              </div>
+
+              <div class="name">
+                {{ lang.lang === 'ar' ? rowData.name_ar : rowData.name }}
+              </div>
+
+              <span class="level">
+                {{ 'chartOfAccounts.level' | translate }}
+                {{ rowData.accountLevel }}
+              </span>
+            </div>
+          </td>
+
+          <td style="width: 100px">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span> {{ rowData.totalDebit || 0 }} </span>
+            </span>
+          </td>
+          <td style="width: 100px">
+            <span class="price-with-symbol">
+              <sar-symbol />
+              <span> {{ rowData.totalCredit || 0 }} </span>
+            </span>
+          </td>
+
+          <td style="width: 300px">
+            <div class="actions-btn">
+              @if (
+                rowData?.accountLevel > 1 &&
+                rowData?.isParent &&
+                hasPermissionTo('add', rowData)
+              ) {
+                <div
+                  (click)="addNewAccount(rowNode.node)"
+                  class="action-btn"
+                  [pTooltip]="'common.add' | translate"
+                  tooltipPosition="top">
+                  <i class="pi pi-plus" style="color: var(--primary-color)"></i>
+                </div>
+              }
+
+              @if (hasPermissionTo('update', rowData)) {
+                <div
+                  (click)="editAccount(rowData)"
+                  class="action-btn"
+                  [pTooltip]="'common.edit' | translate"
+                  tooltipPosition="top">
+                  <i class="pi pi-pencil" style="color: orange"></i>
+                </div>
+              }
+              @if (hasPermissionTo('delete', rowData)) {
+                <div
+                  appConfirmDeleteDialog
+                  [deletedItem]="'chartOfAccounts.theAccount' | translate"
+                  (acceptDelete)="deleteAccount(rowData.id)"
+                  class="action-btn"
+                  [pTooltip]="'common.delete' | translate"
+                  tooltipPosition="top">
+                  <i class="pi pi-trash" style="color: red"></i>
+                </div>
+              }
+
+              @if (rowData?.description) {
+                <div
+                  class="action-btn"
+                  [pTooltip]="rowData?.description || 'وصف'"
+                  tooltipPosition="top">
+                  <i class="pi pi-info" style="color: var(--primary-color)"></i>
+                </div>
+              }
+              <div
+                (click)="viewAccountTree(rowData)"
+                class="action-btn"
+                [pTooltip]="'common.view' | translate"
+                tooltipPosition="top">
+                <i class="pi pi-eye" style="color: var(--primary-color)"></i>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="togglericon" let-expanded let-rowNode="rowNode">
+        <i
+          class="pi"
+          [ngClass]="{
+            'pi-chevron-down': expanded,
+            'pi-chevron-left': !expanded && lang.lang === 'ar',
+            'pi-chevron-right': !expanded && lang.lang === 'en',
+          }"
+          style="color: var(--primary-color)"></i>
+      </ng-template>
+    </p-treeTable>
+  </div>
+</div>
+
+<app-add-new-account (refreshData)="refreshData()"></app-add-new-account>

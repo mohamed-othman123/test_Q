@@ -1,12 +1,17 @@
 <div class="header">
   <h3>{{ title }}</h3>
-  @if (btnAddText) {
-    <p-button
-      [disabled]="disableAddBtn"
-      (onClick)="toggleSideDrawer()"
-      class="add"
-      label="{{ btnAddText }}"
-      [icon]="icon || 'pi pi-plus-circle'">
-    </p-button>
-  }
+
+  <div class="d-flex align-items-center gap-2">
+    <ng-content></ng-content>
+
+    @if (btnAddText) {
+      <p-button
+        [disabled]="disableAddBtn"
+        (onClick)="toggleSideDrawer()"
+        class="add"
+        label="{{ btnAddText }}"
+        [icon]="icon || 'pi pi-plus-circle'">
+      </p-button>
+    }
+  </div>
 </div>

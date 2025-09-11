@@ -1,0 +1,131 @@
+@if (landingPageData?.id) {
+  <div class="client-section">
+    <div class="section-header">
+      <h4>{{ 'landing.hallClients' | translate }}</h4>
+      <div class="header-actions">
+        <button
+          type="button"
+          class="add-button"
+          (click)="addClient()"
+          [disabled]="hallClients.length >= maxClients || activeClient">
+          <i class="pi pi-plus"></i>
+          {{ 'landing.addClient' | translate }}
+        </button>
+      </div>
+    </div>
+    @if (!activeClient && hallClients.length < 1) {
+      <div>
+        <app-empty-data
+          (click)="addClient()"
+          icon="pi pi-list"
+          [title]="'landing.noClients'"
+          [description]="'landing.addFirstClient'"
+          [disabled]="hallClients.length >= maxClients"></app-empty-data>
+      </div>
+    }
+
+    @if (!activeClient && hallClients.length > 0) {
+      <div #clientsList class="client-list">
+        @for (client of hallClients.controls; track client; let i = $index) {
+          <div class="client-item">
+            <div class="client-content">
+              <div class="client-image">
+                @if (getImageUrl(client.get('image')?.value)) {
+                  <img
+                    [src]="getImageUrl(client.get('image')?.value)"
+                    alt="Client image" />
+                } @else {
+                  <div class="placeholder-image">
+                    <i class="pi pi-image"></i>
+                  </div>
+                }
+              </div>
+              <div class="client-info">
+                <h5>{{ client.get('name')?.value }}</h5>
+                <p>{{ client.get('site_url')?.value }}</p>
+              </div>
+              <div class="icon-action-buttons">
+                <button
+                  type="button"
+                  class="edit-button"
+                  (click)="editClient(client)">
+                  <i class="pi pi-pencil"></i>
+                </button>
+                <button
+                  type="button"
+                  class="delete-button"
+                  (click)="removeClient(i)">
+                  <i class="pi pi-trash"></i>
+                </button>
+                <div class="client-drag-handle">
+                  <div class="drag-handle-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (activeClient) {
+      <form
+        [formGroup]="$any(activeClient)"
+        class="client-form"
+        (ngSubmit)="saveClient()"
+        appShakeable>
+        <div class="form-content">
+          <h5>{{ isEditingExisting ? ('landing.editClient' | translate) : ('landing.addNewClient' | translate) }}</h5>
+          <div class="name-field">
+            <div class="field">
+              <app-input
+                [control]="activeClient.get('name')!"
+                [controlName]="'name'"
+                [label]="'landing.clientName' | translate"
+                [placeholder]="'landing.clientNamePlaceholder' | translate">
+              </app-input>
+            </div>
+            <div class="field">
+              <app-input
+                [control]="activeClient.get('site_url')!"
+                [controlName]="'site_url'"
+                [label]="'landing.clientWebsite' | translate"
+                [placeholder]="'landing.websitePlaceholder' | translate">
+              </app-input>
+            </div>
+          </div>
+          <div class="image-upload">
+            <app-file-upload
+              [imgUrl]="activeClient.get('image')?.value"
+              accept="image/*"
+              [control]="$any(activeClient.get('image'))"
+              [title]="'landing.clientImage' | translate"
+              [hint]="'landing.uploadClientImage' | translate">
+            </app-file-upload>
+          </div>
+          <div class="form-action-buttons">
+            <button
+              type="button"
+              class="cancel-button"
+              (click)="cancelEdit()">
+              <i class="pi pi-times"></i>
+              {{ 'common.cancel' | translate }}
+            </button>
+            <button
+              type="submit"
+              class="save-button">
+              <i class="pi pi-check"></i>
+              {{ 'common.save' | translate }}
+            </button>
+          </div>
+        </div>
+      </form>
+    }
+  </div>
+}

@@ -222,7 +222,7 @@ export class OrdersComponent extends Filter implements OnInit, OnDestroy {
   }
 
   hasPermissionTo(
-    action: 'delete' | 'update' | 'view' | 'payment' | 'refund',
+    action: 'delete' | 'update' | 'view' | 'payment' | 'refund' | 'bookingCost',
     order: Booking,
   ): boolean {
     const isOwner = order.created_by === this.auth.userData?.user?.userId;
@@ -264,8 +264,14 @@ export class OrdersComponent extends Filter implements OnInit, OnDestroy {
           canEdit &&
           order.paidAmount > 0
         );
+      case 'bookingCost':
+        return isActive && canEdit && isConfirmed;
       default:
         return false;
     }
+  }
+
+  navigateToBookingCosts(order: Booking) {
+    this.router.navigate(['orders', 'booking-costs', order.id], {state: order});
   }
 }

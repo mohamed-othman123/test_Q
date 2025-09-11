@@ -1,5 +1,5 @@
-@use 'variables';
-@use 'mixins';
+@use 'variables' as variables;
+@use 'mixins' as mixins;
 
 :host {
   display: flex;
@@ -40,10 +40,35 @@
     color: gray;
     box-sizing: content-box;
     cursor: pointer;
+    z-index: 2;
 
     img {
       width: 18px;
       height: 18px;
+    }
+
+    i {
+      font-size: 1.2rem;
+      color: variables.$primary-color;
+      animation: iconAppear 0.3s ease-in-out;
+    }
+
+    @keyframes iconAppear {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    &.icon-placeholder {
+      i {
+        color: #9ca3af;
+        font-size: 1rem;
+      }
     }
   }
 

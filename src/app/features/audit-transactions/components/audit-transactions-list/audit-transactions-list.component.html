@@ -19,8 +19,13 @@
         {{ 'inventory.transactionId' | translate }}
       </th>
       <th>
-        {{ 'inventory.source' | translate }}
+        {{ 'inventory.itemName' | translate }}
       </th>
+      @if (!hideSourceColumn) {
+        <th>
+          {{ 'inventory.source' | translate }}
+        </th>
+      }
       <th>
         {{ 'inventory.transactionType' | translate }}
       </th>
@@ -53,17 +58,29 @@
         </app-input>
       </th>
       <th>
-        <app-dropdown
-          appendTo="body"
-          [control]="filterForm.get('transactionSource')!"
-          [options]="transactionSource"
-          [controlName]="'transactionSource'"
-          [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
-          [optionValue]="'value'"
-          [placeholder]="'common.select' | translate"
-          [showClear]="true">
-        </app-dropdown>
+        <app-input
+          [control]="filterForm.get('name')!"
+          [controlName]="'name'"
+          inputType="text"
+          [showLabel]="false"
+          [placeholder]="'common.search' | translate">
+          <i class="pi pi-search" style="color: #667085"></i>
+        </app-input>
       </th>
+      @if (!hideSourceColumn) {
+        <th>
+          <app-dropdown
+            appendTo="body"
+            [control]="filterForm.get('transactionSource')!"
+            [options]="transactionSource"
+            [controlName]="'transactionSource'"
+            [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+            [optionValue]="'value'"
+            [placeholder]="'common.select' | translate"
+            [showClear]="true">
+          </app-dropdown>
+        </th>
+      }
       <th>
         <app-dropdown
           appendTo="body"
@@ -123,8 +140,17 @@
         {{ transaction.id }}
       </td>
       <td>
-        {{ 'inventory.transactionSource.' + transaction.source | translate }}
+        {{
+          lang.lang === 'ar'
+            ? transaction.inventory?.name_ar
+            : transaction.inventory?.name
+        }}
       </td>
+      @if (!hideSourceColumn) {
+        <td>
+          {{ 'inventory.transactionSource.' + transaction.source | translate }}
+        </td>
+      }
       <td>
         {{
           'inventory.transactionTypeEnum.' + transaction.transactionType

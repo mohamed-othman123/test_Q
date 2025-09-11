@@ -38,6 +38,7 @@ export class ApiConfigService {
     'inventory': 'v1',
     'ai-agent': 'v1',
     'audit-transactions': 'v1',
+    'chart': 'v1',
   };
 
   constructor(@Inject(APP_ENVIRONMENT) private env: Environment) {}

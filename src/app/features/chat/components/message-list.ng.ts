@@ -255,8 +255,8 @@ import {ChatDisplayMessage} from '../models/chat.types';
       }
 
       .avatar {
-        width: 36px;
-        height: 36px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -272,20 +272,46 @@ import {ChatDisplayMessage} from '../models/chat.types';
       .ai-avatar {
         background: linear-gradient(
           135deg,
-          var(--secondary-color),
-          var(--accent-color)
+          #1eaa8f,
+          #0d8a73
         );
-        /* Ensure icon is visible in both light and dark modes */
         color: white !important;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         border: 2px solid rgba(255, 255, 255, 0.2);
         position: relative;
+        box-shadow: 0 2px 8px rgba(30, 170, 143, 0.3);
+        animation: aiAvatarGlow 1.5s ease-in-out infinite alternate;
+        transform: scale(1);
       }
 
       .ai-avatar i {
         color: white !important;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         font-weight: bold;
+        font-size: 1.2rem;
+        animation: sparklePulse 1s ease-in-out infinite;
+      }
+
+      @keyframes aiAvatarGlow {
+        0% {
+          box-shadow: 0 2px 8px rgba(30, 170, 143, 0.3);
+          transform: scale(1);
+        }
+        100% {
+          box-shadow: 0 6px 20px rgba(30, 170, 143, 0.7);
+          transform: scale(1.05);
+        }
+      }
+
+      @keyframes sparklePulse {
+        0%, 100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.3);
+          opacity: 0.7;
+        }
       }
 
       .hall-icon {
@@ -323,6 +349,8 @@ import {ChatDisplayMessage} from '../models/chat.types';
         line-height: 1.6;
         word-wrap: break-word;
         white-space: pre-wrap;
+        overflow-wrap: break-word;
+        word-break: break-word;
       }
 
       .message-actions {
@@ -396,7 +424,6 @@ import {ChatDisplayMessage} from '../models/chat.types';
         font-style: italic;
       }
 
-      /* Conversation loading indicator */
       .conversation-loading {
         display: flex;
         align-items: center;
@@ -488,6 +515,8 @@ export class MessageListComponent implements AfterViewChecked, OnChanges {
         this.shouldScrollToBottom = true;
         this.previousMessageCount = currentCount;
       }
+      
+      this.forceRerender();
     }
   }
 
@@ -516,7 +545,13 @@ export class MessageListComponent implements AfterViewChecked, OnChanges {
   }
 
   formatMessage(message: string): string {
-    return message.replace(/\n/g, '<br>');
+    if (!message) return '';
+    
+    return message
+      .replace(/\\n/g, '<br>')
+      .replace(/\n/g, '<br>')
+      .replace(/  /g, '&nbsp;&nbsp;')
+      .replace(/\s+$/gm, '&nbsp;');
   }
 
   getCurrentHallIcon(): string | null {
@@ -544,7 +579,7 @@ export class MessageListComponent implements AfterViewChecked, OnChanges {
       border-radius: 8px;
       font-size: 14px;
       font-weight: 500;
-      z-index: 10000;
+      z-index: 60;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       animation: slideInRight 0.3s ease-out;
     `;
@@ -573,5 +608,18 @@ export class MessageListComponent implements AfterViewChecked, OnChanges {
     } catch (err) {
       console.error('Error scrolling to bottom:', err);
     }
+  }
+
+  private forceRerender(): void {
+    setTimeout(() => {
+      const messageElements = this.messagesContainer?.nativeElement?.querySelectorAll('.message-text');
+      if (messageElements) {
+        messageElements.forEach((element: Element) => {
+          const htmlElement = element as HTMLElement;
+          const originalContent = htmlElement.innerHTML;
+          htmlElement.innerHTML = originalContent;
+        });
+      }
+    }, 0);
   }
 }

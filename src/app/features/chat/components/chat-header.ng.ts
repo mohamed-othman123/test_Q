@@ -20,13 +20,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
           <i class="pi" [class.pi-sun]="theme === 'dark'" [class.pi-moon]="theme === 'light'"></i>
         </button>
 
-        <button
-          class="action-btn sidebar-toggle"
-          (click)="sidebarToggle.emit()"
-          [title]="sidebarCollapsed ? 'Show Conversations' : 'Hide Conversations'">
-          <i class="pi pi-comments"></i>
-          <span class="badge" *ngIf="sidebarCollapsed && conversationCount > 0">{{ conversationCount }}</span>
-        </button>
       </div>
     </div>
   `,
@@ -40,7 +33,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
       border-bottom: 1px solid var(--border-color);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 10;
       backdrop-filter: blur(10px);
       background: var(--bg-surface-alpha);
     }
@@ -107,22 +100,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
       border-color: var(--warning-color);
     }
 
-    .sidebar-toggle .badge {
-      position: absolute;
-      top: -6px;
-      right: -6px;
-      width: 18px;
-      height: 18px;
-      background: var(--primary-color);
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 600;
-      border: 2px solid var(--bg-surface);
-    }
 
     @media (max-width: 768px) {
       .chat-header {
@@ -152,5 +129,4 @@ export class ChatHeaderComponent {
   @Input() conversationCount = 0;
 
   @Output() themeChange = new EventEmitter<void>();
-  @Output() sidebarToggle = new EventEmitter<void>();
 }

@@ -14,6 +14,10 @@ import {BookingDetailsComponent} from './components/booking-details/booking-deta
 import {DialogService} from 'primeng/dynamicdialog';
 import {BookingFacadeService} from './services/booking-facade.service';
 import {ReceiptPrintComponent} from './components/receipt-print/receipt-print.component';
+import {BookingCostsComponent} from './pages/booking-costs/booking-costs.component';
+import {ServicesCostComponent} from './pages/booking-costs/components/services-cost/services-cost.component';
+import {ProductsCostComponent} from './pages/booking-costs/components/products-cost/products-cost.component';
+import {AuditTransactionsModule} from '@audit-transactions/audit-transactions.module';
 
 @NgModule({
   declarations: [
@@ -26,8 +30,11 @@ import {ReceiptPrintComponent} from './components/receipt-print/receipt-print.co
     BookingSummaryComponent,
     BookingDetailsComponent,
     ReceiptPrintComponent,
+    BookingCostsComponent,
+    ServicesCostComponent,
+    ProductsCostComponent,
   ],
-  imports: [SharedModule, OrdersRoutingModule],
+  imports: [SharedModule, OrdersRoutingModule, AuditTransactionsModule],
   providers: [DialogService, BookingFacadeService],
   exports: [BookingDetailsComponent],
 })

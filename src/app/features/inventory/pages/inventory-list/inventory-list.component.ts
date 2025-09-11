@@ -42,7 +42,6 @@ export class InventoryListComponent extends Filter {
     reorderLevel: [null],
     creationDate: [null],
     updatedDate: [null],
-    deleted: [null],
   };
 
   constructor(

@@ -257,7 +257,14 @@ export class AiChatService {
         }
         
         if (dataContent.trim()) {
-          content += dataContent;
+          let processedContent = dataContent
+            .replace(/\\n/g, '\n');
+          
+          if (processedContent.startsWith('"') && processedContent.endsWith('"')) {
+            processedContent = processedContent.slice(1, -1);
+          }
+          
+          content += processedContent;
           hasValidData = true;
         }
       }

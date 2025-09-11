@@ -1,0 +1,324 @@
+<div class="form-section">
+  <div class="section-header">
+    <h3>{{ 'orders.productsCost' | translate }}</h3>
+    @if (!showAddProductForm && !lockCosts) {
+      <button (click)="showAddProductForm = true" pButton>
+        <i class="pi pi-plus"></i> {{ 'orders.addProduct' | translate }}
+      </button>
+    }
+  </div>
+
+  <!-- products form -->
+  @if (showAddProductForm) {
+    <div class="product-wrapper">
+      <div class="d-flex gap-3 flex-wrap">
+        <form class="product-form" [formGroup]="form" appShakeable>
+          <div class="row">
+            <div>
+              <app-dropdown
+                appendTo="body"
+                [control]="form.get('product')!"
+                [options]="productsList"
+                [controlName]="'product'"
+                [optionLabel]="lang.lang === 'ar' ? 'name_ar' : 'name'"
+                [label]="'orders.products' | translate"
+                [placeholder]="'common.select' | translate">
+              </app-dropdown>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <app-input
+                [control]="form.get('quantity')!"
+                [controlName]="'quantity'"
+                inputType="number"
+                [integerOnly]="true"
+                [label]="'orders.productQuantity' | translate"
+                [placeholder]="'orders.enterProductQuantity' | translate">
+                <i class="pi pi-box" style="color: gray"></i>
+              </app-input>
+
+              @if (form.hasError('exceedsRemainingQuantity')) {
+                <small class="p-error">
+                  {{ 'orders.exceedsRemainingQuantity' | translate }}
+                </small>
+              }
+            </div>
+          </div>
+
+          <app-input
+            [control]="form.get('note')!"
+            [controlName]="'note'"
+            inputType="textarea"
+            [rowsNo]="2"
+            [label]="'orders.notes' | translate"
+            [placeholder]="'orders.enterNotes' | translate">
+            <i class="pi pi-pencil" style="color: gray"></i>
+          </app-input>
+        </form>
+
+        <!--calculation table-->
+        <div class="">
+          <div class="summery">
+            <table>
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.currentQuantity' | translate }}
+                </td>
+                <td class="value">
+                  {{ form.get('product')?.value?.quantity ?? '-' }}
+                </td>
+              </tr>
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.quantity' | translate }}
+                </td>
+                <td class="value">
+                  {{ form.get('quantity')?.value ?? '-' }}
+                </td>
+              </tr>
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.remainingQuantity' | translate }}
+                </td>
+                <td class="value">
+                  {{
+                    form.get('product')?.value?.quantity -
+                      form.get('quantity')?.value || 0
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.productPrice' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{
+                        form.get('product')?.value?.unitPrice | number: '1.2-2'
+                      }}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <tr style="border-top: 2px solid black">
+                <td class="label">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'orders.totalCost' | translate }}
+                </td>
+                <td class="value">
+                  <span class="price-with-symbol">
+                    <sar-symbol />
+                    <span>
+                      {{
+                        form.get('product')?.value?.unitPrice *
+                          form.get('quantity')?.value | number: '1.2-2'
+                      }}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- action buttons -->
+      <div class="form-actions">
+        <button
+          type="button"
+          (click)="closeAddProductForm()"
+          pButton
+          class="p-button-secondary"
+          [label]="'common.cancel' | translate">
+          <i class="pi pi-times"></i>
+        </button>
+
+        <button
+          [disabled]="form.invalid"
+          type="submit"
+          (click)="addProduct()"
+          pButton
+          class="p-button-primary btn-submit"
+          [label]="'common.add' | translate">
+          <i class="pi pi-check mb-0"></i>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- products table -->
+  <p-table
+    #dt2
+    [scrollable]="true"
+    [value]="products"
+    dataKey="id"
+    [rows]="rows"
+    [lazy]="true"
+    [totalRecords]="totalRecords"
+    [rowsPerPageOptions]="rowsPerPageOptions"
+    [first]="first"
+    [paginator]="true"
+    (onLazyLoad)="onLazyLoad($event)">
+    <ng-template pTemplate="header">
+      @if (true) {
+        <tr>
+          <th>{{ 'orders.productName' | translate }}</th>
+          <th>{{ 'orders.productPrice' | translate }}</th>
+          <th>{{ 'orders.productQuantity' | translate }}</th>
+          <th>{{ 'orders.notes' | translate }}</th>
+          <th>{{ 'orders.cost' | translate }}</th>
+          <th style="width: fit-content"></th>
+        </tr>
+      }
+    </ng-template>
+    <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+      <tr>
+        <td>{{ lang.lang === 'ar' ? product.name_ar : product.name }}</td>
+        <td>
+          <span class="price-with-symbol">
+            <sar-symbol></sar-symbol>
+            <span>
+              {{ product.price | number: '1.2-2' }}
+            </span>
+          </span>
+        </td>
+        <td class="quantity-column">
+          @if (!product.editing) {
+            <span>
+              {{ product.quantity }}
+            </span>
+          } @else if (product.editing) {
+            <input
+              #quantityInput="ngModel"
+              min="0"
+              [max]="
+                originalEditedProductData.inventory?.quantity! +
+                originalEditedProductData.quantity!
+              "
+              pInputText
+              [pattern]="'^\\d+$'"
+              type="number"
+              [(ngModel)]="product.quantity"
+              class="quantity-field"
+              (input)="calculateAvailableQuantity(product)" />
+            <div class="available-quantity">
+              {{ 'orders.availableQuantity' | translate }} :
+              {{ product.inventory.quantity }}
+            </div>
+            @if (quantityInput.invalid) {
+              <div
+                [pTooltip]="
+                  quantityInput.hasError('max')
+                    ? ('orders.exceedsRemainingQuantity' | translate)
+                    : ('orders.invalidQuantity' | translate)
+                "
+                tooltipPosition="top">
+                <i class="pi pi-exclamation-triangle quantity-warning"></i>
+              </div>
+            }
+          }
+        </td>
+
+        <td>
+          @if (!product.editing) {
+            <span>
+              {{ product.note }}
+            </span>
+          } @else if (product.editing) {
+            <input pInputText type="text" [(ngModel)]="product.note" />
+          }
+        </td>
+        <td>
+          <span class="price-with-symbol">
+            <sar-symbol></sar-symbol>
+            <span>
+              {{ product.price * product.quantity | number: '1.2-2' }}
+            </span>
+          </span>
+        </td>
+        <td>
+          @if (!lockCosts) {
+            @if (isEditing) {
+              <div class="actions">
+                @if (product.editing) {
+                  <div class="action-button" (click)="cancelEdit(product)">
+                    <i class="pi pi-times"></i>
+                    <span>{{ 'common.cancel' | translate }}</span>
+                  </div>
+
+                  <div class="action-button" (click)="updateProduct(product)">
+                    <i class="pi pi-file-edit"></i>
+                    <span>{{ 'common.update' | translate }} </span>
+                  </div>
+                } @else {
+                  <div
+                    class="action-button opacity-25"
+                    (click)="editProduct(product)"
+                    [inert]="true">
+                    <i class="pi pi-file-edit"></i>
+                    <span>{{ 'common.edit' | translate }}</span>
+                  </div>
+
+                  <div
+                    [inert]="true"
+                    appConfirmDeleteDialog
+                    [deletedItem]="'events.event' | translate"
+                    (acceptDelete)="deleteProduct(product)"
+                    class="action-button delete opacity-25">
+                    <i class="pi pi-trash"></i>
+                    <span>{{ 'common.delete' | translate }}</span>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="actions">
+                <div class="action-button" (click)="editProduct(product)">
+                  <i class="pi pi-file-edit"></i>
+                  <span>{{ 'common.edit' | translate }}</span>
+                </div>
+
+                <div
+                  appConfirmDeleteDialog
+                  [deletedItem]="'orders.product' | translate"
+                  (acceptDelete)="deleteProduct(product)"
+                  class="action-button delete">
+                  <i class="pi pi-trash"></i>
+                  <span>{{ 'common.delete' | translate }}</span>
+                </div>
+              </div>
+            }
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="summary">
+      <div class="d-flex align-items-center">
+        {{ 'orders.totalProductCost' | translate }} : &nbsp;
+        <span class="price-with-symbol">
+          <sar-symbol />
+          <span>
+            {{ totalProductCost | number: '1.2-2' }}
+          </span>
+        </span>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8">
+          <app-empty-state
+            [customMessage]="'common.noData' | translate"></app-empty-state>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

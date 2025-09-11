@@ -80,11 +80,7 @@
               'fields.calendar.hijriShort' | translate
             }}</small>
           </span>
-          <span
-            [ngClass]="{
-              'color1': $any(day.date | date: 'M') % 2 === 0,
-              'color2': $any(day.date | date: 'M') % 2 !== 0,
-            }">
+          <span>
             {{ day.date | date: 'd' }}
 
             <small class="date-type">{{

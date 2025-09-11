@@ -42,9 +42,6 @@
         {{ 'inventory.updatedDate' | translate }}
         <p-sortIcon field="updated_at" class="mr-12px" />
       </th>
-      <th>
-        {{ 'inventory.status' | translate }}
-      </th>
     </tr>
     <tr>
       <th>
@@ -106,18 +103,6 @@
           [placeholder]="'common.selectDate' | translate">
         </app-gregorian-date-picker>
       </th>
-      <th>
-        <app-dropdown
-          appendTo="body"
-          [control]="filterForm.get('deleted')!"
-          [options]="itemStatus"
-          [controlName]="'deleted'"
-          [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
-          [optionValue]="'value'"
-          [placeholder]="'common.select' | translate"
-          [showClear]="true">
-        </app-dropdown>
-      </th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-item>
@@ -139,10 +124,14 @@
       </td>
       <td>
         @if (lang.lang === 'en') {
-          {{ item.created_at | englishMonthDate: false : 'DD-MM-YYYY' }}
+          {{
+            item.created_at | englishMonthDate: false : 'DD-MM-YYYY' : 'short'
+          }}
         }
         @if (lang.lang === 'ar') {
-          {{ item.created_at | arabicMonthDate: false : 'DD-MM-YYYY' }}
+          {{
+            item.created_at | arabicMonthDate: false : 'DD-MM-YYYY' : 'short'
+          }}
         }
       </td>
 
@@ -152,17 +141,6 @@
         }
         @if (lang.lang === 'ar') {
           {{ item.updated_at | arabicMonthDate: false : 'DD-MM-YYYY' }}
-        }
-      </td>
-      <td>
-        @if (item.deleted) {
-          <span class="badge bg-danger">
-            {{ 'common.canceled' | translate }}
-          </span>
-        } @else {
-          <span class="badge bg-success">
-            {{ 'common.active' | translate }}
-          </span>
         }
       </td>
 

@@ -1,0 +1,72 @@
+@use 'mixins';
+@use 'variables';
+
+.page-wrapper {
+  background-color: white;
+  padding-bottom: 24px;
+}
+.cost-wrapper {
+  padding: 0 24px;
+
+  .booking-cost {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #1eaa8f;
+    padding: 15px 0;
+    color: white;
+    font-weight: bold;
+    border-radius: 12px;
+    box-shadow: 0px 3px 5px #bbbbbb;
+    margin-bottom: 12px;
+    @include mixins.md(variables.$max) {
+      flex-direction: column;
+    }
+  }
+
+  .form-section {
+    background: white;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px #0000000d;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding-bottom: 1rem;
+
+      button {
+        width: fit-content;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: #1f2937;
+      }
+    }
+  }
+}
+.btn-back {
+  max-width: 150px;
+  margin-top: 20px;
+  margin-inline-start: 20px;
+}
+
+.booking-cost {
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+}

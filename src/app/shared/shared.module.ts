@@ -84,6 +84,7 @@ import {CarouselModule} from 'primeng/carousel';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {InfoTooltipComponent} from './components/info-tooltip/info-tooltip.component';
 import {MessagesModule} from 'primeng/messages';
+import {TreeTableModule} from 'primeng/treetable';
 
 const primeNgModules = [
   ButtonModule,
@@ -120,6 +121,7 @@ const primeNgModules = [
   CarouselModule,
   ProgressBarModule,
   MessagesModule,
+  TreeTableModule,
 ];
 
 const components: any[] = [

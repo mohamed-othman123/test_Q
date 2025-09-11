@@ -327,6 +327,22 @@ p-multiselect,
   background: white;
   padding: 0.5rem !important;
 }
+.p-treetable .p-treetable-tbody > tr > td {
+  text-align: start;
+}
+.p-treetable-toggler {
+  margin-left: 0 !important;
+}
+.p-treetable .p-treetable-tbody > tr > td {
+  padding: 0.25rem 0.75rem;
+}
+.p-treetable-scrollable-header {
+  background-color: var(--primary-color) !important;
+}
+
+.p-tooltip-arrow {
+  margin-top: -5px;
+}
 
 .p-confirm-popup-footer button:nth-child(2).accept-arabic {
   background-color: variables.$light-gray;

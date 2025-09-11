@@ -1,0 +1,105 @@
+@if (landingPageData?.id) {
+  <div class="questions-section">
+    <div class="section-header">
+      <h4>{{ 'landing.popularQuestions' | translate }}</h4>
+      <div class="header-actions">
+        <button
+          type="button"
+          class="add-button"
+          (click)="addQuestion()"
+          [disabled]="questions.length >= maxQuestions || activeQuestion">
+          <i class="pi pi-plus"></i>
+          {{ 'landing.addQuestion' | translate }}
+        </button>
+      </div>
+    </div>
+    @if (!activeQuestion && questions.length < 1) {
+      <app-empty-data
+        icon="pi pi-question-circle"
+        [title]="'landing.noQuestions'"
+        [description]="'landing.addFirstQuestion'"
+        [disabled]="questions.length >= maxQuestions"></app-empty-data>
+    }
+
+    @if (!activeQuestion && questions.length > 0) {
+      <div #questionsList class="questions-list">
+        @for (
+          questionGroup of questions.controls;
+          track questionGroup;
+          let i = $index
+        ) {
+          <div class="question-item" [formGroup]="$any(questionGroup)">
+            <div class="question-content">
+              <div class="question-info">
+                <span class="question-number">{{ i + 1 }}</span>
+                <h5>{{ questionGroup.get('question')?.value }}</h5>
+              </div>
+              <div class="icon-action-buttons">
+                <button
+                  type="button"
+                  class="edit-button"
+                  (click)="editQuestion(questionGroup)">
+                  <i class="pi pi-pencil"></i>
+                </button>
+                <button
+                  type="button"
+                  class="delete-button"
+                  (click)="removeQuestion(i)">
+                  <i class="pi pi-trash"></i>
+                </button>
+                <div class="question-drag-handle">
+                  <div class="drag-handle-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (activeQuestion) {
+      <form class="question-form" (ngSubmit)="saveQuestion()" appShakeable [formGroup]="activeQuestion">
+        <div class="form-content">
+          <h5>{{ isEditingExisting ? ('landing.editQuestion' | translate) : ('landing.addNewQuestion' | translate) }}</h5>
+          <app-input
+            [control]="activeQuestion.get('question')!"
+            [controlName]="'question'"
+            [inputType]="'text'"
+            [label]="'landing.question' | translate"
+            [placeholder]="'landing.questionPlaceholder' | translate">
+          </app-input>
+          <app-rich-text-editor
+            [isSimple]="true"
+            [formControl]="$any(activeQuestion.get('answer'))"
+            [placeholder]="'landing.answerPlaceholder' | translate"
+            [label]="'landing.answer' | translate"
+            [required]="true"
+            [disabled]="false">
+          </app-rich-text-editor>
+          <div class="form-action-buttons">
+            <button
+              type="button"
+              class="cancel-button"
+              (click)="cancelEdit()">
+              <i class="pi pi-times"></i>
+              {{ 'common.cancel' | translate }}
+            </button>
+            <button
+              type="submit"
+              class="save-button">
+              <i class="pi pi-check"></i>
+              {{ 'common.save' | translate }}
+            </button>
+          </div>
+        </div>
+      </form>
+    }
+  </div>
+}

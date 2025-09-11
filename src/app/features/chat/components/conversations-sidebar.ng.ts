@@ -27,22 +27,23 @@ import { Conversation } from '../models/chat.types';
         </div>
 
         <button
-          class="new-chat-btn"
-          (click)="newChat.emit()"
+          class="refresh-btn"
+          (click)="loadConversations.emit()"
           *ngIf="!collapsed"
-          [title]="'chat.newChat' | translate">
-          <i class="pi pi-plus"></i>
+          [class.loading]="isLoading"
+          [title]="'chat.refresh' | translate">
+          <i class="pi pi-refresh" [class.pi-spin]="isLoading"></i>
         </button>
       </div>
 
       <div class="conversations-content" *ngIf="!collapsed">
         <div class="conversations-actions">
           <button
-            class="refresh-btn"
-            (click)="loadConversations.emit()"
-            [class.loading]="isLoading">
-            <i class="pi pi-refresh" [class.pi-spin]="isLoading"></i>
-            <span>{{ 'chat.refresh' | translate }}</span>
+            class="new-chat-btn"
+            (click)="newChat.emit()"
+            [title]="'chat.newChat' | translate">
+            <i class="pi pi-plus"></i>
+            <span>{{ 'chat.newChat' | translate }}</span>
           </button>
         </div>
 
@@ -62,11 +63,7 @@ import { Conversation } from '../models/chat.types';
               </div>
             </div>
 
-            <div class="conversation-status">
-              <i class="pi pi-circle-fill"
-                 *ngIf="isRecentActivity(conv.lastMessageAt)">
-              </i>
-            </div>
+
           </div>
         </div>
 
@@ -85,30 +82,27 @@ import { Conversation } from '../models/chat.types';
   `,
   styles: [`
     .conversations-sidebar {
-      position: absolute;
-      top: 0;
+      position: relative;
       width: 320px;
       height: 100%;
       background: var(--bg-surface);
       display: flex;
       flex-direction: column;
-      transition: width 0.3s ease, transform 0.3s ease;
-      z-index: 10;
-      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+      transition: width 0.3s ease;
+      z-index: 1;
+      border-radius: 0 12px 12px 0;
+      backdrop-filter: blur(10px);
+      flex-shrink: 0;
     }
 
     /* RTL positioning */
     .conversations-sidebar.rtl {
-      left: 0;
-      border-right: 1px solid var(--border-color);
-      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border-color);
     }
 
     /* LTR positioning */
     .conversations-sidebar:not(.rtl) {
-      right: 0;
-      border-left: 1px solid var(--border-color);
-      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border-color);
     }
 
     .conversations-sidebar.collapsed {
@@ -118,10 +112,17 @@ import { Conversation } from '../models/chat.types';
     .sidebar-header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       padding: 1rem;
       border-bottom: 1px solid var(--border-color);
       gap: 0.75rem;
-      min-height: 82px;
+      min-height: 81px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--bg-surface);
+      border-radius: 0 12px 0 0;
+      backdrop-filter: blur(10px);
     }
 
     .toggle-btn {
@@ -143,6 +144,7 @@ import { Conversation } from '../models/chat.types';
       border-color: var(--primary-color);
     }
 
+
     .sidebar-title {
       display: flex;
       align-items: center;
@@ -153,29 +155,24 @@ import { Conversation } from '../models/chat.types';
     }
 
     .new-chat-btn {
-      width: 36px;
+      width: 100%;
       height: 36px;
-      background: #667eea;
       border: none;
+      background: var(--primary-color);
       border-radius: 8px;
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 0.5rem;
       cursor: pointer;
       transition: all 0.2s ease;
-      font-size: 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
     }
 
     .new-chat-btn:hover {
-      background: #5a6fd8;
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-    }
-
-    .new-chat-btn i {
-      color: white !important;
-      font-weight: bold;
+      transform: scale(1.05) translateY(-1px);
     }
 
     .conversations-content {
@@ -191,7 +188,7 @@ import { Conversation } from '../models/chat.types';
     }
 
     .refresh-btn {
-      width: 100%;
+      width: 36px;
       height: 36px;
       background: var(--bg-elevated);
       border: 1px solid var(--border-color);
@@ -199,14 +196,15 @@ import { Conversation } from '../models/chat.types';
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
       cursor: pointer;
       transition: all 0.2s ease;
-      font-size: 0.875rem;
+      flex-shrink: 0;
     }
 
     .refresh-btn:hover {
       background: var(--bg-hover);
+      border-color: var(--primary-color);
+      transform: translateY(-1px);
     }
 
     .refresh-btn.loading {
@@ -224,20 +222,38 @@ import { Conversation } from '../models/chat.types';
       display: flex;
       align-items: center;
       padding: 0.75rem;
-      margin-bottom: 0.25rem;
-      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      border-radius: 12px;
       cursor: pointer;
       transition: all 0.2s ease;
       border: 1px solid transparent;
+      background: var(--bg-elevated);
+      position: relative;
+      overflow: hidden;
     }
 
     .conversation-item:hover {
       background: var(--bg-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .conversation-item.active {
       background: var(--primary-light);
       border-color: var(--primary-color);
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .conversation-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 2px 2px 0;
     }
 
     .conversation-preview {
@@ -259,14 +275,6 @@ import { Conversation } from '../models/chat.types';
       color: var(--text-secondary);
     }
 
-    .conversation-status {
-      margin-left: 0.5rem;
-    }
-
-    .conversation-status i {
-      color: var(--success-color);
-      font-size: 0.5rem;
-    }
 
     .conversations-empty {
       display: flex;
@@ -320,20 +328,37 @@ export class ConversationsSidebarComponent {
     const date = new Date(timestamp);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    
+    if (diffMs < 0) return 'Just now';
+    
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
     const diffDays = Math.floor(diffHours / 24);
+    const diffWeeks = Math.floor(diffDays / 7);
+    const diffMonths = Math.floor(diffDays / 30);
+    const diffYears = Math.floor(diffDays / 365);
 
-    if (diffHours < 1) return 'Just now';
+    // Less than 1 minute
+    if (diffSeconds < 60) return 'Just now';
+    
+    // Less than 1 hour
+    if (diffMinutes < 60) return `${diffMinutes}m ago`;
+    
+    // Less than 24 hours
     if (diffHours < 24) return `${diffHours}h ago`;
+    
+    // Less than 7 days
     if (diffDays < 7) return `${diffDays}d ago`;
-
-    return date.toLocaleDateString();
+    
+    // Less than 4 weeks
+    if (diffWeeks < 4) return `${diffWeeks}w ago`;
+    
+    // Less than 12 months
+    if (diffMonths < 12) return `${diffMonths}mo ago`;
+    
+    // More than 1 year
+    return `${diffYears}y ago`;
   }
 
-  isRecentActivity(timestamp: string | Date): boolean {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    return diffMs < (1000 * 60 * 60 * 2);
-  }
 }

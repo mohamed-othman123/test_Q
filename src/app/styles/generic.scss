@@ -2,7 +2,7 @@
 @use './components/list-header';
 @use './components/dashboard';
 
-@use 'variables';
+@use 'variables' as variables;
 @use './mixins';
 
 @use 'sass:color';
@@ -374,4 +374,108 @@ body {
 
 .ql-editor.ql-blank::before {
   font-style: normal !important;
+}
+
+button.icon-element path {
+  fill: variables.$primary-color;
+}
+
+.icon-picker-modal__content .icon-element.is-selected {
+  border-color: #51a79a;
+  background-color: rgba(81, 167, 154, 0.1);
+}
+
+.icon-picker-modal__content .icon-element:hover {
+  background-color: rgba(81, 167, 154, 0.05);
+  border-color: #b4e4d6;
+}
+
+// Additional icon picker styles for better UX
+.icon-picker-modal {
+  .modal-header {
+    background-color: #f8fafb;
+    border-bottom: 1px solid #ececec;
+
+    .modal-title {
+      color: #374151;
+      font-weight: 600;
+    }
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      gap: 0.75rem;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .icon-element {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border: 2px solid #f6f6f6;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background-color: #fff;
+
+      i {
+        font-size: 1.5rem;
+        color: #374151;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      &.is-selected {
+        i {
+          color: #51a79a;
+        }
+      }
+    }
+  }
+
+  .modal-footer {
+    background-color: #f8fafb;
+    border-top: 1px solid #ececec;
+    padding: 1rem 1.5rem;
+
+    .btn {
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      &.btn-primary {
+        background-color: #51a79a;
+        border-color: #51a79a;
+
+        &:hover {
+          background-color: #1eaa8f;
+          border-color: #1eaa8f;
+        }
+      }
+
+      &.btn-secondary {
+        background-color: transparent;
+        border-color: #ececec;
+        color: #374151;
+
+        &:hover {
+          background-color: #f8fafb;
+          border-color: #b4e4d6;
+        }
+      }
+    }
+  }
+}
+.q-bg-primary {
+  background-color: variables.$primary-color !important;
 }

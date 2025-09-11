@@ -1,0 +1,295 @@
+@use 'sass:color';
+@use 'variables';
+
+// ========================================
+// DRAG HANDLE STYLES
+// ========================================
+.section-drag-handle {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: move;
+  color: #6b7280;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+
+  &:hover {
+    color: variables.$primary-color;
+    background-color: rgba(variables.$primary-color, 0.1);
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus {
+    outline: 2px solid rgba(variables.$primary-color, 0.2);
+    outline-offset: 2px;
+  }
+
+  .drag-handle-dots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    width: 12px;
+    height: 16px;
+
+    .dot {
+      width: 3px;
+      height: 3px;
+      background: currentColor;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+
+      &:nth-child(odd) {
+        justify-self: start;
+      }
+
+      &:nth-child(even) {
+        justify-self: end;
+      }
+    }
+  }
+}
+
+.section-drag-handle,
+.service-drag-handle,
+.feature-drag-handle,
+.client-drag-handle,
+.question-drag-handle,
+.media-drag-handle,
+.social-drag-handle {
+  i {
+    font-size: 0.75rem;
+  }
+
+}
+
+.service-drag-handle,
+.feature-drag-handle,
+.client-drag-handle,
+.question-drag-handle,
+.media-drag-handle,
+.social-drag-handle {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: move;
+  color: #6b7280;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  margin-top: -6px;
+
+  &:hover {
+    color: variables.$primary-color;
+    background-color: rgba(variables.$primary-color, 0.1);
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus {
+    outline: 2px solid rgba(variables.$primary-color, 0.2);
+    outline-offset: 2px;
+  }
+
+  .drag-handle-dots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    width: 12px;
+    height: 16px;
+
+    .dot {
+      width: 3px;
+      height: 3px;
+      background: currentColor;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+
+      &:nth-child(odd) {
+        justify-self: start;
+      }
+
+      &:nth-child(even) {
+        justify-self: end;
+      }
+    }
+  }
+}
+
+// ========================================
+// BUTTON STYLES
+// ========================================
+
+// Form action buttons (Save/Cancel)
+.form-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+
+  .cancel-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    min-width: auto;
+    height: auto;
+
+    &:hover {
+      color: #dc2626;
+      background-color: #fef2f2;
+      border-color: #fca5a5;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &:focus {
+      outline: 2px solid rgba(220, 38, 38, 0.2);
+      outline-offset: 2px;
+    }
+  }
+
+  .save-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: variables.$primary-color;
+    border: 1px solid variables.$primary-color;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    min-width: auto;
+    height: auto;
+
+    &:hover {
+      background-color: color.adjust(variables.$primary-color, $lightness: -5%);
+      border-color: color.adjust(variables.$primary-color, $lightness: -5%);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: scale(0.95) translateY(0);
+    }
+
+    &:focus {
+      outline: 2px solid rgba(variables.$primary-color, 0.3);
+      outline-offset: 2px;
+    }
+  }
+}
+
+// Icon buttons (Edit/Delete/Actions)
+.icon-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  .edit-button {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 0.875rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: variables.$primary-color;
+      background-color: rgba(variables.$primary-color, 0.1);
+    }
+
+    &:focus {
+      outline: 2px solid rgba(variables.$primary-color, 0.2);
+      outline-offset: 2px;
+    }
+  }
+
+  .delete-button {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 0.875rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: variables.$red;
+      background-color: rgba(variables.$red, 0.1);
+    }
+
+    &:focus {
+      outline: 2px solid rgba(variables.$red, 0.2);
+      outline-offset: 2px;
+    }
+  }
+
+  .remove-button {
+    @extend .delete-button;
+  }
+}
+
+// Add button styles
+.add-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid variables.$border-color;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: variables.$primary-color;
+    color: variables.$primary-color;
+    transform: translateY(-1px);
+  }
+
+  &:focus {
+    outline: 2px solid rgba(variables.$primary-color, 0.2);
+    outline-offset: 2px;
+  }
+}
