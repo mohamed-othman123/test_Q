@@ -1,7 +1,0 @@
-export enum StorageKeys {
-  LOCALE = 'LOCALE',
-  USER_DATA = 'USER_DATA',
-  OTP_DATA = 'OTP_DATA',
-  REMEMBER_ME = 'REMEMBER_ME',
-  LAST_SELECTED_HALL = 'LAST_SELECTED_HALL',
-}
