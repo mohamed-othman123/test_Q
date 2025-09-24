@@ -1,0 +1,86 @@
+@use 'variables' as variables;
+@use 'mixins' as mixins;
+
+%admin-card-base {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+%admin-section-card {
+  @extend %admin-card-base;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid variables.$primary-color;
+}
+
+%admin-basic-card {
+  @extend %admin-card-base;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid variables.$primary-color;
+  border-radius: 0.75rem;
+}
+
+%admin-item-card {
+  @extend %admin-card-base;
+  border: 1px solid variables.$border-color;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+}
+
+%admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+
+  h4 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #1f2937;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+%admin-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h4 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #1f2937;
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+%admin-card-content {
+  padding: 1rem;
+}
+
+%admin-item-content {
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}

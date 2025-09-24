@@ -10,16 +10,20 @@ import {
   UpdateLocationsDto,
   UpdateQuestionDto,
   UpdateSocialLinksDto,
+  QuestionResponseDto,
+  CustomerResponseDto,
 } from '@client-website-admin/models/landing-page.model';
 import {HttpClient} from '@angular/common/http';
 import {Observable, tap} from 'rxjs';
 import {
   CreateFeatureDto,
   UpdateFeatureDto,
+  FeatureResponseDto,
 } from '@client-website-admin/models/feature.model';
 import {LandingPageServicesDto} from '@client-website-admin/models/service.model';
 import {
   CreateLandingPageSectionDto,
+  UpdateLandingPageSectionDto,
   LandingPageSection,
 } from '@client-website-admin/models/section.model';
 import {ApiConfigService} from '@core/services/api-config.service';
@@ -36,24 +40,21 @@ export class LandingPageService {
     private http: HttpClient
   ) {}
 
-  addSection({data, landingPageId}: CreateLandingPageSectionDto) {
+  addSection(data: CreateLandingPageSectionDto): Observable<LandingPageSection> {
     return this.http
-      .post<any>(`${this.apiLandingPagesUrl}/sections`, {
-        landingPageId,
-        ...data,
-      })
+      .post<LandingPageSection>(`${this.apiLandingPagesUrl}/sections`, data)
   }
 
-  removeSection(sectionId: number) {
+  removeSection(sectionId: number): Observable<LandingPageSection> {
     return this.http
       .delete<LandingPageSection>(
         `${this.apiLandingPagesUrl}/sections/${sectionId}`,
       )
   }
 
-  updateSection(sectionId: number, data: Partial<LandingPageSection>) {
+  updateSection(sectionId: number, data: UpdateLandingPageSectionDto): Observable<LandingPageSection> {
     return this.http
-      .patch<any>(`${this.apiLandingPagesUrl}/sections/${sectionId}`, data)
+      .patch<LandingPageSection>(`${this.apiLandingPagesUrl}/sections/${sectionId}`, data)
   }
 
   getLandingPageInformation(
@@ -112,31 +113,31 @@ export class LandingPageService {
     return this.http.delete(`${this.apiLandingPagesUrl}/${type}/${id}`);
   }
 
-  addFeature(data: CreateFeatureDto): Observable<any> {
-    return this.http.post(`${this.apiLandingPagesUrl}/features`, data);
+  addFeature(data: CreateFeatureDto): Observable<FeatureResponseDto[]> {
+    return this.http.post<FeatureResponseDto[]>(`${this.apiLandingPagesUrl}/features`, data);
   }
 
-  updateFeature(id: number, data: UpdateFeatureDto): Observable<any> {
-    return this.http.patch(`${this.apiLandingPagesUrl}/features/${id}`, data);
+  updateFeature(id: number, data: UpdateFeatureDto): Observable<FeatureResponseDto[]> {
+    return this.http.patch<FeatureResponseDto[]>(`${this.apiLandingPagesUrl}/features/${id}`, data);
   }
 
-  removeFeature(id: number): Observable<any> {
-    return this.http.delete(`${this.apiLandingPagesUrl}/features/${id}`);
+  removeFeature(id: number): Observable<FeatureResponseDto[]> {
+    return this.http.delete<FeatureResponseDto[]>(`${this.apiLandingPagesUrl}/features/${id}`);
   }
 
-  addClient(data: FormData): Observable<any> {
+  addClient(data: FormData): Observable<CustomerResponseDto[]> {
     return this.http
-      .post(`${this.apiLandingPagesUrl}/customers`, data)
+      .post<CustomerResponseDto[]>(`${this.apiLandingPagesUrl}/customers`, data)
   }
 
-  updateClient(id: number, data: FormData): Observable<any> {
+  updateClient(id: number, data: FormData): Observable<CustomerResponseDto[]> {
     return this.http
-      .patch(`${this.apiLandingPagesUrl}/customers/${id}`, data)
+      .patch<CustomerResponseDto[]>(`${this.apiLandingPagesUrl}/customers/${id}`, data)
   }
 
-  removeClient(id: number): Observable<any> {
+  removeClient(id: number): Observable<CustomerResponseDto[]> {
     return this.http
-      .delete(`${this.apiLandingPagesUrl}/customers/${id}`)
+      .delete<CustomerResponseDto[]>(`${this.apiLandingPagesUrl}/customers/${id}`)
   }
 
   updateServices(sectionId: number, services: string[]): Observable<any> {
@@ -148,19 +149,19 @@ export class LandingPageService {
     );
   }
 
-  addQuestion(data: CreateQuestionDto): Observable<any> {
-    return this.http.post(`${this.apiLandingPagesUrl}/popular-questions`, data);
+  addQuestion(data: CreateQuestionDto): Observable<QuestionResponseDto[]> {
+    return this.http.post<QuestionResponseDto[]>(`${this.apiLandingPagesUrl}/popular-questions`, data);
   }
 
-  updateQuestion(id: number, data: UpdateQuestionDto): Observable<any> {
-    return this.http.patch(
+  updateQuestion(id: number, data: UpdateQuestionDto): Observable<QuestionResponseDto[]> {
+    return this.http.patch<QuestionResponseDto[]>(
       `${this.apiLandingPagesUrl}/popular-questions/${id}`,
       data,
     );
   }
 
-  deleteQuestion(id: number): Observable<any> {
-    return this.http.delete(
+  deleteQuestion(id: number): Observable<QuestionResponseDto[]> {
+    return this.http.delete<QuestionResponseDto[]>(
       `${this.apiLandingPagesUrl}/popular-questions/${id}`,
     );
   }

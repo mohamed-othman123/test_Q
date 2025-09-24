@@ -1,50 +1,23 @@
 @use 'variables';
 @use 'mixins';
+@use '../../../../../styles/components/website/admin-cards' as *;
+@use '../../../../../styles/components/website/admin-forms' as *;
+@use '../../../../../styles/components/website/admin-buttons' as *;
+@use '../../../../../styles/components/website/admin-states' as *;
+@use '../../../../../styles/components/website/admin-drag-drop' as *;
+@use '../../../../../styles/components/website/admin-switches' as *;
 
 :host {
   .social-media-section {
-    background: white;
-    padding: 1.5rem;
-    border-radius: variables.$rounded-md;
-    margin-bottom: 1.5rem;
-    border: 1px solid variables.$primary-color;
+    @extend %admin-section-card;
 
     .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
+      @extend %admin-section-header;
       border-bottom: 1px solid variables.$border-color;
-
-      h4 {
-        font-size: 1.125rem;
-        font-weight: 500;
-        color: #1F2937;
-        margin: 0;
-      }
 
       .header-actions {
         button {
-          background: transparent;
-          border: 1px solid variables.$border-color;
-          color: #374151;
-          padding: 0.5rem 1rem;
-          border-radius: 4px;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          cursor: pointer;
-          font-size: 0.875rem;
-
-          &:hover {
-            border-color: variables.$primary-color;
-            color: variables.$primary-color;
-          }
-
-          i {
-            font-size: 0.875rem;
-          }
+          @extend %admin-button-secondary;
         }
       }
     }

@@ -60,7 +60,8 @@ export class AddNewItemComponent implements OnInit {
           [Validators.required],
         ],
         quantity: [
-          data?.quantity ?? null,
+          {value: data?.totalQuantity ?? 0, disabled: true},
+
           [Validators.required, Validators.min(0)],
         ],
         unitPrice: [
@@ -71,9 +72,7 @@ export class AddNewItemComponent implements OnInit {
           data?.reorderLevel ?? null,
           [Validators.required, Validators.min(0)],
         ],
-        description: [
-          {value: data?.description || null, disabled: this.mode === 'edit'},
-        ],
+        description: [{value: data?.description || null, disabled: false}],
         reason: [null, [requiredIf(() => this.mode === 'edit')]],
       },
       {validators: [requireOneOf(['name', 'name_ar'])]},

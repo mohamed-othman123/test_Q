@@ -21,6 +21,7 @@ export interface Supplier {
   deleted_at: string;
   services: supplierService[];
   paymentMethods: SupplierPaymentMethod[];
+  account: {id: number; name: string; name_ar: string; accountCode: string};
 }
 
 export interface SupplierPaymentMethod {

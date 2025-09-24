@@ -48,14 +48,16 @@
         <i class="pi pi-box" style="color: gray"></i>
       </app-input>
 
-      <app-input
-        [control]="getController('unitPrice')"
-        [controlName]="'unitPrice'"
-        inputType="number"
-        [label]="'inventory.unitPrice' | translate"
-        [placeholder]="'inventory.enterUnitPrice' | translate">
-        <i class="sar-icon" style="color: gray"></i>
-      </app-input>
+      @if (mode === 'add') {
+        <app-input
+          [control]="getController('unitPrice')"
+          [controlName]="'unitPrice'"
+          inputType="number"
+          [label]="'inventory.unitPrice' | translate"
+          [placeholder]="'inventory.enterUnitPrice' | translate">
+          <i class="sar-icon" style="color: gray"></i>
+        </app-input>
+      }
 
       <app-input
         [control]="getController('reorderLevel')"
@@ -65,8 +67,6 @@
         [placeholder]="'inventory.enterReorderLevel' | translate">
         <i class="pi pi-truck" style="color: gray"></i>
       </app-input>
-
-      <div></div>
 
       <app-input
         [control]="getController('description')"

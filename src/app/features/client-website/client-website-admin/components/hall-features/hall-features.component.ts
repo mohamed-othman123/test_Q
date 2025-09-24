@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges, ElementRef, ViewChild} from '@angular/core';
 import {
   ControlContainer,
   FormArray,
@@ -10,10 +10,10 @@ import {
 import {LandingPageService} from '../../services/landing-page.service';
 import {LandingGeneralInformationDto} from '@client-website-admin/models/landing-page.model';
 import {LandingPageSection} from '@client-website-admin/models/section.model';
+import {FeatureResponseDto} from '@client-website-admin/models/feature.model';
 import {noDoubleSpaceValidator} from '@core/validators';
 import {NotificationService} from '@core/services';
-import {DragCoordinationService} from '@core/services/drag-coordination.service';
-import Sortable from 'sortablejs';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'app-hall-features',
@@ -22,7 +22,7 @@ import Sortable from 'sortablejs';
     viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
     standalone: false
 })
-export class HallFeaturesComponent implements OnChanges, AfterViewInit {
+export class HallFeaturesComponent implements OnChanges {
   @Input() landingPageData: LandingGeneralInformationDto | null = null;
   @Input() section: LandingPageSection | null = null;
 
@@ -31,24 +31,18 @@ export class HallFeaturesComponent implements OnChanges, AfterViewInit {
   maxFeatures = 10;
   activeFeature: FormGroup | null = null;
   isEditingExisting = false;
-  private sortableInstance: Sortable | null = null;
 
   constructor(
     private controlContainer: ControlContainer,
     private fb: FormBuilder,
     private landingPageService: LandingPageService,
-    private notificationService: NotificationService,
-    private dragCoordination: DragCoordinationService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['landingPageData'] && this.section) {
       this.updateFeatures(this.section);
     }
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => this.initializeSortable(), 500);
   }
 
   private updateFeatures(data: LandingPageSection) {
@@ -64,7 +58,6 @@ export class HallFeaturesComponent implements OnChanges, AfterViewInit {
         });
     }
 
-    this.initializeSortable();
   }
 
   private createFeatureGroup(feature?: any): FormGroup {
@@ -108,7 +101,6 @@ export class HallFeaturesComponent implements OnChanges, AfterViewInit {
     this.hallFeatures.push(newFeature);
     this.activeFeature = newFeature;
     this.isEditingExisting = false;
-    this.initializeSortable();
   }
 
   removeFeature(index: number) {
@@ -117,61 +109,42 @@ export class HallFeaturesComponent implements OnChanges, AfterViewInit {
 
     if (featureId) {
       this.landingPageService.removeFeature(featureId).subscribe({
-        next: () => {
-          this.hallFeatures.removeAt(index);
-          this.initializeSortable();
+        next: (response: FeatureResponseDto[]) => {
+          if (this.section) {
+            this.section.features = response;
+            this.updateFormArrayFromResponse(response);
+          }
           this.notificationService.showSuccess('landing.featureDeleted');
         },
       });
     } else {
       this.hallFeatures.removeAt(index);
-      this.initializeSortable();
       this.notificationService.showSuccess('landing.featureDeleted');
     }
   }
 
-  private initializeSortable() {
-    if (this.featuresList?.nativeElement) {
-      if (this.sortableInstance) {
-        this.sortableInstance.destroy();
-      }
-
-      this.sortableInstance = Sortable.create(this.featuresList.nativeElement, {
-        animation: 150,
-        handle: '.feature-drag-handle',
-        disabled: !!this.activeFeature || this.dragCoordination.shouldDisableDrag('features', 'main-sections'),
-        onEnd: (evt) => {
-          this.dragCoordination.endDrag();
-          this.onSortableEnd(evt);
-        },
-        onStart: () => {
-          this.dragCoordination.startDrag('features');
-          return true;
-        }
-      });
-    }
-  }
-
-  private onSortableEnd(evt: any) {
-    const { oldIndex, newIndex } = evt;
-    if (oldIndex !== newIndex) {
+  onFeaturesDropped(event: CdkDragDrop<any[]>) {
+    if (event.previousIndex !== event.currentIndex) {
       const controls = this.hallFeatures.controls;
-      const item = controls[oldIndex];
-      controls.splice(oldIndex, 1);
-      controls.splice(newIndex, 0, item);
-      this.hallFeatures.controls.forEach((control, index) => {
-        const featureId = control.get('id')?.value;
-        if (featureId) {
-          this.landingPageService.updateFeature(featureId, {
-            title: control.get('title')?.value,
-            description: control.get('description')?.value,
-            icon: control.get('icon')?.value,
-            order: index + 1,
-          }).subscribe();
-        }
-      });
+      moveItemInArray(controls, event.previousIndex, event.currentIndex);
 
-      this.notificationService.showSuccess('landing.featuresReordered');
+      const movedControl = controls[event.currentIndex];
+      const featureId = movedControl.get('id')?.value;
+      const newOrder = event.currentIndex + 1;
+
+      if (featureId) {
+        this.landingPageService.updateFeature(featureId, {
+          order: newOrder,
+        }).subscribe({
+          next: (response: FeatureResponseDto[]) => {
+            if (this.section) {
+              this.section.features = response;
+              this.updateFormArrayFromResponse(response);
+            }
+            this.notificationService.showSuccess('landing.featuresReordered');
+          },
+        });
+      }
     }
   }
 
@@ -186,7 +159,6 @@ export class HallFeaturesComponent implements OnChanges, AfterViewInit {
     }
     this.activeFeature = null;
     this.isEditingExisting = false;
-    this.initializeSortable();
   }
 
   editFeature(group: any) {
@@ -196,7 +168,6 @@ export class HallFeaturesComponent implements OnChanges, AfterViewInit {
 
     this.activeFeature = group;
     this.isEditingExisting = true;
-    this.initializeSortable();
   }
 
   saveFeature() {
@@ -219,19 +190,14 @@ export class HallFeaturesComponent implements OnChanges, AfterViewInit {
         });
 
     request.subscribe({
-      next: (response) => {
-        if (!isEditing) {
-          const index = this.hallFeatures.controls.indexOf(this.activeFeature!);
-          if (index > -1) {
-            this.hallFeatures.at(index).patchValue({
-              id: response.id,
-              ...response,
-            });
-          }
+      next: (response: FeatureResponseDto[]) => {
+        if (this.section) {
+          this.section.features = response;
+          this.updateFormArrayFromResponse(response);
         }
+
         this.activeFeature = null;
         this.isEditingExisting = false;
-        this.initializeSortable();
 
         const messageKey = isEditing ? 'landing.featureUpdated' : 'landing.featureAdded';
         this.notificationService.showSuccess(messageKey);
@@ -243,5 +209,24 @@ export class HallFeaturesComponent implements OnChanges, AfterViewInit {
     if (this.activeFeature) {
       this.activeFeature.patchValue({icon});
     }
+  }
+
+  private updateFormArrayFromResponse(response: FeatureResponseDto[]) {
+    while (this.hallFeatures.length !== 0) {
+      this.hallFeatures.removeAt(0);
+    }
+
+    const sortedResponse = response.sort((a, b) => a.order - b.order);
+
+    sortedResponse.forEach(feature => {
+      const formGroup = this.fb.group({
+        id: [feature.id],
+        title: [feature.title, [Validators.required, noDoubleSpaceValidator]],
+        description: [feature.description, [Validators.required, noDoubleSpaceValidator]],
+        icon: [feature.icon, Validators.required],
+        order: [feature.order]
+      });
+      this.hallFeatures.push(formGroup);
+    });
   }
 }

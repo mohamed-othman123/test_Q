@@ -1,112 +1,111 @@
-<div class="dashboard-viewer-container">
-  <div class="viewer-header">
-    <div class="header-content">
-      <div class="navigation-section">
-        <button
-          class="back-button-icon"
-          (click)="onBackToDashboards()"
-          [attr.aria-label]="'analytics.backToDashboards' | translate">
-          <i class="pi" [class.pi-arrow-left]="lang.currentLang === 'en'" [class.pi-arrow-right]="lang.currentLang === 'ar'"></i>
-        </button>
+<div
+  class="dashboard-viewer-container"
+  [class.filters-open]="filtersOpenSignal()">
+  <div
+    class="floating-filter-panel"
+    [class.open]="filtersOpenSignal()"
+    [class.custom-dates-active]="showCustomDatesSignal()">
+    <div class="filter-header">
+      <div class="filter-title">
+        <i class="pi pi-filter"></i>
+        <span>{{ 'analytics.analyticsDashboard.filters.title' | translate }}</span>
       </div>
+      <button class="close-filters-btn" (click)="onToggleFilters()">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
 
-      <div class="dashboard-info" *ngIf="dashboard">
-        <div class="dashboard-details">
-          <h1 class="dashboard-title">
-            <i class="pi pi-chart-line"></i>
-            {{ dashboard.name }}
-          </h1>
-          <p class="dashboard-meta" *ngIf="dashboard.description">
-            {{ dashboard.description }}
-          </p>
-          <div class="meta-items">
-            <span class="meta-item">
-              <i class="pi pi-hashtag"></i>
-              <span>ID: {{ dashboard.id }}</span>
-            </span>
-            <span class="meta-item">
-              <i class="pi pi-tag"></i>
-              <span>{{ 'analytics.types.' + (dashboardType === dashboardTypes.Booking ? 'bookings' : 'expenses') | translate }}</span>
-            </span>
-          </div>
+    <div class="filter-content">
+      <div class="filter-section">
+        <label class="section-label">{{
+          'dashboard.durationBarTitle' | translate
+        }}</label>
+        <div class="duration-filters">
+          <button
+            class="duration-btn"
+            [class.active]="selectedFilterTypeSignal() === '1'"
+            (click)="onDurationSelect(1)">
+            {{ 'analytics.analyticsDashboard.filters.month' | translate }}
+          </button>
+          <button
+            class="duration-btn"
+            [class.active]="selectedFilterTypeSignal() === '3'"
+            (click)="onDurationSelect(3)">
+            {{ 'analytics.analyticsDashboard.filters.3months' | translate }}
+          </button>
+          <button
+            class="duration-btn"
+            [class.active]="selectedFilterTypeSignal() === '6'"
+            (click)="onDurationSelect(6)">
+            {{ 'analytics.analyticsDashboard.filters.6months' | translate }}
+          </button>
+          <button
+            class="duration-btn"
+            [class.active]="selectedFilterTypeSignal() === '12'"
+            (click)="onDurationSelect(12)">
+            {{ 'analytics.analyticsDashboard.filters.year' | translate }}
+          </button>
+          <button
+            class="duration-btn"
+            [class.active]="selectedFilterTypeSignal() === 'custom'"
+            (click)="onToggleCustomDates()">
+            {{ 'analytics.analyticsDashboard.filters.customize' | translate }}
+          </button>
         </div>
       </div>
 
-      <div class="header-filters" *ngIf="!loading && !error">
-        <div class="filter-group">
-          <label class="filter-label">{{ 'dashboard.durationBarTitle' | translate }}</label>
-          <div class="duration-bar">
-            <span
-              [ngClass]="{active: currentSelectedFilterType$.value === '1'}"
-              (click)="onDurationSelect(1)">
-              {{ 'dashboard.filters.month' | translate }}
-            </span>
-            <span
-              [ngClass]="{active: currentSelectedFilterType$.value === '3'}"
-              (click)="onDurationSelect(3)">
-              {{ 'dashboard.filters.3months' | translate }}
-            </span>
-            <span
-              [ngClass]="{active: currentSelectedFilterType$.value === '6'}"
-              (click)="onDurationSelect(6)">
-              {{ 'dashboard.filters.6months' | translate }}
-            </span>
-            <span
-              [ngClass]="{active: currentSelectedFilterType$.value === '12'}"
-              (click)="onDurationSelect(12)">
-              {{ 'dashboard.filters.year' | translate }}
-            </span>
-            <span
-              [ngClass]="{active: currentSelectedFilterType$.value === 'custom'}"
-              (click)="toggleCustomDates()">
-              {{ 'dashboard.filters.customize' | translate }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Custom Dates -->
-        <div class="custom-dates" *ngIf="showCustomDates">
-          <div class="date-input">
-            <app-gregorian-date-picker
-              [control]="$any(customDatesForm.get('fromDate'))"
-              controlName="fromDate"
-              [showClear]="true"
-              [label]="'dashboard.filters.fromDate' | translate"
-              [placeholder]="'common.select' | translate">
-            </app-gregorian-date-picker>
-          </div>
-          <div class="date-input">
-            <app-gregorian-date-picker
-              [control]="$any(customDatesForm.get('toDate'))"
-              controlName="toDate"
-              [showClear]="true"
-              [label]="'dashboard.filters.toDate' | translate"
-              [placeholder]="'common.select' | translate">
-            </app-gregorian-date-picker>
+      <div class="filter-section" *ngIf="showCustomDatesSignal()">
+        <label class="section-label">{{
+          'analytics.analyticsDashboard.filters.customRange' | translate
+        }}</label>
+        <div class="custom-date-range" [formGroup]="customDatesForm">
+          <div class="date-inputs-row">
+            <div class="date-input-group">
+              <label>{{ 'analytics.analyticsDashboard.filters.fromDate' | translate }}</label>
+              <app-gregorian-date-picker
+                [control]="$any(customDatesForm.get('fromDate'))"
+                controlName="fromDate"
+                [showClear]="true">
+              </app-gregorian-date-picker>
+            </div>
+            <div class="date-input-group">
+              <label>{{ 'analytics.analyticsDashboard.filters.toDate' | translate }}</label>
+              <app-gregorian-date-picker
+                [control]="$any(customDatesForm.get('toDate'))"
+                controlName="toDate"
+                [showClear]="true">
+              </app-gregorian-date-picker>
+            </div>
           </div>
           <div class="date-actions">
             <button
-              class="apply-btn"
-              type="button"
-              (click)="applyCustomDates()">
+              class="apply-dates-btn"
+              [disabled]="customDatesForm.invalid"
+              (click)="onApplyCustomDates()">
+              <i class="pi pi-check"></i>
               {{ 'common.apply' | translate }}
             </button>
-            <button
-              type="button"
-              class="cancel-btn"
-              (click)="cancelCustomDates()">
-              {{ 'common.cancel' | translate }}
+            <button class="clear-dates-btn" (click)="onClearCustomDates()">
+              <i class="pi pi-refresh"></i>
+              {{ 'common.clear' | translate }}
             </button>
           </div>
         </div>
+      </div>
 
-        <div class="data-filters" *ngIf="dashboardType === dashboardTypes.Booking">
+      <div
+        class="filter-section"
+        *ngIf="dashboardTypeSignal() === dashboardTypes.Booking">
+        <label class="section-label">{{
+          'analytics.analyticsDashboard.filters.bookingFilters' | translate
+        }}</label>
+        <div class="filter-grid">
           <div class="filter-item">
             <label>{{ 'orders.eventType' | translate }}</label>
             <app-dropdown
               [control]="$any(filtersForm.get('eventTypeId'))"
-              [options]="eventTypes"
-              [optionLabel]="'name'"
+              [options]="eventTypesSignal()"
+              [optionLabel]="lang.currentLang === 'ar' ? 'name_ar' : 'name'"
               [optionValue]="'id'"
               [appendTo]="'body'"
               [controlName]="'eventTypeId'"
@@ -119,8 +118,8 @@
             <label>{{ 'orders.eventTime' | translate }}</label>
             <app-dropdown
               [control]="$any(filtersForm.get('eventTime'))"
-              [options]="eventTimes"
-              [optionLabel]="'label.' + (lang.currentLang)"
+              [options]="eventTimesSignal()"
+              [optionLabel]="'label.' + lang.currentLang"
               [optionValue]="'value'"
               [appendTo]="'body'"
               [controlName]="'eventTime'"
@@ -133,8 +132,8 @@
             <label>{{ 'orders.bookingStatus' | translate }}</label>
             <app-dropdown
               [control]="$any(filtersForm.get('bookingProcessStatus'))"
-              [options]="bookingStatuses"
-              [optionLabel]="'label.' + (lang.currentLang)"
+              [options]="bookingStatusesSignal()"
+              [optionLabel]="'label.' + lang.currentLang"
               [optionValue]="'value'"
               [appendTo]="'body'"
               [controlName]="'bookingProcessStatus'"
@@ -147,8 +146,8 @@
             <label>{{ 'orders.attendeesType' | translate }}</label>
             <app-dropdown
               [control]="$any(filtersForm.get('attendeesType'))"
-              [options]="attendeesTypes"
-              [optionLabel]="'label.' + (lang.currentLang)"
+              [options]="attendeesTypesSignal()"
+              [optionLabel]="'label.' + lang.currentLang"
               [optionValue]="'value'"
               [appendTo]="'body'"
               [controlName]="'attendeesType'"
@@ -161,8 +160,8 @@
             <label>{{ 'orders.clientType' | translate }}</label>
             <app-dropdown
               [control]="$any(filtersForm.get('clientType'))"
-              [options]="clientTypes"
-              [optionLabel]="'label.' + (lang.currentLang)"
+              [options]="clientTypesSignal()"
+              [optionLabel]="'label.' + lang.currentLang"
               [optionValue]="'value'"
               [appendTo]="'body'"
               [controlName]="'clientType'"
@@ -170,15 +169,36 @@
               [showClear]="true">
             </app-dropdown>
           </div>
-        </div>
 
-        <div class="data-filters" *ngIf="dashboardType === dashboardTypes.Expense">
+          <div class="filter-item">
+            <label>{{ 'analytics.analyticsDashboard.filters.timeGranularity' | translate }}</label>
+            <app-dropdown
+              [control]="$any(filtersForm.get('timeGranularity'))"
+              [options]="timeGranularityOptions"
+              [optionLabel]="'label.' + lang.currentLang"
+              [optionValue]="'value'"
+              [appendTo]="'body'"
+              [controlName]="'timeGranularity'"
+              [placeholder]="'common.select' | translate"
+              [showClear]="true">
+            </app-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="filter-section"
+        *ngIf="dashboardTypeSignal() === dashboardTypes.Expense">
+        <label class="section-label">{{
+          'analytics.analyticsDashboard.filters.expenseFilters' | translate
+        }}</label>
+        <div class="filter-grid">
           <div class="filter-item">
             <label>{{ 'purchases.expenseStatus' | translate }}</label>
             <app-dropdown
               [control]="$any(filtersForm.get('expenseStatus'))"
-              [options]="expenseStatuses"
-              [optionLabel]="'label.' + (lang.currentLang)"
+              [options]="expenseStatusesSignal()"
+              [optionLabel]="'label.' + lang.currentLang"
               [optionValue]="'value'"
               [appendTo]="'body'"
               [controlName]="'expenseStatus'"
@@ -191,126 +211,188 @@
             <label>{{ 'purchases.expenseType' | translate }}</label>
             <app-dropdown
               [control]="$any(filtersForm.get('expenseType'))"
-              [options]="expenseTypes"
-              [optionLabel]="'label.' + (lang.currentLang)"
+              [options]="expenseTypesSignal()"
+              [optionLabel]="'label.' + lang.currentLang"
               [optionValue]="'value'"
               [appendTo]="'body'"
               [controlName]="'expenseType'"
               [placeholder]="'common.select' | translate"
-              [showClear]="true"
-              (onChange)="onExpenseTypeChange()">
+              [showClear]="true">
             </app-dropdown>
           </div>
 
-          <div class="filter-item">
+          <div class="filter-item" *ngIf="filtersForm.get('expenseType')?.value">
             <label>{{ 'purchases.expenseCategory' | translate }}</label>
             <app-dropdown
               [control]="$any(filtersForm.get('expenseCategory'))"
-              [options]="expenseCategories"
-              [optionLabel]="'name'"
+              [options]="expenseCategoriesSignal()"
+              [optionLabel]="lang.currentLang === 'ar' ? 'name_ar' : 'name'"
               [optionValue]="'id'"
               [appendTo]="'body'"
               [controlName]="'expenseCategory'"
               [placeholder]="'common.select' | translate"
-              [showClear]="true"
-              (onChange)="onExpenseCategoryChange()">
+              [showClear]="true">
+            </app-dropdown>
+          </div>
+
+          <div class="filter-item" *ngIf="filtersForm.get('expenseType')?.value && filtersForm.get('expenseType')?.value !== 'General'">
+            <label>{{ 'analytics.expenseItem' | translate }}</label>
+            <app-dropdown
+              [control]="$any(filtersForm.get('expenseItem'))"
+              [options]="expenseItemsSignal()"
+              [optionLabel]="lang.currentLang === 'ar' ? 'nameAr' : 'name'"
+              [optionValue]="'id'"
+              [appendTo]="'body'"
+              [controlName]="'expenseItem'"
+              [placeholder]="'common.select' | translate"
+              [showClear]="true">
             </app-dropdown>
           </div>
 
           <div class="filter-item">
-            <label>{{ 'purchases.expenseItem' | translate }}</label>
+            <label>{{ 'analytics.analyticsDashboard.filters.timeGranularity' | translate }}</label>
             <app-dropdown
-              [control]="$any(filtersForm.get('expenseItem'))"
-              [options]="expenseItems"
-              [optionLabel]="'name'"
+              [control]="$any(filtersForm.get('timeGranularity'))"
+              [options]="timeGranularityOptions"
+              [optionLabel]="'label.' + lang.currentLang"
+              [optionValue]="'value'"
               [appendTo]="'body'"
-              [optionValue]="'id'"
-              [controlName]="'expenseItem'"
+              [controlName]="'timeGranularity'"
               [placeholder]="'common.select' | translate"
               [showClear]="true">
             </app-dropdown>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div
+    class="filter-overlay"
+    [class.active]="filtersOpenSignal()"
+    (click)="onToggleFilters()"></div>
+
+  <div class="dashboard-main-content">
+    <div class="compact-header">
+      <div class="header-navigation">
+        <button class="back-btn" (click)="onBackToDashboards()">
+          <i
+            class="pi"
+            [class.pi-arrow-left]="lang.currentLang === 'en'"
+            [class.pi-arrow-right]="lang.currentLang === 'ar'"></i>
+          <span>{{ 'analytics.backToAnalytics' | translate }}</span>
+        </button>
+      </div>
+
+      <div class="header-info" *ngIf="dashboardInfoSignal().dashboard">
+        <div class="dashboard-icon">
+          <i class="pi" [class]="dashboardInfoSignal().icon"></i>
+        </div>
+        <div class="dashboard-details">
+          <h1 class="dashboard-title">
+            {{ dashboardInfoSignal().dashboard?.name }}
+          </h1>
+        </div>
+      </div>
 
       <div class="header-actions">
         <button
-          class="action-button-icon"
+          class="action-btn"
           (click)="onRefresh()"
-          [disabled]="loading"
-          [attr.aria-label]="'common.refresh' | translate">
-          <i class="pi pi-refresh" [class.pi-spin]="loading"></i>
+          [disabled]="loadingSignal()">
+          <i class="pi pi-refresh" [class.spinning]="loadingSignal()"></i>
+          <span class="btn-label">{{ 'common.refresh' | translate }}</span>
         </button>
+
         <button
-          class="action-button-icon"
+          class="action-btn"
           (click)="onFullscreen()"
-          [disabled]="!dashboardUrl || loading || !!error"
-          [attr.aria-label]="'analytics.fullscreen' | translate">
+          *ngIf="isDashboardLoadedSignal() && !fullscreenSignal()">
           <i class="pi pi-window-maximize"></i>
+          <span class="btn-label">{{
+            'analytics.fullscreen' | translate
+          }}</span>
         </button>
+
+        <button
+        class="action-btn filters-toggle-btn"
+        [class.active]="filtersOpenSignal()"
+        (click)="onToggleFilters()">
+        <i class="pi pi-filter"></i>
+        <span class="btn-label">{{
+          'analytics.analyticsDashboard.filters.title' | translate
+        }}</span>
+        <div class="filter-indicator" *ngIf="filtersOpenSignal()"></div>
+      </button>
       </div>
     </div>
-  </div>
 
-
-  <div *ngIf="loading" class="loading-container">
-    <div class="loading-content">
-      <div class="loading-spinner">
-        <i class="pi pi-spin pi-spinner"></i>
-      </div>
-      <h3>{{ 'analytics.loading.title' | translate }}</h3>
-      <p>{{ 'analytics.loading.message' | translate }}</p>
-    </div>
-  </div>
-
-  <div *ngIf="error && !loading" class="error-container">
-    <div class="error-content">
-      <i class="pi pi-exclamation-triangle error-icon"></i>
-      <h3>{{ 'analytics.error.title' | translate }}</h3>
-      <p>{{ error }}</p>
-      <div class="error-actions">
-        <p-button
-          icon="pi pi-refresh"
-          [label]="'common.retry' | translate"
-          (click)="onRefresh()">
-        </p-button>
-        <p-button
-          icon="pi pi-arrow-left"
-          [label]="'analytics.backToDashboards' | translate"
-          (click)="onBackToDashboards()"
-          class="p-button-secondary">
-        </p-button>
-      </div>
-    </div>
-  </div>
-
-  <div *ngIf="!loading && !error && dashboardUrl" class="dashboard-content">
-    <div *ngIf="iframeLoading" class="iframe-loading-overlay">
-      <div class="iframe-loading-content">
+    <div *ngIf="loadingSignal()" class="loading-container">
+      <div class="loading-content">
         <div class="loading-spinner">
-          <i class="pi pi-spin pi-spinner"></i>
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
         </div>
-        <p>{{ 'analytics.dashboard.loadingContent' | translate }}</p>
+        <h3>{{ 'analytics.loading.title' | translate }}</h3>
+        <p>{{ 'analytics.loading.message' | translate }}</p>
       </div>
     </div>
 
-    <iframe
-      #dashboardIframe
-      [src]="dashboardUrl"
-      class="dashboard-iframe"
-      [class.loaded]="!iframeLoading"
-      (load)="onIframeLoad()"
-      (error)="onIframeError()"
-      frameborder="0"
-      allowfullscreen>
-    </iframe>
-  </div>
+    <div *ngIf="errorSignal() && !loadingSignal()" class="error-container">
+      <div class="error-content">
+        <i class="pi pi-exclamation-triangle error-icon"></i>
+        <h3>{{ 'analytics.error.title' | translate }}</h3>
+        <p>{{ errorSignal() }}</p>
+        <div class="error-actions">
+          <button class="retry-btn" (click)="onRefresh()">
+            <i class="pi pi-refresh"></i>
+            {{ 'common.retry' | translate }}
+          </button>
+          <button class="back-btn-error" (click)="onBackToDashboards()">
+            <i class="pi pi-arrow-left"></i>
+            {{ 'analytics.backToAnalytics' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
 
-  <div *ngIf="!loading && !error && !dashboard && dashboardUrl" class="dashboard-placeholder-info">
-    <div class="placeholder-content">
-      <i class="pi pi-chart-line"></i>
-      <h2>{{ 'analytics.dashboard.title' | translate }} #{{ dashboardId }}</h2>
-      <p>{{ 'analytics.dashboard.loadingMetadata' | translate }}</p>
+    <div *ngIf="isDashboardLoadedSignal()" class="dashboard-content">
+      <div *ngIf="iframeLoadingSignal()" class="iframe-loading-overlay">
+        <div class="iframe-loading-content">
+          <div class="loading-spinner">
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+          </div>
+          <p>{{ 'analytics.analyticsDashboard.filters.loadingContent' | translate }}</p>
+        </div>
+      </div>
+
+      <iframe
+        #dashboardIframe
+        [src]="dashboardUrlSignal()"
+        class="dashboard-iframe"
+        [class.loaded]="!iframeLoadingSignal()"
+        (load)="onIframeLoad()"
+        (error)="onIframeError()"
+        frameborder="0"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div
+      *ngIf="!loadingSignal() && !errorSignal() && !dashboardUrlSignal()"
+      class="dashboard-placeholder">
+      <div class="placeholder-content">
+        <i class="pi pi-chart-line"></i>
+        <h2>
+          {{ 'analytics.dashboard.title' | translate }} #{{
+            dashboardIdSignal()
+          }}
+        </h2>
+        <p>{{ 'analytics.dashboard.loadingMetadata' | translate }}</p>
+      </div>
     </div>
   </div>
 </div>

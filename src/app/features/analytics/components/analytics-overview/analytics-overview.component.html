@@ -1,157 +1,185 @@
-<div class="analytics-container">
-  <div class="analytics-hero" [@fadeInUp]>
-    <div class="hero-background">
-      <div class="floating-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-        <div class="shape shape-4"></div>
-      </div>
-    </div>
+<div class="analytics-overview">
 
-    <div class="hero-content">
-      <div class="title-section" [@slideInFromLeft]>
-        <h1 class="page-title">
-          <i class="pi pi-chart-bar title-icon animate-glow"></i>
-          {{ 'analytics.title' | translate }}
-        </h1>
-        <p class="page-subtitle">
-          {{ 'analytics.subtitle' | translate }}
-        </p>
-        <div class="title-decoration"></div>
-      </div>
-
-      <div class="hero-stats" *ngIf="!loading && !error" [@slideInFromRight]>
-        <div class="stats-info">
-          <div class="stat-number animate-heartbeat">
-            {{ stats.totalDashboards }}
-          </div>
-          <div class="stat-label">
-            {{ 'analytics.dashboards' | translate }}
+  <div class="analytics-header fade-in-up">
+    <div class="header-content">
+      <div class="title-section slide-in-left">
+        <div class="icon-container">
+          <i class="pi pi-chart-line main-icon animate-float"></i>
+          <div class="icon-background"></div>
+        </div>
+        <div class="title-text">
+          <h1 class="main-title">{{ 'analytics.title' | translate }}</h1>
+          <p class="subtitle">{{ 'analytics.subtitle' | translate }}</p>
+          <div class="dashboard-count">
+            <span class="count-number">{{ statsSignal().totalDashboards }}</span>
+            <span class="count-label">{{ 'analytics.dashboards' | translate }}</span>
           </div>
         </div>
       </div>
+
+      <div class="controls-section slide-in-right" style="animation-delay: 0.2s">
+    <div class="search-container">
+      <div class="search-input-wrapper">
+        <i class="pi pi-search search-icon"></i>
+        <input
+          type="text"
+          [placeholder]="'analytics.search.placeholder' | translate"
+          class="search-input"
+          [value]="searchTermSignal()"
+          (input)="onSearch($event)"
+          autocomplete="off">
+        <button
+          *ngIf="searchTermSignal()"
+          class="clear-search-btn bounce-in"
+          (click)="onClearSearch()">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="view-controls">
+      <div class="view-toggle">
+        <button
+          class="view-btn"
+          [class.active]="selectedViewSignal() === 'grid'"
+          (click)="onViewChange('grid')">
+          <i class="pi pi-th-large"></i>
+        </button>
+        <button
+          class="view-btn"
+          [class.active]="selectedViewSignal() === 'list'"
+          (click)="onViewChange('list')">
+          <i class="pi pi-list"></i>
+        </button>
+      </div>
+
+      <button class="refresh-btn" (click)="onRefresh()">
+        <i class="pi pi-refresh" [class.spin-animation]="loadingSignal()"></i>
+      </button>
+    </div>
+  </div>
     </div>
   </div>
 
-  <div *ngIf="loading" class="loading-container" [@fadeInUp]>
+  <div *ngIf="loadingSignal()" class="loading-container fade-in-up">
     <div class="loading-content">
-      <div class="loading-spinner animate-pulse">
-        <i class="pi pi-spin pi-spinner"></i>
-        <div class="loading-rings">
-          <div class="ring ring-1"></div>
-          <div class="ring ring-2"></div>
-          <div class="ring ring-3"></div>
-        </div>
+      <div class="loading-spinner">
+        <div class="spinner-ring animate-spin"></div>
+        <div class="spinner-ring animate-spin" style="animation-delay: 0.1s"></div>
+        <div class="spinner-ring animate-spin" style="animation-delay: 0.2s"></div>
       </div>
       <h3>{{ 'analytics.loading.title' | translate }}</h3>
       <p>{{ 'analytics.loading.message' | translate }}</p>
-      <div class="loading-dots">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
     </div>
   </div>
 
-  <div *ngIf="error && !loading" class="error-container" [@fadeInUp]>
+  <div *ngIf="errorSignal() && !loadingSignal()" class="error-container fade-in-up">
     <div class="error-content">
-      <i class="pi pi-exclamation-triangle error-icon animate-wave"></i>
+      <i class="pi pi-exclamation-triangle error-icon animate-glow"></i>
       <h3>{{ 'analytics.error.title' | translate }}</h3>
-      <p>{{ 'analytics.error.message' | translate }}</p>
-      <p-button
-        icon="pi pi-refresh"
-        [label]="'common.retry' | translate"
-        (click)="onRetry()"
-        class="error-retry-btn">
-      </p-button>
+      <p>{{ errorSignal() }}</p>
+      <button class="retry-btn" (click)="onRefresh()">
+        <i class="pi pi-refresh"></i>
+        {{ 'common.retry' | translate }}
+      </button>
     </div>
   </div>
 
-  <div *ngIf="!loading && !error" class="analytics-content" [@fadeInUp]>
+  <div *ngIf="!loadingSignal() && !errorSignal()" class="dashboards-section">
 
-    <div class="results-section" [@fadeInUp]>
-      <div *ngIf="filteredItems.length === 0" class="empty-state" [@rotateIn]>
+    <div *ngIf="filteredDashboards().length === 0" class="empty-state fade-in-up">
+      <div class="empty-content">
         <div class="empty-icon-container">
           <i class="pi pi-chart-line empty-icon animate-float"></i>
           <div class="empty-particles">
-            <div class="particle particle-1"></div>
-            <div class="particle particle-2"></div>
-            <div class="particle particle-3"></div>
+            <div class="particle particle-1 animate-float"></div>
+            <div class="particle particle-2 animate-float" style="animation-delay: 1s"></div>
+            <div class="particle particle-3 animate-float" style="animation-delay: 2s"></div>
           </div>
         </div>
         <h3>{{ 'analytics.empty.noDashboards.title' | translate }}</h3>
         <p>{{ 'analytics.empty.noDashboards.message' | translate }}</p>
       </div>
+    </div>
+
+    <div
+      *ngIf="filteredDashboards().length > 0 && selectedViewSignal() === 'grid'"
+      class="dashboards-grid">
 
       <div
-        *ngIf="filteredItems.length > 0"
-        class="dashboards-grid"
-        [@staggerCards]>
-        <div
-          *ngFor="
-            let dashboard of filteredItems;
-            trackBy: trackByItemId;
-            let i = index
-          "
-          class="dashboard-card"
-          [@cardHover]="hoveredItem === dashboard.id ? 'hover' : 'default'"
-          (click)="onItemClick(dashboard)"
-          (mouseenter)="hoveredItem = dashboard.id"
-          (mouseleave)="hoveredItem = null"
-          [style.animation-delay]="i * 100 + 'ms'">
-          <div class="card-background">
-            <div class="gradient-overlay"></div>
-            <div class="data-flow" *ngIf="hoveredItem === dashboard.id">
-              <div class="flow-line"></div>
-              <div class="flow-line"></div>
-              <div class="flow-line"></div>
-            </div>
-          </div>
+        *ngFor="let dashboard of filteredDashboards(); trackBy: trackByDashboardId; let i = index"
+        class="dashboard-card fade-in-up"
+        [style.animation-delay.ms]="i * 100"
+        [class.hovered]="hoveredItemSignal() === dashboard.id"
+        (mouseenter)="onDashboardHover(dashboard.id)"
+        (mouseleave)="onDashboardHover(null)"
+        (click)="onDashboardClick(dashboard)">
 
+        <div class="card-background">
+          <div class="gradient-overlay"></div>
+          <div class="data-flow">
+            <div class="flow-line animate-data-flow"></div>
+            <div class="flow-line animate-data-flow" style="animation-delay: 1s"></div>
+            <div class="flow-line animate-data-flow" style="animation-delay: 2s"></div>
+          </div>
+          <div class="card-shine"></div>
+        </div>
+
+        <div class="card-content">
           <div class="card-header">
             <div class="dashboard-icon">
-              <i
-                class="pi pi-chart-line"
-                [class.animate-wave]="hoveredItem === dashboard.id"></i>
-              <div
-                class="icon-pulse"
-                *ngIf="hoveredItem === dashboard.id"></div>
-            </div>
-            <div class="card-actions">
-              <span class="dashboard-badge">
-                Dashboard
-              </span>
+              <i class="pi" [class]="getTypeIcon(getDashboardTypeFromName(dashboard.name))"></i>
             </div>
           </div>
 
-          <div class="card-content">
+          <div class="dashboard-info">
             <h3 class="dashboard-title">{{ dashboard.name }}</h3>
+            <p class="dashboard-description">
+              {{ getDashboardDescription(dashboard) | translate }}
+            </p>
+
           </div>
 
-          <div class="card-footer">
-            <div class="dashboard-meta">
-              <span class="meta-item" *ngIf="dashboard.updated_at">
-                <i class="pi pi-calendar"></i>
-                <span>{{ formatDate(dashboard.updated_at) }}</span>
-              </span>
-              <span class="meta-item">
-                <i class="pi pi-hashtag"></i>
-                <span>ID: {{ dashboard.id }}</span>
-              </span>
-            </div>
-            <div
-              class="view-button"
-              [class.visible]="hoveredItem === dashboard.id">
-              <span>{{ 'analytics.viewDashboard' | translate }}</span>
+
+          <div class="card-actions">
+            <button class="view-button">
+              <span>{{ 'analytics.viewItem' | translate }}</span>
               <i class="pi pi-arrow-right"></i>
-            </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      *ngIf="filteredDashboards().length > 0 && selectedViewSignal() === 'list'"
+      class="dashboards-list">
+
+      <div
+        *ngFor="let dashboard of filteredDashboards(); trackBy: trackByDashboardId; let i = index"
+        class="dashboard-list-item slide-in-left"
+        [style.animation-delay.ms]="i * 100"
+        (click)="onDashboardClick(dashboard)">
+
+        <div class="list-item-content">
+          <div class="item-icon">
+            <i class="pi" [class]="getTypeIcon(getDashboardTypeFromName(dashboard.name))"></i>
           </div>
 
-          <div class="card-overlay"></div>
+          <div class="item-info">
+            <h4 class="item-title">{{ dashboard.name }}</h4>
+            <p class="item-description">
+              {{ getDashboardDescription(dashboard) | translate }}
+            </p>
+          </div>
 
-          <div class="card-shine" *ngIf="hoveredItem === dashboard.id"></div>
+          <div class="item-actions">
+            <button class="view-btn-list">
+              <i class="pi pi-external-link"></i>
+            </button>
+          </div>
         </div>
+
       </div>
     </div>
   </div>

@@ -1,13 +1,23 @@
 @use 'variables' as variables;
 @use 'mixins' as mixins;
+@use 'sass:color';
 
 .color-extractor-container {
   padding: variables.$space-l;
+  position: relative;
 
   h5,
   h6 {
     font-weight: 600;
     margin-bottom: variables.$space-l;
+  }
+
+  .col-md-5 {
+    position: relative;
+  }
+
+  .col-md-7 {
+    position: relative;
   }
 }
 
@@ -141,6 +151,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   padding: variables.$space-3xl;
   height: 100%;
+  position: relative;
 
   .header-section {
     margin-bottom: variables.$space-3xl;
@@ -311,6 +322,32 @@
               height: 40px;
               border-radius: variables.$rounded-sm;
               box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              position: relative;
+              transition: all 0.2s ease;
+
+              &.clickable {
+                cursor: pointer;
+
+                &:hover {
+                  transform: scale(1.1);
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                }
+
+                .edit-icon {
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  transform: translate(-50%, -50%);
+                  font-size: 0.8rem;
+                  color: rgba(255, 255, 255, 0.8);
+                  opacity: 0;
+                  transition: opacity 0.2s ease;
+                }
+
+                &:hover .edit-icon {
+                  opacity: 1;
+                }
+              }
             }
 
             .color-detail {
@@ -366,5 +403,64 @@
 @for $i from 1 through 12 {
   .color-swatch:nth-child(#{$i}) {
     animation-delay: #{$i * 0.05}s;
+  }
+}
+
+.color-picker-overlay {
+  position: absolute;
+  top: 40%;
+  left: 30%;
+  border-radius: variables.$rounded-sm;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: overlaySlideIn 0.3s ease-out;
+
+  .close-overlay-picker {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: variables.$rounded-full;
+    background-color: variables.$primary-color;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    z-index: 1001;
+
+    &:hover {
+      background-color: color.adjust(variables.$primary-color, $lightness: 10%);
+      transform: scale(1.1);
+    }
+  }
+
+  ::ng-deep {
+    .p-colorpicker {
+      width: 100% !important;
+      height: 100% !important;
+      
+      .p-colorpicker-preview {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: variables.$rounded-sm !important;
+      }
+    }
+  }
+}
+
+@keyframes overlaySlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }

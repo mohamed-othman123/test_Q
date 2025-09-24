@@ -1,0 +1,61 @@
+@use 'variables';
+@use 'mixins';
+
+.hall-sections {
+  .section_title {
+    margin-bottom: 2rem;
+    
+    h3 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: variables.$hall_main_color;
+      margin-bottom: 0.5rem;
+    }
+    
+    .section-description {
+      font-size: 1.1rem;
+      color: variables.$hall_dark_color;
+      margin: 0;
+    }
+  }
+  
+  .depart_item {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    min-width: 200px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-color: variables.$hall_main_color;
+    }
+    
+    .icon {
+      width: 3rem;
+      height: 3rem;
+      background: variables.$hall_secondary_color;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      
+      svg {
+        color: variables.$hall_main_color;
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+    }
+    
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: variables.$hall_main_color;
+      margin: 0;
+    }
+  }
+}

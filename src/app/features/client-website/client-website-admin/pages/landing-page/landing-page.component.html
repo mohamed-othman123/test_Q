@@ -33,7 +33,6 @@
         (landingPageCreated)="onLandingPageCreated($event)"
         (cancelBasicForm)="onCancelBasicForm()">
       </app-basic-information>
-      <app-hall-details [landingPageData]="landingPageData"></app-hall-details>
       @if (landingPageData?.hallName) {
         <add-section
           [landingPageData]="landingPageData!"

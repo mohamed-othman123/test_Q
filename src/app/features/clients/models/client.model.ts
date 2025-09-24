@@ -1,9 +1,11 @@
+import {Address} from '@core/interfaces/address';
+
 export interface Client {
   id: number;
   name: string;
   email?: string;
   phone: string;
-  address: string | null;
+  address?: Address;
   notes: string | null;
   type: ClientType;
   companyDetails?: CompanyDetails | null;
@@ -12,12 +14,19 @@ export interface Client {
   created_at: Date;
   created_by: number;
   updated_at: Date;
+  updated_by: number;
   deleted_at: Date | null;
   deleted_by: number | null;
   deleted: boolean;
   gender?: string;
   isVIB: boolean;
   nationalOrResidencyId?: string;
+  hallId?: number | null;
+  halls?: {
+    id: number;
+    name: string;
+    name_ar: string;
+  }[];
 }
 
 export interface Contact {

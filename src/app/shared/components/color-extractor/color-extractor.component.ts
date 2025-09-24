@@ -44,6 +44,8 @@ export class ColorExtractorComponent implements OnChanges {
     primary: '',
     secondary: '',
   };
+  showColorPicker: boolean = false;
+  colorPickerType: 'primary' | 'secondary' = 'primary';
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['imageUrl'] && this.imageUrl) {
@@ -108,6 +110,7 @@ export class ColorExtractorComponent implements OnChanges {
 
   setActiveColorType(type: 'primary' | 'secondary'): void {
     this.activeColorType = type;
+    this.colorPickerType = type; // Sync colorPickerType with activeColorType
   }
 
   isSelected(color: string): boolean {
@@ -169,6 +172,25 @@ export class ColorExtractorComponent implements OnChanges {
     this.colorSelected.emit({
       type: 'secondary',
       color: this.previewPalette.secondary,
+    });
+  }
+
+  openColorPickerFromPreview(colorType: 'primary' | 'secondary'): void {
+    this.colorPickerType = colorType;
+    this.activeColorType = colorType;
+    this.showColorPicker = true;
+  }
+
+  closeColorPicker(): void {
+    this.showColorPicker = false;
+  }
+
+  onColorPickerChange(color: string): void {
+    this.previewPalette[this.colorPickerType] = color;
+    this.activeColorType = this.colorPickerType;
+    this.colorSelected.emit({
+      type: this.colorPickerType,
+      color: color,
     });
   }
 }

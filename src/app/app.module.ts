@@ -1,11 +1,16 @@
-import { CSP_NONCE, NgModule, inject, provideAppInitializer } from '@angular/core';
+import {
+  CSP_NONCE,
+  NgModule,
+  inject,
+  provideAppInitializer,
+} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {provideTranslateService} from '@ngx-translate/core';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideTranslateHttpLoader} from '@ngx-translate/http-loader';
 import {CoreModule} from '@core/core.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DatePipe} from '@angular/common';
@@ -19,10 +24,6 @@ import {HallsService} from '@halls/services/halls.service';
 import {AuthService} from '@core/services';
 import {ConfirmationModalComponent} from '@shared/components/confirmation-modal/confirmation-modal.component';
 import {ConfirmationModalService} from '@core/services/confirmation-modal.service';
-
-export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
 
 export function initializeLocalization(
   localizationInitService: LocalizationInitService,
@@ -53,43 +54,54 @@ const initializePrimeConfig = (primeConfig: PrimeNGConfig) => () => {
   primeConfig.csp.set({nonce});
 };
 
-@NgModule({ declarations: [AppComponent, ConfirmationModalComponent],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        BrowserAnimationsModule,
-        CoreModule,
-        LayoutModule,
-        SharedModule,
-        AuthModule,
-        AppRoutingModule,
-        LottieComponent,
-        TranslateModule.forRoot({
-            defaultLanguage: 'ar',
-            loader: {
-                provide: TranslateLoader,
-                useFactory: createTranslateLoader,
-                deps: [HttpClient],
-            },
-        })], providers: [
-        MessageService,
-        ConfirmationService,
-        ConfirmationModalService,
-        provideAppInitializer(() => {
-        const initializerFn = (initializeLocalization)(inject(LocalizationInitService));
-        return initializerFn();
+@NgModule({
+  declarations: [AppComponent, ConfirmationModalComponent],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    CoreModule,
+    LayoutModule,
+    SharedModule,
+    AuthModule,
+    AppRoutingModule,
+    LottieComponent,
+  ],
+  providers: [
+    MessageService,
+    ConfirmationService,
+    ConfirmationModalService,
+    provideAppInitializer(() => {
+      const initializerFn = initializeLocalization(
+        inject(LocalizationInitService),
+      );
+      return initializerFn();
+    }),
+    provideAppInitializer(() => {
+      const initializerFn = initializeHalls(
+        inject(HallsService),
+        inject(AuthService),
+      );
+      return initializerFn();
+    }),
+    provideAppInitializer(() => {
+      const initializerFn = initializePrimeConfig(inject(PrimeNGConfig));
+      return initializerFn();
+    }),
+    {
+      provide: CSP_NONCE,
+      useValue: nonce,
+    },
+    DatePipe,
+    provideHttpClient(withInterceptorsFromDi()),
+    provideTranslateService({
+      lang: 'ar',
+      fallbackLang: 'ar',
+      loader: provideTranslateHttpLoader({
+        prefix: './assets/i18n/',
+        suffix: '.json',
       }),
-        provideAppInitializer(() => {
-        const initializerFn = (initializeHalls)(inject(HallsService), inject(AuthService));
-        return initializerFn();
-      }),
-        provideAppInitializer(() => {
-        const initializerFn = (initializePrimeConfig)(inject(PrimeNGConfig));
-        return initializerFn();
-      }),
-        {
-            provide: CSP_NONCE,
-            useValue: nonce,
-        },
-        DatePipe,
-        provideHttpClient(withInterceptorsFromDi()),
-    ] })
+    }),
+  ],
+})
 export class AppModule {}

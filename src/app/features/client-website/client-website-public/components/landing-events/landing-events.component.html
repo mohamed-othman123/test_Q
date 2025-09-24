@@ -1,0 +1,36 @@
+@if (section?.events?.length) {
+  <div class="hall-events">
+    <div class="sec_id" id="events"></div>
+    <div class="container">
+      <div class="row pb-3 align-items-center justify-content-center">
+        <div class="col-12">
+          <div class="section_title text-center">
+            <h3>{{ section?.title_ar || section?.title_en || ('landing.hallEvents' | translate) }}</h3>
+            @if (section?.description_ar || section?.description_en) {
+              <p class="section-description">
+                {{ lang === 'ar' ? section?.description_ar : section?.description_en }}
+              </p>
+            }
+          </div>
+        </div>
+        <div class="events-list">
+          @for (event of section.events; track event) {
+            <div class="event-item">
+              <div class="event-icon">
+                <i class="pi pi-calendar"></i>
+              </div>
+              <div class="event-content">
+                <h4 class="event-name">
+                  {{ lang === 'ar' ? event.name_ar : event.name }}
+                </h4>
+                @if (event.description) {
+                  <p class="event-description">{{ event.description }}</p>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

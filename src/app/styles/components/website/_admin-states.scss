@@ -1,0 +1,104 @@
+@use 'variables' as variables;
+@use 'mixins' as mixins;
+
+%admin-empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 2px dashed #e5e7eb;
+  margin: 1rem 0;
+
+  i {
+    font-size: 2rem;
+    color: #9ca3af;
+    margin-bottom: 1rem;
+  }
+
+  h5 {
+    color: #374151;
+    font-size: 1.125rem;
+    margin: 0 0 0.5rem;
+    font-weight: 500;
+  }
+
+  p {
+    color: #6b7280;
+    margin: 0 0 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  button {
+    i {
+      font-size: 0.875rem;
+      margin-right: 0.5rem;
+      color: inherit;
+    }
+  }
+}
+
+%admin-empty-state-large {
+  @extend %admin-empty-state;
+  padding: 3rem 1rem;
+
+  .empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    i {
+      font-size: 3rem;
+      color: #d1d5db;
+    }
+
+    h5 {
+      color: #6b7280;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    p {
+      color: #9ca3af;
+      font-size: 0.875rem;
+      margin: 0;
+      max-width: 400px;
+    }
+  }
+}
+
+%admin-loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #6b7280;
+
+  i {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+%admin-disabled-state {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+%admin-error-state {
+  border-color: variables.$red !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+%admin-success-state {
+  border-color: variables.$primary-color !important;
+  box-shadow: 0 0 0 3px rgba(variables.$primary-color, 0.1) !important;
+}

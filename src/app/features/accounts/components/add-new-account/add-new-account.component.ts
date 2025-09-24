@@ -7,6 +7,9 @@ import {DrawerService} from '@core/services/drawer.service';
 import {requireOneOf} from '@core/validators';
 import {debounceTime, startWith, Subscription} from 'rxjs';
 import {generateAccountCode} from '@accounts/utils/generate-account-code';
+import {LanguageService} from '@core/services';
+import {MODULE_TYPES} from '@accounts/constants/accounts';
+import {SelectItemGroup} from 'primeng/api';
 
 @Component({
   selector: 'app-add-new-account',
@@ -25,6 +28,7 @@ export class AddNewAccountComponent implements OnInit {
       isParent: [null, [Validators.required]],
       accountCode: [null, [Validators.required]],
       accountType: [null],
+      moduleType: [null],
       openingDebit: [0, [Validators.min(0)]],
       openingCredit: [0, [Validators.min(0)]],
       description: [null],
@@ -38,12 +42,18 @@ export class AddNewAccountComponent implements OnInit {
 
   parentsList: AccountData[] = [];
 
+  ////
+  availableParents: SelectItemGroup[] = [];
+
+  moduleTypes = MODULE_TYPES;
+
   subs = new Subscription();
 
   constructor(
     private drawerService: DrawerService,
     private fb: FormBuilder,
     private accountsService: AccountsService,
+    public lang: LanguageService,
   ) {}
 
   ngOnInit(): void {
@@ -62,6 +72,7 @@ export class AddNewAccountComponent implements OnInit {
     this.subs.add(drawerSub);
 
     this.autoGenerateAccountCode();
+    this.isPrimaryAccountListener();
   }
 
   patchFormValue(account?: AccountData, parentAccount?: AccountNode) {
@@ -69,6 +80,7 @@ export class AddNewAccountComponent implements OnInit {
       this.getControl('parentAccountId').setValue(parentAccount);
     }
     if (account && this.mode === 'edit') {
+      console.log(account);
       this.form.patchValue(account as any);
       this.getControl('parentAccountId').setValue(
         account.parent ? account.parent : null,
@@ -77,9 +89,31 @@ export class AddNewAccountComponent implements OnInit {
   }
 
   getAccountsList() {
-    this.accountsService.getAccountList({}).subscribe((res) => {
-      this.parentsList = this.filterAccounts(res.items);
-    });
+    this.accountsService
+      .getAccountList({sortBy: 'accountCode', sortOrder: 'ASC'})
+      .subscribe((res) => {
+        this.parentsList = this.filterAccounts(res.items);
+
+        // Group by accountType
+        const groups: {[key: string]: AccountData[]} = {};
+        this.parentsList.forEach((acc) => {
+          if (!groups[acc.accountType]) {
+            groups[acc.accountType] = [];
+          }
+          groups[acc.accountType].push(acc);
+        });
+
+        // Convert to SelectItemGroup[]
+        this.availableParents = Object.keys(groups).map((type) => ({
+          label: type,
+          items: groups[type].map((acc) => ({
+            ...acc,
+            value: acc.id,
+          })),
+        }));
+
+        console.log(this.availableParents);
+      });
   }
 
   filterAccounts(accounts: AccountData[]) {
@@ -105,6 +139,7 @@ export class AddNewAccountComponent implements OnInit {
           debounceTime(300),
         )
         .subscribe((val: AccountData) => {
+          console.log(val);
           if (val?.accountLevel! >= 2) {
             const code = generateAccountCode(val);
             this.getControl('accountCode').setValue(code);
@@ -144,9 +179,24 @@ export class AddNewAccountComponent implements OnInit {
       accountCode: value.accountCode!,
       accountType: value.accountType!,
       isParent: value.isParent!,
+      moduleType: value.moduleType!,
       openingDebit: value.openingDebit ? +value.openingDebit : 0,
       openingCredit: value.openingCredit ? +value.openingCredit : 0,
       description: value.description!,
     };
+  }
+
+  isPrimaryAccountListener() {
+    this.subs.add(
+      this.getControl('isParent').valueChanges.subscribe((isParent) => {
+        if (isParent) {
+          this.getControl('moduleType').removeValidators([Validators.required]);
+        } else {
+          this.getControl('moduleType').setValidators([Validators.required]);
+        }
+
+        this.getControl('moduleType').updateValueAndValidity();
+      }),
+    );
   }
 }

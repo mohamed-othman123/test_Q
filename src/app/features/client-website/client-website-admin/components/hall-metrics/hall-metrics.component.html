@@ -1,0 +1,23 @@
+@if (section?.sections?.length) {
+  <div class="hall-metrics">
+    @for (hallSection of section.sections; track $index) {
+      <div class="hall-metrics-item">
+        <div class="icon-container">
+          <i class="pi pi-users"></i>
+        </div>
+        <div class="hall-metrics-item-content">
+          <p>
+            {{ 'landing.section' | translate }}
+            {{ lang.lang === 'ar' ? hallSection.name_ar : hallSection.name }}
+          </p>
+          <small>{{ 'landing.capacity' | translate }}: {{ hallSection.capacity }}</small>
+        </div>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="empty-state">
+    <i class="pi pi-info-circle"></i>
+    <p>{{ 'landing.noHallSections' | translate }}</p>
+  </div>
+}

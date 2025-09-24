@@ -25,9 +25,18 @@
     }
 
     @if (!activeClient && hallClients.length > 0) {
-      <div #clientsList class="client-list">
-        @for (client of hallClients.controls; track client; let i = $index) {
-          <div class="client-item">
+      <div 
+        #clientsList 
+        class="client-list"
+        cdkDropList
+        [cdkDropListData]="hallClients.controls"
+        (cdkDropListDropped)="onClientsDropped($event)">
+        @for (client of hallClients.controls; track $index; let i = $index) {
+          <div 
+            class="client-item"
+            cdkDrag
+            [cdkDragData]="client"
+            [cdkDragDisabled]="!!activeClient">
             <div class="client-content">
               <div class="client-image">
                 @if (getImageUrl(client.get('image')?.value)) {
@@ -57,7 +66,7 @@
                   (click)="removeClient(i)">
                   <i class="pi pi-trash"></i>
                 </button>
-                <div class="client-drag-handle">
+                <div class="client-drag-handle" cdkDragHandle>
                   <div class="drag-handle-dots">
                     <div class="dot"></div>
                     <div class="dot"></div>

@@ -34,6 +34,7 @@ export class ApiConfigService {
     'refund-requests': 'v1',
     'contract': 'v1',
     'analytics': 'v1',
+    'zatca': 'v1',
     'chat': 'v1',
     'inventory': 'v1',
     'ai-agent': 'v1',

@@ -8,19 +8,17 @@ import {
   EventEmitter,
   ViewChild,
   ChangeDetectorRef,
-  OnDestroy,
 } from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {
-  LandingPageSection,
   LandingPageSectionType,
   SectionTemplate,
+  CreateLandingPageSectionDto,
 } from '@client-website-admin/models/section.model';
 import {LandingPageService} from '@client-website-admin/services/landing-page.service';
 import {LandingGeneralInformationDto} from '@client-website-admin/models/landing-page.model';
 import {LanguageService, NotificationService} from '@core/services';
-import {DragCoordinationService} from '@core/services/drag-coordination.service';
-import {noDoubleSpaceValidator} from '@core/validators';
+import {noDoubleSpaceValidator, requiredIf} from '@core/validators';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Hall} from '@halls/models/halls.model';
 
@@ -30,7 +28,7 @@ import {Hall} from '@halls/models/halls.model';
   styleUrls: ['./add-section.component.scss'],
   standalone: false,
 })
-export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AddSectionComponent implements OnInit, AfterViewInit {
   @Input() landingPageData!: LandingGeneralInformationDto;
   @Input() currentHall: Hall | null = null;
   @Output() sectionsReordered = new EventEmitter<void>();
@@ -46,8 +44,7 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
     private landingPageService: LandingPageService,
     public lang: LanguageService,
     private notificationService: NotificationService,
-    private cdr: ChangeDetectorRef,
-    private dragCoordination: DragCoordinationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -57,10 +54,6 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.cdr.detectChanges();
-  }
-
-  ngOnDestroy() {
-    // Cleanup if needed
   }
 
   private initializeSectionTemplates(): void {
@@ -122,6 +115,24 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
         },
         icon: 'pi pi-share-alt',
       },
+      {
+        type: LandingPageSectionType.HALL_SECTIONS,
+        label: {en: 'Hall Sections', ar: 'أقسام القاعة'},
+        description: {
+          en: 'Display hall sections',
+          ar: 'عرض أقسام القاعة',
+        },
+        icon: 'pi pi-chart-bar',
+      },
+      {
+        type: LandingPageSectionType.EVENTS,
+        label: {en: 'Hall Events', ar: 'مناسبات القاعة'},
+        description: {
+          en: 'Showcase hall events',
+          ar: 'عرض مناسبات القاعة',
+        },
+        icon: 'pi pi-calendar',
+      },
     ];
 
     this.sectionTemplates = templates.map((template, index) => ({
@@ -143,24 +154,34 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
           (t) => t.type === section.type,
         );
         if (template) {
-          template.isEnabled = true;
+          template.isEnabled = section.isActive;
           template.data = section;
           template.order = section.order;
-          template.form?.patchValue({
-            title_en: section.title_en || '',
-            title_ar: section.title_ar || '',
-            description_en: section.description_en || '',
-            description_ar: section.description_ar || '',
-          });
+
+          if (section.isActive) {
+            template.form = this.createSectionFormWithValidation(template);
+            template.isBasicDetailsExpanded = true;
+
+            template.form?.patchValue({
+              title_en: section.title_en || '',
+              title_ar: section.title_ar || '',
+              description_en: section.description_en || '',
+              description_ar: section.description_ar || '',
+            });
+          } else {
+            template.form = this.createSectionForm();
+            template.isBasicDetailsExpanded = false;
+            template.isExpanded = false;
+          }
         }
       });
 
       this.sectionTemplates.sort((a, b) => {
-        if (a.isEnabled && b.isEnabled) {
+        if (a.data?.isActive && b.data?.isActive) {
           return a.order - b.order;
         }
-        if (a.isEnabled && !b.isEnabled) return -1;
-        if (!a.isEnabled && b.isEnabled) return 1;
+        if (a.data?.isActive && !b.data?.isActive) return -1;
+        if (!a.data?.isActive && b.data?.isActive) return 1;
         return 0;
       });
     }
@@ -175,8 +196,16 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  onSectionToggle(template: SectionTemplate, event: any): void {
-    const isEnabled = event.target ? event.target.checked : event;
+  private createSectionFormWithValidation(template: SectionTemplate): FormGroup {
+    return this.fb.group({
+      title_en: ['', [noDoubleSpaceValidator()]],
+      title_ar: ['', [noDoubleSpaceValidator()]],
+      description_en: ['', [noDoubleSpaceValidator()]],
+      description_ar: ['', [noDoubleSpaceValidator()]],
+    });
+  }
+
+  onSectionToggle(template: SectionTemplate, isEnabled: boolean): void {
     if (isEnabled) {
       this.enableSection(template);
     } else {
@@ -184,36 +213,91 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  deleteSection(template: SectionTemplate): void {
+    if (!template.data?.id) {
+      return;
+    }
+
+    this.isLoading = true;
+
+    this.landingPageService.removeSection(template.data.id).subscribe({
+      next: () => {
+        template.isEnabled = false;
+        template.isExpanded = false;
+        template.isBasicDetailsExpanded = false;
+        template.data = undefined;
+        template.form?.reset();
+        template.form = this.createSectionForm();
+
+        this.updateLandingPageData();
+        this.reorderSectionTemplates();
+        this.isLoading = false;
+        this.notificationService.showSuccess('landing.sectionDeleted');
+        this.refreshLandingPageData();
+      },
+      error: (error) => {
+        console.error('Error deleting section:', error);
+        this.isLoading = false;
+        this.notificationService.showError('landing.sectionDeleteError');
+      },
+    });
+  }
+
   private enableSection(template: SectionTemplate): void {
     const enabledSections = this.sectionTemplates.filter(
-      (t) => t.isEnabled && t !== template,
+      (t) => t.data?.isActive && t !== template,
     );
     template.order = enabledSections.length + 1;
 
-    this.createSection(template);
+    if (template.data?.id) {
+      this.landingPageService.updateSection(template.data.id, { isActive: true }).subscribe({
+        next: (updatedSection) => {
+          template.isEnabled = true;
+          template.data = updatedSection;
+          template.form = this.createSectionFormWithValidation(template);
+          template.isBasicDetailsExpanded = true;
+          template.isExpanded = true;
+          this.updateLandingPageData();
+          this.reorderSectionTemplates();
+          this.notificationService.showSuccess('landing.sectionActivated');
+          this.refreshLandingPageData();
+        },
+        error: (error) => {
+          template.isEnabled = false;
+          this.notificationService.showError('landing.sectionActivateError');
+        },
+      });
+    } else {
+      template.form = this.createSectionFormWithValidation(template);
+      template.isBasicDetailsExpanded = true;
+      template.isExpanded = true;
+      this.createSection(template);
+    }
   }
 
   private createSection(template: SectionTemplate): void {
     this.isLoading = true;
 
-    const sectionData: Partial<LandingPageSection> = {
+    const sectionData: CreateLandingPageSectionDto = {
+      landingPageId: this.landingPageData.id!,
       type: template.type,
       title_en: '',
       title_ar: '',
       description_en: '',
       description_ar: '',
       order: template.order,
+      isActive: true,
     };
 
     this.landingPageService
-      .addSection({
-        data: sectionData as LandingPageSection,
-        landingPageId: this.landingPageData.id!,
-      })
+      .addSection(sectionData)
       .subscribe({
         next: (newSection) => {
           template.data = newSection;
           template.isEnabled = true;
+
+          template.form = this.createSectionFormWithValidation(template);
+
           this.sectionTemplates.forEach(t => {
             if (t !== template) {
               t.isExpanded = false;
@@ -225,9 +309,10 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
           setTimeout(() => {
             this.scrollToSection(template);
-          }, 200);
+          }, 300);
 
           this.notificationService.showSuccess('landing.sectionAdded');
+          this.refreshLandingPageData();
         },
         error: (error) => {
           console.error('Error creating section:', error);
@@ -240,23 +325,34 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private disableSection(template: SectionTemplate): void {
     if (template.data?.id) {
-      this.landingPageService.removeSection(template.data.id).subscribe({
-        next: () => {
+      this.landingPageService.updateSection(template.data.id, { isActive: false }).subscribe({
+        next: (updatedSection) => {
           template.isEnabled = false;
           template.isExpanded = false;
-          template.data = undefined;
+          template.isBasicDetailsExpanded = false;
+          template.data = updatedSection;
           template.form?.reset();
-          this.notificationService.showSuccess('landing.sectionRemoved');
+
+          template.form = this.createSectionForm();
+          this.updateLandingPageData();
+          this.reorderSectionTemplates();
+
+          this.notificationService.showSuccess('landing.sectionDeactivated');
+          this.refreshLandingPageData();
         },
         error: (error) => {
-          console.error('Error removing section:', error);
+          console.error('Error deactivating section:', error);
           template.isEnabled = true;
-          this.notificationService.showError('landing.sectionRemoveError');
+          this.notificationService.showError('landing.sectionDeactivateError');
         },
       });
     } else {
       template.isEnabled = false;
       template.isExpanded = false;
+      template.isBasicDetailsExpanded = false;
+
+      template.form = this.createSectionForm();
+
       this.notificationService.showSuccess('landing.sectionDisabled');
     }
   }
@@ -285,32 +381,40 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
   onSectionDropped(event: CdkDragDrop<SectionTemplate[]>) {
     if (event.previousIndex !== event.currentIndex) {
       const enabledSections = this.getEnabledSections();
+      const movedSection = enabledSections[event.previousIndex];
+
       moveItemInArray(enabledSections, event.previousIndex, event.currentIndex);
-      
-      // Update order for all sections
+
       enabledSections.forEach((section, index) => {
         section.order = index + 1;
       });
 
-      this.updateSectionOrders(enabledSections);
+      this.updateSectionOrders(movedSection);
       this.reorderSectionTemplates();
     }
   }
 
   private scrollToSection(template: SectionTemplate): void {
-    const sectionElement = document.querySelector(`[data-section-type="${template.type}"]`);
-    if (sectionElement) {
-      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const elementRect = sectionElement.getBoundingClientRect();
-      const elementTop = elementRect.top + currentScrollTop;
-      const offset = 100;
-      const targetScrollTop = elementTop - offset;
+    setTimeout(() => {
+      const sectionElement = document.querySelector(`.enabled-sections [data-section-type="${template.type}"]`);
 
-      window.scrollTo({
-        top: Math.max(0, targetScrollTop),
-        behavior: 'smooth'
-      });
-    }
+      if (sectionElement) {
+        sectionElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest'
+        });
+      } else {
+        const enabledContainer = document.querySelector('.enabled-sections');
+        if (enabledContainer) {
+          enabledContainer.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest'
+          });
+        }
+      }
+    }, 250);
   }
 
   onMediaUpdated(updatedData: any): void {
@@ -322,41 +426,38 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  private updateSectionOrders(enabledSections: SectionTemplate[]): void {
-    const updatePromises = enabledSections
-      .filter((section) => section.data?.id)
-      .map((section) =>
-        this.landingPageService
-          .updateSection(section.data!.id, {order: section.order})
-          .toPromise(),
-      );
-
-    Promise.all(updatePromises)
-      .then(() => {
-        this.updateLandingPageData();
-        this.notificationService.showSuccess('landing.sectionsReordered');
-        this.refreshLandingPageData();
-        this.sectionsReordered.emit();
-      })
-      .catch((error) => {
-        this.notificationService.showError('landing.sectionsReorderError');
-      });
+  private updateSectionOrders(movedSection: SectionTemplate): void {
+    if (movedSection && movedSection.data?.id) {
+      this.landingPageService
+        .updateSection(movedSection.data.id, {order: movedSection.order})
+        .subscribe({
+          next: (updatedSection) => {
+            movedSection.data = updatedSection;
+            this.updateLandingPageData();
+            this.notificationService.showSuccess('landing.sectionsReordered');
+            this.sectionsReordered.emit();
+          },
+          error: (error) => {
+            this.notificationService.showError('landing.sectionsReorderError');
+          },
+        });
+    }
   }
 
   private reorderSectionTemplates(): void {
     this.sectionTemplates.sort((a, b) => {
-      if (a.isEnabled && b.isEnabled) {
+      if (a.data?.isActive && b.data?.isActive) {
         return a.order - b.order;
       }
-      if (a.isEnabled && !b.isEnabled) return -1;
-      if (!a.isEnabled && b.isEnabled) return 1;
+      if (a.data?.isActive && !b.data?.isActive) return -1;
+      if (!a.data?.isActive && b.data?.isActive) return 1;
       return 0;
     });
   }
 
   private updateLandingPageData(): void {
     this.landingPageData.sections = this.sectionTemplates
-      .filter((t) => t.isEnabled && t.data)
+      .filter((t) => t.data?.isActive && t.data)
       .map((t) => t.data!)
       .sort((a, b) => a.order - b.order);
   }
@@ -377,11 +478,11 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getEnabledSections(): SectionTemplate[] {
-    return this.sectionTemplates.filter((t) => t.isEnabled);
+    return this.sectionTemplates.filter((t) => t.data?.isActive === true);
   }
 
   getDisabledSections(): SectionTemplate[] {
-    return this.sectionTemplates.filter((t) => !t.isEnabled);
+    return this.sectionTemplates.filter((t) => !t.data?.isActive);
   }
 
 
@@ -394,6 +495,18 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
     if (event) {
       event.stopPropagation();
     }
+
+    template.form = this.createSectionFormWithValidation(template);
+
+    if (template.data) {
+      template.form.patchValue({
+        title_en: template.data.title_en || '',
+        title_ar: template.data.title_ar || '',
+        description_en: template.data.description_en || '',
+        description_ar: template.data.description_ar || '',
+      });
+    }
+
     template.isEditingBasicDetails = true;
     template.isBasicDetailsExpanded = true;
     this.cdr.detectChanges();
@@ -401,6 +514,7 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   saveBasicDetails(template: SectionTemplate): void {
     if (!template.form?.valid) {
+      template.form?.markAllAsTouched();
       return;
     }
 
@@ -414,19 +528,42 @@ export class AddSectionComponent implements OnInit, AfterViewInit, OnDestroy {
         description_en: formData.description_en,
         description_ar: formData.description_ar,
       }).subscribe({
-        next: () => {
-          template.data!.title_en = formData.title_en;
-          template.data!.title_ar = formData.title_ar;
-          template.data!.description_en = formData.description_en;
-          template.data!.description_ar = formData.description_ar;
+        next: (updatedSection) => {
+          template.data = updatedSection;
           template.isEditingBasicDetails = false;
           this.isLoading = false;
           this.notificationService.showSuccess('landing.sectionUpdated');
         },
         error: (error) => {
-          console.error('Error updating section:', error);
           this.isLoading = false;
           this.notificationService.showError('landing.sectionUpdateError');
+        },
+      });
+    } else {
+      const sectionData: CreateLandingPageSectionDto = {
+        landingPageId: this.landingPageData.id!,
+        type: template.type,
+        title_en: formData.title_en,
+        title_ar: formData.title_ar,
+        description_en: formData.description_en,
+        description_ar: formData.description_ar,
+        order: template.order,
+        isActive: true,
+      };
+
+      this.landingPageService.addSection(sectionData).subscribe({
+        next: (newSection) => {
+          template.data = newSection;
+          template.isEditingBasicDetails = false;
+          this.updateLandingPageData();
+          this.isLoading = false;
+          this.notificationService.showSuccess('landing.sectionAdded');
+          this.refreshLandingPageData();
+        },
+        error: (error) => {
+          console.error('Error creating section:', error);
+          this.isLoading = false;
+          this.notificationService.showError('landing.sectionAddError');
         },
       });
     }

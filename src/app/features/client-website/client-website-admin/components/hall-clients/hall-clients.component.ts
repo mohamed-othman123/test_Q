@@ -1,7 +1,7 @@
 import {
-  Client,
   Customer,
   LandingGeneralInformationDto,
+  CustomerResponseDto,
 } from '@client-website-admin/models/landing-page.model';
 import {LandingPageSection} from '@client-website-admin/models/section.model';
 import {LandingPageService} from '@client-website-admin/services/landing-page.service';
@@ -10,7 +10,6 @@ import {
   Input,
   ElementRef,
   ViewChild,
-  AfterViewInit,
   OnDestroy,
 } from '@angular/core';
 import {
@@ -22,8 +21,8 @@ import {
 } from '@angular/forms';
 import {Hall} from '@halls/models/halls.model';
 import {NotificationService} from '@core/services';
-import {DragCoordinationService} from '@core/services/drag-coordination.service';
-import Sortable from 'sortablejs';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {noDoubleSpaceValidator} from '@core/validators';
 
 @Component({
   selector: 'app-hall-clients',
@@ -31,7 +30,7 @@ import Sortable from 'sortablejs';
   styleUrl: './hall-clients.component.scss',
   standalone: false,
 })
-export class HallClientsComponent implements AfterViewInit, OnDestroy {
+export class HallClientsComponent implements OnDestroy {
   @Input() landingPageData: LandingGeneralInformationDto | null = null;
   @Input() section: LandingPageSection | null = null;
   @Input() currentHall: Hall | null = null;
@@ -41,23 +40,17 @@ export class HallClientsComponent implements AfterViewInit, OnDestroy {
   maxClients = 10;
   activeClient: any = null;
   isEditingExisting = false;
-  private sortableInstance: Sortable | null = null;
   private currentSavedClients: any[] = [];
 
   constructor(
     private controlContainer: ControlContainer,
     private fb: FormBuilder,
     private landingPageService: LandingPageService,
-    private notificationService: NotificationService,
-    private dragCoordination: DragCoordinationService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
     this.initializeClientArray(this.section?.customers!);
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => this.initializeSortable(), 500);
   }
 
   ngOnDestroy() {
@@ -67,9 +60,6 @@ export class HallClientsComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    if (this.sortableInstance) {
-      this.sortableInstance.destroy();
-    }
   }
 
   get form(): FormGroup {
@@ -108,7 +98,6 @@ export class HallClientsComponent implements AfterViewInit, OnDestroy {
       this.currentSavedClients = [...customers];
     }
     this.activeClient = null;
-    this.initializeSortable();
   }
 
   addClient() {
@@ -135,7 +124,6 @@ export class HallClientsComponent implements AfterViewInit, OnDestroy {
     this.hallClients.push(clientControl);
     this.activeClient = clientControl;
     this.isEditingExisting = false;
-    this.initializeSortable();
   }
 
   editClient(client: any) {
@@ -145,7 +133,6 @@ export class HallClientsComponent implements AfterViewInit, OnDestroy {
 
     this.activeClient = client;
     this.isEditingExisting = true;
-    this.initializeSortable();
   }
 
   removeClient(index: number) {
@@ -154,69 +141,50 @@ export class HallClientsComponent implements AfterViewInit, OnDestroy {
 
     if (clientId) {
       this.landingPageService.removeClient(clientId).subscribe({
-        next: () => {
-          this.hallClients.removeAt(index);
-          this.initializeSortable();
+        next: (response: CustomerResponseDto[]) => {
+          if (this.section) {
+            this.section.customers = response.map(customer => ({
+              ...customer,
+              image: customer.imagePath
+            }));
+            this.updateFormArrayFromResponse(response);
+          }
           this.notificationService.showSuccess('landing.clientDeleted');
         },
       });
     } else {
       this.hallClients.removeAt(index);
-      this.initializeSortable();
       this.notificationService.showSuccess('landing.clientDeleted');
     }
   }
 
-  private initializeSortable() {
-    if (this.clientsList?.nativeElement) {
-      if (this.sortableInstance) {
-        this.sortableInstance.destroy();
-      }
-
-      this.sortableInstance = Sortable.create(this.clientsList.nativeElement, {
-        animation: 150,
-        handle: '.client-drag-handle',
-        disabled: !!this.activeClient || this.dragCoordination.shouldDisableDrag('clients', 'main-sections'),
-        onEnd: (evt) => {
-          this.dragCoordination.endDrag();
-          this.onSortableEnd(evt);
-        },
-        onStart: () => {
-          this.dragCoordination.startDrag('clients');
-          return true;
-        }
-      });
-    }
-  }
-
-  private onSortableEnd(evt: any) {
-    const {oldIndex, newIndex} = evt;
-    if (oldIndex !== newIndex) {
+  onClientsDropped(event: CdkDragDrop<any[]>) {
+    if (event.previousIndex !== event.currentIndex) {
       const controls = this.hallClients.controls;
-      const item = controls[oldIndex];
-      controls.splice(oldIndex, 1);
-      controls.splice(newIndex, 0, item);
+      moveItemInArray(controls, event.previousIndex, event.currentIndex);
 
-      this.updateClientsOrder();
+      const movedControl = controls[event.currentIndex];
+      const clientId = movedControl.get('id')?.value;
+      const newOrder = event.currentIndex + 1;
 
-      this.notificationService.showSuccess('landing.clientsReordered');
-    }
-  }
-
-  private updateClientsOrder() {
-    this.hallClients.controls.forEach((control, index) => {
-      const clientId = control.get('id')?.value;
       if (clientId) {
         const formData = new FormData();
-        formData.append('name', control.get('name')?.value);
-        if (control.get('site_url')?.value) {
-          formData.append('site_url', control.get('site_url')?.value);
-        }
-        formData.append('order', (index + 1).toString());
+        formData.append('order', newOrder.toString());
 
-        this.landingPageService.updateClient(clientId, formData).subscribe();
+        this.landingPageService.updateClient(clientId, formData).subscribe({
+        next: (response: CustomerResponseDto[]) => {
+          if (this.section) {
+            this.section.customers = response.map(customer => ({
+              ...customer,
+              image: customer.imagePath
+            }));
+            this.updateFormArrayFromResponse(response);
+          }
+          this.notificationService.showSuccess('landing.clientsReordered');
+        },
+        });
       }
-    });
+    }
   }
 
   createClientData(adding: boolean) {
@@ -266,11 +234,16 @@ export class HallClientsComponent implements AfterViewInit, OnDestroy {
       : this.landingPageService.addClient(this.createClientData(true));
 
     request.subscribe({
-      next: () => {
-        this.refreshData();
+      next: (response: CustomerResponseDto[]) => {
+        if (this.section) {
+          this.section.customers = response.map(customer => ({
+            ...customer,
+            image: customer.imagePath
+          }));
+          this.updateFormArrayFromResponse(response);
+        }
         this.activeClient = null;
         this.isEditingExisting = false;
-        this.initializeSortable();
         const messageKey = isEditing
           ? 'landing.clientUpdated'
           : 'landing.clientAdded';
@@ -320,6 +293,24 @@ export class HallClientsComponent implements AfterViewInit, OnDestroy {
     }
     this.activeClient = null;
     this.isEditingExisting = false;
-    this.initializeSortable();
+  }
+
+  private updateFormArrayFromResponse(response: CustomerResponseDto[]) {
+    while (this.hallClients.length !== 0) {
+      this.hallClients.removeAt(0);
+    }
+
+    const sortedResponse = response.sort((a, b) => a.order - b.order);
+
+    sortedResponse.forEach(customer => {
+      const formGroup = this.fb.group({
+        id: [customer.id],
+        name: [customer.name, [Validators.required, noDoubleSpaceValidator]],
+        site_url: [customer.site_url],
+        image: [customer.imagePath],
+        order: [customer.order]
+      });
+      this.hallClients.push(formGroup);
+    });
   }
 }

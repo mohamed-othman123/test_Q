@@ -1,0 +1,139 @@
+@use 'sass:color';
+@use 'variables' as variables;
+@use 'mixins' as mixins;
+
+%admin-button-base {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  text-decoration: none;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  i {
+    font-size: 0.875rem;
+  }
+}
+
+%admin-button-primary {
+  @extend %admin-button-base;
+  background: variables.$primary-color;
+  color: white;
+  border: 1px solid variables.$primary-color;
+
+  &:hover:not(:disabled) {
+    background-color: color.adjust(variables.$primary-color, $lightness: -5%);
+    border-color: color.adjust(variables.$primary-color, $lightness: -5%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95) translateY(0);
+  }
+}
+
+%admin-button-secondary {
+  @extend %admin-button-base;
+  background: transparent;
+  border: 1px solid variables.$border-color;
+  color: #374151;
+
+  &:hover:not(:disabled) {
+    border-color: variables.$primary-color;
+    color: variables.$primary-color;
+  }
+}
+
+%admin-button-icon {
+  @extend %admin-button-base;
+  background: transparent;
+  border: 1px solid #d1d5db;
+  color: #6b7280;
+  padding: 0.25rem;
+  border-radius: 4px;
+
+  &:hover:not(:disabled) {
+    color: variables.$primary-color;
+    background-color: rgba(variables.$primary-color, 0.1);
+  }
+}
+
+%admin-button-edit {
+  @extend %admin-button-icon;
+
+  &:hover:not(:disabled) {
+    color: variables.$primary-color;
+  }
+}
+
+%admin-button-delete {
+  @extend %admin-button-icon;
+
+  &:hover:not(:disabled) {
+    color: variables.$red;
+  }
+}
+
+%admin-button-cancel {
+  @extend %admin-button-base;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #6b7280;
+
+  &:hover:not(:disabled) {
+    color: #dc2626;
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+}
+
+%admin-button-expand {
+  @extend %admin-button-base;
+  background: transparent;
+  border: 1px solid #d1d5db;
+  color: #6b7280;
+  padding: 0.5rem;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  justify-content: center;
+
+  &:hover:not(:disabled) {
+    background: #f3f4f6;
+    border-color: variables.$primary-color;
+    color: variables.$primary-color;
+  }
+
+  &:active:not(:disabled) {
+    background: #e5e7eb;
+  }
+
+  i {
+    font-size: 0.875rem;
+    transition: transform 0.2s ease;
+  }
+}
+
+%admin-button-add {
+  @extend %admin-button-secondary;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

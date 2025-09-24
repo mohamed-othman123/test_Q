@@ -93,6 +93,10 @@
           &:hover {
             color: white;
           }
+
+          &:after {
+            background: black !important;
+          }
         }
       }
 

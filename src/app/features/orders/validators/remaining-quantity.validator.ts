@@ -11,7 +11,7 @@ export const remainingQuantityValidator = (): ValidatorFn => {
     const product = fg.get('product')?.value;
     const quantity = fg.get('quantity')?.value;
     if (product && quantity) {
-      if (product && quantity > (product as InventoryItem).quantity) {
+      if (product && quantity > (product as InventoryItem).totalQuantity!) {
         return {exceedsRemainingQuantity: true};
       }
     }

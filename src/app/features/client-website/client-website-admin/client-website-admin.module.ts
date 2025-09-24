@@ -14,7 +14,8 @@ import {PopularQuestionsComponent} from './components/popular-questions/popular-
 import {SocialMediaComponent} from './components/social-media/social-media.component';
 import {LocationComponent} from './components/location/location.component';
 import {EmptyDataComponent} from './components/empty-data/empty-data.component';
-import {HallDetailsComponent} from './components/hall-details/hall-details.component';
+import {HallMetricsComponent} from './components/hall-metrics/hall-metrics.component';
+import {HallEventsComponent} from './components/hall-events/hall-events.component';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import { HallClientsComponent } from './components/hall-clients/hall-clients.component';
 import { AddSectionComponent } from './components/add-section/add-section.component';
@@ -31,7 +32,8 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
     SocialMediaComponent,
     LocationComponent,
     EmptyDataComponent,
-    HallDetailsComponent,
+    HallMetricsComponent,
+    HallEventsComponent,
     HallClientsComponent,
     AddSectionComponent,
   ],

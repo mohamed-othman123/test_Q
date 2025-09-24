@@ -1,32 +1,19 @@
 @use 'variables';
 @use 'mixins';
+@use '../../../../../styles/components/website/admin-cards' as *;
+@use '../../../../../styles/components/website/admin-forms' as *;
+@use '../../../../../styles/components/website/admin-buttons' as *;
+@use '../../../../../styles/components/website/admin-states' as *;
+@use '../../../../../styles/components/website/admin-drag-drop' as *;
+@use '../../../../../styles/components/website/admin-switches' as *;
 
 :host {
   .media-section {
-    background: white;
-    padding: 2rem;
-    border-radius: variables.$rounded-md;
-    margin-bottom: 1.5rem;
-    border: 1px solid variables.$primary-color;
+    @extend %admin-basic-card;
 
     .header-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
+      @extend %admin-card-header;
       border-bottom: 1px solid variables.$border-color;
-
-      h4 {
-        margin: 0;
-        font-size: 1.25rem;
-        font-weight: 500;
-        color: #1f2937;
-      }
-
-      button {
-        max-width: fit-content;
-      }
     }
 
     h5 {

@@ -34,7 +34,7 @@ export class OtpComponent implements OnDestroy {
     private route: ActivatedRoute,
     private navigationService: NavigationService,
   ) {
-    const state = router.getCurrentNavigation()?.extras.state;
+    const state = router.currentNavigation()?.extras.state;
     if (state) {
       this.email = state?.['email'];
       this.channel = state?.['channel'];

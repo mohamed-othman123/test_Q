@@ -16,6 +16,18 @@
     [label]="'paymentMethods.nameEn' | translate">
     <i class="pi pi-wallet" style="color: gray"></i>
   </app-input>
+  <app-dropdown
+    [filter]="true"
+    filterBy="name"
+    [control]="f['accountId']"
+    [options]="accountList"
+    controlName="accountId"
+    [optionLabel]="lang.lang === 'ar' ? 'name_ar' : 'name'"
+    optionValue="id"
+    [placeholder]="'paymentMethods.linkedAccountPlaceholder' | translate"
+    [label]="'paymentMethods.linkedAccount' | translate">
+    <i class="pi pi-user" style="color: gray"></i>
+  </app-dropdown>
 
   <app-input
     [control]="f['description']"

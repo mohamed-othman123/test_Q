@@ -107,7 +107,6 @@
     "discounts": "Discounts",
     "analytics": "Analytics",
     "dashboards": "Dashboards",
-    "analyticsDashboard": "Dashboard View",
     "analyticsQuestion": "Question View",
     "aiChat": "AI Analytics Assistant",
     "inventory": "Inventory",
@@ -169,7 +168,17 @@
     "contacts": "Contacts",
     "VIP": "VIP",
     "notVIP": "Not VIP",
-    "bookings": "Bookings"
+    "bookings": "Bookings",
+    "streetName": "Street Name",
+    "streetNamePlaceholder": "Enter street name",
+    "buildingNumber": "Building Number",
+    "buildingNumberPlaceholder": "Enter building number",
+    "citySubdivisionName": "City Subdivision Name",
+    "citySubdivisionNamePlaceholder": "Enter city subdivision name",
+    "cityName": "City Name",
+    "cityNamePlaceholder": "Enter city name",
+    "postalZone": "Postal Zone",
+    "postalZonePlaceholder": "Enter postal zone"
   },
   "permissions": {
     "addNewPermission": "Add new Occupation",
@@ -576,7 +585,9 @@
     "selectType": "Select type",
     "nameAr": "Payment method name in Arabic",
     "nameArPlaceholder": "Enter payment method name in Arabic",
-    "nameEn": "Payment method name in English"
+    "nameEn": "Payment method name in English",
+    "linkedAccount": "Linked Account",
+    "linkedAccountPlaceholder": "Select linked account"
   },
   "services": {
     "serviceName": "Service name in English",
@@ -929,7 +940,8 @@
     "product": "Product",
     "supplier_product_updated": "Product updated successfully",
     "updateTheProductFirst": "Please finish updating the product before submitting the supplier",
-    "expenses": "Expenses"
+    "expenses": "Expenses",
+    "duplicateSupplierWarning": "This supplier is already exists"
   },
   "purchases": {
     "title": "Expenses",
@@ -1079,7 +1091,6 @@
     "addPayment": "Add Payment",
     "purchasesExpenses": "Purchase Expenses",
     "generalExpenses": "General Expenses",
-    "expenseType": "Expense Type",
     "paymentNote": "Payment Note",
     "enterPaymentNote": "Enter Payment Note",
     "addDiscount": "Add Discount",
@@ -1273,6 +1284,9 @@
   },
   "landing": {
     "websiteSettings": "Website Settings",
+    "capacity": "Capacity",
+    "noHallEvents": "No hall events",
+    "noHallSections": "No hall sections",
     "liveView": "View Landing",
     "basicInfo": "Basic Information",
     "hallDomainName": "Hall Domain Name",
@@ -1453,9 +1467,15 @@
     "sectionsReordered": "Sections reordered successfully",
     "sectionRemoved": "Section removed successfully",
     "sectionDisabled": "Section disabled successfully",
+    "sectionDeactivated": "Section deactivated successfully",
+    "sectionActivated": "Section activated successfully",
+    "sectionDeleted": "Section deleted successfully",
     "sectionAdded": "Section added successfully",
     "sectionUpdated": "Section updated successfully",
     "sectionRemoveError": "Error removing section",
+    "sectionDeactivateError": "Error deactivating section",
+    "sectionActivateError": "Error activating section",
+    "sectionDeleteError": "Error deleting section",
     "sectionAddError": "Error adding section",
     "sectionUpdateError": "Error updating section",
     "sectionsReorderError": "Error reordering sections",
@@ -1597,8 +1617,6 @@
     "saveChanges": "Save Changes",
     "updatedAt": "Updated At:",
     "notUpdated": "No user has updated this",
-    "expand": "Expand",
-    "collapse": "Collapse",
     "title": "Title",
     "description": "Description",
     "imagePreview": "Image Preview",
@@ -1620,7 +1638,9 @@
     "selectDate": "Select Date",
     "canceled": "Canceled",
     "active": "Active",
-    "reset": "Reset"
+    "reset": "Reset",
+    "linkedAccount": "Linked Account",
+    "linkedAccountPlaceholder": "Select linked account"
   },
   "comments": {
     "title": "Comments",
@@ -1908,7 +1928,25 @@
     "enterTaxRegistrationNumber": "Enter Tax Registration Number",
     "address": "Address",
     "enterAddress": "Enter Address",
-    "updated": "Organization information has been successfully updated"
+    "updated": "Organization information has been successfully updated",
+    "unitName": "Unit Name",
+    "category": "Category",
+    "streetName": "Street Name",
+    "buildingNumber": "Building Number",
+    "citySubdivisionName": "City Subdivision Name",
+    "postalZone": "Postal Zone",
+    "cityName": "City Name",
+    "enterUnitName": "Enter unit name",
+    "enterCategory": "Enter category",
+    "enterStreetName": "Enter street name",
+    "enterBuildingNumber": "Enter building number",
+    "enterCitySubdivisionName": "Enter city subdivision name",
+    "enterPostalZone": "Enter postal zone",
+    "enterCityName": "Enter city name",
+    "zatcaConnect": "Connect to Zatca",
+    "otpLabel": "Zatca OTP",
+    "otpDescription": "Enter the Zatca OTP from Fatoora platform that belong to your VAT Number",
+    "connect": "Connect"
   },
   "expensesItems": {
     "title": "Expense Items",
@@ -2046,13 +2084,32 @@
     "title": "Analytics Dashboard",
     "subtitle": "View comprehensive reports, dashboards, and data visualizations for your business insights",
     "defaultDashboardDescription": "Interactive dashboard with key business metrics and insights",
-    "defaultQuestionDescription": "Data visualization and chart with specific business insights",
     "dashboards": "Dashboards",
-    "questions": "Questions",
     "totalItems": "Total Items",
     "viewItem": "View Details",
     "clearSearch": "Clear Search",
     "backToAnalytics": "Back to Analytics",
+    "expenseItem": "Expense Item",
+    "analyticsDashboard": {
+      "defaultDescription": "Interactive dashboard with key business metrics and insights",
+      "bookingDescription": "Comprehensive booking analytics dashboard providing real-time insights into reservations, occupancy rates, revenue trends, and customer booking patterns to optimize your booking management and maximize revenue potential.",
+      "expenseDescription": "Detailed expense tracking and analysis dashboard offering comprehensive insights into spending patterns, cost categories, budget performance, and financial efficiency to help optimize your business expenses and improve profitability.",
+      "filters": {
+        "title": "Filters",
+        "month": "Month",
+        "3months": "3 Months",
+        "6months": "6 Months",
+        "year": "Year",
+        "customize": "Custom",
+        "customRange": "Custom Range",
+        "bookingFilters": "Booking Filters",
+        "expenseFilters": "Expense Filters",
+        "fromDate": "Date (From)",
+        "toDate": "Date (To)",
+        "timeGranularity": "Time Granularity",
+        "loadingContent": "Loading analytics..."
+      }
+    },
     "backToDashboards": "Back to Dashboards",
     "lastUpdated": "Last Updated",
     "fullscreen": "Fullscreen",
@@ -2063,17 +2120,14 @@
     },
     "tabs": {
       "all": "All Items",
-      "dashboards": "Dashboards",
-      "questions": "Questions"
+      "dashboards": "Dashboards"
     },
     "search": {
-      "placeholder": "Search dashboards and questions..."
+      "placeholder": "Search dashboards..."
     },
     "loading": {
       "title": "Loading Analytics",
-      "message": "Please wait while we load your analytics data...",
-      "questionTitle": "Loading Question",
-      "questionMessage": "Please wait while we load the question data..."
+      "message": "Please wait while we load your analytics data..."
     },
     "error": {
       "title": "Unable to Load Data",
@@ -2082,6 +2136,10 @@
     "empty": {
       "title": "No Analytics Available",
       "message": "No dashboards or questions are currently available.",
+      "noDashboards": {
+        "title": "No Dashboards Available",
+        "message": "There are no analytics dashboards available at the moment. Please check back later or contact your administrator."
+      },
       "noResults": {
         "title": "No Results Found",
         "message": "No items found matching your search for"
@@ -2090,21 +2148,8 @@
         "message": "No analytics items are currently available. Contact your administrator to set up dashboards and questions."
       }
     },
-    "dashboard": {
-      "title": "Dashboard",
-      "defaultDescription": "Interactive dashboard with key business metrics and insights",
-      "viewDashboard": "View Dashboard",
-      "loadingContent": "Loading dashboard content...",
-      "loadingMetadata": "Loading dashboard information..."
-    },
-    "question": {
-      "title": "Question",
-      "loadingContent": "Loading question content...",
-      "loadingMetadata": "Loading question information..."
-    },
     "type": {
-      "dashboard": "Dashboard",
-      "question": "Question"
+      "dashboard": "Dashboard"
     }
   },
   "chat": {
@@ -2163,7 +2208,7 @@
     "itemUpdatedSuccessfully": "Item updated successfully",
     "itemDeletedSuccessfully": "Item deleted successfully",
     "updateItem": "Update Item",
-    "updateItemInfo": "You can only modify the quantity and reorder level with a reason for the change",
+    "updateItemInfo": "You can only modify the description and reorder level with a reason for the change",
     "reason": "Reason",
     "enterReason": "Enter the reason",
     "transactionsList": "Transactions List",
@@ -2188,7 +2233,9 @@
     "deleteItemMessage": "Are you sure you want to delete this item? You will not be able to undo this action.",
     "deleteReason": "Reason for Deletion",
     "deleteConfirmation": " Confirm Deletion",
-    "status": "Status"
+    "status": "Status",
+    "pricesList": "Prices List",
+    "remainingQuantity": "Remaining Quantity"
   },
   "auditTransactions": {
     "id": "ID",
@@ -2237,6 +2284,34 @@
     "addedSuccessfully": "Account added successfully",
     "updatedSuccessfully": "Account updated successfully",
     "deletedSuccessfully": "Account deleted successfully",
-    "treeDescription": "This tree visually represents the chart of accounts, displaying the hierarchical structure of all accounts in the organization. Each node shows the account code, name, debit, and credit balances, allowing users to easily navigate and understand account relationships."
+    "treeDescription": "This tree visually represents the chart of accounts, displaying the hierarchical structure of all accounts in the organization. Each node shows the account code, name, debit, and credit balances, allowing users to easily navigate and understand account relationships.",
+    "exportToExcel": "Export to Excel",
+    "tableOptions": "Table Options",
+    "accountLinkedTo": "Account linked to",
+    "accountLinkedToPlaceholder": "Select from options",
+    "types": {
+      "assets": "Assets",
+      "liabilities": "Liabilities",
+      "equity": "Equity",
+      "revenue": "Revenue",
+      "expenses": "Expenses"
+    },
+    "parentAccountRequired": "Parent account is required "
+  },
+  "address": {
+    "city": "City",
+    "cityPlaceholder": "Enter city",
+    "district": "District",
+    "districtPlaceholder": "Enter district",
+    "street": "Street",
+    "streetPlaceholder": "Enter street",
+    "buildingNumber": "Building Number",
+    "buildingNumberPlaceholder": "Enter building number",
+    "unitNumber": "Unit Number",
+    "unitNumberPlaceholder": "Enter unit number",
+    "additionalNumber": "Additional Number",
+    "additionalNumberPlaceholder": "Enter additional number",
+    "postalCode": "Postal Code",
+    "postalCodePlaceholder": "Enter postal code"
   }
 }

@@ -6,7 +6,9 @@ import {
   ImageItem,
   PopularQuestion,
   SocialLinks,
+  HallEvent,
 } from './landing-page.model';
+import {HallSection} from '@halls/models/halls.model';
 import {FormGroup} from '@angular/forms';
 
 export enum LandingPageSectionType {
@@ -17,6 +19,8 @@ export enum LandingPageSectionType {
   POPULAR_QUESTION = 'popularQuestions',
   CUSTOMERS = 'customers',
   SOCIAL_LINKS = 'socialLinks',
+  HALL_SECTIONS = 'hallSections',
+  EVENTS = 'events',
 }
 
 export interface LandingPageSection {
@@ -27,6 +31,7 @@ export interface LandingPageSection {
   description_ar?: string;
   type: LandingPageSectionType;
   order: number;
+  isActive: boolean;
   services?: string[];
   features?: Feature[];
   banners?: BannerItem[];
@@ -35,11 +40,30 @@ export interface LandingPageSection {
   customers?: Customer[];
   socialLinks?: SocialLinks;
   clients?: Client[];
+  sections?: HallSection[];
+  events?: HallEvent[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface CreateLandingPageSectionDto {
   landingPageId: number;
-  data: LandingPageSection;
+  type: LandingPageSectionType;
+  title_en?: string;
+  title_ar?: string;
+  description_en?: string;
+  description_ar?: string;
+  order?: number;
+  isActive?: boolean;
+}
+
+export interface UpdateLandingPageSectionDto {
+  title_en?: string;
+  title_ar?: string;
+  description_en?: string;
+  description_ar?: string;
+  order?: number;
+  isActive?: boolean;
 }
 
 export interface SectionTemplate {

@@ -13,12 +13,13 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
       </div>
 
       <div class="header-actions">
-        <button
+        <!-- TODO: Re-enable dark mode toggle when needed -->
+        <!-- <button
           class="action-btn theme-toggle"
           (click)="themeChange.emit()"
           [title]="theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
           <i class="pi" [class.pi-sun]="theme === 'dark'" [class.pi-moon]="theme === 'light'"></i>
-        </button>
+        </button> -->
 
       </div>
     </div>

@@ -5,6 +5,11 @@
   display: flex;
   background: white;
   gap: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
 
   justify-content: flex-end;
   padding-inline: 1rem;

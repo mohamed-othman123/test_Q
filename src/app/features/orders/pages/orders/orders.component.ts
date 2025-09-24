@@ -265,7 +265,13 @@ export class OrdersComponent extends Filter implements OnInit, OnDestroy {
           order.paidAmount > 0
         );
       case 'bookingCost':
-        return isActive && canEdit && isConfirmed;
+        return (
+          (this.permissionsService.hasPermission('update:bookings') ||
+            this.permissionsService.hasPermission('create:bookings')) &&
+          isActive &&
+          canEdit &&
+          isConfirmed
+        );
       default:
         return false;
     }

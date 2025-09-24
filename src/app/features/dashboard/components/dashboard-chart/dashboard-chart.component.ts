@@ -16,10 +16,10 @@ import {
 } from 'rxjs';
 
 @Component({
-    selector: 'app-dashboard-chart',
-    templateUrl: './dashboard-chart.component.html',
-    styleUrl: './dashboard-chart.component.scss',
-    standalone: false
+  selector: 'app-dashboard-chart',
+  templateUrl: './dashboard-chart.component.html',
+  styleUrl: './dashboard-chart.component.scss',
+  standalone: false,
 })
 export class DashboardChartComponent implements OnInit, OnDestroy {
   chartOption: EChartsOption = {};
@@ -207,6 +207,13 @@ export class DashboardChartComponent implements OnInit, OnDestroy {
         ...this.getBaseChartConfig().xAxis,
         data: this.generateXAxisLabels(chartData),
         type: 'category',
+        boundaryGap: true,
+        axisLabel: {
+          ...(this.getBaseChartConfig().xAxis &&
+            (this.getBaseChartConfig().xAxis as any).axisLabel),
+          // explicitly set type to "category" for axisLabel
+          type: 'category',
+        },
       },
     };
   }

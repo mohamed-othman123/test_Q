@@ -12,7 +12,7 @@ export const canDeactivateOrder: CanDeactivateFn<AddNewOrderComponent> = (
   const confirmationModalService = inject(ConfirmationModalService);
   const router = inject(Router);
 
-  const currentNavigation = router.getCurrentNavigation();
+  const currentNavigation = router.currentNavigation();
 
   if (currentNavigation?.extras.state?.['skipGuard']) {
     return of(true);

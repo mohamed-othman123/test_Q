@@ -9,7 +9,7 @@ import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Client, ClientType, Contact} from '@clients/models/client.model';
 import {CustomersService} from '@clients/services/Customers.service';
 import {noDoubleSpaceValidator, validateDoubleName} from '@core/validators';
-import {Subscription} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {HallsService} from '@halls/services/halls.service';
 import {DrawerService} from '@core/services/drawer.service';
 import {extractNationalPhoneNumber} from '@core/utils';
@@ -18,10 +18,10 @@ import {FormMode} from '@core/models';
 import {CommentType} from '../comments/models/comment';
 
 @Component({
-    selector: 'app-add-new-client',
-    templateUrl: './add-new-client.component.html',
-    styleUrls: ['./add-new-client.component.scss'],
-    standalone: false
+  selector: 'app-add-new-client',
+  templateUrl: './add-new-client.component.html',
+  styleUrls: ['./add-new-client.component.scss'],
+  standalone: false,
 })
 export class AddNewClientComponent implements OnInit, OnDestroy {
   @Output() refreshDataTable = new EventEmitter<void>();
@@ -36,11 +36,15 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
 
   mode: FormMode = 'add';
 
+  clientExistsInSameHall: boolean = false;
+  showForm = false;
+
   individualForm = this.fb.group({
     name: [
       '',
       [Validators.required, validateDoubleName(), noDoubleSpaceValidator()],
     ],
+    address: this.createAddressForm(),
     phone: [null as any | null, Validators.required],
     email: [null, Validators.email],
     notes: ['', noDoubleSpaceValidator()],
@@ -85,7 +89,7 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
         noDoubleSpaceValidator(),
       ],
     ],
-    address: ['', [Validators.required, noDoubleSpaceValidator()]],
+    address: this.createAddressForm(),
     phone: [null as any | null, Validators.required],
     email: ['', Validators.email],
     notes: ['', noDoubleSpaceValidator()],
@@ -99,6 +103,7 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
       '',
       [Validators.required, validateDoubleName(), noDoubleSpaceValidator()],
     ],
+    address: this.createAddressForm(),
     phone: [null as any | null, Validators.required],
     email: ['', Validators.email],
     notes: ['', noDoubleSpaceValidator()],
@@ -155,18 +160,132 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
     this.subs.add(sub);
   }
 
+  checkDuplicateClient(
+    type: 'Individual' | 'Facility' | 'Governmental Facility',
+  ) {
+    if (this.mode === 'edit') return;
+
+    const filters: any = this.constructFiltersBasedOnType(type);
+
+    if (Object.keys(filters).length === 0) return;
+
+    this.clientsService
+      .getClients(filters)
+      .pipe(
+        tap(() => {
+          this.clientExistsInSameHall = false;
+          this.resetForms();
+        }),
+      )
+      .subscribe((res) => {
+        if (res.items.length === 0) {
+          this.showForm = true;
+          return;
+        }
+
+        const currentHallId = this.hallsService.getCurrentHall()?.id;
+
+        const currentClient = res.items[0];
+
+        this.clientExistsInSameHall = currentClient?.halls!.some(
+          (hall) => hall.id === currentHallId,
+        );
+
+        if (this.clientExistsInSameHall) {
+          this.showForm = false;
+          return;
+        }
+
+        this.showForm = true;
+        this.client = currentClient;
+        this.setFormValues(this.client);
+        this.storeInitialValues();
+        this.disableUnusedTab(this.client.type);
+      });
+  }
+
+  constructFiltersBasedOnType(
+    type: 'Individual' | 'Facility' | 'Governmental Facility',
+  ) {
+    const filters: any = {};
+    switch (type) {
+      case 'Individual':
+        if (this.individualFormControls.nationalOrResidencyId.valid) {
+          filters.nationalOrResidencyId =
+            this.individualFormControls.nationalOrResidencyId.value;
+          filters.type = 'Individual';
+        }
+
+        break;
+      case 'Facility':
+        if (this.facilityFormControls.commercialRegistrationNumber.valid) {
+          filters.commercialRegistrationNumber =
+            this.facilityFormControls.commercialRegistrationNumber.value;
+          filters.type = 'Facility';
+        }
+
+        break;
+      case 'Governmental Facility':
+        if (this.governmentFormControls.name.valid) {
+          filters.name = this.governmentFormControls.name.value;
+          filters.type = 'Governmental Facility';
+        }
+
+        break;
+    }
+
+    return filters;
+  }
+
+  createAddressForm(): FormGroup {
+    return this.fb.group({
+      city: [null as string | null, [Validators.required]],
+      district: [null as string | null, [Validators.required]],
+      street: [null as string | null, [Validators.required]],
+      buildingNumber: [null as string | null, [Validators.required]],
+      unitNumber: [null as string | null],
+      additionalNumber: [null as string | null],
+      postalCode: [
+        null as string | null,
+        [Validators.required, Validators.minLength(5), Validators.maxLength(5)],
+      ],
+    });
+  }
+
   resetForms() {
     this.disableFacilityTab = false;
     this.disableIndividualTab = false;
     this.disableGovernmentFacilityTap = false;
-    this.individualForm.reset();
-    this.facilityForm.reset();
-    this.governmentFacilityForm.reset();
+
+    const nationalOrResidencyId = this.individualForm.get(
+      'nationalOrResidencyId',
+    )?.value;
+    this.individualForm.reset({
+      type: 'Individual',
+      nationalOrResidencyId: nationalOrResidencyId, // preserve value
+    });
+
+    const commercialRegistrationNumber = this.facilityForm.get(
+      'commercialRegistrationNumber',
+    )?.value;
+    this.facilityForm.reset({
+      type: 'Facility',
+      commercialRegistrationNumber: commercialRegistrationNumber, // preserve value
+    });
+
+    const name = this.governmentFacilityForm.get('name')?.value;
+    this.governmentFacilityForm.reset({
+      name: name,
+      type: 'Governmental Facility',
+    });
     this.client = null;
 
     this.facilityContactsArray.clear();
     this.governmentContactsArray.clear();
     this.individualContactsArray.clear();
+
+    this.showForm = false;
+    this.clientExistsInSameHall = false;
   }
 
   storeInitialValues() {
@@ -190,7 +309,7 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
         contact.phone as unknown as string,
       );
       const providerGroup = this.fb.group({
-        name: [contact.name, Validators.required],
+        name: [contact.name, [Validators.required]],
         email: [contact.email],
         phone: [phone, Validators.required],
         originalPhone: [contact.phone],
@@ -205,6 +324,15 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
         this.individualForm.patchValue({
           name: client.name,
           email: client.email as any,
+          address: {
+            city: client.address?.city ?? null,
+            district: client.address?.district ?? null,
+            street: client.address?.street ?? null,
+            buildingNumber: client.address?.buildingNumber ?? null,
+            unitNumber: client.address?.unitNumber ?? null,
+            additionalNumber: client.address?.additionalNumber ?? null,
+            postalCode: client.address?.postalCode ?? null,
+          },
           phone: extractNationalPhoneNumber(client.phone || ''),
           notes: client.notes || '',
           gender: client.gender,
@@ -222,7 +350,15 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
         this.facilityForm.patchValue({
           name: client.name,
           email: client.email,
-          address: client.address || '',
+          address: {
+            city: client.address?.city ?? null,
+            district: client.address?.district ?? null,
+            street: client.address?.street ?? null,
+            buildingNumber: client.address?.buildingNumber ?? null,
+            unitNumber: client.address?.unitNumber ?? null,
+            additionalNumber: client.address?.additionalNumber ?? null,
+            postalCode: client.address?.postalCode ?? null,
+          },
           phone: extractNationalPhoneNumber(client.phone || ''),
           notes: client.notes || '',
           taxRegistrationNumber:
@@ -242,6 +378,15 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
         this.governmentFacilityForm.patchValue({
           name: client.name,
           email: client.email,
+          address: {
+            city: client.address?.city ?? null,
+            district: client.address?.district ?? null,
+            street: client.address?.street ?? null,
+            buildingNumber: client.address?.buildingNumber ?? null,
+            unitNumber: client.address?.unitNumber ?? null,
+            additionalNumber: client.address?.additionalNumber ?? null,
+            postalCode: client.address?.postalCode ?? null,
+          },
           phone: extractNationalPhoneNumber(client.phone || ''),
           notes: client.notes || '',
           isVIB: client?.isVIB || false,
@@ -282,6 +427,7 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
 
   onTabChange(index: number) {
     this.activeIndex = index;
+    this.clientExistsInSameHall = false;
   }
 
   getChangedValues(currentValues: any): any {
@@ -309,6 +455,8 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
           type: ClientType.Individual,
           nationalOrResidencyId:
             this.individualForm.value.nationalOrResidencyId,
+          address: this.individualForm.value.address,
+          hallId: this.hallsService.getCurrentHall()?.id,
           contacts:
             !this.client?.id &&
             this.individualForm?.get('contacts')?.value?.length === 0
@@ -333,6 +481,7 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
             this.facilityForm.value.commercialRegistrationNumber,
           type: ClientType.Facility,
           isVIB: this.facilityForm.value.isVIB || false,
+          hallId: this.hallsService.getCurrentHall()?.id,
           contacts:
             !this.client?.id &&
             this.facilityForm?.get('contacts')?.value?.length === 0
@@ -353,6 +502,8 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
           notes: this.governmentFacilityForm.value.notes,
           type: ClientType.Governmental,
           isVIB: this.governmentFacilityForm.value.isVIB || false,
+          address: this.governmentFacilityForm.value.address,
+          hallId: this.hallsService.getCurrentHall()?.id,
           contacts:
             !this.client?.id &&
             this.governmentFacilityForm?.get('contacts')?.value?.length === 0
@@ -374,55 +525,41 @@ export class AddNewClientComponent implements OnInit, OnDestroy {
     const currentHall = this.hallsService.getCurrentHall();
     if (!currentHall) return;
 
-    if (this.client) {
-      const formValue = this.createRequestData();
-      const changedValues = this.getChangedValues(formValue);
+    const isEditMode = this.client && this.mode === 'edit';
+    const isUpsertMode = this.client && this.mode === 'add';
 
-      if (Object.keys(changedValues).length > 0) {
-        if (changedValues.phone) {
-          changedValues.phone =
-            changedValues.phone.internationalNumber || changedValues.phone;
-        }
+    const formValue = this.createRequestData();
 
-        changedValues.halls = [{id: currentHall.id}];
+    const req$ = isEditMode
+      ? this.clientsService.updateClient(this.client?.id!, formValue as Client)
+      : isUpsertMode
+        ? this.clientsService.getClientFromAnotherHall(
+            this.client?.id!,
+            formValue as Client,
+          )
+        : this.clientsService.createNewClient(formValue as Client);
 
-        const sub = this.clientsService
-          .updateClient(this.client.id, changedValues)
-          .subscribe(() => {
-            this.refreshDataTable.emit();
-            this.drawerService.close();
-          });
-        this.subs.add(sub);
-      } else {
-        this.individualForm.reset();
-        this.facilityForm.reset();
-      }
-    } else {
-      const formValue = {
-        ...this.createRequestData(),
-        halls: [{id: currentHall.id}],
-      };
-      const sub = this.clientsService
-        .createNewClient(formValue)
-        .subscribe((response) => {
-          this.drawerService.drawerState.next({
-            visible: false,
-            mode: 'add',
-            title: '',
-            onCloseData: response,
-            submitButtonText: 'common.save',
-            submitButtonIcon: 'pi pi-save',
-          });
-          this.refreshDataTable.emit();
-          this.drawerService.close();
-        });
-      this.subs.add(sub);
-    }
+    const sub = req$.subscribe((response) => {
+      this.drawerService.drawerState.next({
+        visible: false,
+        mode: 'add',
+        title: '',
+        onCloseData: response,
+        submitButtonText: 'common.save',
+        submitButtonIcon: 'pi pi-save',
+      });
+
+      this.refreshDataTable.emit();
+      this.drawerService.close();
+    });
   }
 
   addNewContact(FormArray: FormArray) {
     const newContact = this.fb.group({
-      name: ['', [Validators.required, noDoubleSpaceValidator()]],
+      name: [
+        '',
+        [Validators.required, noDoubleSpaceValidator(), validateDoubleName()],
+      ],
       phone: ['', Validators.required],
       email: ['', Validators.email],
     });

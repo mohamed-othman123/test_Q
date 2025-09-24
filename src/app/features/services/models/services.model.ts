@@ -12,6 +12,7 @@ export interface Service {
   created_at: string;
   updated_at: string;
   deleted_at: string;
+  account: {id: number; name: string; name_ar: string; accountCode: string};
 }
 
 export interface HallServiceDetails {

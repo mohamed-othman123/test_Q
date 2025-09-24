@@ -1,0 +1,88 @@
+@use 'variables';
+@use 'mixins';
+@use '../../../../../styles/components/website/admin-cards' as *;
+@use '../../../../../styles/components/website/admin-forms' as *;
+@use '../../../../../styles/components/website/admin-buttons' as *;
+@use '../../../../../styles/components/website/admin-states' as *;
+@use '../../../../../styles/components/website/admin-drag-drop' as *;
+@use '../../../../../styles/components/website/admin-switches' as *;
+
+:host {
+  display: block;
+  padding: 1rem;
+
+  .hall-metrics {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    .hall-metrics-item {
+      display: flex;
+      gap: 1rem;
+      border: 1px solid #f0f4f3;
+      border-radius: 1rem;
+      align-items: center;
+      padding: 1rem;
+      min-width: 198px;
+      flex: 1;
+
+      @include mixins.sm(variables.$max) {
+        width: 100%;
+        min-width: 100%;
+      }
+
+      .icon-container {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background-color: #caf6ee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        i {
+          color: #14c6a5;
+          font-size: 1.25rem;
+        }
+      }
+
+      .hall-metrics-item-content {
+        white-space: nowrap;
+        display: flex;
+        flex-direction: column;
+
+        strong {
+          color: #14c6a5;
+          font-size: 1rem;
+          font-weight: 700;
+          margin-bottom: 0.25rem;
+          display: block;
+        }
+
+        p {
+          font-weight: 700;
+          font-size: 10px;
+          margin: 0;
+          color: #666;
+        }
+      }
+    }
+  }
+
+  [dir='rtl'] & {
+    .hall-metrics-item-content {
+      text-align: right;
+    }
+  }
+
+  @include mixins.md(variables.$max) {
+    padding: 0.5rem;
+
+    .hall-metrics {
+      gap: 0.5rem;
+    }
+  }
+}

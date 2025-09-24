@@ -1,0 +1,50 @@
+<div class="otp-container">
+  <p-dialog
+    header="{{ 'organizationInfo.otpLabel' | translate }}"
+    [(visible)]="displayDialog"
+    [modal]="true"
+    [responsive]="true"
+    [style]="{width: '450px'}"
+    [baseZIndex]="10000"
+    [closable]="false">
+    <div class="p-fluid">
+      <form [formGroup]="otpForm">
+        <div class="p-field">
+          <label>{{ 'organizationInfo.otpDescription' | translate }}</label>
+
+          <div class="otp-inputs-container">
+            <ng-otp-input
+              [config]="{length: 6, allowNumbersOnly: true}"
+              formControlName="otp"
+              [ngClass]="{
+                'is-invalid':
+                  otpForm.controls['otp'].touched &&
+                  otpForm.controls['otp'].errors,
+              }"
+              id="otp">
+            </ng-otp-input>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <button
+        type="button"
+        (click)="cancel()"
+        class="btn"
+        [disabled]="isLoading"
+        translate>
+        common.cancel
+      </button>
+      <button
+        type="button"
+        (click)="verify()"
+        [disabled]="otpForm.invalid"
+        class="btn btn-primary"
+        translate>
+        organizationInfo.connect
+      </button>
+    </ng-template>
+  </p-dialog>
+</div>

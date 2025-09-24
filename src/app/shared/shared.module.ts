@@ -85,6 +85,8 @@ import {ProgressBarModule} from 'primeng/progressbar';
 import {InfoTooltipComponent} from './components/info-tooltip/info-tooltip.component';
 import {MessagesModule} from 'primeng/messages';
 import {TreeTableModule} from 'primeng/treetable';
+import {ChipModule} from 'primeng/chip';
+import {AddressComponent} from './components/address/address.component';
 
 const primeNgModules = [
   ButtonModule,
@@ -122,6 +124,7 @@ const primeNgModules = [
   ProgressBarModule,
   MessagesModule,
   TreeTableModule,
+  ChipModule,
 ];
 
 const components: any[] = [
@@ -151,6 +154,7 @@ const components: any[] = [
   ColorExtractorComponent,
   TimePickerComponent,
   InfoTooltipComponent,
+  AddressComponent,
 ];
 
 const directives: any[] = [

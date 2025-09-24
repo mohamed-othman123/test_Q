@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {DataTableFilter, GaCustomEvents, Item, TableData} from '@core/models';
 import {Client} from '@clients/models/client.model';
 import {NotificationService} from '@core/services/notification.service';
@@ -27,7 +27,7 @@ export class CustomersService {
     return this.http.get<TableData<Client>>(url, {params});
   }
 
-  createNewClient(payload: any) {
+  createNewClient(payload: Partial<Client>) {
     const url = `${this.apiHallsClientsUrl}`;
     return this.http.post<Client>(url, payload).pipe(
       tap(() => {
@@ -41,7 +41,7 @@ export class CustomersService {
     );
   }
 
-  updateClient(clientId: number, payload: any) {
+  updateClient(clientId: number, payload: Partial<Client>) {
     const url = `${this.apiHallsClientsUrl}/${clientId}`;
     return this.http
       .patch<Client>(url, payload)
@@ -52,10 +52,19 @@ export class CustomersService {
       );
   }
 
-  deleteClient(clientId: number) {
+  getClientFromAnotherHall(clientId: number, payload: Partial<Client>) {
     const url = `${this.apiHallsClientsUrl}/${clientId}`;
     return this.http
-      .delete<Client>(url)
+      .put<Client>(url, payload)
+      .pipe(
+        tap(() => this.notificationService.showSuccess('clients.client_added')),
+      );
+  }
+
+  deleteClient(clientId: number, hallId: number) {
+    const url = `${this.apiHallsClientsUrl}/${clientId}`;
+    return this.http
+      .delete<Client>(url, {body: {hallId}})
       .pipe(
         tap(() =>
           this.notificationService.showSuccess('clients.client_deleted'),

@@ -3,16 +3,18 @@ import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {LanguageService} from '@core/services';
 import {AuthService} from '@core/services/auth.service';
+import {NavigationService} from '@core/services/navigation.service';
+import {PermissionsService} from '@core/services/permissions.service';
 import {SidenavService} from '@core/services/sidenav.service';
 import {Hall} from '@halls/models/halls.model';
 import {HallsService} from '@halls/services/halls.service';
 import {Subscription} from 'rxjs';
 
 @Component({
-    selector: 'app-header',
-    templateUrl: './header.component.html',
-    styleUrl: './header.component.scss',
-    standalone: false
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.scss',
+  standalone: false,
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   showUserOptions = false;
@@ -32,6 +34,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     public auth: AuthService,
     public hallsService: HallsService,
     private router: Router,
+    private navigationService: NavigationService,
+    private authService: AuthService,
+    private permissionsService: PermissionsService,
   ) {}
 
   ngOnInit(): void {
@@ -43,7 +48,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   change(event: Hall) {
     this.hallsService.setCurrentHall(event);
-    this.router.navigate(['/dashboard'], {
+
+    let page;
+
+    const hasDashboardAccess =
+      this.permissionsService.hasPermission('read:statistcs');
+
+    if (hasDashboardAccess) {
+      page = '/dashboard';
+    }
+
+    if (!hasDashboardAccess) {
+      page = this.navigationService.getFirstAccessibleRoute(
+        this.authService.userData?.user.role.permissions!,
+      );
+    }
+
+    this.router.navigate([page], {
       state: {
         skipGuard: true,
       },

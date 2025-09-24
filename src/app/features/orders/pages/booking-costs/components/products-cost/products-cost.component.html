@@ -68,7 +68,7 @@
                   {{ 'orders.currentQuantity' | translate }}
                 </td>
                 <td class="value">
-                  {{ form.get('product')?.value?.quantity ?? '-' }}
+                  {{ form.get('product')?.value?.totalQuantity ?? '-' }}
                 </td>
               </tr>
               <tr>
@@ -87,27 +87,12 @@
                 </td>
                 <td class="value">
                   {{
-                    form.get('product')?.value?.quantity -
+                    form.get('product')?.value?.totalQuantity -
                       form.get('quantity')?.value || 0
                   }}
                 </td>
               </tr>
-              <tr>
-                <td class="label">
-                  <i class="pi pi-check-circle"></i>
-                  {{ 'orders.productPrice' | translate }}
-                </td>
-                <td class="value">
-                  <span class="price-with-symbol">
-                    <sar-symbol />
-                    <span>
-                      {{
-                        form.get('product')?.value?.unitPrice | number: '1.2-2'
-                      }}
-                    </span>
-                  </span>
-                </td>
-              </tr>
+
               <tr style="border-top: 2px solid black">
                 <td class="label">
                   <i class="pi pi-check-circle"></i>
@@ -117,10 +102,7 @@
                   <span class="price-with-symbol">
                     <sar-symbol />
                     <span>
-                      {{
-                        form.get('product')?.value?.unitPrice *
-                          form.get('quantity')?.value | number: '1.2-2'
-                      }}
+                      {{ addedProductTotalPrice | number: '1.2-2' }}
                     </span>
                   </span>
                 </td>
@@ -207,11 +189,10 @@
               [pattern]="'^\\d+$'"
               type="number"
               [(ngModel)]="product.quantity"
-              class="quantity-field"
-              (input)="calculateAvailableQuantity(product)" />
+              class="quantity-field" />
             <div class="available-quantity">
               {{ 'orders.availableQuantity' | translate }} :
-              {{ product.inventory.quantity }}
+              {{ product?.batches[0]?.inventoryBatch?.remainingQuantity }}
             </div>
             @if (quantityInput.invalid) {
               <div

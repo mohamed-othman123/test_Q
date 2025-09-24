@@ -7,9 +7,11 @@ import {AccountsService} from '@accounts/services/accounts.service';
 import {AuthService, LanguageService} from '@core/services';
 import {DrawerService} from '@core/services/drawer.service';
 import {PermissionsService} from '@core/services/permissions.service';
+import {prepareDataForExport} from '@accounts/utils/prepare-data-for-export';
+import {ExcelService} from '@core/services/excel.service';
 
 @Component({
-  selector: 'app-chart-of-accounts',
+  selector: 'app-accounts',
   standalone: false,
   templateUrl: './accounts.component.html',
   styleUrl: './accounts.component.scss',
@@ -32,6 +34,7 @@ export class AccountsComponent implements OnInit {
     private accountsService: AccountsService,
     public permissionsService: PermissionsService,
     private auth: AuthService,
+    private excelService: ExcelService,
   ) {
     this.filterForm = this.fb.group({
       name: [null],
@@ -125,7 +128,7 @@ export class AccountsComponent implements OnInit {
   }
 
   viewAccountTree(account: AccountData) {
-    this.router.navigate(['chart-of-accounts/view', account.id]);
+    this.router.navigate(['accounts/view', account.id]);
   }
 
   deleteAccount(id: number) {
@@ -138,7 +141,14 @@ export class AccountsComponent implements OnInit {
   }
 
   viewTree() {
-    this.router.navigate(['chart-of-accounts/view/tree']);
+    this.router.navigate(['accounts/view/tree']);
+  }
+
+  exportToExcel() {
+    const flattenData = prepareDataForExport(this.accountsList, this.lang.lang);
+    this.excelService.exportAsExcelFile(flattenData, 'Chart_of_Accounts', {
+      rtl: this.lang.lang === 'ar',
+    });
   }
 
   hasPermissionTo(action: 'update' | 'delete' | 'add', account: AccountData) {

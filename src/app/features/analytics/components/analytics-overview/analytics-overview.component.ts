@@ -1,29 +1,14 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Router} from '@angular/router';
-import {Subject, takeUntil, forkJoin} from 'rxjs';
+import { Component, OnInit, OnDestroy, signal, computed, effect } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import {
-  AIAnalyticsService,
-  Dashboard,
-  Question,
+  AIAnalyticsService
 } from '../../a-i-analytics.service';
-import {TranslateService, LangChangeEvent} from '@ngx-translate/core';
-import {
-  fadeInUp,
-  slideInFromLeft,
-  slideInFromRight,
-  scaleIn,
-  staggerCards,
-  cardHover,
-  pulseGlow,
-  rotateIn,
-} from '@core/animations/angular-animation';
+import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
+import { Dashboard } from '../../models/analytics.model';
 
-export interface DashboardItem {
-  id: number;
-  name: string;
-  description?: string;
-  created_at?: string;
-  updated_at?: string;
+export interface DashboardWithQuestions extends Dashboard {
+  isExpanded?: boolean;
 }
 
 @Component({
@@ -31,31 +16,30 @@ export interface DashboardItem {
   templateUrl: './analytics-overview.component.html',
   styleUrls: ['./analytics-overview.component.scss'],
   standalone: false,
-  animations: [
-    fadeInUp,
-    slideInFromLeft,
-    slideInFromRight,
-    scaleIn,
-    staggerCards,
-    cardHover,
-    pulseGlow,
-    rotateIn,
-  ],
 })
 export class AnalyticsOverviewComponent implements OnInit, OnDestroy {
-  dashboards: Dashboard[] = [];
-  questions: Question[] = [];
+  dashboardsSignal = signal<DashboardWithQuestions[]>([]);
+  searchTermSignal = signal<string>('');
+  loadingSignal = signal<boolean>(true);
+  errorSignal = signal<string | null>(null);
+  hoveredItemSignal = signal<number | null>(null);
+  selectedViewSignal = signal<'grid' | 'list'>('grid');
 
-  allDashboards: DashboardItem[] = [];
-  filteredItems: DashboardItem[] = [];
+  filteredDashboards = computed(() => {
+    const searchTerm = this.searchTermSignal().toLowerCase();
+    const dashboards = this.dashboardsSignal();
 
-  loading = true;
-  error: string | null = null;
-  hoveredItem: number | null = null;
+    if (!searchTerm) return dashboards;
 
-  stats = {
-    totalDashboards: 0,
-  };
+    return dashboards.filter(dashboard =>
+      dashboard.name.toLowerCase().includes(searchTerm) ||
+      dashboard.description?.toLowerCase().includes(searchTerm)
+    );
+  });
+
+  statsSignal = computed(() => ({
+    totalDashboards: this.dashboardsSignal().length,
+  }));
 
   private destroy$ = new Subject<void>();
 
@@ -63,19 +47,11 @@ export class AnalyticsOverviewComponent implements OnInit, OnDestroy {
     private analyticsService: AIAnalyticsService,
     private router: Router,
     private translate: TranslateService,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.loadAnalyticsData();
-
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event: LangChangeEvent) => {
-        if (this.dashboards.length || this.questions.length) {
-          this.processData();
-          this.filterItems();
-        }
-      });
   }
 
   ngOnDestroy(): void {
@@ -83,65 +59,63 @@ export class AnalyticsOverviewComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private loadAnalyticsData(): void {
-    this.loading = true;
-    this.error = null;
+  private loadAnalyticsData(forceRefresh: boolean = false): void {
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
 
-    forkJoin({
-      dashboards: this.analyticsService.getAvailableDashboards(),
-      questions: this.analyticsService.getAvailableQuestions(),
-    })
+    this.analyticsService.getAvailableDashboards({}, forceRefresh)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: ({dashboards, questions}) => {
-          this.dashboards = dashboards;
-          this.questions = questions;
-
-          this.processData();
-          this.updateStats();
-          this.filterItems();
-
-          this.loading = false;
+        next: (dashboards) => {
+          const dashboardsWithQuestions: DashboardWithQuestions[] = dashboards.map(dashboard => ({
+            ...dashboard,
+            isExpanded: false,
+          }));
+          this.dashboardsSignal.set(dashboardsWithQuestions);
+          this.loadingSignal.set(false);
         },
         error: (error) => {
-          this.error = 'Failed to load analytics data. Please try again.';
-          this.loading = false;
+          this.errorSignal.set('Failed to load analytics data. Please try again.');
+          this.loadingSignal.set(false);
+          console.error('Analytics loading error:', error);
         },
       });
   }
 
-  private processData(): void {
-    const defaultDashboardDesc = this.translate.instant(
-      'analytics.defaultDashboardDescription',
-    );
 
-    this.allDashboards = this.dashboards.map((dashboard) => ({
-      ...dashboard,
-      description: dashboard.description || defaultDashboardDesc,
-    }));
+  onSearch(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.searchTermSignal.set(target.value);
   }
 
-  private updateStats(): void {
-    this.stats = {
-      totalDashboards: this.dashboards.length,
-    };
+  onClearSearch(): void {
+    this.searchTermSignal.set('');
   }
 
-  filterItems(): void {
-    this.filteredItems = [...this.allDashboards];
+  onViewChange(view: 'grid' | 'list'): void {
+    this.selectedViewSignal.set(view);
   }
 
-  onItemClick(dashboard: DashboardItem): void {
+  onDashboardHover(dashboardId: number | null): void {
+    this.hoveredItemSignal.set(dashboardId);
+  }
+
+  onDashboardClick(dashboard: DashboardWithQuestions): void {
     this.router.navigate(['/analytics/dashboard', dashboard.id]);
   }
 
-  onRetry(): void {
-    this.loadAnalyticsData();
+
+  onRefresh(): void {
+    this.loadAnalyticsData(true);
   }
+
+  trackByDashboardId(index: number, dashboard: DashboardWithQuestions): number {
+    return dashboard.id;
+  }
+
 
   formatDate(dateString?: string): string {
     if (!dateString) return 'Unknown';
-
     try {
       return new Date(dateString).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -153,7 +127,41 @@ export class AnalyticsOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  trackByItemId(index: number, item: DashboardItem): number {
-    return item.id;
+  getTypeIcon(type: string): string {
+    switch (type.toLowerCase()) {
+      case 'booking':
+      case 'bookings':
+        return 'pi-calendar';
+      case 'expense':
+      case 'expenses':
+        return 'pi-money-bill';
+      default:
+        return 'pi-chart-line';
+    }
+  }
+
+  getDashboardTypeFromName(name: string): string {
+    const nameLower = name.toLowerCase();
+
+    if (nameLower.includes('booking') || nameLower.includes('حج')) {
+      return 'booking';
+    }
+    if (nameLower.includes('expense') || nameLower.includes('مصروف')) {
+      return 'expense';
+    }
+    return 'analytics';
+  }
+
+  getDashboardDescription(dashboard: DashboardWithQuestions): string {
+    const type = this.getDashboardTypeFromName(dashboard.name);
+
+    switch (type) {
+      case 'booking':
+        return 'analytics.analyticsDashboard.bookingDescription';
+      case 'expense':
+        return 'analytics.analyticsDashboard.expenseDescription';
+      default:
+        return 'analytics.analyticsDashboard.defaultDescription';
+    }
   }
 }

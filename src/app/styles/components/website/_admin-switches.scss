@@ -1,0 +1,133 @@
+@use 'sass:color';
+@use 'variables' as variables;
+
+%admin-switch-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 32px;
+
+  .creative-switch {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .creative-switch-label {
+    cursor: pointer;
+    user-select: none;
+
+    .switch-track {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+      border-radius: 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      .switch-thumb {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+        border-radius: 50%;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .switch-icon {
+          opacity: 0;
+          transform: scale(0);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+          i {
+            font-size: 0.75rem;
+            color: #10b981;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
+    &:hover .switch-track {
+      background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .creative-switch:checked + .creative-switch-label {
+    .switch-track {
+      background: linear-gradient(135deg, variables.$primary-color 0%, color.adjust(variables.$primary-color, $lightness: -10%) 100%);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      .switch-thumb {
+        transform: translateX(22px);
+        background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+        box-shadow: 0 2px 12px rgba(variables.$primary-color, 0.3);
+
+        .switch-icon {
+          opacity: 1;
+          transform: scale(1);
+
+          i {
+            color: variables.$primary-color;
+          }
+        }
+      }
+    }
+  }
+
+  .creative-switch:disabled + .creative-switch-label {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    .switch-track {
+      background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    }
+  }
+}
+
+%admin-prime-switch {
+  width: 2.5rem;
+  height: 1.25rem;
+
+  .p-inputswitch-slider {
+    background-color: #e5e7eb;
+    border-color: #d1d5db;
+    border-radius: 1.25rem;
+
+    &:before {
+      background-color: #ffffff;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      top: 40%;
+      left: -2px;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  &.p-inputswitch-checked .p-inputswitch-slider {
+    background-color: variables.$primary-color;
+    border-color: variables.$primary-color;
+
+    &:before {
+      transform: translateX(1.25rem);
+    }
+  }
+
+  &:not(.p-disabled):hover .p-inputswitch-slider {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+}
+
+.cdk-drag-dragging .p-inputswitch,
+.cdk-drag-preview .p-inputswitch,
+.sortable-drag .p-inputswitch {
+  display: none !important;
+}

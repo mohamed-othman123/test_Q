@@ -4,9 +4,10 @@ import {ActivatedRoute} from '@angular/router';
 import {Source} from '@core/models';
 import {AuditTransactionsService, LanguageService} from '@core/services';
 import {HallsService} from '@halls/services/halls.service';
-import {InventoryItem} from '@inventory/models/inventory';
+import {InventoryItem, InventoryItemBatch} from '@inventory/models/inventory';
 import {InventoryService} from '@inventory/services/inventory.service';
 import {CommentType} from '@shared/components/comments/models/comment';
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-view-item',
@@ -18,6 +19,9 @@ export class ViewItemComponent implements OnInit {
   itemId: string | null = null;
 
   inventoryItem: InventoryItem | null = null;
+
+  //contain all prices and quantities for this item
+  inventoryItemBatches: InventoryItemBatch[] = [];
 
   hallId: string;
 
@@ -43,11 +47,13 @@ export class ViewItemComponent implements OnInit {
   }
 
   getInventoryItemById(): void {
-    this.inventoryService
-      .getInventoryItemById(this.itemId!)
-      .subscribe((data) => {
-        this.inventoryItem = data;
-      });
+    forkJoin({
+      item: this.inventoryService.getInventoryItemById(this.itemId!),
+      batches: this.inventoryService.getAllInventoryBatches(this.itemId!),
+    }).subscribe(({item, batches}) => {
+      this.inventoryItem = item;
+      this.inventoryItemBatches = batches.items;
+    });
   }
 
   goBack() {

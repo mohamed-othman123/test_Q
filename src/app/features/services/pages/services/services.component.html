@@ -36,6 +36,7 @@
         <p-sortIcon field="note" class="mr-12px"></p-sortIcon>
       </th>
       <th>{{ 'services.serviceProviderType' | translate }}</th>
+      <th>{{ 'common.linkedAccount' | translate }}</th>
       <th style="width: fit-content"></th>
     </tr>
     <tr>
@@ -92,6 +93,7 @@
           [showClear]="true">
         </app-dropdown>
       </th>
+      <th></th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-service>
@@ -123,6 +125,13 @@
       <td class="text-wrap">{{ service.note || '-' }}</td>
       <td>
         {{ getProviderTypeDisplay(service, filterForm.get('hallId')?.value) }}
+      </td>
+      <td>
+        {{
+          lang.lang === 'ar' ? service.account?.name_ar : service.account?.name
+        }}
+        -
+        {{ service.account?.accountCode }}
       </td>
       <td>
         <div ngbDropdown container="body" class="d-inline-block">

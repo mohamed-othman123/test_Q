@@ -22,13 +22,23 @@
     }
 
     @if (!activeQuestion && questions.length > 0) {
-      <div #questionsList class="questions-list">
+      <div 
+        #questionsList 
+        class="questions-list"
+        cdkDropList
+        [cdkDropListData]="questions.controls"
+        (cdkDropListDropped)="onQuestionsDropped($event)">
         @for (
           questionGroup of questions.controls;
-          track questionGroup;
+          track $index;
           let i = $index
         ) {
-          <div class="question-item" [formGroup]="$any(questionGroup)">
+          <div 
+            class="question-item" 
+            [formGroup]="$any(questionGroup)"
+            cdkDrag
+            [cdkDragData]="questionGroup"
+            [cdkDragDisabled]="!!activeQuestion">
             <div class="question-content">
               <div class="question-info">
                 <span class="question-number">{{ i + 1 }}</span>
@@ -47,7 +57,7 @@
                   (click)="removeQuestion(i)">
                   <i class="pi pi-trash"></i>
                 </button>
-                <div class="question-drag-handle">
+                <div class="question-drag-handle" cdkDragHandle>
                   <div class="drag-handle-dots">
                     <div class="dot"></div>
                     <div class="dot"></div>

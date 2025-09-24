@@ -21,7 +21,7 @@
             <div
               class="color-tab"
               [class.active]="activeColorType === 'primary'"
-              (click)="setActiveColorType('primary')"
+              (click)="setActiveColorType('primary'); openColorPickerFromPreview('primary')"
               [style.background-color]="previewPalette.primary"
               [style.color]="getContrastColor(previewPalette.primary)">
               <i class="pi pi-palette"></i>
@@ -30,7 +30,7 @@
             <div
               class="color-tab"
               [class.active]="activeColorType === 'secondary'"
-              (click)="setActiveColorType('secondary')"
+              (click)="setActiveColorType('secondary'); openColorPickerFromPreview('secondary')"
               [style.background-color]="previewPalette.secondary"
               [style.color]="getContrastColor(previewPalette.secondary)">
               <i class="pi pi-palette"></i>
@@ -48,6 +48,7 @@
           </div>
         </div>
       </div>
+
     </div>
 
     <div class="col-md-7">
@@ -118,7 +119,13 @@
               <div class="color-info-grid">
                 <div class="color-info-card">
                   <div class="color-info-header">
-                    <div class="color-preview" [style.background-color]="previewPalette.primary"></div>
+                    <div 
+                      class="color-preview clickable" 
+                      [style.background-color]="previewPalette.primary"
+                      (click)="openColorPickerFromPreview('primary')"
+                      title="Click to edit color">
+                      <i class="pi pi-pencil edit-icon"></i>
+                    </div>
                     <div class="color-detail">
                       <div class="color-label">{{ 'halls.primaryColor' | translate }}</div>
                       <div class="color-value">{{ previewPalette.primary }}</div>
@@ -127,7 +134,13 @@
                 </div>
                 <div class="color-info-card">
                   <div class="color-info-header">
-                    <div class="color-preview" [style.background-color]="previewPalette.secondary"></div>
+                    <div 
+                      class="color-preview clickable" 
+                      [style.background-color]="previewPalette.secondary"
+                      (click)="openColorPickerFromPreview('secondary')"
+                      title="Click to edit color">
+                      <i class="pi pi-pencil edit-icon"></i>
+                    </div>
                     <div class="color-detail">
                       <div class="color-label">{{ 'halls.secondaryColor' | translate }}</div>
                       <div class="color-value">{{ previewPalette.secondary }}</div>
@@ -136,6 +149,21 @@
                 </div>
               </div>
             </div>
+          </div>
+        }
+
+        @if (showColorPicker) {
+          <div class="color-picker-overlay">
+            <p-colorPicker
+              [ngModel]="previewPalette[colorPickerType]"
+              (ngModelChange)="onColorPickerChange($event)"
+              [inline]="true"
+              [style]="{'width': '100%'}"
+              [format]="'hex'">
+            </p-colorPicker>
+            <button type="button" class="close-overlay-picker" (click)="closeColorPicker()">
+              <i class="pi pi-check"></i>
+            </button>
           </div>
         }
       </div>

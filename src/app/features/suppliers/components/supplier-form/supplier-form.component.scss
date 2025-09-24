@@ -269,4 +269,12 @@
     text-align: center;
     color: #64748b;
   }
+  .span-2 {
+    grid-column: span 2;
+  }
+  .primary-field {
+    border: 1px solid #1eaa8f;
+    padding: 5px 10px;
+    border-radius: 8px;
+  }
 }

@@ -221,4 +221,5 @@ export interface bookingItem {
     quantity: number;
     reorderLevel: number;
   };
+  batches?: any;
 }

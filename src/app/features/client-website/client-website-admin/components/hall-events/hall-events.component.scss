@@ -1,0 +1,109 @@
+@use 'variables';
+@use 'mixins';
+@use '../../../../../styles/components/website/admin-cards' as *;
+@use '../../../../../styles/components/website/admin-forms' as *;
+@use '../../../../../styles/components/website/admin-buttons' as *;
+@use '../../../../../styles/components/website/admin-states' as *;
+@use '../../../../../styles/components/website/admin-drag-drop' as *;
+@use '../../../../../styles/components/website/admin-switches' as *;
+
+:host {
+  display: block;
+  padding: 1rem;
+
+  .hall-events {
+    margin-top: 2rem;
+
+    .hall-events-list {
+      border: 1px solid #f0f4f3;
+      border-radius: 1rem;
+      overflow: hidden;
+
+      .hall-event-item {
+        padding: 1rem;
+        border-bottom: 1px solid #f0f4f3;
+        transition: background-color 0.2s ease;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background-color: #f8fafa;
+        }
+
+        .hall-event-content {
+          display: flex;
+          align-items: flex-start;
+          gap: 1rem;
+
+          .icon-container {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background-color: #caf6ee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+
+            i {
+              color: #14c6a5;
+              font-size: 1rem;
+            }
+          }
+
+          .event-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            .event-name {
+              font-size: 0.875rem;
+              color: #333;
+
+              strong {
+                color: #14c6a5;
+                font-weight: 700;
+                margin-right: 0.5rem;
+              }
+            }
+
+            .event-description {
+              font-size: 0.875rem;
+              color: #666;
+
+              strong {
+                color: #14c6a5;
+                font-weight: 700;
+                margin-right: 0.5rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  [dir='rtl'] & {
+    .event-details {
+      strong {
+        margin-right: 0;
+        margin-left: 0.5rem;
+      }
+    }
+  }
+
+  @include mixins.md(variables.$max) {
+    padding: 0.5rem;
+
+    .hall-events {
+      .hall-events-list {
+        .hall-event-item {
+          padding: 0.75rem;
+        }
+      }
+    }
+  }
+}

@@ -36,6 +36,9 @@
           {{ 'suppliers.activity' | translate }}
           <p-sortIcon field="activity" class="mr-12px"></p-sortIcon>
         </th>
+        <th>
+          {{ 'common.linkedAccount' | translate }}
+        </th>
         <th style="width: fit-content"></th>
       </tr>
       <tr>
@@ -83,6 +86,7 @@
           </app-input>
         </th>
         <th></th>
+        <th></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-supplier>
@@ -106,6 +110,14 @@
           }}
         </td>
         <td>{{ supplier.activity }}</td>
+        <td>
+          {{
+            lang.lang === 'ar'
+              ? supplier.account?.name_ar
+              : supplier.account?.name
+          }}
+          - {{ supplier.account?.accountCode }}
+        </td>
         <td>
           <div ngbDropdown container="body" class="d-inline-block">
             <button

@@ -44,7 +44,8 @@ export class SupplierPaymentMethodsComponent implements OnInit, OnChanges {
     }
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['supplier'] && this.supplier && this.mode !== 'add') {
+    if (changes['supplier'] && this.supplier) {
+      this.paymentMethods.clear();
       this.populatePaymentMethodsArray();
       this.paymentMethods.disable();
     }

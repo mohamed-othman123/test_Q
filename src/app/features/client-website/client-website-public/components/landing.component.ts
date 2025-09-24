@@ -21,6 +21,8 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {ActivatedRoute} from '@angular/router';
 
 import {LandingDepartmentsComponent} from './landing-departments/landing-departments.component';
+import {LandingHallSectionsComponent} from './landing-hall-sections/landing-hall-sections.component';
+import {LandingEventsComponent} from './landing-events/landing-events.component';
 import {Title} from '@angular/platform-browser';
 import {FaviconService} from '@core/services/favicon.service';
 import {LandingGeneralInformationDto} from '@client-website-admin/models/landing-page.model';
@@ -36,7 +38,8 @@ import {TranslateService} from '@ngx-translate/core';
     AboutComponent,
     GalleryComponent,
     FeaturesComponent,
-    LandingDepartmentsComponent,
+    LandingHallSectionsComponent,
+    LandingEventsComponent,
     ClientsComponent,
     ContactsComponent,
     FaqsComponent,

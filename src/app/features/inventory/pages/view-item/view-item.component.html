@@ -48,9 +48,9 @@
 
   <div class="info-item">
     <span class="label">{{ 'inventory.quantity' | translate }}:</span>
-    <span class="value">{{ inventoryItem?.quantity }}</span>
+    <span class="value">{{ inventoryItem?.totalQuantity }}</span>
   </div>
-  <div class="info-item">
+  <!-- <div class="info-item">
     <span class="label">{{ 'inventory.unitPrice' | translate }}:</span>
     <span class="value">
       <span class="price-with-symbol">
@@ -60,7 +60,7 @@
         </span>
       </span>
     </span>
-  </div>
+  </div> -->
 
   <div class="info-item">
     <span class="label">{{ 'inventory.reorderLevel' | translate }}:</span>
@@ -73,6 +73,52 @@
   </div>
 </div>
 
+<!--inventory prices list-->
+<app-list-header [title]="'inventory.pricesList' | translate"></app-list-header>
+<div class="prices-list">
+  <p-table #dt2 [scrollable]="true" [value]="inventoryItemBatches" dataKey="id">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          {{ 'inventory.creationDate' | translate }}
+        </th>
+        <th>
+          {{ 'inventory.remainingQuantity' | translate }}
+        </th>
+        <th>
+          {{ 'inventory.unitPrice' | translate }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-batch>
+      <tr>
+        <td>
+          @if (lang.lang === 'en') {
+            {{ batch.created_at | englishMonthDate: true : undefined : 'full' }}
+          }
+          @if (lang.lang === 'ar') {
+            {{ batch.created_at | arabicMonthDate: true : undefined : 'full' }}
+          }
+        </td>
+        <td>
+          {{ batch.remainingQuantity }}
+        </td>
+        <td>
+          {{ batch.unitPrice }}
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8">
+          <app-empty-state></app-empty-state>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Audit Transactions List -->
 <app-audit-transactions-list
   [source]="source"
   [sourceId]="itemId!"

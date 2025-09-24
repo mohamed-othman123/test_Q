@@ -80,4 +80,14 @@ export class InventoryService {
         }),
       );
   }
+
+  getAllInventoryBatches(itemId?: string) {
+    const url = `${this.apiInventoryUrl}/${itemId}/batches`;
+    return this.http.get<any>(url);
+  }
+
+  calculateInventoryItemCost(itemId: string, quantity: number) {
+    const url = `${this.apiInventoryUrl}/${itemId}/calculate-pricing?quantity=${quantity}`;
+    return this.http.get<{totalPrice: number; details: any[]}>(url);
+  }
 }

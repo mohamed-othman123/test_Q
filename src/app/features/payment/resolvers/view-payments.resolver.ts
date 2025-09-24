@@ -11,7 +11,7 @@ export const viewPaymentsResolver: ResolveFn<{bookingDetails: Booking}> = (
   const orderService = inject(OrdersService);
   const router = inject(Router);
 
-  const bookingDetails = router.getCurrentNavigation()?.extras
+  const bookingDetails = router.currentNavigation()?.extras
     .state as BookingDetails;
   const bookingId = route.params['id'];
   return combineLatest({

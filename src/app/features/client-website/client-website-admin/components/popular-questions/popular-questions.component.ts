@@ -1,4 +1,4 @@
-import {Component, OnChanges, Input, SimpleChanges, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, OnChanges, Input, SimpleChanges, ElementRef, ViewChild} from '@angular/core';
 import {
   ControlContainer,
   FormArray,
@@ -8,12 +8,11 @@ import {
   Validators,
 } from '@angular/forms';
 import {LandingPageService} from '../../services/landing-page.service';
-import {LandingGeneralInformationDto} from '@client-website-admin/models/landing-page.model';
+import {LandingGeneralInformationDto, QuestionResponseDto} from '@client-website-admin/models/landing-page.model';
 import {LandingPageSection} from '@client-website-admin/models/section.model';
 import {noDoubleSpaceValidator} from '@core/validators';
 import {NotificationService} from '@core/services';
-import {DragCoordinationService} from '@core/services/drag-coordination.service';
-import Sortable from 'sortablejs';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'app-popular-questions',
@@ -22,7 +21,7 @@ import Sortable from 'sortablejs';
     viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
     standalone: false
 })
-export class PopularQuestionsComponent implements OnChanges, AfterViewInit {
+export class PopularQuestionsComponent implements OnChanges {
   @Input() landingPageData: LandingGeneralInformationDto | null = null;
   @Input() section: LandingPageSection | null = null;
 
@@ -31,25 +30,19 @@ export class PopularQuestionsComponent implements OnChanges, AfterViewInit {
   maxQuestions = 10;
   activeQuestion: any = null;
   isEditingExisting = false;
-  private sortableInstance: Sortable | null = null;
   private currentSavedQuestions: any[] = [];
 
   constructor(
     private controlContainer: ControlContainer,
     private fb: FormBuilder,
     private landingPageService: LandingPageService,
-    private notificationService: NotificationService,
-    private dragCoordination: DragCoordinationService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['landingPageData'] && this.section) {
       this.updateQuestions(this.section);
     }
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => this.initializeSortable(), 500);
   }
 
   private updateQuestions(data: LandingPageSection) {
@@ -91,7 +84,6 @@ export class PopularQuestionsComponent implements OnChanges, AfterViewInit {
       this.currentSavedQuestions = [...data.popularQuestions];
     }
 
-    this.initializeSortable();
   }
 
   get form(): FormGroup {
@@ -141,7 +133,6 @@ export class PopularQuestionsComponent implements OnChanges, AfterViewInit {
     this.questions.push(newQuestionGroup);
     this.activeQuestion = newQuestionGroup;
     this.isEditingExisting = false;
-    this.initializeSortable();
   }
 
   removeQuestion(index: number) {
@@ -149,69 +140,44 @@ export class PopularQuestionsComponent implements OnChanges, AfterViewInit {
 
     if (question.id) {
       this.landingPageService.deleteQuestion(question.id).subscribe({
-        next: () => {
-          this.questions.removeAt(index);
-          this.updateQuestionOrders();
-          this.initializeSortable();
+        next: (response: QuestionResponseDto[]) => {
+          if (this.section) {
+            this.section.popularQuestions = response;
+            this.updateFormArrayFromResponse(response);
+          }
           this.notificationService.showSuccess('landing.questionDeleted');
         },
       });
     } else {
       this.questions.removeAt(index);
       this.updateQuestionOrders();
-      this.initializeSortable();
       this.notificationService.showSuccess('landing.questionDeleted');
     }
   }
 
-  private initializeSortable() {
-    if (this.questionsList?.nativeElement) {
-      if (this.sortableInstance) {
-        this.sortableInstance.destroy();
-      }
-
-      this.sortableInstance = Sortable.create(this.questionsList.nativeElement, {
-        animation: 150,
-        handle: '.question-drag-handle',
-        disabled: !!this.activeQuestion || this.dragCoordination.shouldDisableDrag('questions', 'main-sections'),
-        onEnd: (evt) => {
-          this.dragCoordination.endDrag();
-          this.onSortableEnd(evt);
-        },
-        onStart: () => {
-          this.dragCoordination.startDrag('questions');
-          return true;
-        }
-      });
-    }
-  }
-
-  private onSortableEnd(evt: any) {
-    const { oldIndex, newIndex } = evt;
-    if (oldIndex !== newIndex) {
+  onQuestionsDropped(event: CdkDragDrop<any[]>) {
+    if (event.previousIndex !== event.currentIndex) {
       const controls = this.questions.controls;
-      const item = controls[oldIndex];
-      controls.splice(oldIndex, 1);
-      controls.splice(newIndex, 0, item);
-      this.updateQuestionOrders();
+      moveItemInArray(controls, event.previousIndex, event.currentIndex);
 
-      this.updateQuestionsOrder();
+      const movedControl = controls[event.currentIndex];
+      const questionId = movedControl.get('id')?.value;
+      const newOrder = event.currentIndex + 1;
 
-      this.notificationService.showSuccess('landing.questionsReordered');
-    }
-  }
-
-  private updateQuestionsOrder() {
-    this.questions.controls.forEach((control, index) => {
-      const questionId = control.get('id')?.value;
       if (questionId) {
         this.landingPageService.updateQuestion(questionId, {
-          question: control.get('question')?.value,
-          answer: control.get('answer')?.value,
-          order: index + 1,
-        }).subscribe();
+          order: newOrder,
+        }).subscribe({
+          next: (response: QuestionResponseDto[]) => {
+            if (this.section) {
+              this.section.popularQuestions = response;
+              this.updateFormArrayFromResponse(response);
+            }
+            this.notificationService.showSuccess('landing.questionsReordered');
+          },
+        });
       }
-    });
+    }
   }
 
   private updateQuestionOrders() {
@@ -239,7 +205,6 @@ export class PopularQuestionsComponent implements OnChanges, AfterViewInit {
     }
     this.activeQuestion = null;
     this.isEditingExisting = false;
-    this.initializeSortable();
   }
 
   editQuestion(control: any) {
@@ -249,7 +214,6 @@ export class PopularQuestionsComponent implements OnChanges, AfterViewInit {
 
     this.activeQuestion = control;
     this.isEditingExisting = true;
-    this.initializeSortable();
   }
 
   saveQuestion() {
@@ -266,11 +230,13 @@ export class PopularQuestionsComponent implements OnChanges, AfterViewInit {
 
     if (questionValue.id) {
       this.landingPageService.updateQuestion(questionValue.id, questionData).subscribe({
-        next: (response) => {
-          this.currentSavedQuestions = this.questions.controls.map(control => control.value);
+        next: (response: QuestionResponseDto[]) => {
+          if (this.section) {
+            this.section.popularQuestions = response;
+            this.updateFormArrayFromResponse(response);
+          }
           this.activeQuestion = null;
           this.isEditingExisting = false;
-          this.initializeSortable();
           this.notificationService.showSuccess('landing.questionUpdated');
         },
       });
@@ -279,15 +245,34 @@ export class PopularQuestionsComponent implements OnChanges, AfterViewInit {
         ...questionData,
         sectionId: this.section!.id!,
       }).subscribe({
-        next: (response) => {
-          this.activeQuestion.patchValue({ id: response.id });
-          this.currentSavedQuestions = this.questions.controls.map(control => control.value);
+        next: (response: QuestionResponseDto[]) => {
+          if (this.section) {
+            this.section.popularQuestions = response;
+            this.updateFormArrayFromResponse(response);
+          }
           this.activeQuestion = null;
           this.isEditingExisting = false;
-          this.initializeSortable();
           this.notificationService.showSuccess('landing.questionAdded');
         },
       });
     }
+  }
+
+  private updateFormArrayFromResponse(response: QuestionResponseDto[]) {
+    while (this.questions.length !== 0) {
+      this.questions.removeAt(0);
+    }
+
+    const sortedResponse = response.sort((a, b) => a.order - b.order);
+
+    sortedResponse.forEach(question => {
+      const formGroup = this.fb.group({
+        id: [question.id],
+        question: [question.question, [Validators.required, noDoubleSpaceValidator]],
+        answer: [question.answer, [Validators.required, noDoubleSpaceValidator]],
+        order: [question.order]
+      });
+      this.questions.push(formGroup);
+    });
   }
 }

@@ -1,0 +1,23 @@
+[
+  {
+    "value": "Individual",
+    "label": {
+      "ar": "فرد",
+      "en": "Individual"
+    }
+  },
+  {
+    "value": "Facility",
+    "label": {
+      "ar": "منشأة",
+      "en": "Facility"
+    }
+  },
+  {
+    "value": "Governmental Facility",
+    "label": {
+      "ar": "منشأة حكومية",
+      "en": "Governmental Facility"
+    }
+  }
+]

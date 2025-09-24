@@ -21,10 +21,10 @@ export interface ChartData {
 }
 
 @Component({
-    selector: 'app-new-dashboard-chart',
-    templateUrl: './new-dashboard-chart.component.html',
-    styleUrls: ['./new-dashboard-chart.component.scss'],
-    standalone: false
+  selector: 'app-new-dashboard-chart',
+  templateUrl: './new-dashboard-chart.component.html',
+  styleUrls: ['./new-dashboard-chart.component.scss'],
+  standalone: false,
 })
 export class NewDashboardChartComponent implements OnInit, OnDestroy {
   chartOption: EChartsOption = {};
@@ -232,6 +232,7 @@ export class NewDashboardChartComponent implements OnInit, OnDestroy {
       ],
       xAxis: {
         ...this.getBaseChartConfig().xAxis,
+        boundaryGap: true,
         data: chartData.map((item) =>
           this.generateXAxisLabel(
             new Date(item.period),
@@ -239,6 +240,11 @@ export class NewDashboardChartComponent implements OnInit, OnDestroy {
           ),
         ),
         type: 'category',
+        axisLabel: {
+          align:
+            this.translateService.getCurrentLang() === 'ar' ? 'right' : 'left',
+          fontFamily: `"Zain", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`,
+        },
       },
     };
   }

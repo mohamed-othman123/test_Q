@@ -3,22 +3,27 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {OrganizationInfo} from '@organization-info/model/organization-info';
 import {OrganizationInfoService} from '@organization-info/services/organization-info.service';
 import {AuthService} from '@core/services';
+import {ZatcaService} from '@organization-info/services/zatca.service';
+import {Address} from '@core/interfaces/address';
 
 @Component({
-    selector: 'app-organization-info',
-    templateUrl: './organization-info.component.html',
-    styleUrl: './organization-info.component.scss',
-    standalone: false
+  selector: 'app-organization-info',
+  templateUrl: './organization-info.component.html',
+  styleUrl: './organization-info.component.scss',
+  standalone: false,
 })
 export class OrganizationInfoComponent implements OnInit {
   form!: FormGroup;
   isEditMode = false;
   organizationInfoData!: OrganizationInfo;
+  showOtp: boolean = false;
+  isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private organizationInfo: OrganizationInfoService,
     private authService: AuthService,
+    private zatcaService: ZatcaService,
   ) {}
 
   ngOnInit(): void {
@@ -52,7 +57,23 @@ export class OrganizationInfoComponent implements OnInit {
           Validators.pattern(/^[1-9]\d{9}$/),
         ],
       ],
-      address: [data.address, Validators.required],
+      category: [data.category, Validators.required],
+      address: this.createAddressForm(data.address),
+    });
+  }
+
+  createAddressForm(data: Address): FormGroup {
+    return this.fb.group({
+      city: [data.city, [Validators.required]],
+      district: [data.district, [Validators.required]],
+      street: [data.street, [Validators.required]],
+      buildingNumber: [data.buildingNumber, [Validators.required]],
+      unitNumber: [data.unitNumber],
+      additionalNumber: [data.additionalNumber],
+      postalCode: [
+        data.postalCode,
+        [Validators.required, Validators.minLength(5), Validators.maxLength(5)],
+      ],
     });
   }
 
@@ -82,6 +103,37 @@ export class OrganizationInfoComponent implements OnInit {
           this.toggleEditMode();
         },
       });
+  }
+
+  verifyOtp(otp: string) {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading = true;
+    this.zatcaService.integrate(otp).subscribe({
+      next: (_) => {
+        this.organizationInfoData.isZatcaConnected = true;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.log(err);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  hideOtpDialog() {
+    this.showOtp = false;
+  }
+
+  connectToZatca() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    this.showOtp = true;
   }
 
   private trackOrganizationEntry(data: OrganizationInfo): void {

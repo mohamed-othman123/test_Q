@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {FormMode} from '@core/models';
 import {DrawerService} from '@core/services/drawer.service';
 import {PaymentMethod, PaymentType} from '@paymentmethods/models/payment.model';
@@ -15,12 +15,15 @@ import {Subscription} from 'rxjs';
 import {HallsService} from '@halls/services/halls.service';
 import {Hall} from '@halls/models/halls.model';
 import {noDoubleSpaceValidator, requireOneOf} from '@core/validators';
+import {AccountsService} from '@accounts/services/accounts.service';
+import {AccountData} from '@accounts/models/accounts';
+import {LanguageService} from '@core/services';
 
 @Component({
-    selector: 'app-new-payment-method',
-    templateUrl: './add-new-payment-method.component.html',
-    styleUrl: './add-new-payment-method.component.scss',
-    standalone: false
+  selector: 'app-new-payment-method',
+  templateUrl: './add-new-payment-method.component.html',
+  styleUrl: './add-new-payment-method.component.scss',
+  standalone: false,
 })
 export class AddNewPaymentMethodComponent implements OnInit, OnDestroy {
   paymentMethod: PaymentMethod | null = null;
@@ -36,17 +39,30 @@ export class AddNewPaymentMethodComponent implements OnInit, OnDestroy {
 
   form!: FormGroup;
 
+  accountList: AccountData[] = [];
+
   constructor(
     private fb: FormBuilder,
     private paymentMethodsService: PaymentMethodsService,
     public drawerService: DrawerService,
     private hallsService: HallsService,
+    private accountService: AccountsService,
+    public lang: LanguageService,
   ) {}
 
   ngOnInit(): void {
     this.initializeForm();
     this.setupDrawerSubscription();
     this.setupHallSubscription();
+    this.getAccountList();
+  }
+
+  getAccountList() {
+    this.accountService
+      .getAccountList({moduleType: 'paymentMethods'})
+      .subscribe((res) => {
+        this.accountList = res.items;
+      });
   }
 
   private setupDrawerSubscription() {
@@ -58,6 +74,7 @@ export class AddNewPaymentMethodComponent implements OnInit, OnDestroy {
           this.form.patchValue({
             name: this.paymentMethod.name ?? '',
             name_ar: this.paymentMethod.name_ar ?? '',
+            accountId: this.paymentMethod.account?.id ?? null,
             description: this.paymentMethod.description ?? '',
           });
         }
@@ -92,6 +109,7 @@ export class AddNewPaymentMethodComponent implements OnInit, OnDestroy {
     const payload = {
       name: this.form.get('name')?.value || '',
       name_ar: this.form.get('name_ar')?.value || '',
+      accountId: this.form.get('accountId')?.value,
       description: this.form.get('description')?.value || '',
       halls: [
         {
@@ -122,6 +140,7 @@ export class AddNewPaymentMethodComponent implements OnInit, OnDestroy {
       {
         name: ['', [noDoubleSpaceValidator()]],
         name_ar: ['', [noDoubleSpaceValidator()]],
+        accountId: [null, [Validators.required]],
         description: ['', [noDoubleSpaceValidator()]],
       },
       {

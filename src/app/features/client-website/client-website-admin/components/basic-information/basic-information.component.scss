@@ -1,58 +1,26 @@
 @use 'variables';
 @use 'mixins';
+@use '../../../../../styles/components/website/admin-cards' as *;
+@use '../../../../../styles/components/website/admin-forms' as *;
+@use '../../../../../styles/components/website/admin-buttons' as *;
+@use '../../../../../styles/components/website/admin-states' as *;
+@use '../../../../../styles/components/website/admin-drag-drop' as *;
+@use '../../../../../styles/components/website/admin-switches' as *;
 
 :host {
   .basic-section {
-    background: white;
-    padding: 2rem;
-    border-radius: 0.75rem;
-    margin-bottom: 1.5rem;
-    border: 1px solid variables.$primary-color;
+    @extend %admin-basic-card;
 
     .header-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-
-      h4 {
-        margin: 0;
-        font-size: 1.25rem;
-        font-weight: 500;
-        color: #1f2937;
-      }
-
-      button {
-        max-width: fit-content;
-      }
+      @extend %admin-card-header;
     }
 
     .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: variables.$space-2xl;
-
-      @include mixins.md(max) {
-        // grid-template-columns: 1fr;
-        display: block;
-      }
+      @extend %admin-form-grid;
     }
 
     .view-field {
-      margin-bottom: 1rem;
-
-      label {
-        font-weight: 500;
-        color: #374151;
-        margin-bottom: 0.25rem;
-        display: block;
-      }
-
-      p {
-        margin: 0;
-        color: variables.$primary-color;
-      }
+      @extend %admin-view-field;
     }
   }
 

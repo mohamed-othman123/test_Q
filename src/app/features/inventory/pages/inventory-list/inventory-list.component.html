@@ -22,10 +22,10 @@
         {{ 'inventory.itemName' | translate }}
         <p-sortIcon field="name" class="mr-12px" />
       </th>
-      <th pSortableColumn="unitPrice">
+      <!-- <th pSortableColumn="unitPrice">
         {{ 'inventory.unitPrice' | translate }}
         <p-sortIcon field="unitPrice" class="mr-12px" />
-      </th>
+      </th> -->
       <th pSortableColumn="quantity">
         {{ 'inventory.quantity' | translate }}
         <p-sortIcon field="quantity" class="mr-12px" />
@@ -54,7 +54,7 @@
           <i class="pi pi-search" style="color: #667085"></i>
         </app-input>
       </th>
-      <th>
+      <!-- <th>
         <app-input
           [control]="filterForm.get('unitPrice')!"
           [controlName]="'unitPrice'"
@@ -63,7 +63,7 @@
           [placeholder]="'common.search' | translate">
           <i class="pi pi-search" style="color: #667085"></i>
         </app-input>
-      </th>
+      </th> -->
       <th>
         <app-input
           [control]="filterForm.get('quantity')!"
@@ -110,14 +110,14 @@
       <td>
         {{ lang.lang === 'en' ? item.name : item.name_ar }}
       </td>
-      <td>
+      <!-- <td>
         <span class="price-with-symbol">
           <sar-symbol />
           {{ item.unitPrice }}
         </span>
-      </td>
+      </td> -->
       <td>
-        {{ item.quantity }}
+        {{ item.totalQuantity }}
       </td>
       <td>
         {{ item.reorderLevel }}

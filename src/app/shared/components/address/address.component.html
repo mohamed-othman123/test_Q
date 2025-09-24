@@ -1,0 +1,66 @@
+<fieldset>
+  <legend>العنوان</legend>
+
+  <app-input
+    [control]="getControl('city')"
+    [controlName]="'city'"
+    inputType="text"
+    [placeholder]="'address.cityPlaceholder' | translate"
+    [label]="'address.city' | translate">
+    <i class="pi pi-map-marker" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="getControl('district')"
+    [controlName]="'district'"
+    inputType="text"
+    [placeholder]="'address.districtPlaceholder' | translate"
+    [label]="'address.district' | translate">
+    <i class="pi pi-map-marker" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="getControl('street')"
+    [controlName]="'street'"
+    inputType="text"
+    [placeholder]="'address.streetPlaceholder' | translate"
+    [label]="'address.street' | translate">
+    <i class="pi pi-map-marker" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="getControl('buildingNumber')"
+    [controlName]="'buildingNumber'"
+    inputType="text"
+    [placeholder]="'address.buildingNumberPlaceholder' | translate"
+    [label]="'address.buildingNumber' | translate">
+    <i class="pi pi-map-marker" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="getControl('unitNumber')"
+    [controlName]="'unitNumber'"
+    inputType="text"
+    [placeholder]="'address.unitNumberPlaceholder' | translate"
+    [label]="'address.unitNumber' | translate">
+    <i class="pi pi-map-marker" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="getControl('additionalNumber')"
+    [controlName]="'additionalNumber'"
+    inputType="text"
+    [placeholder]="'address.additionalNumberPlaceholder' | translate"
+    [label]="'address.additionalNumber' | translate">
+    <i class="pi pi-map-marker" style="color: gray"></i>
+  </app-input>
+
+  <app-input
+    [control]="getControl('postalCode')"
+    [controlName]="'postalCode'"
+    inputType="text"
+    [placeholder]="'address.postalCodePlaceholder' | translate"
+    [label]="'address.postalCode' | translate">
+    <i class="pi pi-map-marker" style="color: gray"></i>
+  </app-input>
+</fieldset>

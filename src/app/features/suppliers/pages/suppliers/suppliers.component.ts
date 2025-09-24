@@ -8,18 +8,17 @@ import {Router} from '@angular/router';
 import {HallsService} from '@halls/services/halls.service';
 import {Hall} from '@halls/models/halls.model';
 import {Table} from 'primeng/table';
-import {SortEvent} from 'primeng/api';
 import {DataTableFilter, Item} from '@core/models';
-import {AuthService, FilterService} from '@core/services';
+import {AuthService, FilterService, LanguageService} from '@core/services';
 import {Filter} from '@core/interfaces';
 import {PermissionsService} from '@core/services/permissions.service';
 import {PermissionTypes} from '@auth/models';
 
 @Component({
-    selector: 'app-suppliers',
-    templateUrl: './suppliers.component.html',
-    styleUrl: './suppliers.component.scss',
-    standalone: false
+  selector: 'app-suppliers',
+  templateUrl: './suppliers.component.html',
+  styleUrl: './suppliers.component.scss',
+  standalone: false,
 })
 export class SuppliersComponent extends Filter implements OnInit, OnDestroy {
   @ViewChild('dt')
@@ -58,6 +57,7 @@ export class SuppliersComponent extends Filter implements OnInit, OnDestroy {
     protected override filterService: FilterService,
     public permissionsService: PermissionsService,
     private authService: AuthService,
+    public lang: LanguageService,
   ) {
     super(filterService);
   }
@@ -150,7 +150,7 @@ export class SuppliersComponent extends Filter implements OnInit, OnDestroy {
 
   deleteSupplier(id: number) {
     this.suppliersService
-      .deleteSupplier(id.toString())
+      .deleteSupplier(id.toString(), this.selectedHall!.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.loadSuppliers();
@@ -188,8 +188,13 @@ export class SuppliersComponent extends Filter implements OnInit, OnDestroy {
   ): boolean {
     const isOwner =
       supplier.created_by === this.authService.userData?.user.userId;
+
+    const isUpdater =
+      supplier.updated_by === this.authService.userData?.user.userId;
+
     const canEdit =
       isOwner ||
+      isUpdater ||
       this.authService.userData?.user.permissionType ===
         PermissionTypes.GENERAL;
 

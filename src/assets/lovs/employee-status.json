@@ -1,0 +1,16 @@
+[
+  {
+    "value": true,
+    "label": {
+      "ar": "نشط",
+      "en": "Active"
+    }
+  },
+  {
+    "value": false,
+    "label": {
+      "ar": "غير نشط",
+      "en": "Not Active"
+    }
+  }
+]

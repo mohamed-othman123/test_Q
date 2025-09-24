@@ -41,7 +41,7 @@ export class BookingCostsComponent {
   ) {
     this.bookingId = this.route.snapshot.paramMap.get('id');
     this.hallId = String(this.hallsService.getCurrentHall()?.id) || '';
-    this.booking = this.router.getCurrentNavigation()?.extras.state as Booking;
+    this.booking = this.router.currentNavigation()?.extras.state as Booking;
 
     // Lock costs if the booking has ended + 1 day
     if (this.booking.endDate) {

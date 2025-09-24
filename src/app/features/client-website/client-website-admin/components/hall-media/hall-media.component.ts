@@ -191,10 +191,12 @@ export class HallMediaComponent implements OnChanges {
       mimetype: item.mimetype,
     }));
 
+    const sortedItems = processedItems.sort((a, b) => a.order - b.order);
+
     if (type === 'banners') {
-      this.banners = [...processedItems];
+      this.banners = [...sortedItems];
     } else {
-      this.images = [...processedItems];
+      this.images = [...sortedItems];
     }
   }
 

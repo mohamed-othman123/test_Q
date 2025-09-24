@@ -20,7 +20,7 @@ export class LocalizationInitService {
 
       // Then set up translation
       this.translate.addLangs(['en', 'ar']);
-      this.translate.setDefaultLang('ar');
+      this.translate.setFallbackLang('ar');
       const currentLang = this.languageService.getCurrentLanguage();
       this.translate.use(currentLang);
 

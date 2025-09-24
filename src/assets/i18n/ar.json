@@ -106,7 +106,6 @@
     "discounts": "الخصومات",
     "analytics": "التحليلات",
     "dashboards": "اللوحات",
-    "analyticsDashboard": "عرض اللوحة",
     "analyticsQuestion": "عرض الاستعلام",
     "aiChat": "مساعد التحليلات الذكي",
     "viewExpenseCategory": "عرض فئة المصروفات",
@@ -168,7 +167,17 @@
     "contacts": "جهات الاتصال",
     "VIP": "عميل مميز",
     "notVIP": "عميل عادي",
-    "bookings": "الحجوزات"
+    "bookings": "الحجوزات",
+    "streetName": "اسم الشارع",
+    "streetNamePlaceholder": "أدخل اسم الشارع",
+    "buildingNumber": "رقم المبنى",
+    "buildingNumberPlaceholder": "أدخل رقم المبنى",
+    "citySubdivisionName": "اسم تقسيم المدينة",
+    "citySubdivisionNamePlaceholder": "أدخل اسم التقسيم الفرعي للمدينة",
+    "cityName": "اسم المدينة",
+    "cityNamePlaceholder": "أدخل اسم المدينة",
+    "postalZone": "المنطقة البريدية",
+    "postalZonePlaceholder": "أدخل المنطقة البريدية"
   },
   "permissions": {
     "addNewPermission": "اضافه وظيفة جديده",
@@ -576,7 +585,9 @@
     "selectType": "اختر النوع",
     "nameAr": "اسم طريقة الدفع بالعربية",
     "nameArPlaceholder": "أدخل اسم طريقة الدفع بالعربية",
-    "nameEn": "اسم طريقة الدفع بالانجليزية"
+    "nameEn": "اسم طريقة الدفع بالانجليزية",
+    "linkedAccount": "الحساب المرتبط",
+    "linkedAccountPlaceholder": "اختر الحساب المرتبط"
   },
   "services": {
     "serviceName": "اسم الخدمة بالانجليزية",
@@ -928,7 +939,8 @@
     "product": "المنتج",
     "supplier_product_updated": "تم تحديث المنتج بنجاح",
     "updateTheProductFirst": "يرجى الانتهاء من تحديث المنتج اولا قبل إرسال المورد",
-    "expenses": "المصروفات"
+    "expenses": "المصروفات",
+    "duplicateSupplierWarning": "المورد موجود بالفعل في نفس القاعه"
   },
   "purchases": {
     "title": "المصروفات",
@@ -1079,7 +1091,6 @@
     "addPayment": "إضافة دفعة",
     "purchasesExpenses": "مصروفات المشتريات",
     "generalExpenses": "المصروفات العامة",
-    "expenseType": "نوع المصروفات",
     "paymentNote": "ملاحظات الدفع",
     "enterPaymentNote": "ادخال ملاحظات الدفع",
     "addDiscount": "إضافة خصم",
@@ -1272,6 +1283,9 @@
   },
   "landing": {
     "websiteSettings": "إعدادات الويب سايت",
+    "capacity": "السعة",
+    "noHallEvents": "لا توجد مناسبات للقاعة",
+    "noHallSections": "لا توجد أقسام للقاعة",
     "liveView": "مشاهدة الصفحة ",
     "basicInfo": "المعلومات الأساسية",
     "hallDomainName": "اسم دومين القاعة",
@@ -1454,9 +1468,15 @@
     "sectionsReordered": "تم إعادة ترتيب الأقسام بنجاح",
     "sectionRemoved": "تم إزالة القسم بنجاح",
     "sectionDisabled": "تم تعطيل القسم بنجاح",
+    "sectionDeactivated": "تم إلغاء تفعيل القسم بنجاح",
+    "sectionActivated": "تم تفعيل القسم بنجاح",
+    "sectionDeleted": "تم حذف القسم بنجاح",
     "sectionAdded": "تم إضافة القسم بنجاح",
     "sectionUpdated": "تم تحديث القسم بنجاح",
     "sectionRemoveError": "خطأ في إزالة القسم",
+    "sectionDeactivateError": "خطأ في إلغاء تفعيل القسم",
+    "sectionActivateError": "خطأ في تفعيل القسم",
+    "sectionDeleteError": "خطأ في حذف القسم",
     "sectionAddError": "خطأ في إضافة القسم",
     "sectionUpdateError": "خطأ في تحديث القسم",
     "sectionsReorderError": "خطأ في إعادة ترتيب الأقسام",
@@ -1666,7 +1686,9 @@
     "selectDate": "اختر التاريخ",
     "canceled": "ملغى",
     "active": "نشط",
-    "reset": "إعادة تعيين"
+    "reset": "إعادة تعيين",
+    "linkedAccount": "الحساب المرتبط",
+    "linkedAccountPlaceholder": "اختر الحساب المرتبط"
   },
   "fields": {
     "mobileNo": "رقم الجوال",
@@ -1971,7 +1993,25 @@
     "enterTaxRegistrationNumber": "ادخل الرقم الضريبى",
     "address": "العنوان",
     "enterAddress": "ادخل العنوان",
-    "updated": "تم تعديل بيانات المنشأة بنجاح"
+    "updated": "تم تعديل بيانات المنشأة بنجاح",
+    "unitName": "اسم الوحدة",
+    "category": "نشاط العمل",
+    "streetName": "اسم الشارع",
+    "buildingNumber": "رقم المبنى",
+    "citySubdivisionName": "اسم تقسيم المدينة",
+    "postalZone": "المنطقة البريدية",
+    "cityName": "اسم المدينة",
+    "enterUnitName": "أدخل اسم الوحدة",
+    "enterCategory": "أدخل النشاط التجاري",
+    "enterStreetName": "أدخل اسم الشارع",
+    "enterBuildingNumber": "أدخل رقم المبنى",
+    "enterCitySubdivisionName": "أدخل اسم التقسيم الفرعي للمدينة",
+    "enterPostalZone": "أدخل المنطقة البريدية",
+    "enterCityName": "أدخل اسم المدينة",
+    "zatcaConnect": "الربط مع هيئة الزكاة",
+    "otpLabel": "رمز هيئة الزكاة",
+    "otpDescription": "أدخل رمز التحقق من منصة فاتورة التابع الى رقمك الضريبي",
+    "connect": "اربط الأن"
   },
 
   "expensesItems": {
@@ -2110,13 +2150,32 @@
     "title": "لوحة التحليلات",
     "subtitle": "عرض التقارير الشاملة واللوحات والمخططات البيانية للحصول على رؤى عملك",
     "defaultDashboardDescription": "لوحة معلومات تفاعلية تحتوي على مؤشرات الأعمال الرئيسية والرؤى",
-    "defaultQuestionDescription": "استعلام تفاعلي يوفر رؤى حول بيانات الأعمال الرئيسية",
     "dashboards": "اللوحات",
-    "questions": "الاستعلامات",
     "totalItems": "إجمالي العناصر",
     "viewItem": "عرض التفاصيل",
     "clearSearch": "مسح البحث",
     "backToAnalytics": "العودة للتحليلات",
+    "expenseItem": "بند الصرف",
+    "analyticsDashboard": {
+      "defaultDescription": "لوحة معلومات تفاعلية تحتوي على مؤشرات الأعمال الرئيسية والرؤى",
+      "bookingDescription": "لوحة تحليلات شاملة للحجوزات توفر رؤى فورية حول الحجوزات ومعدلات الإشغال واتجاهات الإيرادات وأنماط حجز العملاء لتحسين إدارة الحجوزات وزيادة الإيرادات المحتملة.",
+      "expenseDescription": "لوحة تتبع وتحليل المصروفات التفصيلية تقدم رؤى شاملة حول أنماط الإنفاق وفئات التكاليف وأداء الميزانية والكفاءة المالية لمساعدتك في تحسين مصروفات عملك وزيادة الربحية.",
+      "filters": {
+        "title": "تصفية",
+        "month": "شهر",
+        "3months": "٣ شهور",
+        "6months": "٦ شهور",
+        "year": "سنة",
+        "customize": "مُخصص",
+        "customRange": "نطاق مخصص",
+        "bookingFilters": "مرشحات الحجوزات",
+        "expenseFilters": "مرشحات المصروفات",
+        "fromDate": "التاريخ (من)",
+        "toDate": "التاريخ (الى)",
+        "timeGranularity": "الفترة الزمنية",
+        "loadingContent": "جاري تحميل التحليلات..."
+      }
+    },
     "backToDashboards": "العودة للوحات",
     "lastUpdated": "آخر تحديث",
     "fullscreen": "ملء الشاشة",
@@ -2127,17 +2186,14 @@
     },
     "tabs": {
       "all": "جميع العناصر",
-      "dashboards": "اللوحات",
-      "questions": "الاستعلامات"
+      "dashboards": "اللوحات"
     },
     "search": {
-      "placeholder": "البحث في اللوحات والاستعلامات..."
+      "placeholder": "البحث في اللوحات..."
     },
     "loading": {
       "title": "جاري تحميل التحليلات",
-      "message": "يرجى الانتظار بينما نقوم بتحميل بيانات التحليلات...",
-      "questionTitle": "جاري تحميل الاستعلام",
-      "questionMessage": "يرجى الانتظار بينما نقوم بتحميل بيانات الاستعلام..."
+      "message": "يرجى الانتظار بينما نقوم بتحميل بيانات التحليلات..."
     },
     "error": {
       "title": "تعذر تحميل البيانات",
@@ -2146,6 +2202,10 @@
     "empty": {
       "title": "لا توجد تحليلات متاحة",
       "message": "لا توجد لوحات أو استعلامات متاحة حالياً.",
+      "noDashboards": {
+        "title": "لا توجد لوحات متاحة",
+        "message": "لا توجد لوحات تحليلات متاحة في الوقت الحالي. يرجى المحاولة لاحقاً أو التواصل مع المدير."
+      },
       "noResults": {
         "title": "لم يتم العثور على نتائج",
         "message": "لم يتم العثور على عناصر تطابق بحثك عن"
@@ -2154,21 +2214,8 @@
         "message": "لا توجد عناصر تحليلات متاحة حالياً. تواصل مع المدير لإعداد اللوحات والاستعلامات."
       }
     },
-    "dashboard": {
-      "title": "لوحة المعلومات",
-      "defaultDescription": "لوحة معلومات تفاعلية تحتوي على مؤشرات الأعمال الرئيسية والرؤى",
-      "viewDashboard": "عرض اللوحة",
-      "loadingContent": "جاري تحميل محتوى اللوحة...",
-      "loadingMetadata": "جاري تحميل معلومات اللوحة..."
-    },
-    "question": {
-      "title": "استعلام",
-      "loadingContent": "جاري تحميل محتوى الاستعلام...",
-      "loadingMetadata": "جاري تحميل معلومات الاستعلام..."
-    },
     "type": {
-      "dashboard": "لوحة معلومات",
-      "question": "استعلام"
+      "dashboard": "لوحة معلومات"
     }
   },
   "chat": {
@@ -2227,7 +2274,7 @@
     "itemUpdatedSuccessfully": "تم تحديث الصنف بنجاح",
     "itemDeletedSuccessfully": "تم حذف الصنف بنجاح",
     "updateItem": "تحديث الصنف",
-    "updateItemInfo": "يمكنك فقط تعديل الكمية و مستوي اعادة الطلب مع كتابة سبب التعديل",
+    "updateItemInfo": "يمكنك فقط تعديل الوصف و مستوي اعادة الطلب مع كتابة سبب التعديل",
     "reason": "السبب",
     "enterReason": "أدخل السبب",
     "transactionsList": "قائمة العمليات",
@@ -2252,7 +2299,9 @@
     "deleteItemMessage": "هل انت متأكد من حذف هذا الصنف؟ لن تتمكن من التراجع عن هذا الإجراء.",
     "deleteReason": "يرجى تقديم سبب الحذف",
     "deleteConfirmation": "تاكيد الحذف",
-    "status": "الحالة"
+    "status": "الحالة",
+    "pricesList": "قائمة الأسعار",
+    "remainingQuantity": "الكمية المتبقية"
   },
   "auditTransactions": {
     "id": "رقم العملية",
@@ -2301,6 +2350,34 @@
     "addedSuccessfully": "تم إضافة الحساب بنجاح",
     "updatedSuccessfully": "تم تحديث الحساب بنجاح",
     "deletedSuccessfully": "تم حذف الحساب بنجاح",
-    "treeDescription": "تعرض هذه الشجرة تمثيلاً بصريًا لشجرة الحسابات، حيث توضح الهيكل الهرمي لجميع الحسابات في المؤسسة. يُظهر كل عنصر رمز الحساب، الاسم، أرصدة المدين والدائن، مما يتيح للمستخدمين سهولة التنقل وفهم العلاقات بين الحسابات."
+    "treeDescription": "تعرض هذه الشجرة تمثيلاً بصريًا لشجرة الحسابات، حيث توضح الهيكل الهرمي لجميع الحسابات في المؤسسة. يُظهر كل عنصر رمز الحساب، الاسم، أرصدة المدين والدائن، مما يتيح للمستخدمين سهولة التنقل وفهم العلاقات بين الحسابات.",
+    "exportToExcel": "تصدير إلى إكسل",
+    "tableOptions": "خيارات الجدول",
+    "accountLinkedTo": "الحساب مرتبط بـ",
+    "accountLinkedToPlaceholder": "اختر من القائمة",
+    "types": {
+      "assets": "الأصول",
+      "liabilities": "الخصوم",
+      "equity": "حقوق الملكية",
+      "revenue": "الإيرادات",
+      "expenses": "المصروفات"
+    },
+    "parentAccountRequired": "الحساب الرئيسي مطلوب"
+  },
+  "address": {
+    "city": "المدينة",
+    "cityPlaceholder": "أدخل المدينة",
+    "district": "الحي",
+    "districtPlaceholder": "أدخل الحي",
+    "street": "الشارع",
+    "streetPlaceholder": "أدخل الشارع",
+    "buildingNumber": "رقم المبنى",
+    "buildingNumberPlaceholder": "أدخل رقم المبنى",
+    "unitNumber": "رقم الوحدة",
+    "unitNumberPlaceholder": "أدخل رقم الوحدة",
+    "additionalNumber": "رقم إضافي",
+    "additionalNumberPlaceholder": "أدخل رقم إضافي",
+    "postalCode": "الرمز البريدي",
+    "postalCodePlaceholder": "أدخل الرمز البريدي"
   }
 }

@@ -1,0 +1,40 @@
+@if (section?.sections?.length) {
+  <div class="hall-sections">
+    <div class="sec_id" id="hallSections"></div>
+    <div class="container">
+      <div class="row pb-3 align-items-center justify-content-center">
+        <div class="col-12">
+          <div class="section_title text-center">
+            <h3>{{ section.title_ar || section.title_en || ('orders.HallSections' | translate) }}</h3>
+            @if (section.description_ar || section.description_en) {
+              <p class="section-description">
+                {{ lang === 'ar' ? section.description_ar : section.description_en }}
+              </p>
+            }
+          </div>
+        </div>
+        <div class="d-flex gap-2 align-items-center justify-content-center flex-wrap">
+          @for (hallSection of section.sections; track hallSection) {
+            <div class="depart_item text-center">
+              <div class="icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-circle-square"
+                  viewBox="0 0 16 16">
+                  <path d="M0 6a6 6 0 1 1 12 0A6 6 0 0 1 0 6" />
+                  <path
+                    d="M12.93 5h1.57a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-1.57a7 7 0 0 1-1-.22v1.79A1.5 1.5 0 0 0 5.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 4h-1.79q.145.486.22 1" />
+                </svg>
+              </div>
+              <h3>{{ lang === 'ar' ? hallSection.name_ar : hallSection.name }}</h3>
+              <small>{{ 'landing.capacity' | translate }}: {{ hallSection.capacity }}</small>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -248,7 +248,10 @@ export class PurchaseDetailsComponent implements OnInit, OnDestroy {
             {emitEvent: false},
           );
 
-          // if (!this.isEditMode) this.itemsArray.clear();
+          if (!this.isEditMode && !this.isPatchingForm) {
+            this.itemsArray.clear();
+            this.itemsArray.push(this.createItem('product'));
+          }
         }),
         filter(([inv, type]) => {
           return (

@@ -34,9 +34,9 @@ const routes: Routes = [
   {
     path: 'lp/:hallName',
     loadChildren: () =>
-      import('./features/client-website/client-website-public/client-website-public.module').then(
-        (m) => m.ClientWebsitePublicModule,
-      ),
+      import(
+        './features/client-website/client-website-public/client-website-public.module'
+      ).then((m) => m.ClientWebsitePublicModule),
   },
   {
     path: 'clients',
@@ -258,7 +258,7 @@ const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'chart-of-accounts',
+    path: 'accounts',
     loadChildren: () =>
       import('@accounts/accounts.module').then((m) => m.AccountsModule),
     canActivate: [authGuard],

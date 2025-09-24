@@ -19,12 +19,13 @@ import { FormGroup } from '@angular/forms';
           </textarea>
 
           <div class="input-actions">
-            <button
+            <!-- TODO: Re-enable attach file functionality when needed -->
+            <!-- <button
               type="button"
               class="attach-btn"
               [title]="'chat.attachFile' | translate">
               <i class="pi pi-paperclip"></i>
-            </button>
+            </button> -->
 
             <button
               type="submit"
@@ -84,6 +85,7 @@ import { FormGroup } from '@angular/forms';
       background: var(--bg-surface-alpha);
       flex-shrink: 0;
       min-height: 80px;
+      margin-top: auto;
     }
 
     .message-form {

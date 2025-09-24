@@ -1,0 +1,131 @@
+@use 'variables' as variables;
+@use 'mixins' as mixins;
+
+%admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: variables.$space-2xl;
+
+  @include mixins.md(max) {
+    grid-template-columns: 1fr;
+  }
+}
+
+%admin-form-grid-single {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-2xl;
+}
+
+%admin-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+
+  @include mixins.md(max) {
+    grid-template-columns: 1fr;
+  }
+}
+
+%admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    color: #374151;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+  }
+}
+
+%admin-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    min-width: 80px;
+    max-width: fit-content;
+  }
+}
+
+%admin-form-actions-inline {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-left: auto;
+}
+
+%admin-view-field {
+  margin-bottom: 1rem;
+
+  label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+    display: block;
+  }
+
+  p {
+    margin: 0;
+    color: variables.$primary-color;
+  }
+}
+
+%admin-view-group {
+  label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+
+  .view-value {
+    padding: 0.75rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #374151;
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+    word-break: break-word;
+
+    &:empty::before {
+      content: '—';
+      color: #9ca3af;
+      font-style: italic;
+    }
+  }
+}

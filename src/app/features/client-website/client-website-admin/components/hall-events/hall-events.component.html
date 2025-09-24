@@ -1,0 +1,28 @@
+@if (section?.events?.length) {
+  <div class="hall-events">
+    <div class="hall-events-list">
+      @for (event of section.events; track event) {
+        <div class="hall-event-item">
+          <div class="hall-event-content">
+            <div class="icon-container">
+              <i class="pi pi-calendar"></i>
+            </div>
+            <div class="event-details">
+              <span class="event-name">
+                <strong>{{
+                  lang.lang === 'ar' ? event.name_ar : event.name
+                }}</strong>
+              </span>
+              <span class="event-description">{{ event.description }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+} @else {
+  <div class="empty-state">
+    <i class="pi pi-info-circle"></i>
+    <p>{{ 'landing.noHallEvents' | translate }}</p>
+  </div>
+}

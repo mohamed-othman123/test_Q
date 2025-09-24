@@ -4,7 +4,7 @@ import {Client} from '@clients/models/client.model';
 import {CustomersService} from '@clients/services/Customers.service';
 import {Filter} from '@core/interfaces';
 import {DataTableFilter, Item} from '@core/models';
-import {AuthService, FilterService} from '@core/services';
+import {AuthService, FilterService, LanguageService} from '@core/services';
 import {DrawerService} from '@core/services/drawer.service';
 import {PermissionsService} from '@core/services/permissions.service';
 import {HallsService} from '@halls/services/halls.service';
@@ -13,10 +13,10 @@ import {Table} from 'primeng/table';
 import {Router} from '@angular/router';
 
 @Component({
-    selector: 'app-clients',
-    templateUrl: './clients.component.html',
-    styleUrl: './clients.component.scss',
-    standalone: false
+  selector: 'app-clients',
+  templateUrl: './clients.component.html',
+  styleUrl: './clients.component.scss',
+  standalone: false,
 })
 export class ClientsComponent extends Filter implements OnInit {
   clients: Client[] = [];
@@ -44,6 +44,7 @@ export class ClientsComponent extends Filter implements OnInit {
     public permissionsService: PermissionsService,
     private authService: AuthService,
     private router: Router,
+    public lang: LanguageService,
   ) {
     super(filterService);
   }
@@ -114,9 +115,12 @@ export class ClientsComponent extends Filter implements OnInit {
   }
 
   deleteClient(client: Client) {
-    this.customerService.deleteClient(client.id).subscribe(() => {
-      this.refreshDataTable();
-    });
+    const currentHallId = this.hallsService.getCurrentHall()?.id;
+    this.customerService
+      .deleteClient(client.id, currentHallId!)
+      .subscribe(() => {
+        this.refreshDataTable();
+      });
   }
 
   refreshDataTable() {
@@ -126,8 +130,12 @@ export class ClientsComponent extends Filter implements OnInit {
     const isOwner =
       client.created_by === this.authService.userData?.user.userId;
 
+    const isUpdater =
+      client.updated_by === this.authService.userData?.user.userId;
+
     const canEdit =
       isOwner ||
+      isUpdater ||
       this.authService.userData?.user.permissionType ===
         PermissionTypes.GENERAL;
 

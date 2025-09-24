@@ -4,7 +4,7 @@
   [title]="'sideNav.accounts' | translate"
   (sideDrawerToggler)="addNewAccount()">
   <button class="view-tree" (click)="viewTree()">
-    <i class="pi pi-eye"></i> {{ 'chartOfAccounts.viewTree' | translate }}
+    <i class="pi pi-sitemap"></i> {{ 'chartOfAccounts.viewTree' | translate }}
   </button>
 </app-list-header>
 
@@ -54,7 +54,36 @@
         label="{{ 'common.reset' | translate }}"></button>
     </div>
   </div>
+  <!--export data-->
+  <div class="file-options">
+    <div ngbDropdown container="body" class="d-inline-block">
+      <button
+        type="button"
+        class="options-button"
+        id="dropdownBasic1"
+        ngbDropdownToggle>
+        <span class="p-button-icon p-button-icon-left pi pi-ellipsis-v"></span>
+        <i class="pi pi-cog"></i>
+        {{ 'chartOfAccounts.tableOptions' | translate }}
+      </button>
+      <div
+        ngbDropdownMenu
+        aria-labelledby="dropdownBasic1"
+        class="p-menu p-menu-overlay">
+        <!-- Payment -->
 
+        <button
+          ngbDropdownItem
+          class="d-flex gap-3 align-items-center"
+          (click)="exportToExcel()">
+          <i class="pi pi-file-export"></i>
+          <span> {{ 'chartOfAccounts.exportToExcel' | translate }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!--table-->
   <div class="table-wrapper">
     <p-treeTable
       #treeTable

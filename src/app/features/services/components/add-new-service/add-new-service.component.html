@@ -28,7 +28,7 @@
         <div class="col-md-6">
           <app-input
             [disabled]="mode === 'view'"
-            [control]="serviceNameArControl"
+            [control]="getFormControl('name_ar')"
             controlName="name_ar"
             inputType="text"
             [placeholder]="'services.ServiceNamePlaceholderAr' | translate"
@@ -40,7 +40,7 @@
         <div class="col-md-6">
           <app-input
             [disabled]="mode === 'view'"
-            [control]="serviceNameControl"
+            [control]="getFormControl('name')"
             controlName="name"
             inputType="text"
             [placeholder]="'services.ServiceNamePlaceholder' | translate"
@@ -52,7 +52,7 @@
         <div class="col-md-6">
           <app-input
             [disabled]="mode === 'view'"
-            [control]="priceControl"
+            [control]="getFormControl('price')"
             controlName="price"
             inputType="number"
             [placeholder]="'services.servicePricePlaceholder' | translate"
@@ -64,7 +64,7 @@
         <div class="col-md-6">
           <app-input
             [disabled]="mode === 'view'"
-            [control]="costControl"
+            [control]="getFormControl('cost')"
             controlName="cost"
             inputType="number"
             [placeholder]="'services.servicePricePlaceholder' | translate"
@@ -82,6 +82,20 @@
             </span>
           }
         </div>
+        <div class="col-md-6">
+          <app-dropdown
+            [filter]="true"
+            filterBy="name"
+            [control]="getFormControl('accountId')"
+            [options]="accountList"
+            controlName="accountId"
+            [optionLabel]="lang.lang === 'ar' ? 'name_ar' : 'name'"
+            optionValue="id"
+            [placeholder]="'common.linkedAccountPlaceholder' | translate"
+            [label]="'common.linkedAccount' | translate">
+            <i class="pi pi-user" style="color: gray"></i>
+          </app-dropdown>
+        </div>
 
         <div class="col-md-6">
           @if (mode === 'view') {
@@ -96,7 +110,7 @@
             </app-input>
           } @else {
             <app-dropdown
-              [control]="providerTypeControl"
+              [control]="getFormControl('providerType')"
               [options]="providerTypeOptions"
               controlName="providerType"
               optionLabel="label"
@@ -123,7 +137,7 @@
             } @else {
               <app-dropdown
                 [emptyMessage]="'services.pleaseAddSupplierFirst' | translate"
-                [control]="supplierIdControl"
+                [control]="getFormControl('supplier')"
                 [options]="currentAvailableSuppliers"
                 controlName="supplier"
                 optionLabel="name"
@@ -190,7 +204,7 @@
 
         <app-input
           [disabled]="mode === 'view'"
-          [control]="noteControl"
+          [control]="getFormControl('note')"
           controlName="note"
           inputType="textarea"
           [placeholder]="'services.serviceDescriptionPlaceholder' | translate"

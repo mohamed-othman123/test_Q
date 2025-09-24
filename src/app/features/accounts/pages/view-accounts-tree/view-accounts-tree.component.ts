@@ -15,6 +15,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {OrgChart} from 'd3-org-chart';
 import {Subject, takeUntil} from 'rxjs';
 import * as d3 from 'd3';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-view-accounts-tree',
@@ -34,17 +35,20 @@ export class ViewAccountsTreeComponent implements AfterViewInit, OnDestroy {
   highlightNodeMap = new Map<number, boolean>();
 
   filters = {
-    sortOrder: 'ASC',
+    sortOrder: 'DESC',
     sortBy: 'accountCode',
   };
+
+  compact = 0;
 
   private destroyed$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private accountsService: AccountsService,
-    private lang: LanguageService,
+    public lang: LanguageService,
     private translation: TranslateService,
+    private location: Location,
   ) {
     this.accountId = this.route.snapshot.paramMap.get('id');
     translation.onLangChange.pipe(takeUntil(this.destroyed$)).subscribe(() => {
@@ -78,7 +82,7 @@ export class ViewAccountsTreeComponent implements AfterViewInit, OnDestroy {
   // get accounts by parent id and build tree
   getAccountsByParentId(parentId: number) {
     this.accountsService
-      .getAccountsTree({parentAccountId: parentId})
+      .getAccountsTree({...this.filters, parentAccountId: parentId})
       .subscribe((res: AccountNode[]) => {
         this.accountsList = flattenTree(res);
 
@@ -204,6 +208,7 @@ export class ViewAccountsTreeComponent implements AfterViewInit, OnDestroy {
         }
       })
       .container(this.chartContainer.nativeElement)
+      .svgHeight(400)
       .data(this.accountsList)
       .onNodeClick((d: any) => this.highlightNodeToggle(d.data))
       .nodeUpdate(function (this: any, d: any, i: number, arr: any[]) {
@@ -219,6 +224,7 @@ export class ViewAccountsTreeComponent implements AfterViewInit, OnDestroy {
             d.data._highlighted || d.data._upToTheRootHighlighted ? 8 : 1,
           );
       })
+      .compact(false)
       .render();
   }
 
@@ -231,6 +237,10 @@ export class ViewAccountsTreeComponent implements AfterViewInit, OnDestroy {
     this.highlightNodeMap.set(account.id!, true);
 
     this.chart.setUpToTheRootHighlighted(account.id).render().fit();
+  }
+
+  goBack() {
+    this.location.back();
   }
 
   ngOnDestroy(): void {

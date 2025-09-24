@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges, ElementRef, ViewChild} from '@angular/core';
 import {
   ControlContainer,
   FormArray,
@@ -12,8 +12,7 @@ import {LandingGeneralInformationDto} from '@client-website-admin/models/landing
 import {LandingPageSection} from '@client-website-admin/models/section.model';
 import {noDoubleSpaceValidator} from '@core/validators';
 import {NotificationService} from '@core/services';
-import {DragCoordinationService} from '@core/services/drag-coordination.service';
-import Sortable from 'sortablejs';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'app-hall-services',
@@ -22,7 +21,7 @@ import Sortable from 'sortablejs';
     viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
     standalone: false
 })
-export class HallServicesComponent implements OnChanges, AfterViewInit {
+export class HallServicesComponent implements OnChanges {
   @Input() landingPageData: LandingGeneralInformationDto | null = null;
   @Input() section: LandingPageSection | null = null;
 
@@ -31,25 +30,19 @@ export class HallServicesComponent implements OnChanges, AfterViewInit {
   maxServices = 10;
   activeService: any = null;
   isEditingExisting = false;
-  private sortableInstance: Sortable | null = null;
   private currentSavedServices: string[] = [];
 
   constructor(
     private controlContainer: ControlContainer,
     private fb: FormBuilder,
     private landingPageService: LandingPageService,
-    private notificationService: NotificationService,
-    private dragCoordination: DragCoordinationService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['landingPageData'] && this.section) {
       this.updateServices(this.section);
     }
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => this.initializeSortable(), 500);
   }
 
   private updateServices(data: LandingPageSection) {
@@ -74,7 +67,6 @@ export class HallServicesComponent implements OnChanges, AfterViewInit {
     }
 
     this.activeService = null;
-    this.initializeSortable();
   }
 
   get form(): FormGroup {
@@ -104,12 +96,10 @@ export class HallServicesComponent implements OnChanges, AfterViewInit {
     this.hallServices.push(newService);
     this.activeService = newService;
     this.isEditingExisting = false;
-    this.initializeSortable();
   }
 
   removeService(index: number) {
     this.hallServices.removeAt(index);
-    this.initializeSortable();
 
     if (this.landingPageData?.id && this.section?.id) {
       const updatedServices = this.hallServices.controls
@@ -132,38 +122,12 @@ export class HallServicesComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  private initializeSortable() {
-    if (this.servicesList?.nativeElement) {
-      if (this.sortableInstance) {
-        this.sortableInstance.destroy();
-      }
-
-      this.sortableInstance = Sortable.create(this.servicesList.nativeElement, {
-        animation: 150,
-        handle: '.service-drag-handle',
-        disabled: !!this.activeService || this.dragCoordination.shouldDisableDrag('services', 'main-sections'),
-        onEnd: (evt) => {
-          this.dragCoordination.endDrag();
-          this.onSortableEnd(evt);
-        },
-        onStart: () => {
-          this.dragCoordination.startDrag('services');
-          return true;
-        }
-      });
-    }
-  }
-
-    private onSortableEnd(evt: any) {
-    const { oldIndex, newIndex } = evt;
-    if (oldIndex !== newIndex) {
+  onServicesDropped(event: CdkDragDrop<any[]>) {
+    if (event.previousIndex !== event.currentIndex) {
       const controls = this.hallServices.controls;
-      const item = controls[oldIndex];
-      controls.splice(oldIndex, 1);
-      controls.splice(newIndex, 0, item);
+      moveItemInArray(controls, event.previousIndex, event.currentIndex);
 
       this.updateServicesOrder();
-
       this.notificationService.showSuccess('landing.servicesReordered');
     }
   }
@@ -196,7 +160,6 @@ export class HallServicesComponent implements OnChanges, AfterViewInit {
     }
     this.activeService = null;
     this.isEditingExisting = false;
-    this.initializeSortable();
   }
 
   editService(control: any) {
@@ -206,7 +169,6 @@ export class HallServicesComponent implements OnChanges, AfterViewInit {
 
     this.activeService = control;
     this.isEditingExisting = true;
-    this.initializeSortable();
   }
 
   saveService() {
@@ -226,7 +188,6 @@ export class HallServicesComponent implements OnChanges, AfterViewInit {
           this.currentSavedServices = this.hallServices.controls.map(control => control.value?.trim()).filter(Boolean);
           this.activeService = null;
           this.isEditingExisting = false;
-          this.initializeSortable();
           this.notificationService.showSuccess('landing.serviceSaved');
         },
       });

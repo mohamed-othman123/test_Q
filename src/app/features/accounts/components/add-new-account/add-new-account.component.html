@@ -1,15 +1,52 @@
 <app-drawer-form-wrapper [form]="form" (onSubmit)="submit()">
-  <app-dropdown
+  <!-- <app-dropdown
+    [group]="true"
     [inert]="mode === 'edit'"
     [control]="getControl('parentAccountId')"
     [controlName]="'parentAccountId'"
-    [options]="parentsList"
+    [options]="availableParents"
     [optionLabel]="'name'"
     [dataKey]="'id'"
     [placeholder]="'chartOfAccounts.parentAccountPlaceholder' | translate"
     [label]="'chartOfAccounts.parentAccount' | translate">
     <i class="pi pi-list" style="color: gray"></i>
-  </app-dropdown>
+  </app-dropdown> -->
+
+  <div>
+    <div class="mb-1">
+      {{ 'chartOfAccounts.parentAccount' | translate }}
+      @if (getControl('parentAccountId').hasError('required')) {
+        <span style="color: red; font-weight: 600">&nbsp;*</span>
+      }
+    </div>
+    <p-dropdown
+      [filter]="true"
+      [filterBy]="'name,name_ar'"
+      [group]="true"
+      [inert]="mode === 'edit'"
+      [formControl]="getControl('parentAccountId')"
+      [options]="availableParents"
+      [optionLabel]="lang.lang === 'ar' ? 'name_ar' : 'name'"
+      [dataKey]="'id'"
+      [placeholder]="'chartOfAccounts.parentAccountPlaceholder' | translate">
+      <ng-template let-group pTemplate="group">
+        <div>
+          <span class="group-title">{{
+            'chartOfAccounts.types.' + group.label | translate
+          }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+
+    @if (
+      getControl('parentAccountId').touched &&
+      getControl('parentAccountId').invalid
+    ) {
+      <small class="p-error">{{
+        'chartOfAccounts.parentAccountRequired' | translate
+      }}</small>
+    }
+  </div>
 
   <app-input
     [control]="getControl('name_ar')"
@@ -92,6 +129,17 @@
         <i class="sar-icon" style="color: gray"></i>
       </app-input>
     </div>
+
+    <app-dropdown
+      [control]="getControl('moduleType')"
+      [options]="moduleTypes"
+      controlName="moduleType"
+      [optionLabel]="lang.lang === 'ar' ? 'label.ar' : 'label.en'"
+      optionValue="value"
+      [placeholder]="'chartOfAccounts.accountLinkedToPlaceholder' | translate"
+      [label]="'chartOfAccounts.accountLinkedTo' | translate">
+      <i class="pi pi-user" style="color: gray"></i>
+    </app-dropdown>
   }
   <app-input
     [control]="getControl('description')"

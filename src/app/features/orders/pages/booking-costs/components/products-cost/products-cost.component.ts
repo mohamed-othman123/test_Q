@@ -18,6 +18,7 @@ import {bookingItem} from '@orders/models';
 import {BookingCostService} from '@orders/services/booking-cost.service';
 import {remainingQuantityValidator} from '@orders/validators/remaining-quantity.validator';
 import {Table} from 'primeng/table';
+import {combineLatest, debounceTime, filter, of, switchMap} from 'rxjs';
 
 @Component({
   selector: 'app-products-cost',
@@ -54,6 +55,9 @@ export class ProductsCostComponent extends Filter implements OnInit {
 
   originalEditedProductData: bookingItem = {};
 
+  // calculated and comes from the backend when adding a new product
+  addedProductTotalPrice: number = 0;
+
   constructor(
     public lang: LanguageService,
     private bookingCostService: BookingCostService,
@@ -71,6 +75,8 @@ export class ProductsCostComponent extends Filter implements OnInit {
     super.ngOnInit();
     this.getAllInventoryItems();
     this.initForm();
+
+    this.quantityChangeListener();
   }
 
   protected override loadDataTable(filters: DataTableFilter): void {
@@ -173,6 +179,7 @@ export class ProductsCostComponent extends Filter implements OnInit {
         this.isEditing = false;
       });
   }
+
   calculateTotalProductsCost(products: bookingItem[] = []) {
     this.totalProductCost = products.reduce((acc, item) => {
       return acc + (item.price! * item.quantity! || 0);
@@ -181,23 +188,53 @@ export class ProductsCostComponent extends Filter implements OnInit {
     this.productsCost.emit(this.totalProductCost);
   }
 
-  calculateAvailableQuantity(product: bookingItem) {
-    const originalQuantity = this.originalEditedProductData.quantity || 0;
+  // calculateAvailableQuantity(product: bookingItem) {
+  //   const originalQuantity = this.originalEditedProductData.quantity || 0;
 
-    const currentQuantity = product.quantity || 0;
+  //   const currentQuantity = product.quantity || 0;
 
-    if (currentQuantity < 0) return;
+  //   if (currentQuantity < 0) return;
 
-    const addOrSubtractQuantity = currentQuantity - originalQuantity;
+  //   const addOrSubtractQuantity = currentQuantity - originalQuantity;
 
-    if (product.inventory && this.originalEditedProductData.inventory) {
-      product.inventory.quantity =
-        this.originalEditedProductData.inventory?.quantity -
-        addOrSubtractQuantity;
+  //   if (product.inventory && this.originalEditedProductData.inventory) {
+  //     if (
+  //       product &&
+  //       product.batches &&
+  //       product.batches[0] &&
+  //       product.batches[0].inventoryBatch
+  //     ) {
+  //       product.batches[0].inventoryBatch.remainingQuantity =
+  //         product.batches[0].inventoryBatch.remainingQuantity -
+  //         addOrSubtractQuantity;
+  //     }
 
-      if (product.inventory.quantity < 0) {
-        product.inventory.quantity = 0;
-      }
-    }
+  //     if (product.inventory.quantity < 0) {
+  //       product.inventory.quantity = 0;
+  //     }
+  //   }
+  // }
+  quantityChangeListener() {
+    const product$ = this.form?.get('product')?.valueChanges;
+    const quantity$ = this.form?.get('quantity')?.valueChanges;
+
+    if (!product$ || !quantity$) return;
+
+    combineLatest({product: product$, quantity: quantity$})
+      .pipe(
+        debounceTime(500),
+        filter(({product, quantity}) => {
+          return quantity <= product.totalQuantity && quantity > 0 && product;
+        }),
+        switchMap(({product, quantity}) => {
+          return this.inventoryService.calculateInventoryItemCost(
+            product.id,
+            quantity,
+          );
+        }),
+      )
+      .subscribe((res) => {
+        this.addedProductTotalPrice = res.totalPrice || 0;
+      });
   }
 }

@@ -21,8 +21,10 @@ import {ProviderDetails, ProviderType, Service} from '@services/models';
 import {ServicesService} from '@services/services/services.service';
 import {Supplier} from '@suppliers/models/supplier';
 import {SuppliersService} from '@suppliers/services/suppliers.service';
-import {AuthService} from '@core/services';
+import {AuthService, LanguageService} from '@core/services';
 import {PermissionTypes} from '@auth/models';
+import {AccountData} from '@accounts/models/accounts';
+import {AccountsService} from '@accounts/services/accounts.service';
 
 @Component({
   selector: 'app-add-new-service',
@@ -60,6 +62,7 @@ export class AddNewServiceComponent implements OnInit, OnDestroy {
       providerType: [ProviderType.HALL, Validators.required],
       supplier: [null],
       providers: this.fb.array([]),
+      accountId: [null, Validators.required],
     },
     {
       validators: [
@@ -69,30 +72,14 @@ export class AddNewServiceComponent implements OnInit, OnDestroy {
     },
   );
 
-  get serviceNameControl() {
-    return this.serviceForm.get('name') as FormControl;
-  }
-  get serviceNameArControl() {
-    return this.serviceForm.get('name_ar') as FormControl;
-  }
-  get priceControl() {
-    return this.serviceForm.get('price') as FormControl;
-  }
-  get costControl() {
-    return this.serviceForm.get('cost') as FormControl;
-  }
-  get noteControl() {
-    return this.serviceForm.get('note') as FormControl;
-  }
+  accountList: AccountData[] = [];
 
-  get providerTypeControl() {
-    return this.serviceForm.get('providerType') as FormControl;
-  }
-  get supplierIdControl() {
-    return this.serviceForm.get('supplier') as FormControl;
-  }
   get providersControls() {
     return this.serviceForm.get('providers') as FormArray;
+  }
+
+  getFormControl(name: string): FormControl {
+    return this.serviceForm.get(name) as FormControl;
   }
 
   constructor(
@@ -104,9 +91,13 @@ export class AddNewServiceComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
+    public lang: LanguageService,
+    private accountService: AccountsService,
   ) {}
 
   ngOnInit(): void {
+    this.getAccountList();
+
     this.updateProviderTypeOptions();
 
     const langSub = this.translate.onLangChange.subscribe(() =>
@@ -154,6 +145,14 @@ export class AddNewServiceComponent implements OnInit, OnDestroy {
     this.subs.add(hallSub);
 
     this.serviceProviderListener();
+  }
+
+  getAccountList() {
+    this.accountService
+      .getAccountList({moduleType: 'services'})
+      .subscribe((res) => {
+        this.accountList = res.items;
+      });
   }
 
   filterSupplierBasedOnPermission(suppliers: Supplier[]) {
@@ -219,6 +218,7 @@ export class AddNewServiceComponent implements OnInit, OnDestroy {
         price: hall.price,
         cost: hall.cost,
         note: this.service.note,
+        accountId: this.service.account?.id || null,
         providerType: hall.providerType,
       },
       {emitEvent: false},
@@ -239,7 +239,7 @@ export class AddNewServiceComponent implements OnInit, OnDestroy {
           typeof supplierData === 'object' && 'id' in supplierData
             ? supplierData.id
             : supplierData;
-        this.supplierIdControl.setValue(id, {emitEvent: false});
+        this.getFormControl('supplier').setValue(id, {emitEvent: false});
       }
 
       if (this.mode === 'view') {
@@ -289,7 +289,7 @@ export class AddNewServiceComponent implements OnInit, OnDestroy {
   }
 
   private serviceProviderListener(): void {
-    this.providerTypeControl.valueChanges.subscribe((v) => {
+    this.getFormControl('providerType').valueChanges.subscribe((v) => {
       if (this.mode === 'view') {
         return;
       }
@@ -297,19 +297,19 @@ export class AddNewServiceComponent implements OnInit, OnDestroy {
       this.showProviders = false;
       this.showSuppliers = false;
       this.providersControls.clear();
-      this.supplierIdControl.setValue(null);
+      this.getFormControl('supplier').setValue(null);
 
       if (v === ProviderType.THIRD_PARTY) {
         this.showProviders = true;
         this.addThirdParty();
-        this.supplierIdControl.clearValidators();
+        this.getFormControl('supplier').clearValidators();
       } else if (v === ProviderType.SUPPLIER) {
         this.showSuppliers = true;
-        this.supplierIdControl.setValidators(Validators.required);
+        this.getFormControl('supplier').setValidators(Validators.required);
       } else {
-        this.supplierIdControl.clearValidators();
+        this.getFormControl('supplier').clearValidators();
       }
-      this.supplierIdControl.updateValueAndValidity();
+      this.getFormControl('supplier').updateValueAndValidity();
     });
   }
 
@@ -348,14 +348,18 @@ export class AddNewServiceComponent implements OnInit, OnDestroy {
       return null;
     }
 
+    const values = this.serviceForm.getRawValue();
+
     const hallData: any = {
       id: this.currentHall.id,
-      price: +this.priceControl.value,
-      cost: +this.costControl.value,
-      providerType: this.providerTypeControl.value,
+      price: +values.price,
+      cost: +values.cost,
+      providerType: values.providerType,
     };
 
-    if (this.providerTypeControl.value === ProviderType.THIRD_PARTY) {
+    if (
+      this.getFormControl('providerType').value === ProviderType.THIRD_PARTY
+    ) {
       hallData.providers = this.providersControls.value.map(
         (p: ProviderDetails) => ({
           name: p.name,
@@ -363,16 +367,19 @@ export class AddNewServiceComponent implements OnInit, OnDestroy {
           phone: p.phone['e164Number'],
         }),
       );
-    } else if (this.providerTypeControl.value === ProviderType.SUPPLIER) {
-      hallData.supplier = this.supplierIdControl.value;
+    } else if (
+      this.getFormControl('providerType').value === ProviderType.SUPPLIER
+    ) {
+      hallData.supplier = this.getFormControl('supplier').value;
     } else {
       hallData.providers = [];
     }
 
     return {
-      name: this.serviceNameControl.value,
-      name_ar: this.serviceNameArControl.value,
-      note: this.noteControl.value,
+      name: values.name,
+      name_ar: values.name_ar,
+      note: values.note,
+      accountId: values.accountId,
       halls: [hallData],
     };
   }

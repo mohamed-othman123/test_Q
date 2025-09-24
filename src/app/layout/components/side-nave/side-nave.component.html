@@ -35,15 +35,14 @@
         <span>{{ 'sideNav.dashboard' | translate }}</span>
       </li>
       @if (hasAiFeature) {
-        <li
-          [routerLink]="['/analytics']"
-          routerLinkActive="router-link-active"
-          [routerLinkActiveOptions]="{exact: true}">
+        <li [routerLink]="['/analytics']" routerLinkActive="router-link-active">
           <img src="assets/icons/analytics.icon.svg" alt="analytics icon" />
           <span>{{ 'sideNav.analytics' | translate }}</span>
         </li>
         <li [routerLink]="['/ai-chat']" routerLinkActive="router-link-active">
-          <span class="ai-badge">AI</span>
+          <img
+            src="assets/icons/ai/ai assistant Logo.svg"
+            alt="AI Assistant icon" />
           <span>{{ 'sideNav.aiChat' | translate }}</span>
         </li>
       }
@@ -84,11 +83,10 @@
       </li>
 
       <li
-        [routerLink]="['/chart-of-accounts']"
+        *appHasPermission="['read:accounts']"
+        [routerLink]="['/accounts']"
         routerLinkActive="router-link-active">
-        <img
-          src="assets/icons/permissions.icon.svg"
-          alt="chart of accounts icon" />
+        <img src="assets/icons/accounts.svg" alt="chart of accounts icon" />
         <span>{{ 'sideNav.accounts' | translate }}</span>
       </li>
 

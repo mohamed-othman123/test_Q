@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import {SuppliersService} from '../../services/suppliers.service';
-import {forkJoin, Subscription, tap} from 'rxjs';
+import {forkJoin, of, Subscription, tap} from 'rxjs';
 import {
   Supplier,
   SupplierPaymentMethod,
@@ -36,6 +36,8 @@ import {ExpensesType} from '@purchases/constants/purchase.constants';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import moment from 'moment';
+import {AccountData} from '@accounts/models/accounts';
+import {AccountsService} from '@accounts/services/accounts.service';
 
 @Component({
   selector: 'app-supplier-form',
@@ -69,6 +71,11 @@ export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
 
   expenseTypes: Item[] = ExpensesType;
   purchaseStatuses: Item[] = [];
+
+  supplierExistsInSameHall = false;
+  showForm = false;
+
+  accountList: AccountData[] = [];
 
   private destroy$ = new Subject<void>();
 
@@ -113,6 +120,7 @@ export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     protected override filterService: FilterService,
     private http: HttpClient,
+    private accountService: AccountsService,
   ) {
     super(filterService);
     this.initForm();
@@ -121,6 +129,8 @@ export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
 
   override ngOnInit(): void {
     super.ngOnInit();
+
+    this.getAccountList();
 
     this.isViewMode = this.route.snapshot.data['mode'] === 'view';
     if (this.isViewMode) {
@@ -138,6 +148,73 @@ export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
         }
       }),
     );
+  }
+
+  getAccountList() {
+    this.accountService
+      .getAccountList({moduleType: 'suppliers'})
+      .subscribe((res) => {
+        this.accountList = res.items;
+      });
+  }
+
+  // Only for create mode to check duplicate supplier by CR number
+  checkDuplicateSupplier() {
+    if (this.isEditMode) return;
+
+    if (this.form.controls['commercialRegistrationNumber'].invalid) {
+      return;
+    }
+
+    const filters: any = {
+      commercialRegistrationNumber:
+        this.form.value.commercialRegistrationNumber,
+    };
+
+    if (Object.keys(filters).length === 0) return;
+
+    this.suppliersService
+      .getSuppliers(filters)
+      .pipe(
+        tap(() => {
+          this.supplierExistsInSameHall = false;
+          this.resetData();
+        }),
+      )
+      .subscribe((res) => {
+        if (res.items.length === 0) {
+          this.showForm = true;
+          return;
+        }
+
+        const currentHallId = this.hallsService.getCurrentHall()?.id;
+
+        const currentSupplier = res.items[0];
+
+        this.supplierExistsInSameHall = currentSupplier?.halls!.some(
+          (hall) => hall.id === currentHallId,
+        );
+
+        if (this.supplierExistsInSameHall) {
+          this.showForm = false;
+          return;
+        }
+
+        this.showForm = true;
+        this.supplierId = currentSupplier.id as unknown as string;
+
+        this.loadSupplierData();
+      });
+  }
+
+  resetData() {
+    this.supplierId = null;
+    this.supplier = null;
+    this.supplierServices = [];
+    this.selectedProducts = [];
+
+    const crNumber = this.form.value.commercialRegistrationNumber;
+    this.form.reset({commercialRegistrationNumber: crNumber});
   }
 
   private loadPurchaseStatuses(): void {
@@ -259,6 +336,15 @@ export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
 
   private loadSupplierData() {
     if (this.supplierId) {
+      const service$ =
+        this.isEditMode || this.isViewMode
+          ? this.suppliersService.getSupplierItems(
+              'service',
+              this.supplierId,
+              this.currentHall?.id!,
+            )
+          : of({items: []});
+
       const sub = forkJoin({
         supplier: this.suppliersService.getSupplierById(this.supplierId),
         products: this.suppliersService.getSupplierItems(
@@ -266,11 +352,7 @@ export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
           this.supplierId,
           this.currentHall?.id!,
         ),
-        services: this.suppliersService.getSupplierItems(
-          'service',
-          this.supplierId,
-          this.currentHall?.id!,
-        ),
+        services: service$,
       }).subscribe(({supplier, products, services}) => {
         this.supplier = supplier;
         this.selectedProducts = products.items as any;
@@ -290,6 +372,7 @@ export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
           activity: supplier.activity,
           active: supplier.active,
           note: supplier.note,
+          accountId: supplier.account?.id || null,
           products: this.selectedProducts,
         });
 
@@ -310,6 +393,7 @@ export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
           Validators.minLength(10),
           Validators.maxLength(10),
           Validators.pattern(/^[1-9]\d{9}$/),
+          Validators.required,
         ],
       ],
       taxRegistrationNumber: [
@@ -318,15 +402,32 @@ export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
           Validators.minLength(15),
           Validators.maxLength(15),
           Validators.pattern(/^[1-9]\d{14}$/),
+          Validators.required,
         ],
       ],
+      accountId: [null as number | null, [Validators.required]],
       email: ['', [Validators.email]],
-      address: [''],
+      address: this.createAddressForm(),
       activity: [''],
       active: [true],
       note: [''],
       paymentMethods: this.fb.array([]),
       products: [[] as SupplierProduct[]],
+    });
+  }
+
+  createAddressForm(): FormGroup {
+    return this.fb.group({
+      city: [null as string | null, [Validators.required]],
+      district: [null as string | null, [Validators.required]],
+      street: [null as string | null, [Validators.required]],
+      buildingNumber: [null as string | null, [Validators.required]],
+      unitNumber: [null as string | null],
+      additionalNumber: [null as string | null],
+      postalCode: [
+        null as string | null,
+        [Validators.required, Validators.minLength(5), Validators.maxLength(5)],
+      ],
     });
   }
 
@@ -425,7 +526,7 @@ export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
     const formValue = {
       ...this.form.value,
       paymentMethods,
-      halls: [{id: this.currentHall?.id}],
+      hallId: this.currentHall?.id,
     };
 
     if (this.formControls['phone'].dirty && formValue.phone) {
@@ -434,20 +535,22 @@ export class SupplierFormComponent extends Filter implements OnInit, OnDestroy {
       ).internationalNumber;
     }
 
-    let sub;
-    if (this.isEditMode && this.supplierId) {
-      sub = this.suppliersService
-        .updateSupplier(this.supplierId, formValue)
-        .subscribe(() => {
-          this.router.navigate(['/suppliers']);
-        });
-    } else {
-      sub = this.suppliersService.createSupplier(formValue).subscribe(() => {
-        this.router.navigate(['/suppliers']);
-      });
-    }
+    const isEditMode = this.supplierId && this.isEditMode;
 
-    this.subs.add(sub);
+    const isUpsertMode = this.supplierId && !this.isEditMode;
+
+    const req$ = isEditMode
+      ? this.suppliersService.updateSupplier(this.supplierId!, formValue)
+      : isUpsertMode
+        ? this.suppliersService.getSupplierFromAnotherHall(
+            this.supplierId!,
+            formValue,
+          )
+        : this.suppliersService.createSupplier(formValue);
+
+    req$.subscribe(() => {
+      this.router.navigate(['/suppliers']);
+    });
   }
 
   get formControls() {

@@ -1,12 +1,11 @@
 <app-drawer-form-wrapper [form]="getActiveForm()" (onSubmit)="submit()">
   @if (client) {
-    <comments
-      [entityId]="client.id"
-    [type]="commentType.CUSTOMER"></comments>
+    <comments [entityId]="client.id" [type]="commentType.CUSTOMER"></comments>
   }
   <p-tabView
     [activeIndex]="activeIndex"
     (activeIndexChange)="onTabChange($event)">
+    <!--individual form-->
     <p-tabPanel [disabled]="disableIndividualTab" id="individualTab">
       <ng-template pTemplate="header">
         <div class="d-flex align-items-center flex-column">
@@ -16,52 +15,58 @@
       </ng-template>
 
       <div class="d-flex flex-column gap-lg-4">
-        <div class="d-flex gap-2">
-          <div class="flex-1 w-100">
-            <app-input
-              [control]="individualFormControls.name"
-              [controlName]="'name'"
-              inputType="text"
-              [placeholder]="'clients.clientNamePlaceholder' | translate"
-              [label]="'clients.clientName' | translate">
-              <i class="pi pi-user" style="color: gray"></i>
-            </app-input>
-          </div>
-          <div class="d-flex align-items-center">
-            <p-inputSwitch
-              inputId="vip"
-              class="vip"
-              styleClass="d-flex align-items-center pt-lg-2"
-              [formControl]="individualFormControls.isVIB" />
-            <span for="vip"
-              ><img width="40px" src="/assets/icons/vip-icon.svg" alt="vip"
-            /></span>
-          </div>
+        <div class="primary-field">
+          <app-input
+            (onBlur)="checkDuplicateClient('Individual')"
+            [control]="individualFormControls.nationalOrResidencyId"
+            [controlName]="'nationalOrResidencyId'"
+            inputType="text"
+            [placeholder]="
+              'clients.nationalOrResidencyIdPlaceholder' | translate
+            "
+            [label]="'clients.nationalOrResidencyId' | translate">
+            <i class="pi pi-user" style="color: gray"></i>
+          </app-input>
         </div>
 
-        <app-input
-          [control]="individualFormControls.nationalOrResidencyId"
-          [controlName]="'nationalOrResidencyId'"
-          inputType="text"
-          [placeholder]="'clients.nationalOrResidencyIdPlaceholder' | translate"
-          [label]="'clients.nationalOrResidencyId' | translate">
-          <i class="pi pi-user" style="color: gray"></i>
-        </app-input>
+        <ng-container *ngTemplateOutlet="clientExists"></ng-container>
 
-        <app-input
-          [control]="individualFormControls.email"
-          [controlName]="'email'"
-          inputType="email"
-          [placeholder]="'clients.clientEmailPlaceHolder' | translate"
-          iconPath="/assets/icons/email.icon.svg"
-        [label]="'clients.email' | translate"></app-input>
+        @if (mode === 'edit' || showForm) {
+          <div class="d-flex gap-2">
+            <div class="flex-1 w-100">
+              <app-input
+                [control]="individualFormControls.name"
+                [controlName]="'name'"
+                inputType="text"
+                [placeholder]="'clients.clientNamePlaceholder' | translate"
+                [label]="'clients.clientName' | translate">
+                <i class="pi pi-user" style="color: gray"></i>
+              </app-input>
+            </div>
+            <div class="d-flex align-items-center">
+              <p-inputSwitch
+                inputId="vip"
+                class="vip"
+                styleClass="d-flex align-items-center pt-lg-2"
+                [formControl]="individualFormControls.isVIB" />
+              <span for="vip"
+                ><img width="40px" src="/assets/icons/vip-icon.svg" alt="vip"
+              /></span>
+            </div>
+          </div>
 
-        <div class="mb-3">
-          {{ 'clients.gender' | translate }}
-          @if (!individualFormControls.gender.value) {
-            <span class="text-danger"
-              >*</span
-              >
+          <app-input
+            [control]="individualFormControls.email"
+            [controlName]="'email'"
+            inputType="email"
+            [placeholder]="'clients.clientEmailPlaceHolder' | translate"
+            iconPath="/assets/icons/email.icon.svg"
+            [label]="'clients.email' | translate"></app-input>
+
+          <div class="mb-3">
+            {{ 'clients.gender' | translate }}
+            @if (!individualFormControls.gender.value) {
+              <span class="text-danger">*</span>
             }
           </div>
           <div class="gender-container mb-2">
@@ -97,14 +102,16 @@
           @if (
             individualFormControls.gender.invalid &&
             (individualFormControls.gender.dirty ||
-            individualFormControls.gender.touched)
-            ) {
-            <div
-              class="text-danger d-flex align-items-center gap-1 small">
+              individualFormControls.gender.touched)
+          ) {
+            <div class="text-danger d-flex align-items-center gap-1 small">
               <i class="pi pi-exclamation-circle"></i>
               {{ 'errors.genderRequired' | translate }}
             </div>
           }
+
+          <app-address
+            [addressForm]="$any(individualForm.get('address'))"></app-address>
 
           <app-phone-input
             [control]="individualFormControls.phone"
@@ -126,11 +133,11 @@
                 {{ 'clients.addContacts' | translate }}
               </div>
               @for (
-                contact of individualContactsArray.controls; track
-                contact; let i = $index) {
-                <div
-                  class="contact-body"
-                  >
+                contact of individualContactsArray.controls;
+                track contact;
+                let i = $index
+              ) {
+                <div class="contact-body">
                   <div class="d-flex flex-column gap-lg-4">
                     <app-input
                       [control]="$any(contact).get('name')"
@@ -144,9 +151,11 @@
                       [control]="$any(contact).get('email')"
                       [controlName]="'email'"
                       inputType="email"
-                      [placeholder]="'clients.clientEmailPlaceHolder' | translate"
+                      [placeholder]="
+                        'clients.clientEmailPlaceHolder' | translate
+                      "
                       iconPath="/assets/icons/email.icon.svg"
-                    [label]="'clients.email' | translate"></app-input>
+                      [label]="'clients.email' | translate"></app-input>
                     <app-phone-input
                       [control]="$any(contact).get('phone')"
                       [label]="'fields.mobileNo' | translate"
@@ -160,7 +169,9 @@
                     class="p-button-secondary"
                     [label]="'common.delete' | translate"
                     icon="pi pi-times"
-                  (click)="removeContact(i, individualContactsArray)"></button>
+                    (click)="
+                      removeContact(i, individualContactsArray)
+                    "></button>
                 </div>
               }
             </div>
@@ -173,18 +184,35 @@
               {{ 'clients.addOtherContacts' | translate }}
             </span>
           }
+        }
+      </div>
+    </p-tabPanel>
+
+    <!--Facility form-->
+    <p-tabPanel [disabled]="disableFacilityTab" id="facilityTab">
+      <ng-template pTemplate="header">
+        <div class="d-flex align-items-center flex-column">
+          <i class="fac-icon text-green-500 mb-0"></i>
+          <span>{{ 'clients.facility' | translate }}</span>
         </div>
-      </p-tabPanel>
+      </ng-template>
 
-      <p-tabPanel [disabled]="disableFacilityTab" id="facilityTab">
-        <ng-template pTemplate="header">
-          <div class="d-flex align-items-center flex-column">
-            <i class="fac-icon text-green-500 mb-0"></i>
-            <span>{{ 'clients.facility' | translate }}</span>
-          </div>
-        </ng-template>
+      <div class="d-flex flex-column gap-lg-4">
+        <div class="primary-field">
+          <app-input
+            (onBlur)="checkDuplicateClient('Facility')"
+            [controlName]="'commercialRegistrationNumber'"
+            [control]="facilityFormControls.commercialRegistrationNumber"
+            [label]="'clients.crNumber' | translate"
+            [placeholder]="'clients.crNumberPlaceholder' | translate"
+            inputType="text">
+            <i class="pi pi-file" style="color: gray"></i>
+          </app-input>
+        </div>
 
-        <div class="d-flex flex-column gap-lg-4">
+        <ng-container *ngTemplateOutlet="clientExists"></ng-container>
+
+        @if (mode === 'edit' || showForm) {
           <div class="d-flex gap-2">
             <div class="flex-1 w-100">
               <app-input
@@ -216,35 +244,22 @@
             inputType="number">
             <i class="pi pi-file" style="color: gray"></i>
           </app-input>
-          <app-input
-            [controlName]="'commercialRegistrationNumber'"
-            [control]="facilityFormControls.commercialRegistrationNumber"
-            [label]="'clients.crNumber' | translate"
-            [placeholder]="'clients.crNumberPlaceholder' | translate"
-            inputType="text">
-            <i class="pi pi-file" style="color: gray"></i>
-          </app-input>
-          <app-input
-            [control]="facilityFormControls.address"
-            [controlName]="'address'"
-            inputType="text"
-            [placeholder]="'clients.addressPlaceholder' | translate"
-            [label]="'clients.address' | translate">
-            <i class="pi pi-map-marker" style="color: gray"></i>
-          </app-input>
+
+          <app-address
+            [addressForm]="$any(facilityForm.get('address'))"></app-address>
+
           <app-phone-input
             [control]="facilityFormControls.phone"
             [label]="'fields.mobileNo' | translate"
-          [placeholder]="
-            'fields.mobileNoPlaceholder' | translate
-          "></app-phone-input>
+            [placeholder]="'fields.mobileNoPlaceholder' | translate"
+            [phoneNumber]="client?.phone"></app-phone-input>
           <app-input
             [controlName]="'email'"
             [control]="facilityFormControls.email"
             [label]="'clients.email' | translate"
             [placeholder]="'clients.clientEmailPlaceHolder' | translate"
             iconPath="/assets/icons/email.icon.svg"
-          inputType="email"></app-input>
+            inputType="email"></app-input>
           <app-input
             [control]="facilityFormControls.notes"
             [controlName]="'notes'"
@@ -258,11 +273,11 @@
                 {{ 'clients.addContacts' | translate }}
               </div>
               @for (
-                contact of facilityContactsArray.controls; track
-                contact; let i = $index) {
-                <div
-                  class="contact-body"
-                  >
+                contact of facilityContactsArray.controls;
+                track contact;
+                let i = $index
+              ) {
+                <div class="contact-body">
                   <div class="d-flex flex-column gap-lg-4">
                     <app-input
                       [control]="$any(contact).get('name')"
@@ -276,9 +291,11 @@
                       [control]="$any(contact).get('email')"
                       [controlName]="'email'"
                       inputType="email"
-                      [placeholder]="'clients.clientEmailPlaceHolder' | translate"
+                      [placeholder]="
+                        'clients.clientEmailPlaceHolder' | translate
+                      "
                       iconPath="/assets/icons/email.icon.svg"
-                    [label]="'clients.email' | translate"></app-input>
+                      [label]="'clients.email' | translate"></app-input>
                     <app-phone-input
                       [control]="$any(contact).get('phone')"
                       [label]="'fields.mobileNo' | translate"
@@ -292,7 +309,7 @@
                     class="p-button-secondary"
                     [label]="'common.delete' | translate"
                     icon="pi pi-times"
-                  (click)="removeContact(i, facilityContactsArray)"></button>
+                    (click)="removeContact(i, facilityContactsArray)"></button>
                 </div>
               }
             </div>
@@ -305,26 +322,30 @@
               {{ 'clients.addOtherContacts' | translate }}
             </span>
           }
+        }
+      </div>
+    </p-tabPanel>
+
+    <!--Gov-->
+    <p-tabPanel
+      [disabled]="disableGovernmentFacilityTap"
+      id="governmentFacilityTap">
+      <ng-template pTemplate="header">
+        <div class="d-flex align-items-center flex-column">
+          <i class="gov-icon text-green-500 mb-0"></i>
+          <!-- <img src="assets/icons/hall.icon.svg" alt="government Facility" /> -->
+          <span class="gov-title">{{
+            'clients.governmentFacility' | translate
+          }}</span>
         </div>
-      </p-tabPanel>
+      </ng-template>
 
-      <p-tabPanel
-        [disabled]="disableGovernmentFacilityTap"
-        id="governmentFacilityTap">
-        <ng-template pTemplate="header">
-          <div class="d-flex align-items-center flex-column">
-            <i class="gov-icon text-green-500 mb-0"></i>
-            <!-- <img src="assets/icons/hall.icon.svg" alt="government Facility" /> -->
-            <span class="gov-title">{{
-              'clients.governmentFacility' | translate
-            }}</span>
-          </div>
-        </ng-template>
-
-        <div class="d-flex flex-column gap-lg-4">
+      <div class="d-flex flex-column gap-lg-4">
+        <div class="primary-field">
           <div class="d-flex gap-2">
             <div class="flex-1 w-100">
               <app-input
+                (onBlur)="checkDuplicateClient('Governmental Facility')"
                 [control]="governmentFormControls.name"
                 [controlName]="'name'"
                 inputType="text"
@@ -333,6 +354,7 @@
                 <i class="pi pi-building" style="color: gray"></i>
               </app-input>
             </div>
+
             <div class="d-flex align-items-center">
               <p-inputSwitch
                 inputId="vip"
@@ -344,13 +366,22 @@
               /></span>
             </div>
           </div>
+        </div>
+
+        <ng-container *ngTemplateOutlet="clientExists"></ng-container>
+
+        @if (mode === 'edit' || showForm) {
+          <app-address
+            [addressForm]="
+              $any(governmentFacilityForm.get('address'))
+            "></app-address>
 
           <app-phone-input
             [control]="governmentFormControls.phone"
             [label]="'fields.mobileNo' | translate"
-          [placeholder]="
-            'fields.mobileNoPlaceholder' | translate
-          "></app-phone-input>
+            [placeholder]="
+              'fields.mobileNoPlaceholder' | translate
+            "></app-phone-input>
 
           <app-input
             [controlName]="'email'"
@@ -358,7 +389,7 @@
             [label]="'clients.email' | translate"
             [placeholder]="'clients.clientEmailPlaceHolder' | translate"
             iconPath="/assets/icons/email.icon.svg"
-          inputType="email"></app-input>
+            inputType="email"></app-input>
 
           <app-input
             [control]="governmentFormControls.notes"
@@ -373,11 +404,11 @@
                 {{ 'clients.addContacts' | translate }}
               </div>
               @for (
-                contact of governmentContactsArray.controls; track
-                contact; let i = $index) {
-                <div
-                  class="contact-body"
-                  >
+                contact of governmentContactsArray.controls;
+                track contact;
+                let i = $index
+              ) {
+                <div class="contact-body">
                   <div class="d-flex flex-column gap-lg-4">
                     <app-input
                       [control]="$any(contact).get('name')"
@@ -391,9 +422,11 @@
                       [control]="$any(contact).get('email')"
                       [controlName]="'email'"
                       inputType="email"
-                      [placeholder]="'clients.clientEmailPlaceHolder' | translate"
+                      [placeholder]="
+                        'clients.clientEmailPlaceHolder' | translate
+                      "
                       iconPath="/assets/icons/email.icon.svg"
-                    [label]="'clients.email' | translate"></app-input>
+                      [label]="'clients.email' | translate"></app-input>
                     <app-phone-input
                       [control]="$any(contact).get('phone')"
                       [label]="'fields.mobileNo' | translate"
@@ -407,7 +440,9 @@
                     class="p-button-secondary"
                     [label]="'common.delete' | translate"
                     icon="pi pi-times"
-                  (click)="removeContact(i, governmentContactsArray)"></button>
+                    (click)="
+                      removeContact(i, governmentContactsArray)
+                    "></button>
                 </div>
               }
             </div>
@@ -420,7 +455,14 @@
               {{ 'clients.addOtherContacts' | translate }}
             </span>
           }
-        </div>
-      </p-tabPanel>
-    </p-tabView>
-  </app-drawer-form-wrapper>
+        }
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+</app-drawer-form-wrapper>
+
+<ng-template #clientExists>
+  @if (clientExistsInSameHall) {
+    <div class="text-danger">العميل موجود من قبل في نفس القاعه</div>
+  }
+</ng-template>

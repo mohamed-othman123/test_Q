@@ -6,3 +6,17 @@
 </div>
 
 <div #chartContainer id="chartContainer"></div>
+
+<div class="t-actions">
+  <button
+    type="button"
+    pButton
+    class="p-button-secondary btn-back"
+    [label]="'common.back' | translate"
+    (click)="goBack()">
+    <i
+      [class]="
+        lang.lang === 'en' ? 'pi pi-arrow-left mb-0' : 'pi pi-arrow-right mb-0'
+      "></i>
+  </button>
+</div>

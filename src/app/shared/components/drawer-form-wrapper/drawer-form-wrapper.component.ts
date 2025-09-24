@@ -15,13 +15,14 @@ import {SHAKEABLE_INPUT} from '@core/constants';
 import {ShakeableInput} from '@core/interfaces';
 import {DrawerService} from '@core/services/drawer.service';
 import {LanguageService} from '@core/services/language.service';
+import {ShakeableService} from '@core/services/shakeable.service';
 import {Subscription} from 'rxjs';
 
 @Component({
-    selector: 'app-drawer-form-wrapper',
-    templateUrl: './drawer-form-wrapper.component.html',
-    styleUrls: ['./drawer-form-wrapper.component.scss'],
-    standalone: false
+  selector: 'app-drawer-form-wrapper',
+  templateUrl: './drawer-form-wrapper.component.html',
+  styleUrls: ['./drawer-form-wrapper.component.scss'],
+  standalone: false,
 })
 export class DrawerFormWrapperComponent implements OnInit, OnDestroy {
   drawerState$ = this.drawerService.drawerState$;
@@ -47,6 +48,7 @@ export class DrawerFormWrapperComponent implements OnInit, OnDestroy {
   constructor(
     private drawerService: DrawerService,
     public lang: LanguageService,
+    private shakeableService: ShakeableService,
   ) {}
 
   ngOnInit(): void {
@@ -72,9 +74,8 @@ export class DrawerFormWrapperComponent implements OnInit, OnDestroy {
 
   submit(): void {
     if (this.form.invalid) {
-      // check weather the input is visible or not , to prevent shaking the input that is not visible
-      // you can find such case in the clients drawer
       this.form.markAllAsTouched();
+      this.shakeableService.shakeInvalid();
       Array.from(this.shakeableInputs).forEach((component, index) => {
         const elementRef = this.shakeableElementRefs.get(index);
         if (elementRef && elementRef.nativeElement.offsetParent !== null) {

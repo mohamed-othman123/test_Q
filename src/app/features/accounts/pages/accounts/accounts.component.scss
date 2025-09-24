@@ -7,7 +7,7 @@
     cursor: pointer;
     border-radius: 16px;
     padding: 16px;
-    background-color: orange;
+    background-color: #707e85;
     color: white;
   }
 
@@ -108,6 +108,36 @@
           transition: all 0.2s ease;
         }
       }
+    }
+  }
+  .file-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: end;
+    margin-bottom: 7px;
+    border-radius: 16px;
+
+    .dropdown-toggle {
+      background: var(--primary-color);
+      color: #fff;
+      font-weight: 500;
+      i {
+        margin-inline-end: 8px;
+      }
+      &::after {
+        display: none;
+      }
+    }
+    .dropdown-item {
+      color: rgb(51, 65, 85);
+    }
+    .dropdown-menu {
+      inset-inline-end: 0 !important;
+      inset-inline-start: unset !important;
+    }
+    .p-menu {
+      width: 130px !important;
     }
   }
 }

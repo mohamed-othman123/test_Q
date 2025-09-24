@@ -8,34 +8,47 @@
 
     @for (section of landingPageData.sections; track section) {
       @if (section?.type === 'features') {
-        <app-about [lang]="lang" [section]="section"></app-about>
+        <div id="features">
+          <app-about [lang]="lang" [section]="section"></app-about>
+        </div>
       }
       @if (section?.type === 'services') {
-        <app-features
-          [lang]="lang"
-          (orderPricingRequested)="openOrderPricing()"
-          [section]="section"></app-features>
+        <div id="services">
+          <app-features
+            [lang]="lang"
+            (orderPricingRequested)="openOrderPricing()"
+            [section]="section"></app-features>
+        </div>
       }
-    }
-
-    <app-landing-departments
-      [hallDepartmentsData]="
-        landingPageData.hall?.hallSections
-      "></app-landing-departments>
-
-    @for (section of landingPageData.sections; track section) {
       @if (section?.type === 'images') {
         <app-gallery [lang]="lang" [section]="section"></app-gallery>
       }
       @if (section?.type === 'popularQuestions') {
-        <app-faqs [lang]="lang" [section]="section"></app-faqs>
+        <div id="faqs">
+          <app-faqs [lang]="lang" [section]="section"></app-faqs>
+        </div>
       }
       @if (section?.type === 'customers') {
-        <app-clients [lang]="lang" [section]="section"></app-clients>
+        <div id="clients">
+          <app-clients [lang]="lang" [section]="section"></app-clients>
+        </div>
+      }
+      @if (section?.type === 'hallSections') {
+        <div id="hallSections">
+          <app-landing-hall-sections [lang]="lang" [section]="section" [landingPageData]="landingPageData"></app-landing-hall-sections>
+        </div>
+      }
+      @if (section?.type === 'events') {
+        <div id="events">
+          <app-landing-events [lang]="lang" [section]="section" [landingPageData]="landingPageData"></app-landing-events>
+        </div>
       }
     }
 
-    <app-contacts [contactDetails]="landingPageData"></app-contacts>
+
+    <div id="contact-us">
+      <app-contacts [contactDetails]="landingPageData"></app-contacts>
+    </div>
   </div>
 }
 @if (landingPageData) {

@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {DataTableFilter, GaCustomEvents, Item, TableData} from '@core/models';
 import {NotificationService} from '@core/services/notification.service';
@@ -88,9 +88,19 @@ export class SuppliersService {
       );
   }
 
-  deleteSupplier(id: string): Observable<any> {
+  getSupplierFromAnotherHall(id: string, supplier: Partial<SupplierRequest>) {
     return this.http
-      .delete(`${this.apiSuppliersUrl}/${id}`)
+      .put<Supplier>(`${this.apiSuppliersUrl}/${id}`, supplier)
+      .pipe(
+        tap(() =>
+          this.notificationService.showSuccess('suppliers.supplier_created'),
+        ),
+      );
+  }
+
+  deleteSupplier(id: string, hallId: number): Observable<any> {
+    return this.http
+      .delete(`${this.apiSuppliersUrl}/${id}`, {body: {hallId}})
       .pipe(
         tap(() =>
           this.notificationService.showSuccess('suppliers.supplier_deleted'),
@@ -105,11 +115,20 @@ export class SuppliersService {
   getSupplierItems(
     item: 'product' | 'service',
     supplierId: string,
-    hallId: number,
+    hallId?: number,
   ) {
-    const url = `${this.apiSuppliersUrl}/${supplierId}/items?itemType=${item}&hallId=${hallId}`;
+    const fromObject: any = {itemType: item};
+    if (hallId !== undefined) {
+      fromObject.hallId = hallId.toString();
+    }
 
-    return this.http.get<TableData<Service[] | SupplierProduct[]>>(url);
+    const params = new HttpParams({fromObject});
+
+    const url = `${this.apiSuppliersUrl}/${supplierId}/items`;
+
+    return this.http.get<TableData<Service[] | SupplierProduct[]>>(url, {
+      params,
+    });
   }
 
   getEWallets() {

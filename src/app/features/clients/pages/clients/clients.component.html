@@ -2,7 +2,7 @@
   [btnAddText]="'clients.addNewClient' | translate"
   [disableAddBtn]="!permissionsService.hasPermission('create:hallsClients')"
   [title]="'sideNav.clients' | translate"
-(sideDrawerToggler)="addNewClient()"></app-list-header>
+  (sideDrawerToggler)="addNewClient()"></app-list-header>
 
 <p-table
   #dt2
@@ -35,6 +35,9 @@
       </th>
       <th>
         {{ 'clients.type' | translate }}
+      </th>
+      <th>
+        {{ 'common.linkedAccount' | translate }}
       </th>
       <th style="width: fit-content"></th>
     </tr>
@@ -84,6 +87,7 @@
         </app-dropdown>
       </th>
       <th></th>
+      <th></th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-client>
@@ -120,19 +124,21 @@
         {{ 'clients.' + client.type | translate }}
       </td>
       <td>
+        {{
+          lang.lang === 'ar' ? client.account?.name_ar : client.account?.name
+        }}
+        - {{ client.account?.accountCode }}
+      </td>
+      <td>
         <div class="actions">
           @if (hasPermissionTo('view', client)) {
-            <div
-              (click)="viewClient(client)"
-              class="action-button">
+            <div (click)="viewClient(client)" class="action-button">
               <i class="pi pi-eye"></i>
               <span>{{ 'common.view' | translate }}</span>
             </div>
           }
           @if (hasPermissionTo('update', client)) {
-            <div
-              (click)="editClient($event, client)"
-              class="action-button">
+            <div (click)="editClient($event, client)" class="action-button">
               <i class="pi pi-file-edit"></i>
               <span>{{ 'common.edit' | translate }}</span>
             </div>
@@ -161,4 +167,4 @@
 </p-table>
 
 <app-add-new-client
-(refreshDataTable)="refreshDataTable()"></app-add-new-client>
+  (refreshDataTable)="refreshDataTable()"></app-add-new-client>

@@ -22,7 +22,33 @@ export interface Customer {
   imageMimeType?: string;
   site_url: string;
   order: number;
-  image: string;
+  image?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CreateCustomerDto {
+  sectionId: number;
+  name: string;
+  site_url?: string;
+  order?: number;
+}
+
+export interface UpdateCustomerDto {
+  name?: string;
+  site_url?: string;
+  order?: number;
+}
+
+export interface CustomerResponseDto {
+  id: number;
+  name: string;
+  imagePath: string;
+  imageMimeType: string;
+  site_url: string;
+  order: number;
+  created_at: string;
+  updated_at: string;
 }
 export interface Client {
   id: number;
@@ -114,19 +140,30 @@ export interface PopularQuestion {
   question: string;
   answer: string;
   order: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface CreateQuestionDto {
   sectionId: number;
   question: string;
   answer: string;
-  order: number;
+  order?: number;
 }
 
 export interface UpdateQuestionDto {
+  question?: string;
+  answer?: string;
+  order?: number;
+}
+
+export interface QuestionResponseDto {
+  id: number;
   question: string;
   answer: string;
   order: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface SocialLinks {

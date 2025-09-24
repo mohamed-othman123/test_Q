@@ -25,7 +25,7 @@ import {ChatDisplayMessage} from '../models/chat.types';
           *ngIf="messages.length === 0 && !isLoading">
           <div class="welcome-content">
             <div class="welcome-icon">
-              <i class="pi pi-sparkles"></i>
+              <img src="/assets/icons/ai/welcom-ai.webp" alt="AI Welcome" class="welcome-ai-icon" />
             </div>
             <h3>{{ 'chat.welcomeTitle' | translate }}</h3>
             <p>{{ 'chat.welcomeMessage' | translate }}</p>
@@ -79,10 +79,14 @@ import {ChatDisplayMessage} from '../models/chat.types';
                 [alt]="'User avatar'"
                 class="hall-icon" />
               <ng-template #defaultIcon>
+                <img
+                  *ngIf="message.type === 'assistant'"
+                  src="/assets/icons/ai/ai assistant Logo.svg"
+                  alt="AI Assistant"
+                  class="ai-assistant-icon" />
                 <i
-                  class="pi"
-                  [class.pi-user]="message.type === 'user'"
-                  [class.pi-sparkles]="message.type === 'assistant'"></i>
+                  *ngIf="message.type === 'user'"
+                  class="pi pi-user"></i>
               </ng-template>
             </div>
           </div>
@@ -122,7 +126,7 @@ import {ChatDisplayMessage} from '../models/chat.types';
         <div class="loading-message" *ngIf="isLoading">
           <div class="message-avatar">
             <div class="avatar ai-avatar">
-              <i class="pi pi-sparkles"></i>
+              <img src="/assets/icons/ai/thinking-webp.webp" alt="AI Thinking" class="thinking-icon" />
             </div>
           </div>
           <div class="message-content">
@@ -164,7 +168,6 @@ import {ChatDisplayMessage} from '../models/chat.types';
       }
 
       .messages-list {
-        max-width: 800px;
         margin: 0 auto;
         padding: 0 1.5rem;
         min-height: 100%;
@@ -187,20 +190,18 @@ import {ChatDisplayMessage} from '../models/chat.types';
       }
 
       .welcome-icon {
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(
-          135deg,
-          var(--primary-color),
-          var(--secondary-color)
-        );
-        border-radius: 50%;
+        width: 80px;
+        height: 80px;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 1.5rem;
-        color: white;
-        font-size: 1.5rem;
+      }
+
+      .welcome-ai-icon {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
       }
 
       .welcome-content h3 {
@@ -255,8 +256,8 @@ import {ChatDisplayMessage} from '../models/chat.types';
       }
 
       .avatar {
-        width: 40px;
-        height: 40px;
+        width: 55px;
+        height: 55px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -319,6 +320,21 @@ import {ChatDisplayMessage} from '../models/chat.types';
         height: 100%;
         border-radius: 50%;
         object-fit: cover;
+      }
+
+      .thinking-icon {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 50%;
+      }
+
+      .ai-assistant-icon {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 50%;
+        background: white;
       }
 
       .message-content {
@@ -515,7 +531,7 @@ export class MessageListComponent implements AfterViewChecked, OnChanges {
         this.shouldScrollToBottom = true;
         this.previousMessageCount = currentCount;
       }
-      
+
       this.forceRerender();
     }
   }
@@ -546,7 +562,7 @@ export class MessageListComponent implements AfterViewChecked, OnChanges {
 
   formatMessage(message: string): string {
     if (!message) return '';
-    
+
     return message
       .replace(/\\n/g, '<br>')
       .replace(/\n/g, '<br>')

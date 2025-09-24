@@ -1,4 +1,10 @@
-import {Component, OnInit, OnDestroy, ViewChild, HostListener} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  HostListener,
+} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {finalize, of, Subscription, switchMap, tap} from 'rxjs';
 import {Client} from '@clients/models/client.model';
@@ -12,12 +18,14 @@ import {FilterService, LanguageService} from '@core/services';
 import {Filter} from '@core/interfaces';
 import {HallsService} from '@halls/services/halls.service';
 import {dateToGregorianIsoString} from '@shared/components/date-picker/helper/date-helper';
+import {formatAddress} from '@core/utils';
+import {Address} from '@core/interfaces/address';
 
 @Component({
-    selector: 'app-client-details',
-    templateUrl: './client-details.component.html',
-    styleUrls: ['./client-details.component.scss'],
-    standalone: false
+  selector: 'app-client-details',
+  templateUrl: './client-details.component.html',
+  styleUrls: ['./client-details.component.scss'],
+  standalone: false,
 })
 export class ClientDetailsComponent
   extends Filter
@@ -66,8 +74,10 @@ export class ClientDetailsComponent
   override ngOnInit(): void {
     super.ngOnInit();
 
-    this.ordersService.getBookingStatus().subscribe(s => (this.bookingStatus = s));
-    this.ordersService.getEventTimes().subscribe(t => (this.eventTime = t));
+    this.ordersService
+      .getBookingStatus()
+      .subscribe((s) => (this.bookingStatus = s));
+    this.ordersService.getEventTimes().subscribe((t) => (this.eventTime = t));
 
     const clientId = +this.route.snapshot.params['id'];
     if (clientId) {
@@ -76,10 +86,11 @@ export class ClientDetailsComponent
 
     this.currentLang = this.translate.currentLang;
     this.subs.add(
-      this.translate.onLangChange.subscribe(lang => (this.currentLang = lang.lang))
+      this.translate.onLangChange.subscribe(
+        (lang) => (this.currentLang = lang.lang),
+      ),
     );
   }
-
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
@@ -101,7 +112,7 @@ export class ClientDetailsComponent
 
         this.filterForm.patchValue({
           clientId: client.id,
-          hallId:   this.hallsService.getCurrentHall()?.id
+          hallId: this.hallsService.getCurrentHall()?.id,
         });
 
         this.loadDataTable(this.filterForm.value as DataTableFilter);
@@ -110,31 +121,27 @@ export class ClientDetailsComponent
       error: () => {
         this.isLoading = false;
         this.router.navigate(['/clients']);
-      }
+      },
     });
   }
 
-
-
   protected override loadDataTable(filters: DataTableFilter): void {
-    const { startDate, endDate, ...rest } = filters;
+    const {startDate, endDate, ...rest} = filters;
     if (startDate) {
       rest['startDate'] = dateToGregorianIsoString(startDate, 'short');
     }
     if (endDate) {
       rest['endDate'] = dateToGregorianIsoString(endDate, 'short');
     }
-    rest['hallId']   = this.hallsService.getCurrentHall()?.id;
+    rest['hallId'] = this.hallsService.getCurrentHall()?.id;
     rest['clientId'] = this.client?.id;
 
-    const sub = this.ordersService.getOrders(rest).subscribe(res => {
-      this.bookings     = res.items;
+    const sub = this.ordersService.getOrders(rest).subscribe((res) => {
+      this.bookings = res.items;
       this.totalRecords = res.totalItems;
     });
     this.subs.add(sub);
   }
-
-
 
   viewOrder(order: Booking): void {
     this.router.navigate(['/orders/details-and-payment', order.id]);
@@ -157,5 +164,9 @@ export class ClientDetailsComponent
 
   override ngOnDestroy(): void {
     this.subs.unsubscribe();
+  }
+
+  formatAddress(address: Address): string {
+    return formatAddress(address);
   }
 }

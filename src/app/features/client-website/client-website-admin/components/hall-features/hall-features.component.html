@@ -24,9 +24,18 @@
     }
 
     @if (!activeFeature && hallFeatures.length > 0) {
-      <div #featuresList class="features-list">
-        @for (feature of hallFeatures.controls; track feature; let i = $index) {
-          <div class="feature-item">
+      <div 
+        #featuresList 
+        class="features-list"
+        cdkDropList
+        [cdkDropListData]="hallFeatures.controls"
+        (cdkDropListDropped)="onFeaturesDropped($event)">
+        @for (feature of hallFeatures.controls; track $index; let i = $index) {
+          <div 
+            class="feature-item"
+            cdkDrag
+            [cdkDragData]="feature"
+            [cdkDragDisabled]="!!activeFeature">
             <div class="feature-content">
               <div class="feature-icon">
                 <fa-icon [icon]="feature.get('icon')?.value | faIcon"></fa-icon>
@@ -48,7 +57,7 @@
                   (click)="removeFeature(i)">
                   <i class="pi pi-trash"></i>
                 </button>
-                <div class="feature-drag-handle">
+                <div class="feature-drag-handle" cdkDragHandle>
                   <div class="drag-handle-dots">
                     <div class="dot"></div>
                     <div class="dot"></div>

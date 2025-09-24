@@ -22,9 +22,18 @@
     }
 
     @if (!activeService && hallServices.length > 0) {
-      <div #servicesList class="services-list">
-        @for (service of hallServices.controls; track service; let i = $index) {
-          <div class="service-item">
+      <div 
+        #servicesList 
+        class="services-list"
+        cdkDropList
+        [cdkDropListData]="hallServices.controls"
+        (cdkDropListDropped)="onServicesDropped($event)">
+        @for (service of hallServices.controls; track $index; let i = $index) {
+          <div 
+            class="service-item"
+            cdkDrag
+            [cdkDragData]="service"
+            [cdkDragDisabled]="!!activeService">
             <div class="service-content">
               <div class="service-info">
                 <i class="pi pi-check-circle"></i>
@@ -43,7 +52,7 @@
                   (click)="removeService(i)">
                   <i class="pi pi-trash"></i>
                 </button>
-                <div class="service-drag-handle">
+                <div class="service-drag-handle" cdkDragHandle>
                   <div class="drag-handle-dots">
                     <div class="dot"></div>
                     <div class="dot"></div>

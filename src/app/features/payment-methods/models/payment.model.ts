@@ -12,6 +12,12 @@ export interface PaymentMethod {
   name_ar?: string;
   description: string;
   halls: HallReference[];
+  account?: {
+    accountCode: string;
+    id: number;
+    name: string;
+    name_ar: string;
+  };
 }
 
 export interface PaymentType {

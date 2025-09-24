@@ -18,6 +18,9 @@ export interface AccountData {
   isParent: boolean;
   openingDebit: number;
   openingCredit: number;
+  totalDebit?: number;
+  totalCredit?: number;
+  moduleType?: string;
   parent?: {id?: number | null; name?: string; name_ar?: string} | null;
   description?: string;
   children?: AccountData[];
